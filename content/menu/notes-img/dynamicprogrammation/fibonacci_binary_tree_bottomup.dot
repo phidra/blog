@@ -1,0 +1,46 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph G {
+    edge [penwidth=2, dir=none];
+    dots1 -> F2ter;
+    dots1 -> F3ter;
+    dots2 -> F4bis;
+    dots2 -> F5;
+
+    F2ter -> F0;
+    F2ter -> F1;
+    F3ter -> F1bis;
+    F3ter -> F2;
+    F4bis -> F2bis;
+    F4bis -> F3;
+    F5 -> F3bis;
+    F5 -> F4;
+
+    starthere -> F0 [dir=forward, color=red,penwidth=1];
+    thenhere -> F2ter [dir=forward, color=red,penwidth=1];
+
+    // force order + balance each level :
+    {rank=same; dots1; dots2;}
+    {rank=same; thenhere; F2ter; F3ter; F4bis; F5;}
+    {rank=same; starthere; F0; F1; F1bis; F2; F2bis; F3; F3bis; F4;}
+    edge [style=invisible];
+    dots1 -> dots2;
+    F2ter -> F3ter -> F4bis -> F5;
+    F0 -> F1 -> F1bis -> F2 -> F2bis -> F3 -> F3bis -> F4;
+
+    F0     [label="F0",style=filled,fillcolor="#ffb8b8"];
+    F1     [label="F1",style=filled,fillcolor="#ffb8b8"];
+    F1bis  [label="F1"];
+    F2     [label="F2",style=filled,fillcolor="#ffb8b8"];
+    F2bis  [label="F2"];
+    F2ter  [label="F2"];
+    F3     [label="F3",style=filled,fillcolor="#ffb8b8"];
+    F3bis  [label="F3"];
+    F3ter  [label="F3"];
+    F4     [label="F4",style=filled,fillcolor="#ffb8b8"];
+    F4bis  [label="F4"];
+    F5     [label="F5",style=filled,fillcolor="#ffb8b8"];
+    starthere [label="start here...",shape=plaintext,width=.1,height=.1,fontcolor=red]
+    thenhere [label="...then here",shape=plaintext,width=.1,height=.1,fontcolor=red]
+
+    dots1, dots2 [label="⋯",shape=plaintext, width=.1, height=.1];
+}

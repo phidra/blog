@@ -1,0 +1,24 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph G {
+    edge [style=invisible,dir=none,arrowtype=none]
+    F0 -> F1 -> dots -> Fn_3 -> Fn_2 -> Fn_1 -> Fn;
+
+    edge [style=solid,dir=forward,arrowtype=normal]
+    Fn:n -> Fn_1:n
+    Fn:n -> Fn_2:n
+    Fn_1:s -> Fn_2:s;
+    Fn_1:s -> Fn_3:s;
+
+    F0   [label="F(0)"];
+    F1   [label="F(1)"];
+    dots [label="⋯",shape=plaintext,width=.1;height=.1];
+    Fn_3 [label="F(n-3)"];
+    Fn_2 [label="F(n-2)"];
+    Fn_1 [label="F(n-1)"];
+    Fn [label="F(n)"];
+
+    {rank=same; F0; F1; dots ; Fn_3; Fn_2 ; Fn_1; Fn;}
+}
+
+
+

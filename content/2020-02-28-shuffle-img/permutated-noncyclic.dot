@@ -1,0 +1,7 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph identity {
+	nodesep=0;
+	size="5!";
+	node [shape=record,width=.1,height=.1];  // see Record based nodes
+	N [label = "<C> C |<A> A |<B> B |<E> E |<D> D"];
+}

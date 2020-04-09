@@ -1,0 +1,102 @@
+---
+title: "RTFM ?"
+date: 2020-02-20T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+= RTFM ?
+
+== Position du problème
+
+La plupart du temps, quand j'utilise `man`, je m'embête pas, et je fais par exemple :
+
+....
+man tar
+....
+
+Mais on trouve parfois https://stackoverflow.com/a/705483[une syntaxe précisant un numéro], assortie parfois d'une vague mention de "sections". Par exemple :
+
+....
+man 2 close
+....
+
+J'avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs "chapitres", et que ce numéro était le numéro du chapitre : `man 3 zlib` était équivalent à _ouvre le troisième chapitre du man de zlib_.
+
+Spoiler alert, j'avais tout faux ^^
+
+== Les fameuses sections
+
+Déjà, ma supposition était mal barrée quand on voit que `man 1 zlib` ne permet pas de consulter "le premier chapitre de zlib" :
+
+....
+man 1 zlib
+No manual entry for zlib in section 1
+....
+
+Un simple `man man` suffit pour comprendre : les sections ne sont pas des chapitres, mais des catégories de manpages :
+
+* la section 1 contient les programmes exécutables
+* la section 2 contient les syscalls
+* la section 3 les manpages des fonctions de librairies (notamment la glibc)
+* etc.
+
+Du coup, l'intérêt de préciser le numéro de section est lever l'ambiguité entre par exemple :
+
+* la page de manuel du syscall `tee` (permettant de dupliquer un pipe) qu'on trouverait avec `man 2 tee`
+* la page de manuel du programme `tee` (qui redirige stdin à la fois sur stdout et dans un fichier) qu'on trouverait avec `man 1 tee`
+
+Les chiffres qu'on trouve parfois entre parenthèse dans des références proposées par les manpages correspondent justement à ces sections, ce qui peut-être pratique pour savoir de quoi on parle. Par exemple avec :
+
+....
+man fopen
+    ...
+    SEE ALSO
+        open(2), fclose(3), fileno(3), fmemopen(3), fopencookie(3)
+             ^
+       je parle de ça
+    ...
+....
+
+Ici, le `open` dont il est question est un syscall, dont il faut consulter la manpage avec `man 2 open` (à ne pas confondre avec `man 1 open`).
+
+À l'inverse, `fclose` est une fonction de la glibc qu'on consulte avec `man 3 fclose`, à ne pas confondre avec le syscall `close` qui serait dans la section 2.
+
+== Quelques commandes utiles
+
+D'abord : `man man`. Et aussi :
+
+=== connaître le contenu d'une section donnée
+
+[source,bash]
+----
+man 3 intro
+Section  3  of the manual describes all library functions excluding the library functions
+(system call wrappers) described in Section 2, which implement system calls.
+(...)
+----
+
+=== voir s'il existe plusieurs manpages pour quelque chose
+
+[source,bash]
+----
+# manpages titrées "exit" + leur section et description :
+man -f exit
+exit (2)             - terminate the calling process
+exit (3)             - cause normal process termination
+----
+
+=== trouver les manpages qui peuvent m'aider sur un sujet
+
+[source,bash]
+----
+# manpages dont le titre ou la description matche la regex
+man -k '(postgresql|pg_)'
+(...)
+oid2name (1)         - resolve OIDs and file nodes in a PostgreSQL data directory
+pg_archivecleanup (1) - clean up PostgreSQL WAL archive files
+(...)
+----
+
+Et une dernière pour la route : les manpages sont formatées https://fr.wikipedia.org/wiki/Roff[en roff], cf. `man 1 groff`, (et http://man7.org/linux/man-pages/man7/roff.7.html[man 7 roff] ?), et sont stockées gzippées dans `/usr/share/man/`.

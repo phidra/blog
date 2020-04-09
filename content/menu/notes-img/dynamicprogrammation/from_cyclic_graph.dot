@@ -1,0 +1,7 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph G {
+    A -> B -> C;
+    C:n -> A:n;
+  {rank=same; A; B; C;}
+}
+

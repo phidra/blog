@@ -1,0 +1,645 @@
+---
+title: "Articles, talks, blogposts, et autres liens"
+date: 2020-02-18T12:38:15+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: 
+:toclevels: 1
+:imagesdir: ../notes-img
+= Articles, talks, blogposts, et autres liens
+
++++ <details open><summary> +++
+Liste des liens
++++ </summary><div> +++
+
+toc::[]
+
++++ </div></details> +++
+
+== Pourquoi cette page
+
+Je croise souvent des articles/vidéos/posts/etc. dont j'ai envie de garder quelque chose. Jusqu'ici, ma façon canonique de le faire était d'en "extraire" la connaissance. Par exemple, si je regarde une <<video-sur-P-egal-NP,intéressante vidéo sur les problèmes P-difficiles et NP-difficiles>>, je vais ajouter ce que j'en retiens à ma base de notes sur le sujet, c'est à dire au fichier `notes/complexity.otl`, éventuellement en ajoutant le lien vers la vidéo en référence. Je prends ces notes (et d'autres) en utilisant https://www.vim.org/scripts/script.php?script_id=3515[vim-outliner] : en plus de les visualiser efficacement, le format est text-only, donc efficace, et facile à grepper.
+
+Je veux tester sur cette page une autre façon de prendre des notes, probablement complémentaire du process que je suivais jusqu'ici : j'empile en vrac les liens vers les références intéressantes, assorties de quelques notes assez brutes. Cette pile n'a pas vocation à être structurée, elle est simplement triée par ordre de lecture.
+
+=== Ce que j'en attends
+
+* déjà, ça me permet de les partager plus simplement que l'arborescence de répertoires qu'est devenu mon projet `notes`.
+* le côté déstructuré, associé au fait que les notes peuvent être minimales (quelques point à retenir), voire inexistantes (la simple présence du lien étant le signe que j'ai eu envie de pérenniser l'article) rendront mon process certes moins poussé, mais plus simple, puisque je n'ai pas besoin d'extraire et de structurer la connaissance pour la pérenniser.
+* pour autant, il me reste possible de prendre des notes un peu plus touffues (e.g. <<liens-avec-des-notes-un-peu-touffues,ici>>), que je pourrais facilement convertir en notes structurées otl, ou en post.
+* même si la source reste textuelle (asciidoctor), le rendu HTML me permet des choses impossibles en textuel simple, à commencer par le formatage du code.
+
+La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inclure que des références consultées et terminées : pas de "à lire" ou "à finir de visionner".
+
+*Attention* : ces notes sont prises avec *ma* vision des choses. Notamment, au sein d'un article, je ne prends pas de notes sur ce pour quoi j'estime ne pas avoir besoin de rappel/notes, ou sur ce qui n'éveille pas mon intérêt. Du coup, ne prenez pas ces notes comme des TL;DR des articles référencés.
+
+Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
+
+== [POST] https://robertheaton.com/2020/04/06/systems-design-for-advanced-beginners/[Systems design for Advanced Beginners]
+
+=== Lu le 2020-04-06, publié le 2020-04-06 par https://robertheaton.com/about/[Robert HEATON], dev sécurité à https://stripe.com/fr[Stripe, société de paiement en ligne]
+
+* une revue d'assez haut de system design pour une application web. Quelques points intéressants en vrac :
+** webhooks = endpoints chez les clients qu'on appelle quand on veut les avertir de quelque chose (e.g. gitlab peut appeler un webhook lorsqu'il se passe un évènement intéressant, comme un push)
+** database sharding + comment migrer
+** database replication (asynchrone vs. synchrone)
+** elasticssearch pour le full text search
+** pubsub
+
+== [POST] https://dropbox.tech/application/our-journey-to-type-checking-4-million-lines-of-python[Our journey to type checking 4 million lines of Python]
+
+=== Lu le 2020-04-01, publié le 2019-09-05 sur https://dropbox.tech/[le blog tech de Dropbox], utilisateur massif de pythonn par https://twitter.com/jukkaleh?lang=fr[Jukka LEHTOSALO], auteur initial et maintenant lead dev de mypy.
+
+* L'intéressante histoire de mypy racontée par son créateur.
+* On suit l'outil depuis ses débuts sur un langage de recherche (Alore) jusqu'à python, en passant par la rencontre avec Guido VAN ROSSUM, https://www.python.org/dev/peps/pep-0484/[la standardisation du type-hinting] l'adoption massive au sein de Dropbox, et les résolutions des problèmes liées aux performances.
+* Au final, au sein de Dropbox, 4 millions de LOC sont type-checkées.
+* Un REX intéressant est la façon dont ils ont atteint ce chiffre, en cumulant plusieurs stratégies :
+** forcer les type-annotations pour les nouveaux fichiers de code
+** produire toutes les semaines un rapport sur la couverture de code
+** sensibilisation des équipes
+** prendre le retour des utilisateurs
+** améliorer les perfs pour faciliter l'adoption
+** ajouter des outils pour les IDE populaires
+** outils d'analyse statique
+** https://www.python.org/dev/peps/pep-0561/[stub-files] pour des librairies tierces
+* L'une des difficultés a été la gestion des imports cycliques.
+
+== [VIDEO] https://youtu.be/OQ5jsbhAv_M[19. Dynamic Programming I: Fibonacci, Shortest Paths]
+
+=== Visionnée le 2020-04-01, publiée le 2013-01-14 sur https://www.youtube.com/channel/UCEBb1b_L6zDS3xTUrIALZOw[la chaîne MIT OpenCourseWare], présenté par https://en.wikipedia.org/wiki/Erik_Demaine[Erik DEMAINE], qui a l'air d'être une star (entre autre : licence à 14 ans, professeur au MIT à 20 ans). La vidéo fait partie de la série de cours https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/[Introduction to Algorithms].
+
+==== Principe
+
+* programmation dynamique (= dynamic programming = DP) = explorer exhaustivement et récursivement toutes les solutions + memoization
+* exemple très didactique qui sert de fil-rouge : calcul du n-ième terme de la suite de Fibonacci
+* la DP est utile lorsqu'on cherche à résoudre un problème d'optimisation : trouver le min, le max, le "plus court", etc.
+* principe = découper le problème en sous-problèmes qui aident à résoudre le problème principal -> l'un des challenges de la DP c'est d'identifier les sous-problèmes
+* les sous-problèmes peuvent être d'une nature DIFFÉRENTE du problème initial (même si ce n'est pas le cas pour le fil rouge, où les sous-problèmes sont identiques au problème principal)
+* memoization = lorsqu'on a déjà résolu l'un des sous-problèmes, on n'a plus besoin de le refaire (tiens, j'apprends l'origine du terme : "memoize something" c'est "le transformer en memo")
+* terminologie : à l'époque, le terme "programmation" signifie "ordonnancement" -> DP = ordonnancement dynamique
+
+==== Approche top-down vs. bottom-up
+
+Deux façons d'approcher un problème en programmation dynamique :
+
+* *TOP-DOWN* : on part du problème final, et on le décompose récursivement en les sous-problèmes. Cette approche correspond au problème, mais il faut réfléchir un peu pour savoir ce qui est memoizé.
+** Exemple du fil rouge : quand on visualise l'arbre binaire des Fn, on part du top (le calcul de `F(n)`) et on descend, en calculant les termes suivants (`F(n-1)`, `F(n-2)`) pour finir par les racines (`F0`, `F1`) :
++
+.Approche top-down
+image::dynamicprogrammation/fibonacci_binary_tree_topdown.svg[role="text-center"]
++
+[source,python]
+----
+def fib(n: int) -> int:
+    if n == 0:
+        return 0
+    if n == 1:
+        return 1
+    if n not in memo:
+        # on part de fib(n) et on "descend" l'arbre vers fib(n-1) et fib(n-2) :
+        memo[n] = fib(n-2) + fib(n-1)
+    return memo[n]
+----
++
+* *BOTTOM-UP* : en partant de zéro, on construit ce dont on aura besoin, en terminant par le problème final. Exemple du fil rouge : quand on visualise l'arbre binaire des Fn, on calcule successivemnt tous les termes en partant du bas de l'arbre (`F(0)`, `F(1)`, ...) pour finir par exprimer la solution au problème final en utilisant les éléments calculés jusque-là.
+** Dans le diagramme suivant, seuls les noeuds coloriés en rose sont effectivement calculés et mémoizés : les autres noeuds ont _déjà_ été calclés, et sont donc simplement récupérés dans le mémo.
++
+.Approche bottom-up
+image::dynamicprogrammation/fibonacci_binary_tree_bottomup.svg[role="text-center"]
++
+[source,python]
+----
+def fib(n: int) -> int:
+    memo = dict()
+    # on itère sur tous les sous-problèmes en commençant par le "bottom" de l'arbre
+    for i in range(n):
+        if i == 0:
+            memo[i] = 0
+        elif i == 1:
+            memo[i] = 1
+        else:
+            memo[i] = memo[i-2] + memo[i-1]
+    # le problème final s'exprime naturellement en fonction des sous-problèmes résolus jusqu'ici :
+    return memo[n-2] + memo[n-1]
+----
++
+** à noter que l'approche bottom-up est un tri topologique du DAG des sous-problèmes. Pour le fil rouge de Fibonacci, le DAG est simplement chaque Fn qui dépend de Fn-1 et Fn-2 :
++
+.DAG des dépendances pour Fibonacci
+image::dynamicprogrammation/dependencies_dag.svg[role="text-center"]
++
+** par ailleurs, l'approche bottom-up peut parfois permettre d'être plus efficace en espace (e.g. avec le fil rouge fib, dans l'approche bottom-up, on pourrait se contenter de garder les deux dernières valeurs de fib, et jeter les autres)
+
+==== Reste des notes
+
+* autre exemple donné avec le calcul d'un plus court chemin dans un graphe : l'approche par programmation dynamique aboutit à l'algorithme de Bellman-Ford
+* https://en.wikipedia.org/wiki/Dynamic_programming[page wikipedia sur la programmation dynamique] = trois catégorisation d'un problème en fonction des sous-problèmes :
+** doesn't have _optimal substructure_ : on ne peut pas résoudre un problème en résolvant ses sous-problèmes. Exemple = le prix d'un billet d'avion _Paris->Heathrow->New-York_ *N'EST PAS* la somme du prix de _Paris->Heathrow_ et de _Heathrow->New-York_.
+** has _optimal substructure_, et les sous-problèmes sont indépendants : on peut résoudre ces problèmes par une approche https://en.wikipedia.org/wiki/Divide-and-conquer_algorithm[divide and conquer]. Exemple = merge sort.
+** has _optimal substructure_, et les sous-problèmes se recouvrent : on peut résoudre ces problèmes par une approche de programmation dynamique. Exemple = calcul du n-ième terme de la suite de Fibonacci, https://fr.wikipedia.org/wiki/Programmation_dynamique#Pyramide_de_nombres[descente d'une pyramide de nombre maximisant la somme].
+* complexité algorithmique en DP = nombre de sous-problèmes * complexité de chaque sous-problème
+** exemple pour fib : chaque sous-problème a un temps constant (vu que c'est la somme de deux entiers déjà calculés)
+** il y en a N (pour calculer fib(n), il vaut avoir calculé les N-1 fib)
+** --> complexité de l'algo DP pour calculer fib = linéaire
+* pour que la DP soit possible : les dépendances des sous-problèmes doivent être un DAG : s'il y a un cycle, il n'y aura pas d'ordre (tri topologique) selon lequel résoudre les sous-problèmes.
+** une astuce futée pour les calculs dans les graphes (alors même que le graphe lui-même est cyclique !) c'est de les représenter comme évoluant avec le temps. Ainsi, le graphe cyclique suivant :
++
+.Graphe cyclique
+image::dynamicprogrammation/from_cyclic_graph.svg[role="text-center"]
++
+** Pourra être représenté par une série de graphes successifs évoluant avec le temps, ce qui brise les cycles :
++
+.Le même graphe rendu acyclique
+image::dynamicprogrammation/to_acyclic_graph.svg[role="text-center"]
+
+== [ARTICLE] https://robbertkrebbers.nl/research/articles/safe_programming_rust.pdf[Safe Systems Programming in Rust:The Promise and the Challenge]
+
+=== Lu le 2020-03-??, publié le 2020-??-?? (article en cours de soumission) par https://robbertkrebbers.nl/[Robbert KREBBERS] assistant professor in the programming languages group at the department of software technology at Delft University of Technology, ainsi que Ralf JUNG, Jacques-Henri JOURDAN, et Derek DREYER.
+
+* très bon article (très détaillé) sur rust et son borrow checker
+* quelques mots qui ne lui rendent pas justice : pourquoi rust est safe ?
+** Interdit d'avoir de l'aliasing (i.e. deux pointeurs différents qui pointent vers la même zone mémoire) à moins qu'un seul des pointeurs aie les droits d'écriture
+** Borrow checker = seule une référence à la fois a le droit de muter (donc éventuellement détruire ou invalider) un objet
+** Dit autrement, une référence peut autoriser l'aliasing ou la mutabilité mais pas les deux en même temps
+
+== [POST] https://amy.dev/?p=783[My Coding Interview Style]
+
+=== Lu le 2020-03-11, publié le 2017-12-04 par https://amy.dev/[Amy NGUYEN], dev d'API de paiement à https://stripe.com/fr[Stripe, société de paiement en ligne]
+
+* Une revue du sprocess qu'elle suit à chaque fois qu'elle passe un coding interview.
+* L'article est court mais concret, ne pas hésiter à le relire.
+
+== [VIDEO] [[video-sur-P-egal-NP]]https://www.youtube.com/watch?v=YX40hbAHx3s[P vs NP et le zoo de complexité informatique]
+
+=== Visionnée le 2020-03-10, publié le 2014-08-26 par https://www.youtube.com/channel/UCxBws0tpClLXp2Uv2x30OFQ[hackerdashery], un http://www.hackerdashery.com/[blog tech ?]
+
+* Différentes classes de problèmes :
+** *problèmes de classe P* = étant donné un problème, on dispose d'un algo pour le résoudre "facilement", i.e. en trouver la solution.
+*** Exemple concret = trouver le plus court chemin dans un graphe
+** *problèmes de classe NP* = étant donnée une solution supposée, on sait dire "facilement" si c'est bien une solution ou pas.
+*** Exemple concret = si tu me donnes comme problème une grille de départ (incomplète) de Sudoku, et comme solution supposée la même grille remplie, je sais dire facilement si la grille remplie est bien une solution valide de la grille de départ. Pour autant, je n'ai pas d'algo efficace pour trouver une solution à la grille de départ.
+** *problème non-NP* = étant donnée une solution supposée, on ne sait même pas dire "facilement" si c'est bien une solution ou pas.
+*** Exemple concret = si tu me donnes comme problème une situation de jeu d'échecs donnée où il faut que je trouve le meilleur prochain coup, et comme solution supposée un coup X, je ne peux même dire facilement si X est bien le meilleur prochain coup ou non.
+** on sait résoudre "facilement" signifie on peut trouver une solution en un nombre de steps polynomial par rapport à la "taille" du problème
+* question : *est-ce que `P == NP`* ? C'est l'un des https://fr.wikipedia.org/wiki/Probl%C3%A8mes_du_prix_du_mill%C3%A9naire#Probl%C3%A8me_ouvert_P_=_NP[7 problèmes du prix du millénaire], on conjecture sans pouvoir le prouver que `P != NP`
+* à noter que NP contient P : en effet, si on sait déjà trouver la solution à un problème facilement, on saura aussi évaluer si une proposition donnée en est une solution (il suffit de trouver la solution, et de la comparer à la proposition)
+* ce qui nous intéresse, c'est le pire cas, lorsqu'on fait grossir la "taille" du problème :
+** (NP) résoudre un petit sudoku est facile  vs. (P) multiplier deux petits nombres est facile
+** (NP) résoudre un très grand sudoku est impossible  vs.  (P) multiplier deux très grands nombre est certes moins trivial, mais reste facile
+** dit autrement : comment la difficulté du problème évolue lorsque la "taille" du problème augmente ?
+*** "taille" pour la multiplication = p.ex. nombre de digits dans les nombres
+*** "taille" pour le sudoku = p.ex. largeur de la grille
+* il y a BEAUCOUP de classes de complexité :
+** lorsqu'on nous donne une proposition de solution, on ne sait même pas dire si elle est bonne (non-NP, du coup)
+** peut être facile en temps mais pas en espace, et vice versa
+** peut être exponentiel, probabiliste, dépendre d'un ordinateur quantique, etc.
+* un point rigolo : la crypto repose sur le fait que `P != NP` (en effet, étant donné une clé, on sait dire si c'est la clé qui a servi à chiffrer le message ou pas -> NP, mais on ne sait pas trouver facilement la clé -> pas P)
+* Si `P == NP`, ça veut dire que "le fait d'être capable de RECONNAÎTRE une solution à un problème signifie qu'on est aussi capable de la TROUVER à partir de rien)
+* Exemples de problèmes NP-difficiles = voyageur de commerce, problème du sac-à-dos, etc.
+
+[quote,'https://fr.wikipedia.org/wiki/Probl%C3%A8me_NP-complet[Problème NP-complet sur wikipedia]']
+____
+En pratique, les informaticiens et les développeurs sont souvent confrontés à des problèmes NP-complets.
+
+Dans ce cas, savoir que le problème sur lequel on travaille est NP-complet est une indication du fait que le problème est difficile à résoudre, donc qu'il vaut mieux chercher des solutions approchées en utilisant des algorithmes d'approximation ou utiliser des heuristiques pour trouver des solutions exactes. 
+____
+
+
+
+== [ARTICLE] http://www.stroustrup.com/resource-model.pdf[A brief introduction to C++’s model for type- and resource-safety]
+
+=== Lu le 2020-03-08, publié le 2015-12-?? par Bjarne STROUSTRUP (Morgan Stanley), Herb SUTTER (Microsoft), Gabriel DOS REIS (Microsoft aussi, a participé au dévelopemment des modules)
+
+
+* propositions pour plus de type-safety et resource-safety (= non-leaking resource management), contraintes = zero-overhead principle + rétrocompatible
++
+____
+We say that a program is memory safe if every allocated object is deallocated (once only) and no access is done through a pointer (or reference, iterator, or other non-owning indirection) to an object that has been deleted or gone out of scope (and thus technically isn’t an object any more – just a bag of bits). 
+
+To be type safe, we need memory safety so that an object cannot be accessed through a dangling pointer
+
++[...]+
+
+Furthermore, to be perfectly type safe, a program must be free of range errors (access beyond the end of an array), free of access through the null pointer, etc. 
+____
++
+* TL;DR : suggestions =
+** type system avec une abstraction pour l'ownership
+** lib de support (GSL)
+** analyse statique pour enforce les rules
+* revue rapide des erreurs liées à la mémoire :
+** resource leak (= si un objet n'est pas détruit)
+** accesss through an invalid pointer
+** memory corruption (= on peut écrire des données d'un type T1 sur une zone mémoire qui est d'un type T2 -> on corrompt T2)
+** confusion statique (pas besoin de delete) / dynamique (besoin de delete)
+** use after free / out of range access / null pointer
+* Non-retenu = modèle dynamique :
+** what = bit encodant l'ownership dans les LSB de l'adresse pointée par le pointeur
+** deux pointeurs "identiques" peuvent être owner ou non-owner :
+*** si on a obtenu le pointeur par new, le pointeur est owner, sinon, le pointeur est non-owner
+*** si un owner pointeur goes out of scope (ou est overwritten), on delete la zone mémoire
+*** on peut se transmettre l'ownership
+** (du peu que j'en connais, ça ressemble au borrowing de rust ?)
+** non-retenu car :
+*** augmente la taille mémoire du pointeur (ou bien utilise des bits "cachés" qui dépendent de l'alignement)
+*** augmente la complexité de manipulation des adresses mémoires (e.g. arithmétique des pointeurs)
+*** pas rétro-compatible
+* Retenu = modèle statique :
+** what = au lieu d'utiliser `T*,` on utiliser `owner<T*>` pour marquer l'ownership
+** pour rester ABI-compatible, `owner<T*>` est un alias vers `T*` (c'est ça qui est fourni par GSL)
+** ce marquage par owner NE FAIT RIEN, il permet surtout l'analyse statique
+** recommandation = quand c'est possible, utiliser plutôt les classes d'ownership (i.e. les resource-handlers) faîtes pour ça (e.g. vector, unique_ptr)
+** c'est pas rose non plus, il y a des limitations
+
+== [POST] https://stackoverflow.blog/2020/03/05/a-modern-hello-world-program-needs-more-than-just-code/[A modern ‘Hello, World’ program needs more than just code]
+
+=== Lu le 2020-03-06, publié le 2020-03-05 par Charles R. MARTIN, sur https://stackoverflow.blog[le blog de StackOverflow]
+
+* le point principal de l'article, c'est que `Hello world` ne sert pas à réussir à afficher une chaîne à l'écran, mais à bootstrapper un projet :
+** créer le code source dans un fichier quelque part
+** le compiler/linker
+** l'exécuter
+** trouver où il a produit sa sortie
+* de nos jours, un `Hello world` adapté est donc plutôt :
+** disposer du repo et savoir commiter/pusher
+** avoir choisi son IDE/ses outils
+** savoir builder le process
+
+== [ARTICLE] https://www.research.ed.ac.uk/portal/files/78829292/low_cost_deterministic_C_exceptions_for_embedded_systems.pdf[Low-Cost Deterministic C++ Exceptions for Embedded Systems]
+
+=== Lu le 2020-03-04, publié le 2019-??-?? par James RENWICK, Tom SPINK et Björn FRANKE, chercheurs de l'université d'Edinburgh.
+
+* implémentation actuelle des exceptions = gratuit si pas de throw, mais coûteux si throw
+* mais surtout : gros volumes de binaires + imprédictibilité de l'utilisation des ressources
+* en embarqué :
++
+____
+for use in embedded systems, where binary size and determinism are often as, if not more, important than overall execution time
+____
++
+* suggestion = `status` (throw ou pas) stocké sur la stack, et le mécanisme d'exception maintient le statut
+* en assembleur, les fonctions retournent classiquement, puis on vérifie si le `status` est exceptionnel (et si oui, goto le catch handler)
+* le throw est équivalent à un set du `status` + return
+* à la différence de l'implémentation standard des exceptions, la proposition a un petit coût au runtime (même en l'absence de throw) à cause du check du `status` systématique après un call
+
+
+== [SITE] https://benchmarksgame-team.pages.debian.net/benchmarksgame/[The Computer Language Benchmarks Game]
+
+=== Lu le 2020-02-26, publié le ????-??-?? par Debian
+
+* des résultats de benchmarks sur divers programmes (mandelbrot, binary-trees, digits de pi, etc.), systématiquement sourcés, pour les langages principaux
+* pour chaque langage, il y a des comparaisons avec d'autres langages, https://benchmarksgame-team.pages.debian.net/benchmarksgame/fastest/go-gpp.html[e.g. go vs C{plus}{plus}]
+
+== [VIDEO] https://www.youtube.com/watch?v=3Lrmi5NOdxU[L'API Management : au-delà des promesses]
+
+=== Vidéo vue le 2020-02-26, publié le 2020-02-03 par Adrien GRAUX & Daniel SABIN dans le cadre de https://www.laduckconf.com/[la DuckConf], conférence tech d'OCTO
+
+* TL;DR : attention, tout n'est pas rose avec les API managers, surtout si on sort des cas bateaux
+* notamment pour la sécurité, on se retrouve à coder des choses soi-même
+* mais également pour le monitoring (ils se retrouve à brancher du ElasticSearch + kibana sur les logs de la gateway)
+* ou le portail développeur (ils se retrouvent à le recoder pour avoir qqch de différenciant)
+* point de vigilance = l'organisation des équipes et des modèles pour scaler et industrialiser la consommation d'API
+* organisation suggérée = squad API : une équipe transverse maintient le tool, et chaque équipe est autonome dans sa publication d'API
+
+
+== [POST] https://cor3ntin.github.io/posts/abi/[The Day The Standard Library Died]
+
+=== Lu le 2020-02-25, publié le 2020-02-24 sur https://cor3ntin.github.io/, le blog de https://www.linkedin.com/in/corentin-jabot-190b9749/[Corentin JABOT], dev C++ bordelais.
+
+* TL;DR : un point de vue intéressant mais pessimiste sur la décision du comité C++ de ne pas casser l'ABI-compatibility dans un futur proche.
+* le comité à choisi de ne pas casser l'ABI du C++ dans C++23, mais dans un futur non déterminé
+* pourtant, casser l'ABI a des avantages, parmi lesquels rendre les conteneurs associatifs plus efficaces.
+* mais surtout : le fait de NE PAS casser l'ABI a des inconvénients : lourd en terme de design, rend les futurs modules moins intéressants, empêche de meilleurs implémentations des exceptions, etc.
+* problème : si on refuse de le faire maintenant, rien ne dit que ce sera plus facile plus tard !
+* pose une question importante : _What is C++ and what is the standard library?_. Si on répond _performance_, _zero-cost abstractions_ ou  _don’t pay for what you don’t use_, on ne PEUT PAS répondre en même temps "ABI stability".
+* extrait : _No you shouldn’t link against apt-installed c++ system libraries (which are intended for the system)_
+* extrait : _The estimated performance loss due to our unwillingness to break ABI is estimated to be 5-10%_ -> du coup, pas mal d'initiatives pour shunter la lib standard : EASTL, folly, abseil, ...
+* parmi d'autres non annotées ici, une proposition intéressante (mais pas possible en pratique car ajoute une indirection + oblige la heap-allocation) est : _One solution to some ABI issues could be to access the data of a type trough a pointer such that the layout of a type would only be that pointer. This corresponds roughly to the PIMPL idiom which is used extensively in Qt for ABI reasons._
+* extrait : _Many believe that the committee could simply not make that decision because implementers would simply ignore the committee._
+
+
+== [POST] https://danluu.com/monorepo/[Advantages of monorepos]
+
+=== Lu le 2020-02-26, publié le 2009-07-19 par https://github.com/danluu[Dan LUU], qui fait de la vulgarisation informatique sur des sujets assez bas-niveaux
+
+* l'article liste les intérêts du monorepo (sans revenir particulièrement sur les inconvénients)
+* le plus gros avantage (qui revient quasiment pour tous les points, même s'ils sont censés adresser des questions différentes) : ça simplifie la gestion des dépendances :
+** With multiple repos, you need to have some way of specifying and versioning dependencies between them.
+** With a monorepo, it's easy to have one universal version number for all projects. 
+** Using a monorepo where HEAD always points to a consistent and valid version removes the problem of tracking multiple repo versions entirely.
+* l'organisation des fichiers / répertoires n'est plus dictée par les contraintes liées au fait d'avoir plusieurs repos : on organise les choses comme on veut.
+* tooling plus simple : analyse statique, tests d'intégration, grep du code, etc : tout ça est plus facile si tout est dans un seul repo.
+* les modifs qui auraient impacté plusieurs repos sont plus facile : with a monorepo, you just refactor the API and all of its callers in one commit.
+* analogie avec la transition [svn->git] :
+** svn (=un commit modifie un fichier) -> git (=un commit modifie plusieurs fichiers)
+** monorepo (= un commit modifie un repo) -> multirepo (= un commit modifie plusieurs repos)
+* modèle utilisé par des grands donc solide : Google, Facebook, Twitter, Digital Ocean, and Etsy
+
+== [SITE] https://yosefk.com/c++fqa/fqa.html[C{plus}{plus} Frequently Questioned Answers]
+
+=== Lu le 2020-02-24, publié le 20??-??-?? par https://yosefk.com/[Yossi KREININ], dev plutôt bas-niveau (hardware / compilers) dans le domaine de la sécurité, et des voitures autonomes.
+
+* La première partie est une revue détaillée très intéressante (quoique très biaisée) des défauts du C++, les critiques sont argumentées et souvent avec des exemples.
+* Derrière, il donne des liens (pour mieux les critiquer ^^) vers les items pertinents de la FAQ lite.
+* Il a même https://yosefk.com/c++fqa/fqa.html#fqa-web-vs-fqa[une section consacrée aux points qu'il avance qui ont été invalidés].
+
+
+== [POST] https://hakibenita.com/fast-load-data-python-postgresql[Fastest Way to Load Data Into PostgreSQL Using Python]
+
+=== Lu le 2020-02-24, publié le 2009-07-19 par https://hakibenita.com/pages/about[Haki BENITA], pythonista intéressé par webdev, databases et perfs, auteur de quelques articles sur https://realpython.com/team/hbenita/[realpython]
+
+* *à retenir* = pour peupler une DB postgres avec beaucoup de données, utiliser `COPY FROM` sur un fichier CSV (éventuellement, en RAM avec `StringIO`)
++
+[quote, 'https://www.postgresql.org/docs/12/populate.html[doc postgres on populating a database]']
+If you are loading a freshly created table, the fastest method is to create the table, bulk load the table's data using COPY, then create any indexes needed for the table.
++
+
+* tooling sympa (indépendant de la problématique de l'article) :
+** une API de test rigolote https://punkapi.com/documentation/v2[pour requêter des bières] (usage : `curl https://api.punkapi.com/v2/beers/`)
+** `time.perf_counter()` est https://docs.python.org/3/library/time.html#time.perf_counter[plus adapté aux mesures de perfs que `time.time()`]
+** package https://pypi.org/project/memory-profiler/[memory-profiler] = pour profiler l'utilisation de la mémoire par une fonction, ligne par ligne
+* problématique = méthode la plus rapide + la moins consommatrice de RAM pour peupler une DB postgres avec beaucoup de données ?
+* très lent (~ 2 minutes) = insérer les données ligne par ligne est très lent
+* rapide (~ 2 à 4 secondes) = insérer en batch, cf. psycopg2 `execute_batch` / `execute_values`
+* très rapide (~ 0.5 secondes) = remplir un fichier CSV (en RAM avec StringIO), et utiliser un copy-from à partir de ça
+* et pour ne pas avoir à charger toutes les données en RAM, il créée un iterator custom sur ses données, qui présente l'interface d'un StringIO
+
+== [POST] https://www.joelonsoftware.com/2003/10/13/13/[Exceptions]
+
+=== Lu le 2020-02-22, publié le 2003-10-13 par https://www.joelonsoftware.com/[Joël SPOLSKY], dev Microsoft sur Excel, co-créateur de stackoverflow avec Jeff ATWOOD, créateur de Trello, ...
+
+* Son avis sur les exceptions :
+** en pratique, ce sont des goto (i.e. jump vers un endroit arbitraire du code)
+** et même encore pire que goto : pas immédiatement visible dans le code-source + il y en a beaucoup au sein d'une même fonction
+* Sa politique :
+** ne jamais lancer d'exceptions
+** si on doit utiliser du code qui peut throw, catcher *dès la ligne d'appel* même si c'est verbeux
+* Le problème auquel répondent les exceptions = retourner DEUX return-values (la "vraie" return-value, et l'error-status) là où le langage n'en permet qu'un.
+* Il préfère retourner explicitement l'error-status (et donc passer un paramètre `T& out` en argument pour stocker la vraie return-value) *même si c'est BEAUCOUP plus verbeux*
+
+== [POST] https://blog.octo.com/reussir-la-developer-experience-de-son-api-web/[Réussir la Developer eXperience de son API web]
+
+=== Lu le 2020-02-18, publié le 2020-02-18 par https://blog.octo.com[Octo]
+
+* *TL;DR* : bonnes pratiques à suivre lorsqu'on ouvre ses APIs aux développeurs extérieurs
+* conception : faire rapidement des tests avec de vrais clients (éventuellement, POC-és)
+* *TTFAC* = time to first API call = est-ce compliqué de bootstraper ce qui faut pour appeler l'API ? (s'il faut se farcier une doc de 30 pages : oui !)
+* *DX* = Developer eXperience (à corréler à UX = User eXperience)
+* génération automatique de la doc : alternatives au très populaire swagger = https://apiblueprint.org/documentation/tutorial.html[API Blueprint] et https://raml.org/[RAML].
+* points bonus : portail dev / sandbox / illustration (= exemples concrets) / SDK / assistance / communication
+
+== [POST] https://blog.octo.com/designer-une-api-rest/[Designer une API REST]
+
+=== Lu le 2020-02-18, publié le 2014-12-01 par https://blog.octo.com[Octo]
+
+* affordance = capacité d'une API à suggérer son utilisation, pour limiter le besoin de recourir à la doc
+* il ne doit y avoir qu'une seule façon de faire les choses
+* suggestion = limiter les domaines à 3 :
+** `api.fakecompany.com` = les appels à l'API
+** `oauth2.fakecompany.com` = récupération d'un token pour utiliser l'API
+** `dev.fakecompany.com` = portail develop de l'API
+* distinguer case de l'URL et case du contenu (et au passage, je connaissais pas le nom de spinal-case=lisp-case)
+* versioning = dans l'URL, assez tôt, et doit être explicitement passé par les clients (pas de default-version)
+* réponse partielle = précisesr dans l'URL les champs qui nous intéressent (NdM : et GraphQL alors ?!)
+* pagination = à prévoir dès le début : query params + headers Content-Range et Accept-Ranges
+* lien vers "le reste" = https://tools.ietf.org/html/rfc5988[RFC5988] (NdM : HATEOAS) + https://developer.github.com/v3/#pagination[exemple de comment github fait]
+* combinaison de pagination, filtre, tri
+* recherche = ressource à part entière
+* exception (qui doit rester exceptionnelle !) à la règle ressource=nom plutôt que verbe -> non-ressource API (= service) -> verbe. (e.g. un service "convert")
+* erreur : renvoyer 1. short description 2. long description 3. URI vers la doc de l'erreur
+
+== [POST] https://anaxi.com/blog/2019/02/20/how-to-make-other-developers-hate-to-work-with-you/[How to Make Other Developers Hate to Work with You]
+
+=== Lu le 2020-02-18, publié le 2019-02-20 par https://anaxi.com/[Anaxi], tool de gestion de projet SAAS ?
+
+* focus sur les défauts des développeurs, classés du plus impactant au moins impactant.
+* *arrogance* : "as long as you take responsibility for and learn from your mistakes, you're not a bad developer"
+* *sloppiness in the work delivered* : beaucoup de choses ici, mais en gros : ne pas prendre le temps de faire les choses bien
+* *non-respect du temps des autres personnes* : arriver en retard aux réunions, interrompre ses collègues, etc.
+* *négativité* : toujours râler et critiquer, de façon non-constructive
+* *avarice* : tirer la couverture à soi sur le travail réalisé
+* *disregard for the team* : ignorer la big picture et les responsabilités des autres membres de l'équipe
+* *lack of focus* : ignorer la big picture et se disperser
+* *lack of accountability* : chercher des excuses au lieu de chercher des solutions
+
+== [POST] https://blog.feabhas.com/2014/03/demystifying-c-lambdas/[Demystifying C++ lambdas]
+
+=== Lu le 2020-01-??, publié le 2014-03-07 par https://blog.feabhas.com/author/glennan/[Glennan CARNIE], dev embarqué expérimenté
+
+* Quel est l'intérêt de `std::function` ?
+* Il existe plusieurs types de callables :
++
+1. pointeur de fonction
+2. foncteur (= classe implémentant `operator()` )
+3. pointeur de fonction membre
+4. lambda
+5. https://en.cppreference.com/w/cpp/utility/functional/bind[bind-expression]
++
+* Comme ces objets sont différents, ils ont un type différent, et ça m'embête si je veux par exemple coder l'application d'un `processor` à tous les éléments d'un container de callables :
++
+[source,cpp]
+----
+void apply(Container& container, WhichTypeShouldIUse& processor) { ... }
+----
++
+* Quel type utiliser à la place de `WhichTypeShouldIUse` ci-dessus ? `std::function` est conçu pour ça, et peut https://en.cppreference.com/w/cpp/utility/functional/function[représenter tout type de callable] :
++
+[source,cpp]
+----
+void apply(Container& container, std::function<void(int)>& processor) { ... }
+----
+
+== [STACKOVERFLOW] https://stackoverflow.com/questions/7586939/is-int-safe-to-read-from-multiple-threads/7587008#7587008[Is int safe to read from multiple threads?]
+
+=== Lu le 2020-01-??, publié le 2011-09-28 par http://adamrosenfield.com/blog/about/[Adam ROSENFIELD], contributeur hyperactif de stackoverflow, dev amazon.
+
+* l'une des utilisations du keyword `volatile` est de forcer le CPU à lire la valeur en mémoire sans la cacher, ce qui peut-être utile dans un contexte multithreadé.
+* attention toutefois, même en l'absence d'optimisation, https://en.cppreference.com/w/cpp/language/cv[il se peut qu'il reste d'autres problèmes, de reordering] :
+
+[quote,'https://en.cppreference.com/w/cpp/language/cv[cppreference]']
+____
+This makes volatile objects suitable for communication with a signal handler, but not with another thread of execution, see std::memory_order).
+____
+
+== [POST] https://manybutfinite.com/post/motherboard-chipsets-memory-map/[Motherboard Chipsets and the Memory Map]
+
+=== Lu le 2020-01-??, publié le 2008-06-04 par https://manybutfinite.com/about/[manybutfinite], blog tech
+
+* CPU communique avec le monde extérieur via ses pins
++
+[quote]
+____
+In a motherboard the CPU's gateway to the world is the front-side bus connecting it to the northbridge. Whenever the CPU needs to read or write memory it does so via this bus. It uses some pins to transmit the physical memory address it wants to write or read, while other pins send the value to be written or receive the value being read.
+____
++
+* les adresses vues par le CPU sont divisées en portions, dont certaines ne mappent même pas vers la RAM, mais plutôt vers des memory-mapped IO devices
+* le CPU n'a pas connaissance des devices à l'autre bout des adresses : pour lui, ce ne sont que des adresses
+* c'est le rôle du Northbridge de mapper les requêtes (en lecture ou écriture) sur une adresse vers d'autres devices que la RAM
+* (les adresses qui mappent sur la RAM sont les adresses physiques (nous, on n'a accès qu'aux adresses logiques, c'est le TLB qui mappe une adresse logique à une adresse phyisque)
+* memory address map
+** associe une plage d'adresses physiques à sa destination : RAM / video card / autre memory-mapped IO device
+** pour la consulter : `sudo cat /proc/iomem`
+** il y a des "trous" dans les plages attribuées à la RAM, pour autre chose : BIOS / video card / carte de périphériques / carte PCI
+
+== [POST] [[liens-avec-des-notes-un-peu-touffues]]https://lexi-lambda.github.io/blog/2019/11/05/parse-don-t-validate/[Parse, don't validate]
+
+=== Lu le 2019-11-??, publié le 2019-11-05 par https://lexi-lambda.github.io/[Alexis KING], webdev spécialiste d'haskell
+
+* quel est le type de retour d'une fonction qui renvoie le premier élément d'une liste de `T` ?
+1. `T` : non, car si la liste est vide, on ne renvoie pas `T`
+2. `Maybe T` ? on renvoie `Just x`, ou `Nothing` si la liste est vide. Inconvénient = le client doit traiter le cas `Nothing`, même quand on est sûr que ça ne peut pas arriver.
+3. on modifie le type d'entrée de la fonction pour n'accepter que des listes NonEmpty
+* le truc cool : l'info _la liste n'est pas vide_ est définie _DANS LE TYPE_ : on a défini une précondition à la fonction, _mais qui est vérifiable statiquement au compile time_
+* différence parse vs. validate :
+** validate = on vérifie la condition à un moment donné, mais on n'en fait rien (plus loin dans le code, elle pourrait redevenir fausse)
+** parse = on vérifie la condition, et on stocke l'info dans un type contraint (le compilo s'assure donc qu'elle ne pourra jamais redevenir fausse)
+* mon exemple concret (pas dans l'article) :
+** *situation n°1* = on représente une couleur avec un `int` :
++
+[source,cpp]
+----
+int parse(const InputFile& f)
+{
+    int value = f.get_value();
+    if (value != 0 || value != 1) { throw std::runtime_error("boum"); }
+    return value;
+}
+int color = parse(input_file);
+// ... some stuff, maybe very long ...
+
+// should I check again that color is in [0,1] ?
+// if no, what happens if color is not in [0,1] anymore ?
+void do_something(Color) { /* something that relies on color being 0 or 1 */ }
+do_something(color);
+----
++
+
+** *situation n°2* = on représente une couleur avec un `enum class Color` :
++
+[source,cpp]
+----
+Color parse(const InputFile& f)
+{
+    int value = f.get_value();
+    if (value == 0) { return Color::RED; }
+    else if (value == 1) { return Color::BLACK; }
+    else { throw std::runtime_error("boum"); }
+}
+Color color = parse(input_file);
+// ... some stuff, maybe very long ...
+
+// no need to check again that color is in [0,1] : it's in the type !
+void do_something(Color) { /* something that relies on color being 0 or 1 */ }
+do_something(color);
+----
++
+
+* dans la situation n°1, il faut re-valider quand on utilise la couleur (danger si on oublie, ou si le code a évolué dans `parse` et qu'on a oublié de mettre à jour `do_something`, etc.). En bref, le compilo _NE RALERA PAS_ si on passe la valeur `42` à `do_something`.
+* dans la situation n°2, la validation a été faite une fois pour toute, et le type system s'assure que `do_something` n'utilisera jamais de valeur invalide
+* parser en amont et utiliser un type contraint (plutôt que valider plus tard) est intéressant, car une fois le parsing fait, on ne manipule plus que des types toujours corrects
+* intérêt du type statique contraint = comme c'est le type qui véhicule l'info, il n'est même pas POSSIBLE d'avoir des valeurs incorrectes
++
+____
+The problem is that validation-based approaches make it extremely difficult or impossible to determine if everything was actually validated up front or if some of those so-called “impossible” cases might actually happen. Parsing avoids this problem by stratifying the program into two phases—parsing and execution—where failure due to invalid input can only happen in the first phase.
+____
++
+
+* shotgun parsing = anti-pattern : le parsing/vérification de validité, est fait "tardivement" (voire au moment du processing), au lieu d'être faite une fois pour toute _en amont_
+* *à retenir* :
+** My advice: focus on the datatypes.
+** Use a data structure that makes illegal states unrepresentable
+** Push the burden of proof upward as far as possible (= parser au plus tôt les inputs en des types qui n'ont pas la possibilité de représenter des valeurs illégales)
+
+
+== [SITE] https://pages.apigee.com/ebook-the-definitive-guide-to-api-management-register.html[The Definitive Guide to API Management]
+
+=== Lu le 2018-07-??, c'est un ebook pour avoir un overview de ce que propose apigee.
+
+* fichier = `apigee-ebook-api-mgmt-2015-07.pdf`		
+* L'outil d'Apigee est :
+** Apigee EDGE API management product
+* API management tool = une solution qui permet :
+** un portail pour développeurs : découvrir, explorer, acheter, tester, s'enregistrer pour utiliser des API
+** une passerelle d'API : sécuriser et gérer le traffic entre les clients et les backends, et plus généralement entre une API et ses utilisateurs
+** un gestionnaire de cycle de vie : gérer la conception, le développement, la publication, le déploiement, et le versioning des API
+** éventuellement, un outil d'analyse d'utilisation des API, orienté business
+** éventuellement, un outil de monetization pour packager, pricer et publier les APIs, et pour faire payer les clients
+
+== [POST] https://blog.eleven-labs.com/fr/presentation-protocol-buffers/[Présentation de Protocol Buffers]
+
+=== Lu le 2018-06-??, publié le 2017-09-20 sur https://blog.eleven-labs.com/[le blog d'Eleven Labs], SSII.
+
+* Protobuf est un système de sérialisation de données (comme json ou XML) binaire.
+** {plus}{plus}{plus} : language-agnostic : on décrit les données dans un fichier .proto, puis un outil (protoc) génère le code de (dé)sérialization pour le langage voulu.
+** {plus}{plus}{plus} : très performant (aussi bien sur la taille de la donnée encodée, que sur la vitesse de (dé)sérialization)
+** --- : message en binaire plus dur à débugger que du json
+** --- : on a une couche de complexité (le fichier proto) en plus
+* (langage-agnostic utile dans une architecture micro-services où chaque service doit communiquer avec d’autres quel que soit le langage)
+
+== [POST] https://evertpot.com/dropbox-post-api/[Dropbox starts using POST, and why this is poor API design]
+
+=== Lu le 2018-05-??, publié le 2015-03-02 par https://evertpot.com/[Evert Pot], un dev web avec un focus sur les APIs et HTTP.
+
+* Utiliser des requêtes GET pour développer des APIs peut-être compliqué :
+** limitation du volume de données qu'on peut transmettre dans une URL
+** mettre des données dans l'URL est moins flexible que dans le body (notamment : json ?)
+* Du coup, dropbox permet le POST là où avant on ne pouvait que le GET.
+* Problème avec POST = non-safe / non-idempotent -> non-cachable (notamment par les proxies).
+* Solutions possibles :
+** Utiliser REPORT (safe + idempotent + body autorisé), verbe défini dans une extension WEBDAV à HTTP.
+** Utiliser GET avec un body : BAD car l'intérêt du GET (caching) est perdu + HTTP dit explicitement que le body n'a pas de sens.
+** (side-note : le gros intérêt de GET, c'est l'adressabilité -> permettre de faire un simple lien vers une ressource est le top !)
+** Décorréler la requête (faite avec POST, donc avec body) et la récupération de la réponse (faite sur une autre URL, récupérée avec GET)
+* Plus de détail sur cette dernière solution :
++
+1. le client fait un POST sur "/queries"  (en passant ce qu'il souhaite dans le body)
+2. le serveur répond à cette requête POST en indiquant dans le header "Content-Location" une URL gettable : p.ex. "/queries/42"
+3. le client fait un GET sur "/queries/42" pour récupérer sa réponse
+
+== [POST] https://blog.philipphauer.de/dont-share-libraries-among-microservices/[Don't Share Libraries among Microservices]
+
+=== Lu le 2018-05-??, publié le 2016-04-17 sur https://phauer.com/[le blog de Philipp HAUER], dev java/kotlin.
+
+* Si des microservices utilisent la même librairie, ils sont couplés.
+** On va les livrer plus souvent, on va avoir plus de bugs.
+** De plus, on va naturellement mettre la librairie à jour moins souvent.
+** Et ça induit des problèmes de dépendances.
+* _“Duplication is better than the wrong abstraction”_
+* Pistes de solutions :
+** accepter d'avoir de la redondance pour rester indépendant
+** sortir la librairie dans un SERVICE partagé (plutôt qu'une lib partagée)
+** refactorer les microservices (ou leur architecture) pour ne plus avoir besoin de partager la librairie
+* contexte au travail : je fais le lien avec lbsserver/lbsdevtool, utilisées par routemm, et qu'on ne maintient jamais...
+
+== [BBL] No estimates
+
+=== Présentation le 2018-12-05, par https://twitter.com/julientopcu?lang=fr[Julien TOPÇU] de la Société Générale
+
+==== Tout un tas de notions vrac pour la culture générale
+
+* Tel ticket = notre référence-unité, on chiffre tous les autres par rapport à ça.
+* Le titre "No Estimates" n'est pas forcément pertinent, c'est plutôt une provocation : en effet, l'idée n'est pas de ne plus estimer les tâches, l'idée est plutôt de lutter contre la tendance qu'on a à tout driver par le chiffrage.
+* Vasco DUARTE = chantre du NoEstimates (https://twitter.com/duarte_vasco)
+* Kent BECK = fondateur de l'extreme programming)
+* Loi de Conway = le design reflète l'organisation de la structure.
+* Loi de Hofstadter = on utilise toujours tout le temps alloué, et même plus (https://fr.wikipedia.org/wiki/Loi_de_Hofstadter)
+* Distinguer deux types de complexité :
+** essentielle = dûe au métier, qui est complexe (impossible de la réduire sans modifier le métier)
+** accidentelle = dûe à d'autres choses (e.g. dette technique), qu'on peut réduire en faisant autrement
+
+==== Le NoEstimates
+
+* Même en NoEstimates, le besoin reste le même = visibilité + aide à la décision
+* L'idée principale, c'est de calculer des métriques (cycle time, vélocité) en s'aidant du passé, puis de faire de l'analyse statistique dessus pour en déduire une probabilité raisonnable sur la réalisation d'un périmètre fonctionnel
+* Un point important (qui disqualifie probablement la méthode pour notre équipe), c'est la STABILITÉ de notre cycle-time et de nos métriques.
+* Cependant, je retiens un conseil réalisable en pratique :
+** on se fixe une taille de référence en pratique pour une tâche (e.g. 4 jours, dont 2 de dev, et le reste en review/release)
+** en sprint planning, l'objectif est de n'avoir des story QUE de cette taille de référence
+** les stories plus petites sont mergées pour atteindre 4
+** les stories plus grandes sont splittées pour atteindre 4
+** avantage = plus de visibilité sur les stories
+** inconvénient = pas forcément facile (et parfois long et coûteux) de découper pour atteindre la taille souhaitée
