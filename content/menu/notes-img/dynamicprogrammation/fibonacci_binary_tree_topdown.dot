@@ -1,0 +1,47 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+graph G {
+    edge [penwidth=2];
+
+    starthere -- Fn [dir=forward,color=red,penwidth=1];
+
+    Fn -- Fn_1;
+    Fn -- Fn_2;
+    thenhere -- Fn_1 [dir=forward,color=red,penwidth=1];
+    Fn_1 -- Fn_2bis;
+    Fn_1 -- Fn_3;
+    Fn_2 -- Fn_3bis;
+    Fn_2 -- Fn_4;
+
+    edge [penwidth=1];
+    Fn_2bis -- dots1;
+    Fn_2bis -- dots2;
+    Fn_3 -- dots3;
+    Fn_3 -- dots4;
+    Fn_3bis -- dots5;
+    Fn_3bis -- dots6;
+    Fn_4 -- dots7;
+    Fn_4 -- dots8;
+
+    // force order + balance each level :
+    {rank=same; starthere; Fn;}
+    {rank=same; thenhere; Fn_1; Fn_2;}
+    {rank=same; Fn_2bis; Fn_3; Fn_3bis; Fn_4;}
+    {rank=same; dots1; dots2; dots3; dots4; dots5; dots6; dots7; dots8;}
+    edge [style=invisible];
+    Fn_1 -- Fn_2;
+    Fn_2bis -- Fn_3;
+    Fn_3bis -- Fn_4;
+    dots1 -- dots2 -- dots3 -- dots4 -- dots5 -- dots6 -- dots7 -- dots8;
+
+    Fn      [label="F(n)"];
+    Fn_1    [label="F(n-1)"];
+    Fn_2    [label="F(n-2)"];
+    Fn_2bis [label="F(n-2)"];
+    Fn_3    [label="F(n-3)"];
+    Fn_3bis [label="F(n-3)"];
+    Fn_4    [label="F(n-4)"];
+
+    dots1, dots2, dots3, dots4, dots5, dots6, dots7, dots8 [label="⋯",shape=plaintext, width=.1, height=.1];
+    starthere [label="start here...",shape=plaintext,width=.1,height=.1,fontcolor=red]
+    thenhere [label="...then here",shape=plaintext,width=.1,height=.1,fontcolor=red]
+}

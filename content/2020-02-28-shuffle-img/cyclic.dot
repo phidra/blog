@@ -1,0 +1,13 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph cyclic {
+	nodesep=0;
+	size="5!";
+	node [shape=record,width=.1,height=.1];  // see Record based nodes
+	N [label = "<A> A |<B> B |<C> C |<D> D |<E> E"];
+	edge [arrowsize=0.7 arrowhead="vee" color="red"];
+	N: A:n -> N: B:n ;
+	N: B:n -> N: C:n;
+	N: C:n -> N: E:n ;
+	N: E:s -> N: D:s ;
+	N: D:s -> N: A:s;
+}

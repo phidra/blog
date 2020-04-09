@@ -1,0 +1,32 @@
+---
+title: "À propos"
+date: 2020-03-16T10:00:00+01:00
+draft: true
+---
+= À propos
+
+== C'est quoi ce blog ?
+
+Je suis Phidra, développeur depuis une douzaine d'années → la majorité des posts devrait concerner des sujets liés de près ou de loin au développement, du C++ (exemple : link:/2020-02-15-make_shared/[make_shared]) et du python (exemple : link:/2020-03-17-packaging-python[packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (exemple : link:/2020-02-28-shuffle/[Sattolo]), des outils (exemple : link:/2020-02-20-man/[man]), voire des sujets liés à la vie de développeur (exemple : link:/2020-03-11-aristotle-project/[projet Aristote]).
+
+== Pourquoi ?
+
+Le fil rouge est : partager en vulgarisant ce que j'ai compris des sujets bloggés. En même temps, c'est le cas de tous les blogs tech, non ?
+
+C'est mon premier blog, donc je vais peut-être taper à côté, mais voici ce que j'en attends à titre perso :
+
+* *Mieux comprendre les sujets bloggés* : présenter les choses "à quelqu'un" et se mettre dans une posture d'expliquant, ça aide à faire émerger les points qui ne sont pas très clairs.
+* *Faciliter ma mémorisation des contenus postés* : par rapport à de simples notes, voire juste à la lecture d'un article, il m'est plus facile de retenir les sujets sur lesquels j'ai rédigé un post.
+* *Avoir des retours/corrections sur les contenus postés* : par exemple https://web.archive.org/web/20140716225227/http://sametmax.com/closure-en-python-et-javascript/[le post initial sur les closures] de feu l'excellent blog de Sam & Max était faux, et c'est un commentaire laissé par un lecteur qui a permis aux auteurs de http://sametmax.com/closure-en-python-et-javascript/[corriger le post].
+** D'ailleurs, un aparté sur l'exactitude de ce que je poste : je blogge en présentant _ma compréhension des sujets abordés_, mais ça ne veut pas dire qu'elle est correcte. Si vous avez bien lu ce qui précède, c'est même l'un des objectifs principaux du blog d'être corrigé lorsque j'ai mal compris un sujet !
+** D'ailleurs (bis), certains posts, très probablement la plupart, ne sont que des redites à ma sauce d'autres posts / articles / références trouvées ici et là sur le net. J'assume, c'est ma façon de m'approprier les sujets, et les points qui précèdent (et suivent !) restent valides.
+* *Bénéficier d'un espace de prise de notes permettant un formatage évolué* : depuis de nombreuses années, j'use et j'abuse au quotidien de https://github.com/vimoutliner/vimoutliner[vim outliner], notamment pour mes notes tech. Ce format texte est parfois limitant, par exemple pour les liens (qui peuvent vite parasiter des notes), l'absence d'image, ou encore la coloration syntaxique du code. De plus, certaines notes prennent la forme d'une aventure, un cheminement que je suis, et le raconter sous la forme d'un ou plusieurs posts me semble plus adapté. J'en suis encore au stade expérimental, et tout n'est pas rose non plus, j'aurais peut-être l'occasion de faire un post pour revenir sur ces sujets.
+* *Garder sous contrôle ma tendance à me disperser*, en me donnant un jalon clair sur des sujets que je voulais explorer : si j'ai posté, j'ai convergé, sinon, j'ai pas vraiment fini.
+
+== Un blog tech... en français ?!
+
+On peut poser légitimement la question : pourquoi faire un blog tech en français, dans un monde où 1. la maîtrise de l'anglais est indispensable, et 2. pour maximiser l'audience, il faut publier en anglais ?
+
+Je pourrais arguer qu'il y a justement énormément de ressources en anglais, alors même qu'il est plus simple pour beaucoup de francophones de consulter une ressource dans leur langue, malgré le point 1.
+
+Mais plus pragmatiquement : je m'exprime mieux, et surtout plus vite en français → c'est plus facile pour moi d'écrire ce blog en français. Comme je ne sais pas trop où cette aventure va me mener ni même si je continuerai à publier régulièrement du contenu dans quelques mois, autant commencer facile.

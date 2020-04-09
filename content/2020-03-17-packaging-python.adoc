@@ -1,0 +1,419 @@
+---
+title: "Packaging python"
+date: 2020-03-17T22:14:41+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+= Packaging python
+
+
+Comme https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/[beaucoup] http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/[d'autres] https://philpep.org/blog/etat-de-l-art-du-packaging-python[avant] https://www.bernat.tech/pep-517-and-python-packaging/[moi], je fais un article sur le packaging python.
+
+Je ne vais pas cependant *PAS* expliquer comment packager son projet (ou pas beaucoup, et ça reste facultatif ^^) : à la place, je vais essayer d'expliquer grossièrement ce dont on parle quand on s'intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j'ai faite moi.
+
+Ce post *n'est donc pas suffisant* pour naviguer comme un poisson dans les eaux du packaging python, l'objectif est plutôt d'en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.
+
+Buckle up.
+
+
+== [.line-through]#Fifty# Two shades of packaging
+
+La mère de toutes les confusions, c'est qu'il existe *DEUX* personnes qui sont intéressées par le packaging python, et elles ont des besoins différents :
+
+. Le *CONSOMMATEUR* du package : prenons un développeur (appelons-le Motoki) qui travaille sur son projet `killerapp`, destiné à révolutionner tous les serveurs de France et de Navarre. `killerapp` a parfois besoin de faire des requêtes HTTP, et le projet dépend donc de la librairie `requests`. Motoki va alors installer `requests` par exemple en lançant :
++
+[source]
+----
+pip install requests
+----
++
+. Le *PRODUCTEUR* du package : prenons un autre développeur (appelons-le https://requests.readthedocs.io/en/master/[Kenneth REITZ]), qui a créé et maintient la librairie `requests`. Pour que sa librairie puisse être utile, Kenneth doit pouvoir la distribuer à d'autres développeurs, et pour ce faire, il pourra commencer par lancer, depuis le répertoire de son projet :
++
+[source]
+----
+pip wheel .
+----
+
+Typiquement, un dev sera bien plus souvent dans la peau de Motoki que dans celle de Kenneth. Pourtant, consommateur et producteur sont les deux facettes d'un même sujet : pour que Motoki puisse installer sa librairie, il a bien fallu que quelqu'un (Kenneth) ait préparé les fichiers d'abord.
+
+Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, `pip`, https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] pour installer les packages python, est utilisé par Motoki comme par Kenneth, alors que leurs besoins n'ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre disponible aux autres développeurs.
+
+Cette même confusion est par exemple entretenue sur https://packaging.python.org/[la page d'accueil du site référent sur la question], qui mentionne à égalité l'installation et la distribution de packages :
+
+[quote,'https://packaging.python.org/[Python Packaging User Guide]']
+____
+Essential tools and concepts for working within the Python development ecosystem are covered in our Tutorials section:
+
+* to learn how to install packages, see ...
+* to learn how to manage dependencies in a version controlled project, see ...
+* to learn how to package and distribute your projects, see ...
+____
+
+
+== C'est marrant les petits bouts de fromage par terre, c'est ça que vous appelez le packaging ?
+
+Maintenant qu'on sait qu'il y a deux facettes au packaging, voyons un peu de quoi on parle.
+
+=== Le packaging vu par Motoki, CONSOMMATEUR de package
+
+Motoki veut que son code puisse utiliser `requests`. Par exemple, il veut pouvoir écrire :
+
+[source,python]
+----
+import requests
+r = requests.get("http://mysuperservice.com/api/")
+----
+
+TL;DR : le packaging, du point de vue de Motoki, ça veut dire :
+
+1. télécharger une archive de code (mieux connue sous le nom de _package_ ^^)
+2. la décompresser
+3. copier le code à un emplacement accessible à python
+
+
++++ <details><summary> +++
+FACULTATIF = plus de détails sur cet "emplacement accessible à python"
++++ </summary><div> +++
+
+La question est : où faut-il copier du code pour qu'il soit utilisable par une ligne du genre `import requests` ?
+
+Le plus souvent, sous Linux, il s'agit du répertoire `site-packages` du virtualenv.
+
+En simplifiant grossièrement, (https://docs.python.org/3/reference/import.html[plus de détails ici]), lorsque python exécute `import requests`, il va rechercher un module nommé `requests` dans https://docs.python.org/3/library/sys.html#sys.path[l'un des chemins du `sys.path`], l'exécuter, et créer un objet représentant le module (contenant notamment la fonction membre `get`, utilisée ci-dessus), accessible par la variable `requests`.
+
+Ce qui m'intéresse ici est le `sys.path` : on facilement regarder ce qu'il y a dedans :
+
+[source]
+----
+python -c 'import sys ; print("\n".join(sys.path))'
+----
+
+Le résultat est variable et dépend notamment de la plate-forme, et de si on utilise un virtualenv ou pas, mais on peut par exemple y trouver :
+
+[source]
+----
+/path/to/virtualenvs/mysupervenv/local/lib/python2.7/site-packages
+/path/to/virtualenvs/mysupervenv/lib/python2.7/site-packages
+----
+
+On peut vérifier que le code qu'on y met est importable par python :
+
+[source,sh]
+----
+cat << EOF > /path/to/virtualenvs/mysupervenv/lib/python2.7/site-packages/salut.py
+
+def coucou_le_monde():
+    print("non, en fait rien")
+
+EOF
+
+python -c "import salut ; salut.coucou_le_monde()"
+# affiche "non, en fait rien"
+----
+
+
++++ </div></details> +++
+
+==== Et l'archive de code téléchargée, elle provient d'où ?
+
+Dans la majorité des cas, de https://pypi.org/[PyPI], un repo public de programmes et librairies python. Par défaut, c'est de PyPI que Motoki obtient `requests`, lorsqu'il fait :
+
+[source]
+----
+pip install requests
+----
+
++++ <details><summary> +++
+FACULTATIF = zoom sur le téléchargement de `requests` depuis PyPI
++++ </summary><div> +++
+
+
+Toujours en simplifiant, `pip install requests` déclenche une belle mécanique qui va regarder les versions disponibles sur https://pypi.org/simple/requests/[la page de requests sur PyPI], télécharger une archive (https://packaging.python.org/glossary/#term-wheel[le fameux wheel]) de la version la plus récente, et la décompresser dans l'un des répertoires présents dans le `sys.path`.
+
+Si on sait ce qu'on y cherche, on peut suivre ce qui se passe dans la sortie de la commande pip :
+
+[source,sh]
+----
+pip install -vvv requests
+
+
+# pip interroge la page de requests sur pypi :
+Collecting requests
+  1 location(s) to search for versions of requests:
+  * https://pypi.org/simple/requests/
+  Getting page https://pypi.org/simple/requests/
+
+# on y trouve les différentes versions de requests, sous forme de liens vers des archives :
+  Analyzing links from page https://pypi.org/simple/requests/
+
+    Found link https://files.pythonhosted.org/packages/ba/bb/dfa0141a32d773c47e4dede1a617c59a23b74dd302e449cf85413fc96bc4/requests-0.2.0.tar.gz#sha256=813202ace4d9301a3c00740c700e012fb9f3f8c73ddcfe02ab558a8df6f175fd (from https://pypi.org/simple/requests/), version: 0.2.0
+    [... une tétrachiée d'autres versions ...]
+    Found link https://files.pythonhosted.org/packages/f5/4f/280162d4bd4d8aad241a21aecff7a6e46891b905a4341e7ab549ebaf7915/requests-2.23.0.tar.gz#sha256=b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6 (from https://pypi.org/simple/requests/) (requires-python:>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*), version: 2.23.0
+
+# comme Motoki n'a pas précisé de version particulière, c'est la plus récente qui est utilisée :
+  Using version 2.23.0 (newest of versions: 0.2.0, [... une tétrachiée d'autres versions ...] , 2.22.0, 2.23.0)
+
+# pip télécharge l'archive adéquate, et la décompresse :
+  Created temporary directory: /tmp/pip-unpack-AoA2ag
+  Downloading https://files.pythonhosted.org/packages/1a/70/1935c770cb3be6e3a8b78ced23d7e0f3b187f5cbfab4749523ed65d7c9b1/requests-2.23.0-py2.py3-none-any.whl (58kB)
+
+# pip va aussi adresser les 4 dépendances de requests : urllib3, certifi, chardet, et idna.
+# les dépendances vers urllib3 et certifi sont déjà résolues pour notre venv :
+
+Requirement already satisfied: urllib3!=1.25.0,!=1.25.1,<1.26,>=1.21.1 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages (from requests) (1.21.1)
+Requirement already satisfied: certifi>=2017.4.17 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages (from requests) (2017.4.17)
+
+# pour les dépendances vers chardet et idna, la MÊME mécanique que pour requests se met en place :
+
+Collecting chardet<4,>=3.0.2 (from requests)
+  1 location(s) to search for versions of chardet:
+  * https://pypi.org/simple/chardet/
+  [ ... mêmes actions que ce qui a permis d'installer requests, mais pour chardet, puis idna... ]
+
+# Au final, pip a installé requests, ainsi que deux de ses dépendances : chardet et idna :
+Installing collected packages: chardet, idna, requests
+Successfully installed chardet-3.0.4 idna-2.9 requests-2.23.0
+Cleaning up...
+
+----
+
++++ </div></details> +++
+
+Cependant, même si https://pypi.org/[PyPI] est son fournisseur de package par défaut, pip sait installer des packages à partir d'autres provenances. Le https://packaging.python.org/tutorials/installing-packages/[tuto officiel sur l'installation de paquets via pip] fait un meilleur travail de récap que les quelques lignes qui suivent, mais en gros, il est possible d'installer des packages :
+
+1. depuis le repo public du projet ; pour `requests`, c'est https://github.com/psf/requests[un repo github] :
++
+[source]
+----
+pip install git+https://github.com/psf/requests#egg=requests
+----
++
+2. depuis une archive locale (éventuellement, téléchargée avec `pip download requests`) :
++
+[source]
+----
+pip install /path/to/requests-2.23.0-py2.py3-none-any.whl
+----
++
+3. depuis un répertoire local contenant un projet python (dans ce cas, pip fabrique lui-même l'archive à partir du contenu du répertoire) :
++
+[source]
+----
+git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
+pip install /tmp/local-requests
+----
++
+4. un cas particulier de ce qui précède : on peut installer un projet et ses dépendances directement depuis le répertoire de son projet avec `pip install .` :
++
+[source]
+----
+git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
+cd /tmp/local-requests
+pip install .
+----
++
+Certains projets utilisent cette façon de faire (que je trouve moins intuitive qu'un `pip install -r requirements.txt`) pour installer leurs dépendances. L'apparente magie de `pip install .` m'a longtemps laissé perplexe et c'est allé mieux le jour où j'ai compris comment marchait le mécanisme d'installation de package décrit ci-dessus.
+
+Le point important à garder à l'esprit, c'est que dans tous ces cas, le TL;DR ci-dessus reste vrai (à la provenance du code près), et pip se contente de récupérer du code pour le mettre à un emplacement accessible à python.
+
+
+==== Points laissés de côté pour simplifier le propos
+
+* les https://virtualenv.pypa.io/en/latest/#[virtualenvs] et ce qu'ils apportent : l'un des sujets les plus importants, mais dont la compréhension ne présente pas de difficulté particulière
+* `setuptools`, le fait d'utiliser `setup.py` pour installer des packages (`python setup.py install` ou `python setup.py develop`), et https://stackoverflow.com/questions/15724093/difference-between-python-setup-py-install-and-pip-install/15731459#15731459[pourquoi il reste préférable d'utiliser `pip`].
+* https://pip.pypa.io/en/stable/user_guide/#requirements-files[le fichier `requirements.txt`]
+* https://pip.pypa.io/en/stable/reference/pip_install/#caching[le caching pip]
+* la gestion récursive des dépendances
+* https://pypi.org/simple[l'URL par défaut] utilisée par pip pour contacter PyPI, et comment aller taper dans un pypi alternatif :
++
+[source]
+----
+pip help install | grep "Base URL of Python Package Index"
+  -i, --index-url <url>   Base URL of Python Package Index (default https://pypi.org/simple).
+                          This should point to a repository compliant with PEP 503 (the simple repository API
+                          or a local directory laid out in
+----
++
+* la https://www.python.org/dev/peps/pep-0503/[Simple Repository API] exposée par PyPI (que je trouve un peu bizarre)
+* https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs[l'installation en mode editable] avec `pip install -e .` ou `python setup.py develop`
+* l'installation http://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies[d'extra], et ce que signifie la syntaxe avec crochets : `pip install -e .[mysuperextra]`
+* la différence *à l'installation d'un package* entre https://packaging.python.org/glossary/#term-source-distribution-or-sdist[une source-distribution] et une https://packaging.python.org/glossary/#term-built-distribution[une built-distribution] (notamment si le package a https://docs.python.org/3/extending/extending.html[des extensions C], comme par exemple https://pypi.org/project/ujson/[ujson])
+* les alternatives à pip, notamment https://pipenv.pypa.io/en/latest/[pipenv] (https://packaging.python.org/tutorials/managing-dependencies/[officiellement recommandé]), et https://python-poetry.org/[poetry], vus comme le futur™
+
+=== Le packaging vu par Kenneth, PRODUCTEUR de package
+
+TL;DR : une fois qu'on a compris ce que voulait faire Motoki, il devient plus facile de comprendre l'objectif de Kenneth :
+
+1. mettre dans une archive les fichiers dont va avoir besoin Motoki...
+2. ...assorties des méta-données et informations lui permettant de les installer correctement
+3. les publier sur PyPI
+
+La bonne nouvelle, c'est que pip va tout gérer automatiquement, sauf la publication sur PyPI : tout ce que Kenneth doit faire, c'est lui donner à manger les infos dont il aura besoin : quels sont les fichiers qu'on veut distribuer (en effet, ce serait ballot d'intégrer le `.gitignore` ou des `*.swp` au package), et quelles sont les métadonnées du package (version du package, dépendances, version de python supportée, mais également auteur, license, etc.).
+
+La façon canonique de passer ces infos à pip, et de les mettre dans https://packaging.python.org/glossary/#term-setup-py[un fichier `setup.py`] à la racine du projet. Plus précisément, ce fichier `setup.py` https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L69[appelle la fonction `setuptools.setup`], en lui passant en argument les infos nécessaires pour builder le package. C'est un peu déroutant au début d'appeler une fonction pour définir des métadonnées, mais on s'y fait.
+
+==== Concrètement ça ressemble à quoi ?
+
+Je garde le code de `requests` comme fil rouge, voici https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py[son setup.py à l'heure où j'écris ces lignes]. Morceaux choisis :
+
+* https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L78[l'argument `packages`] indique à pip quels sont les fichiers du repo qui doivent être packagés :
++
+[source,python]
+----
+packages = ['requests']  # ligne 42 : variable intermédiaire
+# ...
+packages=packages,  # ligne 78 : pip doit packager un seul répertoire : requests
+----
++
+* https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L44[l'argument `install_requires`] indique quelles sont les dépendances de requests :
++
+[source,python]
+----
+requires = [  # ligne 44 : variable intermédiaire
+    'chardet>=3.0.2,<4',
+    'idna>=2.5,<3',
+    'urllib3>=1.21.1,<1.26,!=1.25.0,!=1.25.1',
+    'certifi>=2017.4.17'
+]
+# ...
+install_requires=requires,  # ligne 83 : requests nécessite chardet+idna+urllib3+certifi
+----
++
+* https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L82[l'argument `python_requires`] indique les versions de python supportées :
++
+[source,python]
+----
+python_requires=">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*",
+----
++
+* les métadonnées du package (nom, version, auteur, license, etc.) sont définies dans link:https://github.com/psf/requests/blob/b7c6aba848b10933f327fcce41970c29dc59051b/requests/__version__.py[un fichier annexe] et https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L70[utilisées par setup.py] :
++
+[source,python]
+----
+__title__ = 'requests'
+__description__ = 'Python HTTP for Humans.'
+__url__ = 'https://requests.readthedocs.io'
+__version__ = '2.23.0'
+__author__ = 'Kenneth Reitz'
+# [...]
+----
+
+Allez, je vais me la jouer "site du zéro", et proposer un TP. C'est vraiment pas indispensable pour avoir compris cette partie, mais http://www.1001-citations.com/citation-31397/[comme dirait Confucius], faire les choses moi-même m'aide à les comprendre, je pars du principe que ça va être pareil avec toi, lecteur. C'est même pas obligé de prendre un vrai projet comme `requests` pour ça : c'est également très intéressant de packager un repo quasi-vide, et de trouver quelles sont les conditions minimales pour que pip accepte d'en faire un package.
+
+
++++ <details><summary> +++
+FACULTATIF : installe `requests` via un package que tu as buildé toi-même avec amour <3
++++ </summary><div> +++
+
+
+1. builder un package à partir du repo requests
++
+[source,bash]
+----
+mkdir -p /tmp/monsupertp/{local-requests,wheel-dir,unzipped-wheel}
+cd /tmp/monsupertp/
+git clone --depth=1 https://github.com/psf/requests local-requests
+cd local-requests
+# la ligne suivante builde la wheel :
+pip wheel --wheel-dir=/tmp/monsupertp/wheel-dir .
+----
++
+2. trifouiller et regarder ce qu'il y a dans la wheel buildée :
++
+[source,bash]
+----
+cd /tmp/monsupertp/
+# la wheel n'est qu'une archive zip des fichiers packagés + des métadonnées :
+file wheel-dir/requests-2.23.0-py2.py3-none-any.whl
+# wheel-dir/requests-2.23.0-py2.py3-none-any.whl: Zip archive data, at least v2.0 to extract
+unzip wheel-dir/requests-2.23.0-py2.py3-none-any.whl -d /tmp/monsupertp/unzipped-wheel
+ls /tmp/monsupertp/unzipped-wheel/
+# requests  requests-2.23.0.dist-info
+
+# les fichiers packagés sont bien ceux du repo :
+find unzipped-wheel/requests -type f -print0|xargs -0 md5sum|cut -d" " -f1|md5sum
+# 943bfbe6cf829cec797d84e09862f826  -
+find local-requests/requests -type f -print0|xargs -0 md5sum|cut -d" " -f1|md5sum
+# 943bfbe6cf829cec797d84e09862f826  -
+
+# les métadonnées sont bien celles qui étaient précisées dans l'appel à setuptools.setup() :
+cd unzipped-wheel/requests-2.23.0.dist-info/
+
+grep "Python HTTP for Humans" METADATA
+# Summary: Python HTTP for Humans.
+
+grep "Programming Language :: Python" METADATA | grep "\."
+# Classifier: Programming Language :: Python :: 2.7
+# Classifier: Programming Language :: Python :: 3.5
+# Classifier: Programming Language :: Python :: 3.6
+# Classifier: Programming Language :: Python :: 3.7
+# Classifier: Programming Language :: Python :: 3.8
+
+grep Requires-Dist METADATA | grep -v extra
+# Requires-Dist: certifi (>=2017.4.17)
+# Requires-Dist: chardet (>=3.0.2,<4)
+# Requires-Dist: idna (>=2.5,<3)
+# Requires-Dist: urllib3 (!=1.25.1,>=1.21.1,!=1.25.0,<1.26)
+----
++
+3. vérifier qu'on peut utiliser la wheel pour installer `requests`
++
+[source,bash]
+----
+# (commande à lancer dans un virtualenv vierge)
+# note : pip se débrouille pour installer les dépendances de requests
+pip install /tmp/monsupertp/wheel-dir/requests-2.23.0-py2.py3-none-any.whl
+----
++
+4. Profit !
+
+On peut également jouer à builder un package minimaliste pour bien montrer 1. qu'il n'est nécessaire que d'avoir `setup.py` pour que pip reconnaisse un repo comme installable et 2. pour jouer avec les arguments passés à la fonction `setuptools.setup`, et voir quels sont ceux indispensables à pip. Je laisse cet exercice au lecteur.
+
++++ </div></details> +++
+
+
+Pour résumer, côté PRODUCTEUR, on veut "juste" remplir un `setup.py` correct pour que pip puisse bosser, et transformer un repo de code (parfois appelé `source-tree`) en un package.
+
+==== Points laissés de côté pour simplifier le propos
+
+* https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives[l'utilisation directe de `setup.py` pour builder un package] (`python setup.py sdist/bidst/bidst_wheel`), le lien avec `pip wheel`, et l'absence de possibilité pour pip de builder des source-distribution (même si https://github.com/pypa/pip/issues/6041[une issue est ouverte sur le sujet])
+* c'est pas tout de créer un package, encore faut-il l'uploader sur PyPI : c'est le boulot de https://pypi.org/project/twine/[twine]
+* la différence *à la création d'un package* entre https://packaging.python.org/glossary/#term-source-distribution-or-sdist[une source-distribution] et une https://packaging.python.org/glossary/#term-built-distribution[une built-distribution] (notamment si le package a https://docs.python.org/3/extending/extending.html[des extensions C], comme par exemple https://pypi.org/project/ujson/[ujson])
+* l'utilisation de https://setuptools.readthedocs.io/en/latest/setuptools.html#configuring-setup-using-setup-cfg-files[setup.cfg] pour avoir un appel à `setuptools.setup(...)` minimaliste
+* le subtil art de préciser les fichiers qui feront partie du package : https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages[find_packages], https://setuptools.readthedocs.io/en/latest/setuptools.html#including-data-files[MANIFEST.in + include_package_data], etc.
+* le non-moins subtil art de préciser les dépendances de son package, et https://packaging.python.org/tutorials/managing-dependencies/[l'apport de pipenv] (ou poetry) sur le sujet
+* les https://packaging.python.org/guides/distributing-packages-using-setuptools/#universal-wheels[wheels universelles] ou pure-python
+* les alternatives à setuptools, https://pip.pypa.io/en/stable/reference/pip/#build-system-interface[via pyproject.toml], pourtant http://sametmax.com/vive-setup-cfg-et-mort-a-pyproject-toml/[controversé]
+* le fait que `wheel` (qui fournit `bdist_wheel`), `setuptools`, et `twine` soient des packages tierces
+* la https://docs.python.org/3/distutils/extending.html#integrating-new-commands[customisation de l'étape de build] de son package
+* les alternatives aux https://packaging.python.org/glossary/#term-wheel[wheels] comme format de built-distributions, et notamment https://packaging.python.org/glossary/#term-egg[les eggs], même s'ils sont https://packaging.python.org/discussions/wheel-vs-egg/[moins intéressants que les wheels], et https://stackoverflow.com/questions/6292652/what-is-the-difference-between-an-sdist-tar-gz-distribution-and-an-python-egg/6292710#6292710[considérés comme deprecated].
+
+== En conclusion
+
+L'objectif de cet article était de donner une vue "générale" du sujet (ce qui se passe quand on installe un package, et ce qu'il faut donc faire pour en produire un) avec comme espoir qu'il soit ainsi plus facile de comprendre les articles, docs, tutos et autres ressources sur le sujet.
+
+Si on garde cette vision avec un peu de hauteur, le packaging python, c'est pas si compliqué :
+
+* le *consommateur de package* veut un outil (`pip`) capable de récupérer une archive code (https://packaging.python.org/glossary/#term-wheel[une wheel]), et de la décompresser à un emplacement utilisable par python (sous Linux, un répertoire `site-packages`)
+* le *producteur de package* veut un outil (`pip` ou `setuptools`) capable de générer cette archive de code à partir de son repo, et le configure en indiquant dans un fichier `setup.py` le code à packager, et ses métadonnées
+
+En dehors de la confusion entre ces deux rôles, le sujet est rendu ardu par le joyeux bordel que sont la doc et les outils. J'aurais pu commencer par là tellement c'est le bazar : l'histoire du packaging python est un chemin de croix long et douloureux, parsemé d'une ribambelle de librairies, outils et formats aujourd'hui dépréciés (en vrac, et ne visitez les liens que pour faire de l'archéologie : https://setuptools.readthedocs.io/en/latest/easy_install.html[easy_install], https://wiki.python.org/moin/Distribute[distribute], https://pypi.org/project/Distutils2/[distutils2], https://packaging.python.org/glossary/#term-egg[les eggs], ...).
+
+Concernant la doc, ça va beaucoup mieux depuis quelques années, et il https://setuptools.readthedocs.io/en/latest/setuptools.html[n'est plus si compliqué de trouver la documentation des features, même inhabituelles]. Restez tout de même critique à la lecture des docs et autres billets de blog sur le sujet : comme il n'y en a pas tant que ça d'une part, et que le sujet évolue vite d'autre part, beaucoup d'articles sont maintenant (partiellement) dépréciés. Cette remarque est valable aussi pour le présent article : cher lecteur du futur (c'est un pléonasme, ça, non ?), je t'invite à bien vérifier la date à laquelle j'ai écrit cet article.
+
+Concernant les outils, ça vaut c'que ça vaut, mais pour commencer, j'aurais tendance à conseiller de tout ignorer à part :
+
+* `setuptools` = https://setuptools.readthedocs.io/en/latest/setuptools.html[package tierce permettant de packager un projet], s'appuie sur `distutils` (qui est standard, mais que vous pouvez ignorer car rarement utilisé directement)
+* `pip` = outil https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] (et le plus utilisé) pour installer les packages python. Utilise `setuptools` under the hood.
+* `wheel` = à la fois le https://packaging.python.org/glossary/#term-wheel[format de built-distribution] recommandé, et un https://pypi.org/project/wheel/[package tierce] permettant de les builder et fournissant une CLI pour les manipuler. Défini dans la https://www.python.org/dev/peps/pep-0427/[PEP 427].
+* `twine` = utilitaire le plus utilisé pour https://pypi.org/project/twine/[publier son package sur PyPI]
+* `pipenv` / `poetry` = pipenv est https://pipenv.pypa.io/en/latest/[l'outil officiellement recommandé] faisant le café pour la gestion des packages, car mélangeant le métier de `virtualenv`, de `pip`, du `requirements.txt`, et du `package.json` https://docs.npmjs.com/creating-a-package-json-file[de npm]. poetry est une https://python-poetry.org/[alternative à pipenv] jouant le même rôle.
+
+Une petite dernière confusion à ne pas faire pour la route : le même terme `package` est utilisé dans le monde python pour désigner deux concepts bien distincts :
+
+* https://packaging.python.org/glossary/#term-distribution-package[distribution package] : une archive contenant du code, des données et métadonnées. Le lecteur attentif remarquera que c'est ce dont il était question tout au long du présent article.
+* https://packaging.python.org/glossary/#term-import-package[import package] : ce sont des https://docs.python.org/3/tutorial/modules.html#packages[regroupements de modules python], c'est à dire grosso-modo, des répertoires contenant des fichiers de code.
+
+C'est le contexte qui dit de quoi on parle, n'hésitez-pas à vous référer au https://packaging.python.org/glossary/[glossaire officiel], car s'il n'est pas exhaustif, il a le mérite d'être clair et concis.

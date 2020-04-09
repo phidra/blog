@@ -1,0 +1,38 @@
+// dot -Tsvg mygraph.dot -o mygraph.svg
+digraph G {
+    edge [style=invisible,dir=none]
+    A1 -> B1 -> C1-> left1;
+    A2 -> B2 -> C2;
+    A3 -> B3 -> C3 -> left3;
+
+    edge [style=solid,dir=forward]
+    A1 -> A2 [style=invisible,dir=none];
+    A1 -> B2 [constraint=false];
+    B1 -> C2 [constraint=false];
+    C1 -> A2 [constraint=false];
+
+    A2 -> A3 [style=invisible,dir=none];
+    A2 -> B3 [constraint=false];
+    B2 -> C3 [constraint=false];
+    C2 -> A3 [constraint=false];
+
+    left1 -> left3 [label=" temps"];
+    
+    left1 [style=invisible,width=.1,height=.1];
+    left3 [style=invisible,width=.1,height=.1];
+    A1 [label="A"];
+    A2 [label="A"];
+    A3 [label="A"];
+    B1 [label="B"];
+    B2 [label="B"];
+    B3 [label="B"];
+    C1 [label="C"];
+    C2 [label="C"];
+    C3 [label="C"];
+
+    {rank=same; A1; B1; C1; left1;}
+    {rank=same; A2; B2; C2;}
+    {rank=same; A3; B3; C3; left3}
+}
+
+

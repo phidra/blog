@@ -1,0 +1,144 @@
+---
+title: "Qu'est-ce qui fait une équipe efficace ?"
+date: 2020-03-11T10:00:00+01:00
+draft: true
+---
+= Qu'est-ce qui fait une équipe efficace ?
+
+Si on vous posait la question, qu'est-ce que vous répondriez ? De mon côté, j'aurais sans doute répondu des éléments autour de :
+
+- des membres compétents
+- des membres qui s'entendent bien
+- un niveau technique homogène (ou au contraire disparate ?)
+- des membres qui savent travailler en équipe (ça veut dire quoi, d'ailleurs ?)
+- une équipe à taille humaine
+- ...
+
+Mais êtes-vous *sûrs* que chercher à atteindre ces objectifs améliorerait l'efficacité de votre équipe ?
+
+Cette question, Google se l'est posée, et entre 2012 et 2014, dans le cadre du projet *Aristotle*, ils ont choisi d'aborder la question sous l'angle pragmatique de l'analyse de données. Et comme google dispose de beaucoup de données sur leurs équipes (et des compétences nécessaires pour les analyser !), ça vaut le coup de jeter un coup d'oeil à leurs conclusions...
+
+Ça tombe bien, sur leur https://rework.withgoogle.com/about/[site dédié au sujet du "travailler mieux"], parmi beaucoup de choses appétissantes, ils présentent leurs résultats dans un guide : https://rework.withgoogle.com/guides/understanding-team-effectiveness/steps/introduction/[Understand team effectiveness].
+
+== Ce qui n'est pas corrélé à l'efficacité d'une équipe
+
+Un enseignement intéressant, c'est que certains éléments dont on penserait qu'ils améliorent "forcément" une équipe... ne sont en fait pas corrélés à son succès :
+
+- la performance individuelle des membres de l'équipe (!)
+- la proximité spatiale des membres (être physiquement dans le même bureau)
+- le fait de baser sa prise de décisions sur le consensus
+- le caractère extroverti des membres de l'équipe
+- la charge de travail
+- la séniorité de l'équipe
+- la taille de l'équipe
+- le métier de l'équipe
+
+
+Mon interprétation des choses, c'est qu'il serait trompeur de dire que ces facteurs n'ont *aucune* influence.
+
+Prenons la taille de l'équipe par exemple : pour moi, la conclusion de l'étude n'est pas qu'elle n'a pas d'importance pour qu'une équipe donnée fonctionne bien. D'ailleurs, je vis actuellement au travail une situation où passer de ~5 personnes à ~12 est compliqué : les dynamiques et process qui marchaient bien à 6 sont moins efficaces à 12.
+
+Tel que je vois les choses, c'est plutôt que comme on trouve des petites équipes qui fonctionnent bien, et des grandes équipes qui fonctionnent bien aussi, il est inutile de faire de "telle taille" un objectif à atteindre, avec comme espoir d'améliorer magiquement l'efficacité de l'équipe.
+
+== Le plus important : la sécurité psychologique
+
+
++++ <details><summary> +++
+La façon dont ils ont conduit l'étude est déjà intéressante en soi.
++++ </summary><div> +++
+
+Notamment, https://rework.withgoogle.com/guides/understanding-team-effectiveness/steps/define-effectiveness/[les indicateurs retenus pour mesurer l'efficacité] sont une combinaison de facteurs subjectifs (interrogation directe des personnes) et objectifs :
+
+. Executive evaluation of the team
+. Team leader evaluation of the team
+. Team member evaluation of the team
+. Sales performance against quarterly quota
+
+L'étude, menée en double-aveugle (\o/ j'aime bien https://fr.wikipedia.org/wiki/%C3%89tude_randomis%C3%A9e_en_double_aveugle[les études en double-aveugle]) a porté sur 180 équipes (comprenant de bonnes comme de mauvaises équipes, environ 2/3 tech, 1/3 commerciales), à la fois sur leurs membres (personnalité, compétence, intelligence émotionnelle) et sur leurs dynamiques et process, ainsi que sur leurs données objectives (niveau, position géographique, etc.).
+
++++ </div></details> +++
+
+Mais le résultat principal l'est encore plus : pour qu'une équipe soit efficace, le facteur le plus important est la sécurité psychologique (_psychological safety_ dans l'étude).
+
+[quote]
+____
+The researchers found that what really mattered was less about who is on the team, and more about how the team worked together.
+____
+
+On en trouve plusieurs définitions dans le guide, l'article, et le talk dans les références en fin d'article, mais celle que je préfère est la suivante :
+
+[quote]
+____
+Psychological safety is a sense of confidence that the team will not embarrass, reject or punish someone for speaking up, admitting a mistake, asking a question, or offering a new idea.
+____
+
+Concrètement, l'équipe met en place des normes de groupes qui favorisent ou inhibent cette _psychological safety_. Détail intéressant : un marqueur de cette _psychological safety_ est l'égalité dans le temps de parole entre les membres de l'équipe (en moyenne, sur le long terme).
+
+https://rework.withgoogle.com/guides/understanding-team-effectiveness/steps/introduction/[Le guide de Google] et https://www.youtube.com/watch?v=LhoLuui9gX8&feature=youtu.be[ce TED talk] donnent des conseils concrets pour mesurer et améliorer cette fameuse _psychologicial safety_.
+
+////
+
+Les questions utilisées pour mesurer la psychological safety :
+
+* If you make a mistake on this team, it is often held against you.
+* Members of this team are able to bring up problems and tough issues.
+* People on this team sometimes reject others for being different.
+* It is safe to take a risk on this team.
+* It is difficult to ask other members of this team for help.
+* No one on this team would deliberately act in a way that undermines my efforts.
+* Working with members of this team, my unique skills and talents are valued and utilized.
+
+
+Dans https://www.youtube.com/watch?v=LhoLuui9gX8&feature=youtu.be[le talk] :
+
+* impression management = quoi faire pour ne pas paraître incomptent / intrusive
+* entre en conflit avec l'amélioration, l'apprentissage, 
+* mesurer les erreurs humaines évitables ,effectuées par des équipes médicales
+** better team make more mistakes ?!
+** en fait, elles les masquent moins, et sont plus prêtes à les reconnaître, en discuter ensemble, pour trouver comment les éviter
+* conseils concrets :
+** frame the work as a learning problem (plutôt qu'un execution problem)
+** reconnaître qu'on sait pas où on va, que le futur est incertain (ça autorise à parler, on n'est pas "censés savoir")
+** reconnaître sa propre faillability
+** placer la curiosité sur un piédestal, permettre de poser des questions
+
+Les moyens de favoriser la team psychological safety :
+
+* Frame the work as a learning problem, not an execution problem.
+* Acknowledge your own fallibility.
+* Model curiosity and ask lots of questions.
+
+////
+
+== D'autres facteurs importants
+
+Si on n'en a qu'un à retenir, c'est la sécurité psychologique, mais l'étude a montré que ces autres facteurs étaient corrélés à la réussite d'une équipe :
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Culture de la fiabilité* +
+_Dependability_ 
+| _When my teammates say they’ll do something, they follow through with it._
+
+| *Structure et clarté* +
+_Structure and Clarity_
+| _An individual’s understanding of job expectations, the process for fulfilling these expectations, and the consequences of one’s performance are important for team effectiveness._
+
+| *Sens donné à son travail* +
+_Meaning_
+| _Finding a sense of purpose in either the work itself or the output is important for team effectiveness._
+
+| *Importance de son travail* +
+_Impact_ 
+| _I understand how our team’s work contributes to the organization's goals._
+
+|=== 
+
+Au final, ce que j'aime beaucoup dans cette étude, c'est que sur un sujet pas facile à évaluer, on est dans le domaine du "backé par des chiffres" : même si les conclusions sont contre-intuitives, elles ne sortent pas du chapeau.
+
+Références :
+
+* https://rework.withgoogle.com/guides/understanding-team-effectiveness/steps/introduction/[le site de Google sur l'étude, avec des outils concrets]
+* https://www.nytimes.com/2016/02/28/magazine/what-google-learned-from-its-quest-to-build-the-perfect-team.html?smid=pl-share[du story-telling sur l'étude]
+* https://www.youtube.com/watch?v=LhoLuui9gX8&feature=youtu.be[un TED talk] sur le sujet, par https://en.wikipedia.org/wiki/Amy_Edmondson[Amy Edmondson], une universitaire américaine spécialiste du sujet

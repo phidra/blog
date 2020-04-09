@@ -1,0 +1,77 @@
+/*
+$darkest-color
+$dark-color
+$light-color
+$lightest-color
+$primary-color
+*/
+
+
+// liens plus visibles :
+a { text-decoration: underline; }
+
+// légendes des images :
+.imageblock > .title {
+    text-decoration: underline;
+    font-style: italic;
+    margin-top: 0;
+    padding-top: 0;
+    margin-bottom: 5px;
+    padding-bottom: 5px;
+    }
+
+// listes à puces compactes :
+ul > p, li > p { margin: 0; padding: 0;}
+
+// code blocks plus apparents :
+div.listingblock, div.literalblock { background-color: $darkest-color; }
+
+// quotes plus apparentes :
+.quoteblock {
+    font-style: italic;
+    margin-left: 1em;
+    border-left: 3px solid $primary-color;
+    background-color: $darkest-color;
+}
+.quoteblock .attribution {
+    text-align: right;
+}
+
+// inline code plus apparents :
+code { background-color: $darkest-color; padding: 1px;}
+
+// collapsible avec summary+details :
+
+// +++ <details><summary> +++
+// Cliquez ici pour déplier ce collapsible.
+// +++ </summary><div> +++
+// ...
+// Contenu du collapsible.
+// ...
+// +++ </div></details> +++
+
+summary { cursor: pointer; text-decoration: underline; }
+details {
+    margin-left: 5px;
+    padding-left: 5px;
+    border-left: 2px solid $primary-color;
+}
+
+// strike through :
+.line-through { text-decoration: line-through; }
+
+
+// tableaux :
+table {
+	border-collapse: collapse;
+	table-layout: auto;
+	width: 100%;
+	vertical-align: middle;
+}
+th, td {
+	border: 1.25px solid $light-color;
+	padding: 4px;
+	text-align: left;
+}
+th { background-color: $darkest-color; }
+td > p { margin: 4px; }

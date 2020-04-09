@@ -1,0 +1,14 @@
+---
+title: "Mes références"
+date: 2020-03-16T10:00:00+01:00
+draft: true
+---
+= Mes références
+
+Liste non-exhaustive (à compléter), et pas particulièrement triée (c'est pas parce qu'un item est en haut que je le juge mieux que son voisin du dessous)
+
+* https://www.internalpointers.com/[Internal Pointers] : a l'air de regrouper des articles sur divers sujets dont des sujets tech. Pour le moment, je n'ai lu que quelques articles (https://www.internalpointers.com/post-group/black-art-concurrency[sur la concurrence] et https://www.internalpointers.com/post/quick-primer-type-traits-modern-cpp[sur les type traits], notamment), mais ils étaient *très* pédagogiques. C'est pas hyper clair qui est derrière.
+* http://sametmax.com/[Sam & Max] : on ne les présente plus. Si ? C'est l'une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c'est l'une des références qui m'a donnée envie de blogger.
+* https://sebsauvage.net/links/[Seb Sauvage], un peu de tout, pas mal orienté libre et sécurité. Ça a été remplacé par shaarli (dont il est l'auteur), mais à une époque, il poussait https://sebsauvage.net/rhaa/[des cousp de gueule] intéressants :-)
+* https://www.jesuisundev.com/[Je suis un dev] : des posts assez généraux sur le métier de dev, et des introductions à des concepts qui buzzent
+* https://www.youtube.com/channel/UCYO_jab_esuFRV4b17AJtAw[3 blue 1 brown] : une *EXTRAORDINAIRE* chaîne de vulgarisation mathématique par Grant SANDERSON, la pédagogie et la qualité de ses animations sont époustouflantes. J'aurais aimé disposer de https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab[sa série sur l'algèbre linéaire] ou de https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr[celle sur le calcul intégral] lorsque j'étais étudiant !
