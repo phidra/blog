@@ -1,6 +1,6 @@
 ---
 title: "À propos"
-date: 2020-03-16T10:00:00+01:00
+date: 2020-01-01T10:00:00+01:00
 draft: true
 ---
 = À propos
