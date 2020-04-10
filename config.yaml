@@ -7,12 +7,3 @@ params:
     author: "phidra"
     description: "Mes errances tech, principalement python/C++"
     avatar: "/img/general/phi_medium_fond_blanc.png"
-    menuPages:
-        - url: ""
-          content: "Posts"
-        - url: "menu/notes"
-          content: "Notes brutes"
-        - url: "menu/references"
-          content: "Références"
-        - url: "menu/about"
-          content: "À propos"
