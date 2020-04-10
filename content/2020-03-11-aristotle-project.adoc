@@ -1,7 +1,7 @@
 ---
 title: "Qu'est-ce qui fait une équipe efficace ?"
 date: 2020-03-11T10:00:00+01:00
-draft: true
+draft: false
 ---
 = Qu'est-ce qui fait une équipe efficace ?
 

@@ -1,7 +1,7 @@
 ---
 title: "Intérêt de make_shared"
 date: 2020-02-14T15:08:25+01:00
-draft: true
+draft: false
 ---
 :source-highlighter: pygments
 :pygments-css: style

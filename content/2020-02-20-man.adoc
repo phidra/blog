@@ -1,7 +1,7 @@
 ---
 title: "RTFM ?"
 date: 2020-02-20T10:00:00+01:00
-draft: true
+draft: false
 ---
 :source-highlighter: pygments
 :pygments-css: style
