@@ -1,0 +1,5 @@
+# hugo :
+src/public/
+src/resources/_gen/
+
+*.swp
