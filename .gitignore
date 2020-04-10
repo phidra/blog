@@ -1,5 +1,5 @@
 # hugo :
-src/public/
-src/resources/_gen/
+public/
+resources/_gen/
 
 *.swp
