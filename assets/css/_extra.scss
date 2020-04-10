@@ -10,6 +10,11 @@ $primary-color
 // liens plus visibles :
 a { text-decoration: underline; }
 
+
+html {
+  font-size: small;
+}
+
 // légendes des images :
 .imageblock > .title {
     text-decoration: underline;
