@@ -38,7 +38,7 @@ pip wheel .
 
 Typiquement, un dev sera bien plus souvent dans la peau de Motoki que dans celle de Kenneth. Pourtant, consommateur et producteur sont les deux facettes d'un même sujet : pour que Motoki puisse installer sa librairie, il a bien fallu que quelqu'un (Kenneth) ait préparé les fichiers d'abord.
 
-Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, `pip`, https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] pour installer les packages python, est utilisé par Motoki comme par Kenneth, alors que leurs besoins n'ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre disponible aux autres développeurs.
+Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, `pip`, https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] pour installer les packages python, est utilisé par Motoki comme par Kenneth, alors que leurs besoins n'ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre utilisable par d'autres développeurs.
 
 Cette même confusion est par exemple entretenue sur https://packaging.python.org/[la page d'accueil du site référent sur la question], qui mentionne à égalité l'installation et la distribution de packages :
 
