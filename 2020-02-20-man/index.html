@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>RTFM ? // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.66.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="phidra" />
+    <meta name="description" content="" />
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.109d1f318ba2d411fe847dff50ad85f06b6f4adf5addf943772e5e2cdc102f0f.css" />
+
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="RTFM ?"/>
+<meta name="twitter:description" content="Position du problème La plupart du temps, quand j&#8217;utilise man, je m&#8217;embête pas, et je fais par exemple :
+ man tar   Mais on trouve parfois une syntaxe précisant un numéro, assortie parfois d&#8217;une vague mention de &#34;sections&#34;. Par exemple :
+ man 2 close   J&#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib."/>
+
+    <meta property="og:title" content="RTFM ?" />
+<meta property="og:description" content="Position du problème La plupart du temps, quand j&#8217;utilise man, je m&#8217;embête pas, et je fais par exemple :
+ man tar   Mais on trouve parfois une syntaxe précisant un numéro, assortie parfois d&#8217;une vague mention de &#34;sections&#34;. Par exemple :
+ man 2 close   J&#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://phidra.github.io/blog/2020-02-20-man/" />
+<meta property="article:published_time" content="2020-02-20T10:00:00+01:00" />
+<meta property="article:modified_time" content="2020-02-20T10:00:00+01:00" />
+
+
+  </head>
+  <body>
+    <header class="app-header">
+      <a href="https://phidra.github.io/blog/"><img class="app-header-avatar" src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" /></a>
+      <h1>Phidra&#39;s blog</h1>
+      <p>Mes errances tech, principalement python/C&#43;&#43;</p>
+      <div class="menu-pages">
+        
+          <h3>
+          <a href="https://phidra.github.io/blog/">Posts</a>
+          </h3>
+        
+          <h3>
+          <a href="https://phidra.github.io/blog/menu/notes">Notes brutes</a>
+          </h3>
+        
+          <h3>
+          <a href="https://phidra.github.io/blog/menu/references">Références</a>
+          </h3>
+        
+          <h3>
+          <a href="https://phidra.github.io/blog/menu/about">À propos</a>
+          </h3>
+        
+      </div>
+      <div class="app-header-social">
+        
+      </div>
+    </header>
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">RTFM ?</h1>
+      <div class="post-meta">
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-calendar">
+  <title>calendar</title>
+  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line>
+</svg>
+          Feb 20, 2020
+        </div>
+        <div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          3 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div class="sect1">
+<h2 id="_position_du_problème">Position du problème</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>La plupart du temps, quand j&#8217;utilise <code>man</code>, je m&#8217;embête pas, et je fais par exemple :</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>man tar</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Mais on trouve parfois <a href="https://stackoverflow.com/a/705483">une syntaxe précisant un numéro</a>, assortie parfois d&#8217;une vague mention de "sections". Par exemple :</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>man 2 close</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>J&#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs "chapitres", et que ce numéro était le numéro du chapitre : <code>man 3 zlib</code> était équivalent à <em>ouvre le troisième chapitre du man de zlib</em>.</p>
+</div>
+<div class="paragraph">
+<p>Spoiler alert, j&#8217;avais tout faux ^^</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_les_fameuses_sections">Les fameuses sections</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Déjà, ma supposition était mal barrée quand on voit que <code>man 1 zlib</code> ne permet pas de consulter "le premier chapitre de zlib" :</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>man 1 zlib
+No manual entry for zlib in section 1</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Un simple <code>man man</code> suffit pour comprendre : les sections ne sont pas des chapitres, mais des catégories de manpages :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>la section 1 contient les programmes exécutables</p>
+</li>
+<li>
+<p>la section 2 contient les syscalls</p>
+</li>
+<li>
+<p>la section 3 les manpages des fonctions de librairies (notamment la glibc)</p>
+</li>
+<li>
+<p>etc.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Du coup, l&#8217;intérêt de préciser le numéro de section est lever l&#8217;ambiguité entre par exemple :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>la page de manuel du syscall <code>tee</code> (permettant de dupliquer un pipe) qu&#8217;on trouverait avec <code>man 2 tee</code></p>
+</li>
+<li>
+<p>la page de manuel du programme <code>tee</code> (qui redirige stdin à la fois sur stdout et dans un fichier) qu&#8217;on trouverait avec <code>man 1 tee</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les chiffres qu&#8217;on trouve parfois entre parenthèse dans des références proposées par les manpages correspondent justement à ces sections, ce qui peut-être pratique pour savoir de quoi on parle. Par exemple avec :</p>
+</div>
+<div class="literalblock">
+<div class="content">
+<pre>man fopen
+    ...
+    SEE ALSO
+        open(2), fclose(3), fileno(3), fmemopen(3), fopencookie(3)
+             ^
+       je parle de ça
+    ...</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ici, le <code>open</code> dont il est question est un syscall, dont il faut consulter la manpage avec <code>man 2 open</code> (à ne pas confondre avec <code>man 1 open</code>).</p>
+</div>
+<div class="paragraph">
+<p>À l&#8217;inverse, <code>fclose</code> est une fonction de la glibc qu&#8217;on consulte avec <code>man 3 fclose</code>, à ne pas confondre avec le syscall <code>close</code> qui serait dans la section 2.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quelques_commandes_utiles">Quelques commandes utiles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>D&#8217;abord : <code>man man</code>. Et aussi :</p>
+</div>
+<div class="sect2">
+<h3 id="_connaître_le_contenu_d_une_section_donnée">connaître le contenu d&#8217;une section donnée</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">man <span style="color: #ae81ff">3</span> intro
+Section  <span style="color: #ae81ff">3</span>  of the manual describes all library functions excluding the library functions
+<span style="color: #f92672">(</span>system call wrappers<span style="color: #f92672">)</span> described in Section <span style="color: #ae81ff">2</span>, which implement system calls.
+<span style="color: #f92672">(</span>...<span style="color: #f92672">)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_voir_s_il_existe_plusieurs_manpages_pour_quelque_chose">voir s&#8217;il existe plusieurs manpages pour quelque chose</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># manpages titrées &quot;exit&quot; + leur section et description :</span>
+man -f <span style="color: #f8f8f2">exit</span>
+<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">2</span><span style="color: #f92672">)</span>             - terminate the calling process
+<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">3</span><span style="color: #f92672">)</span>             - cause normal process termination</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_trouver_les_manpages_qui_peuvent_m_aider_sur_un_sujet">trouver les manpages qui peuvent m&#8217;aider sur un sujet</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># manpages dont le titre ou la description matche la regex</span>
+man -k <span style="color: #e6db74">&#39;(postgresql|pg_)&#39;</span>
+<span style="color: #f92672">(</span>...<span style="color: #f92672">)</span>
+oid2name <span style="color: #f92672">(</span><span style="color: #ae81ff">1</span><span style="color: #f92672">)</span>         - resolve OIDs and file nodes in a PostgreSQL data directory
+pg_archivecleanup <span style="color: #f92672">(</span><span style="color: #ae81ff">1</span><span style="color: #f92672">)</span> - clean up PostgreSQL WAL archive files
+<span style="color: #f92672">(</span>...<span style="color: #f92672">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et une dernière pour la route : les manpages sont formatées <a href="https://fr.wikipedia.org/wiki/Roff">en roff</a>, cf. <code>man 1 groff</code>, (et <a href="http://man7.org/linux/man-pages/man7/roff.7.html">man 7 roff</a> ?), et sont stockées gzippées dans <code>/usr/share/man/</code>.</p>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+  </body>
+</html>

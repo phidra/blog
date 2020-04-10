@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Menus on Phidra&#39;s blog</title>
+    <link>https://phidra.github.io/blog/menu/</link>
+    <description>Recent content in Menus on Phidra&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>fr-fr</language>
+    <lastBuildDate>Mon, 16 Mar 2020 10:00:00 +0100</lastBuildDate>
+    
+	<atom:link href="https://phidra.github.io/blog/menu/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mes références</title>
+      <link>https://phidra.github.io/blog/menu/references/</link>
+      <pubDate>Mon, 16 Mar 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/menu/references/</guid>
+      <description>Liste non-exhaustive (à compléter), et pas particulièrement triée (c&amp;#8217;est pas parce qu&amp;#8217;un item est en haut que je le juge mieux que son voisin du dessous)
+   Internal Pointers : a l&amp;#8217;air de regrouper des articles sur divers sujets dont des sujets tech. Pour le moment, je n&amp;#8217;ai lu que quelques articles (sur la concurrence et sur les type traits, notamment), mais ils étaient très pédagogiques. C&amp;#8217;est pas hyper clair qui est derrière.</description>
+    </item>
+    
+    <item>
+      <title>À propos</title>
+      <link>https://phidra.github.io/blog/menu/about/</link>
+      <pubDate>Mon, 16 Mar 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/menu/about/</guid>
+      <description>C&amp;#8217;est quoi ce blog ? Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → la majorité des posts devrait concerner des sujets liés de près ou de loin au développement, du C++ (exemple : make_shared) et du python (exemple : packaging python) qui sont mes langages principaux, mais également des structures de données ou algorithmes (exemple : Sattolo), des outils (exemple : man), voire des sujets liés à la vie de développeur (exemple : projet Aristote).</description>
+    </item>
+    
+    <item>
+      <title>Articles, talks, blogposts, et autres liens</title>
+      <link>https://phidra.github.io/blog/menu/notes/</link>
+      <pubDate>Tue, 18 Feb 2020 12:38:15 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/menu/notes/</guid>
+      <description>Liste des liens    Pourquoi cette page [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19. Dynamic Programming I: Fibonacci, Shortest Paths [ARTICLE] Safe Systems Programming in Rust:The Promise and the Challenge [POST] My Coding Interview Style [VIDEO] P vs NP et le zoo de complexité informatique [ARTICLE] A brief introduction to C++’s model for type- and resource-safety [POST] A modern ‘Hello, World’ program needs more than just code [ARTICLE] Low-Cost Deterministic C++ Exceptions for Embedded Systems [SITE] The Computer Language Benchmarks Game [VIDEO] L&amp;#8217;API Management : au-delà des promesses [POST] The Day The Standard Library Died [POST] Advantages of monorepos [SITE] C&amp;#43;&amp;#43; Frequently Questioned Answers [POST] Fastest Way to Load Data Into PostgreSQL Using Python [POST] Exceptions [POST] Réussir la Developer eXperience de son API web [POST] Designer une API REST [POST] How to Make Other Developers Hate to Work with You [POST] Demystifying C++ lambdas [STACKOVERFLOW] Is int safe to read from multiple threads?</description>
+    </item>
+    
+  </channel>
+</rss>
