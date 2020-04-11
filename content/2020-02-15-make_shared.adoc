@@ -127,3 +127,4 @@ ____
 * https://arne-mertz.de/2018/09/make_shared-vs-the-normal-shared_ptr-constructor/
 * https://stackoverflow.com/a/20895705
 * https://github.com/llvm-mirror/libcxx/blob/78d6a7767ed57b50122a161b91f59f19c9bd0d19/include/memory#L3651[l'implémentation par la stdlib de clang++]
+* https://www.nextptr.com/tutorial/ta1358374985/shared_ptr-basics-and-internals-with-examples
