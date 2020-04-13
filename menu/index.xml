@@ -36,7 +36,7 @@
       <pubDate>Wed, 01 Jan 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/about/</guid>
-      <description>C&amp;#8217;est quoi ce blog ? Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → la majorité des posts devrait concerner des sujets liés de près ou de loin au développement, du C++ (exemple : make_shared) et du python (exemple : packaging python) qui sont mes langages principaux, mais également des structures de données ou algorithmes (exemple : Sattolo), des outils (exemple : man), voire des sujets liés à la vie de développeur (exemple : projet Aristote).</description>
+      <description>C&amp;#8217;est quoi ce blog ? Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → la majorité des posts concerne des sujets liés au développement, en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. l&amp;#8217;algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.</description>
     </item>
     
   </channel>
