@@ -8,16 +8,16 @@ draft: false
 :pygments-style: monokai
 = Intérêt de make_shared
 
-== C'est quoi le problème, avec make_shared ?
+== Ça sert à quoi make_shared ?
 
-Quel est l'intérêt de `make_shared` ? Après tout, on peut tout à fait s'en passer pour créer des `shared_ptr` :
+Quel est l'intérêt de `make_shared` ? Après tout, on peut très bien s'en passer pour créer des `shared_ptr` :
 
 [source,cpp]
 ----
 shared_ptr<int> age{new int(42)};
 ----
 
-Quel est l'intérêt de la ligne ci-dessous par rapport à la précédente ?
+Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :
 
 [source,cpp]
 ----
@@ -28,7 +28,7 @@ shared_ptr<int> age = make_shared<int>(42);
 
 == Mais au fait, ça marche comment, shared_ptr ?
 
-Pour répondre à la question, il faut comprendre comment est implémenté `shared_ptr` : voici https://en.cppreference.com/w/cpp/memory/shared_ptr#Implementation_notes[ce qu'en dit cppreference] :
+Pour répondre à la question, il faut comprendre comment est implémenté `shared_ptr` : voici https://en.cppreference.com/w/cpp/memory/shared_ptr#Implementation_notes[ce qu'en dit cppreference] :
 
 ____
 In a typical implementation, shared_ptr holds only two pointers:
@@ -39,25 +39,23 @@ In a typical implementation, shared_ptr holds only two pointers:
 The control block is a *dynamically-allocated object* that holds:
 
 * either a pointer to the managed object or the managed object itself;
-* the deleter (type-erased);
-* the allocator (type-erased);
+* [...]
 * the number of shared_ptrs that own the managed object;
-* the number of weak_ptrs that refer to the managed object.
 ____
 
 Ainsi, dans l'exemple précédent, on a :
 
-* l'objet managé, ici un `int`, qui vit sur le heap
-* le control-block du `shared_ptr`, qui vit sur le heap
-* l'objet `shared_ptr` lui-même, qui vit sur la stack, et qui contient des pointeurs vers les deux objets précédents
+* l'objet managé, ici un `int`, heap-allocated
+* le control-block du `shared_ptr`, heap-allocated
+* l'objet `shared_ptr` lui-même, stack-allocated, et qui contient des pointeurs vers les deux objets précédents
 
 == Il dit qu'il voit pas le rapport
 
-Le rapport, c'est que les heap-allocations https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack[*sont lentes, très lentes*]...
+Le rapport, c'est que les heap-allocations https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack[sont lentes, très lentes]...
 
 Et que sans `make_shared`, on en fait deux : une pour créer l'objet managé, et une pour allouer le control-block, alors qu'avec `make_shared`, les deux sont faites en une seule allocation.
 
-En plus d'être plus rapide, c'est également plus cache-friendly : comme une seule allocation est faîte pour l'objet managé et pour le control-block, les données seront nécessairement contiguës en mémoire.
+En plus d'être plus rapide, c'est également plus cache-friendly : comme une seule allocation est faite pour l'objet managé et pour le control-block, les données seront nécessairement contiguës en mémoire.
 
 == Et c'est tout ?
 
@@ -67,19 +65,24 @@ Sans `make_shared`, on a deux expressions, l'une pour créer l'objet managé, et
 
 [source,cpp]
 ----
-do_something(shared_ptr<int>(new int(42)), dubious_function());
+do_something(shared_ptr<int>(new int(42)), dangerous_function());
 ----
 
-Il se pourrait que cette ligne soit évaluée dans l'ordre suivant :
+C'est pas obligatoire, mais _il se pourrait_ que cette ligne soit évaluée dans l'ordre suivant :
 
 1.  création de l'int 42
-2.  appel de `dubious_function`
+2.  appel de `dangerous_function`
 3.  création du `shared_ptr` gérant 42
 4.  appel de `do_something`
 
-Si `dubious_function` throw, flip-flap le leak : l'objet managé a été créé, mais ne sera jamais détruit (>_<')
+Si `dangerous_function` throw, flip-flap le leak : l'objet managé a été créé, mais ne sera jamais détruit (>_<')
 
 Alors qu'avec `make_shared`, la création de l'objet managé, et le contrôle de son cycle de vie par le `shared_ptr` ont lieu *dans la même expression* et sont indissociables :
+
+[source,cpp]
+----
+do_something(make_shared(42), dangerous_function());
+----
 
 En généralisant un peu, on voit pourquoi il est déconseillé de différer la création d'un objet et son contrôle par le `shared_ptr` :
 
@@ -92,11 +95,6 @@ shared_ptr<int> safe_age{age};
 
 Si `some code` throw ou retourne, on aura le même problème que plus haut : l'objet ne sera jamais détruit car jamais passé au `shared_ptr` censé gérer son cycle de vie.
 
-[source,cpp]
-----
-do_something(make_shared(42), dubious_function());
-----
-
 == Le mot de la fin
 
 Ça n'a pas grand chose à voir avec `make_shared`, mais vu qu'on a discuté de l'implémentation de `shared_ptr`...
@@ -105,12 +103,16 @@ On voit que la bonne façon de partager des shared_ptr sur un objet managé est 
 
 [source,cpp]
 ----
-shared_ptr<int> age = make_shared<int>(42);
-shared_ptr<int> second_age = age;  // GOOD : tous les shared_ptr partagent le même control-block
-shared_ptr<int> third_age{age.get()};   // BAD : third_age a un control-block indépendant des shared_ptr précédents !
+shared_ptr<int> age1 = make_shared<int>(42);
+
+// GOOD : tous les shared_ptr partagent le même control-block :
+shared_ptr<int> age2 = age1;
+
+// BAD : age3 a un control-block indépendant de celui de age2 et age3 :
+shared_ptr<int> age3{age1.get()};
 ----
 
-Ici, l'int 42 va être détruit deux fois : lorsque `age` et `second_age` seront détruits, *ET* lorsque `third_age` sera détruit !
+Ici, l'int 42 va être détruit deux fois : lorsque `age1` et `age2` seront détruits, *ET* lorsque `age3` sera détruit !
 
 Voici https://en.cppreference.com/w/cpp/memory/shared_ptr#Notes[ce qu'en dit cppreference] :
 
