@@ -7,7 +7,7 @@ draft: false
 
 == C'est quoi ce blog ?
 
-Je suis Phidra, développeur depuis une douzaine d'années → la majorité des posts devrait concerner des sujets liés de près ou de loin au développement, du C++ (exemple : link:{{< ref "2020-02-15-make_shared.adoc" >}}[make_shared]) et du python (exemple : link:{{< ref "2020-03-17-packaging-python.adoc" >}}[packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (exemple : link:{{< ref "2020-02-28-shuffle.adoc" >}}[Sattolo]), des outils (exemple : link:{{< ref "2020-02-20-man.adoc" >}}[man]), voire des sujets liés à la vie de développeur (exemple : link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[projet Aristote]).
+Je suis Phidra, développeur depuis une douzaine d'années → la majorité des posts concerne des sujets liés au développement, en C++ (exemple : link:{{< ref "2020-02-15-make_shared.adoc" >}}[make_shared]) et en python (exemple : link:{{< ref "2020-03-17-packaging-python.adoc" >}}[packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (exemple : link:{{< ref "2020-02-28-shuffle.adoc" >}}[Sattolo]), des outils (exemple : link:{{< ref "2020-02-20-man.adoc" >}}[man]), voire des sujets liés à la vie de développeur (exemple : link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[projet Aristote]).
 
 == Pourquoi ?
 
