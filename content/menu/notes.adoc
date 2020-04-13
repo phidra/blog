@@ -43,6 +43,17 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [POST] https://thomasvilhena.com/2019/08/a-successful-deployment-model[A successful deployment model]
+
+=== Lu le 2020-04-13, publié le 2019-08-02 par https://thomasvilhena.com/[Thomas VILHENA] dev web.
+
+* Selon lui, les règles pour limiter les risques liés au déploiement :
+** Use the same deployable image for test, staging and production environments
+** Update systems without downtime
+** Fully automate the deployment process
+** Set up and rely on automatic monitoring for early problem detection (splitté en _health monitoring_ et _error monitoring_)
+** Support rollback to earlier application versions
+
 == [POST] https://robertheaton.com/2020/04/06/systems-design-for-advanced-beginners/[Systems design for Advanced Beginners]
 
 === Lu le 2020-04-06, publié le 2020-04-06 par https://robertheaton.com/about/[Robert HEATON], dev sécurité à https://stripe.com/fr[Stripe, société de paiement en ligne]
