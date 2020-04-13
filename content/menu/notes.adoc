@@ -41,7 +41,7 @@ Je veux tester sur cette page une autre façon de prendre des notes, probablemen
 
 La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inclure que des références consultées et terminées : pas de "à lire" ou "à finir de visionner".
 
-Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
+Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 == [POST] https://thomasvilhena.com/2019/08/a-successful-deployment-model[A successful deployment model]
 
