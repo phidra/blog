@@ -22,20 +22,24 @@ toc::[]
 
 == Pourquoi cette page
 
-Je croise souvent des articles/vidéos/posts/etc. dont j'ai envie de garder quelque chose. Jusqu'ici, ma façon canonique de le faire était d'en "extraire" la connaissance. Par exemple, si je regarde une <<video-sur-P-egal-NP,intéressante vidéo sur les problèmes P-difficiles et NP-difficiles>>, je vais ajouter ce que j'en retiens à ma base de notes sur le sujet, c'est à dire au fichier `notes/complexity.otl`, éventuellement en ajoutant le lien vers la vidéo en référence. Je prends ces notes (et d'autres) en utilisant https://www.vim.org/scripts/script.php?script_id=3515[vim-outliner] : en plus de les visualiser efficacement, le format est text-only, donc efficace, et facile à grepper.
+Je croise souvent des articles/vidéos/posts/etc. dont j'ai envie de garder quelque chose. Jusqu'ici, ma façon canonique de le faire était d'en "extraire" la connaissance et de trouver un endroit dans mes notes où l'ajouter.
 
-Je veux tester sur cette page une autre façon de prendre des notes, probablement complémentaire du process que je suivais jusqu'ici : j'empile en vrac les liens vers les références intéressantes, assorties de quelques notes assez brutes. Cette pile n'a pas vocation à être structurée, elle est simplement triée par ordre de lecture.
+Par exemple, après avoir regardé une <<video-sur-P-egal-NP,vidéo sur les problèmes P et NP-difficiles>>, je vais créer un fichier `notes/algorithmic_complexity.otl`, et y mettre ce que j'en aurais compris, reformulé et réorganisé à ma sauce, éventuellement en ajoutant le lien vers la vidéo en référence. Si par la suite j'enrichis ma connaissance du sujet, alors je complèterai ou corrigerai ce fichier.
+
+Avantage : j'ai des notes structurées sur les sujets que j'ai étudiés. L'outil que j'utilise, https://www.vim.org/scripts/script.php?script_id=3515[vim-outliner], produit un format texte particulièrement lisible et facile à grepper. Le process de structuration et reformulation de l'information est *très* formateur puisqu'il me permet d'identifier les points mal compris.
+
+Inconvénient : produires ces notes "raffinées" (dans le sens de "traitées pour en extraire l'essentiel") et structurées demande beaucoup de temps. Par ailleurs, je n'y mets que de l'info "académique", rarement partielle ou brute, et jamais ce qui est de l'ordre de l'opinion. De façon plus anecdotique, le format otl est parfois limitant, et elles sont compliquées à partager.
+
+Je veux tester sur cette page une autre façon de prendre des notes, probablement complémentaire du process que je suivais jusqu'ici : j'empile en vrac les liens vers les références intéressantes, assorties de quelques notes assez brutes.
 
 === Ce que j'en attends
 
 * déjà, ça me permet de les partager plus simplement que l'arborescence de répertoires qu'est devenu mon projet `notes`.
-* le côté déstructuré, associé au fait que les notes peuvent être minimales (quelques point à retenir), voire inexistantes (la simple présence du lien étant le signe que j'ai eu envie de pérenniser l'article) rendront mon process certes moins poussé, mais plus simple, puisque je n'ai pas besoin d'extraire et de structurer la connaissance pour la pérenniser.
+* mais surtout, le côté déstructuré, associé au fait que les notes peuvent être minimales (quelques point à retenir), voire inexistantes (la simple présence du lien étant le signe que j'ai eu envie de pérenniser l'article) rendront mon process certes moins poussé, mais plus simple : j'espère avoir moins d'inertie à jeter quelques notes sur des articles qui m'ont intéressés.
 * pour autant, il me reste possible de prendre des notes un peu plus touffues (e.g. <<liens-avec-des-notes-un-peu-touffues,ici>>), que je pourrais facilement convertir en notes structurées otl, ou en post.
 * même si la source reste textuelle (asciidoctor), le rendu HTML me permet des choses impossibles en textuel simple, à commencer par le formatage du code.
 
 La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inclure que des références consultées et terminées : pas de "à lire" ou "à finir de visionner".
-
-*Attention* : ces notes sont prises avec *ma* vision des choses. Notamment, au sein d'un article, je ne prends pas de notes sur ce pour quoi j'estime ne pas avoir besoin de rappel/notes, ou sur ce qui n'éveille pas mon intérêt. Du coup, ne prenez pas ces notes comme des TL;DR des articles référencés.
 
 Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
