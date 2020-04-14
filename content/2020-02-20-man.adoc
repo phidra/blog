@@ -16,10 +16,10 @@ La plupart du temps, quand j'utilise `man`, je m'embête pas, et je fais par exe
 man tar
 ....
 
-Mais on trouve parfois https://stackoverflow.com/a/705483[une syntaxe précisant un numéro], assortie parfois d'une vague mention de "sections". Par exemple :
+Mais on trouve https://stackoverflow.com/a/705483[de temps à autre] une syntaxe précisant un numéro, assortie parfois d'une vague mention de "sections". Par exemple :
 
 ....
-man 2 close
+man 3 zlib
 ....
 
 J'avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs "chapitres", et que ce numéro était le numéro du chapitre : `man 3 zlib` était équivalent à _ouvre le troisième chapitre du man de zlib_.
@@ -42,7 +42,7 @@ Un simple `man man` suffit pour comprendre : les sections ne sont pas des chapit
 * la section 3 les manpages des fonctions de librairies (notamment la glibc)
 * etc.
 
-Du coup, l'intérêt de préciser le numéro de section est lever l'ambiguité entre par exemple :
+L'intérêt de préciser le numéro de section est donc de lever l'ambiguité entre par exemple :
 
 * la page de manuel du syscall `tee` (permettant de dupliquer un pipe) qu'on trouverait avec `man 2 tee`
 * la page de manuel du programme `tee` (qui redirige stdin à la fois sur stdout et dans un fichier) qu'on trouverait avec `man 1 tee`
@@ -65,7 +65,7 @@ Ici, le `open` dont il est question est un syscall, dont il faut consulter la ma
 
 == Quelques commandes utiles
 
-D'abord : `man man`. Et aussi :
+D'abord `man man`. Et également :
 
 === connaître le contenu d'une section donnée
 
