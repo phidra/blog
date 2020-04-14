@@ -5,11 +5,17 @@ draft: false
 ---
 = À propos
 
-== C'est quoi ce blog ?
+== Quoi
 
-Je suis Phidra, développeur depuis une douzaine d'années → la majorité des posts concerne des sujets liés au développement, en C++ (e.g. link:{{< ref "2020-02-15-make_shared.adoc" >}}[utilité de make_shared]) et en python (e.g. link:{{< ref "2020-03-17-packaging-python.adoc" >}}[le packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. link:{{< ref "2020-02-28-shuffle.adoc" >}}[l'algorithme de Sattolo]), des outils (e.g. link:{{< ref "2020-02-20-man.adoc" >}}[les sections de man]), voire des sujets liés à la vie de développeur (e.g. link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[le projet Aristote]).
+Je suis Phidra, développeur depuis une douzaine d'années → ce blog contient des posts liés au développement, surtout en C++ (e.g. link:{{< ref "2020-02-15-make_shared.adoc" >}}[utilité de make_shared]) et en python (e.g. link:{{< ref "2020-03-17-packaging-python.adoc" >}}[le packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. link:{{< ref "2020-02-28-shuffle.adoc" >}}[l'algorithme de Sattolo]), des outils (e.g. link:{{< ref "2020-02-20-man.adoc" >}}[les sections de man]), voire des sujets liés à la vie de développeur (e.g. link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[le projet Aristote]).
 
-== Pourquoi ?
+== Comment
+
+Ce blog est généré avec https://gohugo.io/[hugo]. Il utilise une version https://github.com/phidra/hugo-theme-m10c[légèrement modifiée] du https://github.com/vaga/hugo-theme-m10c[thème m10c] écrit par https://vaga.io/[Fabien CASTERS alias vaga]. Le https://www.hakharien.fr/article-burger-menu-css[menu hamburger sur petits écrans] dépend https://material.io/resources/icons/?style=baseline[des Material icons]. Le site est actuellement hébergé sur https://pages.github.com/[github pages].
+
+Ce blog est mis à disposition selon les termes de la http://creativecommons.org/licenses/by/4.0/[licence Creative Commons Attribution 4.0 International].
+
+== Pourquoi
 
 Si ce blog avait un fil rouge, ce serait la "vulgarisation tech" : j'essaye de répondre moi-même de la façon la plus pédagogique possible aux questions que je me pose.
 
@@ -23,14 +29,10 @@ C'est mon premier blog, donc je vais peut-être taper à côté, mais voici ce q
 * *Expérimenter un espace de prise de notes différent* : j'abuse au quotidien de https://github.com/vimoutliner/vimoutliner[vim outliner] pour mes notes tech. J'aurais du mal à me passer de ses qualités, mais ce format textuel est parfois limitant. De plus, certaines notes prennent la forme d'une aventure, un cheminement suivi, et le raconter sous la forme d'un ou plusieurs posts me semble plus adapté. Je suis curieux de voir ce que donnera cette expérimentation :-)
 * *Garder sous contrôle ma tendance à me disperser*, en me donnant un jalon clair sur des sujets que je veux explorer : si j'ai posté dessus, j'ai convergé, sinon, j'ai pas vraiment fini.
 
-== Un blog tech... en français ?!
+=== Un blog tech... en français ?!
 
 On peut poser légitimement la question : pourquoi faire un blog tech en français, dans un univers où 1. la maîtrise de l'anglais est indispensable, et 2. pour maximiser l'audience, il faut publier en anglais ?
 
 Je pourrais arguer qu'il y a justement énormément de ressources en anglais, alors même qu'il est plus facile pour beaucoup de francophones de consulter une ressource dans leur langue, malgré le point 1.
 
 Mais plus pragmatiquement : je m'exprime mieux, et surtout plus vite en français → c'est plus SIMPLE pour moi d'écrire ce blog en français. Et comme je ne sais pas trop où cette aventure va me mener, ni même si je continuerai à publier régulièrement du contenu dans quelques mois, autant commencer simplement.
-
-== Comment
-
-Ce blog est construit par https://gohugo.io/[hugo], générateur de site statique écrit en go. Il utilise https://github.com/vaga/hugo-theme-m10c[le thème m10c] écrit par https://vaga.io/[Fabien CASTERS alias vaga], avec https://github.com/phidra/hugo-theme-m10c[de petites modifications], la plus importante étant https://www.hakharien.fr/article-burger-menu-css[l'utilisation d'un menu hamburger sur petits écrans] ; celui-ci dépend https://material.io/resources/icons/?style=baseline[des Material icons]. Le site est actuellement hébergé sur https://pages.github.com/[github pages].
