@@ -5,16 +5,16 @@ draft: false
 ---
 = Qu'est-ce qui fait une équipe efficace ?
 
-Si on vous posait la question, qu'est-ce que vous répondriez ? De mon côté, j'aurais sans doute répondu des éléments autour de :
+Si on vous posait la question, qu'est-ce que vous répondriez ? Pour ma part, j'aurais sans doute avancé des éléments comme :
 
 - des membres compétents
 - des membres qui s'entendent bien
 - un niveau technique homogène (ou au contraire disparate ?)
-- des membres qui savent travailler en équipe (ça veut dire quoi, d'ailleurs ?)
+- des membres qui savent travailler en équipe (ça veut dire quoi, ça, d'ailleurs ?)
 - une équipe à taille humaine
 - ...
 
-Mais êtes-vous *sûrs* que chercher à atteindre ces objectifs améliorerait l'efficacité de votre équipe ?
+Mais suis-je *certain* que chercher à atteindre ces objectifs améliorerait l'efficacité de mon équipe ?
 
 Cette question, Google se l'est posée, et entre 2012 et 2014, dans le cadre du projet *Aristotle*, ils ont choisi d'aborder la question sous l'angle pragmatique de l'analyse de données. Et comme google dispose de beaucoup de données sur leurs équipes (et des compétences nécessaires pour les analyser !), ça vaut le coup de jeter un coup d'oeil à leurs conclusions...
 
@@ -26,7 +26,7 @@ Un enseignement intéressant, c'est que certains éléments dont on penserait qu
 
 - la performance individuelle des membres de l'équipe (!)
 - la proximité spatiale des membres (être physiquement dans le même bureau)
-- le fait de baser sa prise de décisions sur le consensus
+- le fait pour l'équipe de baser sa prise de décision sur le consensus
 - le caractère extroverti des membres de l'équipe
 - la charge de travail
 - la séniorité de l'équipe
@@ -36,9 +36,9 @@ Un enseignement intéressant, c'est que certains éléments dont on penserait qu
 
 Mon interprétation des choses, c'est qu'il serait trompeur de dire que ces facteurs n'ont *aucune* influence.
 
-Prenons la taille de l'équipe par exemple : pour moi, la conclusion de l'étude n'est pas qu'elle n'a pas d'importance pour qu'une équipe donnée fonctionne bien. D'ailleurs, je vis actuellement au travail une situation où passer de ~5 personnes à ~12 est compliqué : les dynamiques et process qui marchaient bien à 6 sont moins efficaces à 12.
+Prenons la taille de l'équipe par exemple : pour moi, la conclusion de l'étude n'est pas qu'elle n'a pas d'importance pour que telle équipe donnée fonctionne bien. D'ailleurs, je vis actuellement au travail une situation où passer de ~5 personnes à ~12 est compliqué : les dynamiques et process qui marchaient bien à 6 sont moins efficaces à 12.
 
-Tel que je vois les choses, c'est plutôt que comme on trouve des petites équipes qui fonctionnent bien, et des grandes équipes qui fonctionnent bien aussi, il est inutile de faire de "telle taille" un objectif à atteindre, avec comme espoir d'améliorer magiquement l'efficacité de l'équipe.
+À mon sens, c'est plutôt que comme on trouve des petites équipes qui fonctionnent bien, et des grandes équipes qui fonctionnent bien aussi, il est inutile de faire de "telle taille" un objectif à atteindre, avec comme espoir d'améliorer magiquement l'efficacité de l'équipe.
 
 == Le plus important : la sécurité psychologique
 
@@ -112,7 +112,7 @@ Les moyens de favoriser la team psychological safety :
 
 == D'autres facteurs importants
 
-Si on n'en a qu'un à retenir, c'est la sécurité psychologique, mais l'étude a montré que ces autres facteurs étaient corrélés à la réussite d'une équipe :
+Si on n'en a qu'un à retenir, c'est la sécurité psychologique, mais l'étude a également montré que ces autres facteurs étaient corrélés à la réussite d'une équipe :
 
 [%autowidth.stretch,cols=2*] 
 |=== 
