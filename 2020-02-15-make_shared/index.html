@@ -60,15 +60,15 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          3 min read
         </div></div>
     </header>
     <div class="post-content">
       <div class="sect1">
-<h2 id="_c_est_quoi_le_problème_avec_make_shared">C&#8217;est quoi le problème, avec make_shared ?</h2>
+<h2 id="_Ça_sert_à_quoi_make_shared">Ça sert à quoi make_shared ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Quel est l&#8217;intérêt de <code>make_shared</code> ? Après tout, on peut tout à fait s&#8217;en passer pour créer des <code>shared_ptr</code> :</p>
+<p>Quel est l&#8217;intérêt de <code>make_shared</code> ? Après tout, on peut très bien s&#8217;en passer pour créer des <code>shared_ptr</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -76,7 +76,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Quel est l&#8217;intérêt de la ligne ci-dessous par rapport à la précédente ?</p>
+<p>Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -92,7 +92,7 @@
 <h2 id="_mais_au_fait_ça_marche_comment_shared_ptr">Mais au fait, ça marche comment, shared_ptr ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Pour répondre à la question, il faut comprendre comment est implémenté <code>shared_ptr</code> : voici <a href="https://en.cppreference.com/w/cpp/memory/shared_ptr#Implementation_notes">ce qu&#8217;en dit cppreference</a> :</p>
+<p>Pour répondre à la question, il faut comprendre comment est implémenté <code>shared_ptr</code> : voici <a href="https://en.cppreference.com/w/cpp/memory/shared_ptr#Implementation_notes">ce qu&#8217;en dit cppreference</a> :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -118,16 +118,10 @@
 <p>either a pointer to the managed object or the managed object itself;</p>
 </li>
 <li>
-<p>the deleter (type-erased);</p>
-</li>
-<li>
-<p>the allocator (type-erased);</p>
+<p>[&#8230;&#8203;]</p>
 </li>
 <li>
 <p>the number of shared_ptrs that own the managed object;</p>
-</li>
-<li>
-<p>the number of weak_ptrs that refer to the managed object.</p>
 </li>
 </ul>
 </div>
@@ -139,13 +133,13 @@
 <div class="ulist">
 <ul>
 <li>
-<p>l&#8217;objet managé, ici un <code>int</code>, qui vit sur le heap</p>
+<p>l&#8217;objet managé, ici un <code>int</code>, heap-allocated</p>
 </li>
 <li>
-<p>le control-block du <code>shared_ptr</code>, qui vit sur le heap</p>
+<p>le control-block du <code>shared_ptr</code>, heap-allocated</p>
 </li>
 <li>
-<p>l&#8217;objet <code>shared_ptr</code> lui-même, qui vit sur la stack, et qui contient des pointeurs vers les deux objets précédents</p>
+<p>l&#8217;objet <code>shared_ptr</code> lui-même, stack-allocated, et qui contient des pointeurs vers les deux objets précédents</p>
 </li>
 </ul>
 </div>
@@ -155,13 +149,13 @@
 <h2 id="_il_dit_qu_il_voit_pas_le_rapport">Il dit qu&#8217;il voit pas le rapport</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Le rapport, c&#8217;est que les heap-allocations <a href="https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack"><strong>sont lentes, très lentes</strong></a>&#8230;&#8203;</p>
+<p>Le rapport, c&#8217;est que les heap-allocations <a href="https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack">sont lentes, très lentes</a>&#8230;&#8203;</p>
 </div>
 <div class="paragraph">
 <p>Et que sans <code>make_shared</code>, on en fait deux : une pour créer l&#8217;objet managé, et une pour allouer le control-block, alors qu&#8217;avec <code>make_shared</code>, les deux sont faites en une seule allocation.</p>
 </div>
 <div class="paragraph">
-<p>En plus d&#8217;être plus rapide, c&#8217;est également plus cache-friendly : comme une seule allocation est faîte pour l&#8217;objet managé et pour le control-block, les données seront nécessairement contiguës en mémoire.</p>
+<p>En plus d&#8217;être plus rapide, c&#8217;est également plus cache-friendly : comme une seule allocation est faite pour l&#8217;objet managé et pour le control-block, les données seront nécessairement contiguës en mémoire.</p>
 </div>
 </div>
 </div>
@@ -176,11 +170,11 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">do_something(shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)),</span> <span style="color: #f8f8f2">dubious_function());</span></code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">do_something(shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)),</span> <span style="color: #f8f8f2">dangerous_function());</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Il se pourrait que cette ligne soit évaluée dans l&#8217;ordre suivant :</p>
+<p>C&#8217;est pas obligatoire, mais <em>il se pourrait</em> que cette ligne soit évaluée dans l&#8217;ordre suivant :</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -188,7 +182,7 @@
 <p>création de l&#8217;int 42</p>
 </li>
 <li>
-<p>appel de <code>dubious_function</code></p>
+<p>appel de <code>dangerous_function</code></p>
 </li>
 <li>
 <p>création du <code>shared_ptr</code> gérant 42</p>
@@ -199,10 +193,15 @@
 </ol>
 </div>
 <div class="paragraph">
-<p>Si <code>dubious_function</code> throw, flip-flap le leak : l&#8217;objet managé a été créé, mais ne sera jamais détruit (&gt;_&lt;')</p>
+<p>Si <code>dangerous_function</code> throw, flip-flap le leak : l&#8217;objet managé a été créé, mais ne sera jamais détruit (&gt;_&lt;')</p>
 </div>
 <div class="paragraph">
 <p>Alors qu&#8217;avec <code>make_shared</code>, la création de l&#8217;objet managé, et le contrôle de son cycle de vie par le <code>shared_ptr</code> ont lieu <strong>dans la même expression</strong> et sont indissociables :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">do_something(make_shared(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">dangerous_function());</span></code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>En généralisant un peu, on voit pourquoi il est déconseillé de différer la création d&#8217;un objet et son contrôle par le <code>shared_ptr</code> :</p>
@@ -217,11 +216,6 @@
 <div class="paragraph">
 <p>Si <code>some code</code> throw ou retourne, on aura le même problème que plus haut : l&#8217;objet ne sera jamais détruit car jamais passé au <code>shared_ptr</code> censé gérer son cycle de vie.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">do_something(make_shared(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">dubious_function());</span></code></pre>
-</div>
-</div>
 </div>
 </div>
 <div class="sect1">
@@ -235,13 +229,17 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
-<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">second_age</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">age;</span>  <span style="color: #75715e">// GOOD : tous les shared_ptr partagent le même control-block</span>
-<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">third_age{age.get()};</span>   <span style="color: #75715e">// BAD : third_age a un control-block indépendant des shared_ptr précédents !</span></code></pre>
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age1</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
+
+<span style="color: #75715e">// GOOD : tous les shared_ptr partagent le même control-block :</span>
+<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age2</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">age1;</span>
+
+<span style="color: #75715e">// BAD : age3 a un control-block indépendant de celui de age2 et age3 :</span>
+<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age3{age1.get()};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ici, l&#8217;int 42 va être détruit deux fois : lorsque <code>age</code> et <code>second_age</code> seront détruits, <strong>ET</strong> lorsque <code>third_age</code> sera détruit !</p>
+<p>Ici, l&#8217;int 42 va être détruit deux fois : lorsque <code>age1</code> et <code>age2</code> seront détruits, <strong>ET</strong> lorsque <code>age3</code> sera détruit !</p>
 </div>
 <div class="paragraph">
 <p>Voici <a href="https://en.cppreference.com/w/cpp/memory/shared_ptr#Notes">ce qu&#8217;en dit cppreference</a> :</p>

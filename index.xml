@@ -17,8 +17,8 @@
       <pubDate>Tue, 17 Mar 2020 22:14:41 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-03-17-packaging-python/</guid>
-      <description>Comme beaucoup d&amp;#8217;autres avant moi, je fais un article sur le packaging python.
- Je ne vais pas cependant PAS expliquer comment packager son projet (ou pas beaucoup, et ça reste facultatif ^^) : à la place, je vais essayer d&amp;#8217;expliquer grossièrement ce dont on parle quand on s&amp;#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&amp;#8217;ai faite moi.
+      <description>Comme beaucoup d&amp;#8217;autres avant moi, je blogge sur le packaging python.
+ Je ne vais pas cependant PAS expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d&amp;#8217;expliquer grossièrement ce dont on parle quand on s&amp;#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&amp;#8217;ai faite moi.
  Ce post n&amp;#8217;est donc pas suffisant pour naviguer comme un poisson dans les eaux du packaging python, l&amp;#8217;objectif est plutôt d&amp;#8217;en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.</description>
     </item>
     
@@ -28,11 +28,11 @@
       <pubDate>Wed, 11 Mar 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-03-11-aristotle-project/</guid>
-      <description>Si on vous posait la question, qu&amp;#8217;est-ce que vous répondriez ? De mon côté, j&amp;#8217;aurais sans doute répondu des éléments autour de :
+      <description>Si on vous posait la question, qu&amp;#8217;est-ce que vous répondriez ? Pour ma part, j&amp;#8217;aurais sans doute avancé des éléments comme :
    des membres compétents
   des membres qui s&amp;#8217;entendent bien
   un niveau technique homogène (ou au contraire disparate ?)
-  des membres qui savent travailler en équipe (ça veut dire quoi, d&amp;#8217;ailleurs ?)
+  des membres qui savent travailler en équipe (ça veut dire quoi, ça, d&amp;#8217;ailleurs ?)
   une équipe à taille humaine
   &amp;#8230;&amp;#8203;</description>
     </item>
@@ -56,8 +56,8 @@
       
       <guid>https://phidra.github.io/blog/2020-02-20-man/</guid>
       <description>Position du problème La plupart du temps, quand j&amp;#8217;utilise man, je m&amp;#8217;embête pas, et je fais par exemple :
- man tar   Mais on trouve parfois une syntaxe précisant un numéro, assortie parfois d&amp;#8217;une vague mention de &#34;sections&#34;. Par exemple :
- man 2 close   J&amp;#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib.</description>
+ man tar   Mais on trouve de temps à autre une syntaxe précisant un numéro, assortie parfois d&amp;#8217;une vague mention de &#34;sections&#34;. Par exemple :
+ man 3 zlib   J&amp;#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib.</description>
     </item>
     
     <item>
@@ -66,8 +66,8 @@
       <pubDate>Fri, 14 Feb 2020 15:08:25 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-02-15-make_shared/</guid>
-      <description>C&amp;#8217;est quoi le problème, avec make_shared ? Quel est l&amp;#8217;intérêt de make_shared ? Après tout, on peut tout à fait s&amp;#8217;en passer pour créer des shared_ptr :
- shared_ptr&amp;lt;int&amp;gt; age{new int(42)};   Quel est l&amp;#8217;intérêt de la ligne ci-dessous par rapport à la précédente ?
+      <description>Ça sert à quoi make_shared ? Quel est l&amp;#8217;intérêt de make_shared ? Après tout, on peut très bien s&amp;#8217;en passer pour créer des shared_ptr :
+ shared_ptr&amp;lt;int&amp;gt; age{new int(42)};   Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :
  shared_ptr&amp;lt;int&amp;gt; age = make_shared&amp;lt;int&amp;gt;(42);   TL;DR : c&amp;#8217;est plus un peu plus efficace, et un peu moins risqué.
    Mais au fait, ça marche comment, shared_ptr ?</description>
     </item>
@@ -78,7 +78,7 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19. Dynamic Programming I: Fibonacci, Shortest Paths [ARTICLE] Safe Systems Programming in Rust:The Promise and the Challenge [POST] My Coding Interview Style [VIDEO] P vs NP et le zoo de complexité informatique [ARTICLE] A brief introduction to C++’s model for type- and resource-safety [POST] A modern ‘Hello, World’ program needs more than just code [ARTICLE] Low-Cost Deterministic C++ Exceptions for Embedded Systems [SITE] The Computer Language Benchmarks Game [VIDEO] L&amp;#8217;API Management : au-delà des promesses [POST] The Day The Standard Library Died [POST] Advantages of monorepos [SITE] C&amp;#43;&amp;#43; Frequently Questioned Answers [POST] Fastest Way to Load Data Into PostgreSQL Using Python [POST] Exceptions [POST] Réussir la Developer eXperience de son API web [POST] Designer une API REST [POST] How to Make Other Developers Hate to Work with You [POST] Demystifying C++ lambdas [STACKOVERFLOW] Is int safe to read from multiple threads?</description>
+      <description>Liste des liens    Pourquoi cette page [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19. Dynamic Programming I: Fibonacci, Shortest Paths [ARTICLE] Safe Systems Programming in Rust:The Promise and the Challenge [POST] My Coding Interview Style [VIDEO] P vs NP et le zoo de complexité informatique [ARTICLE] A brief introduction to C++’s model for type- and resource-safety [POST] A modern ‘Hello, World’ program needs more than just code [ARTICLE] Low-Cost Deterministic C++ Exceptions for Embedded Systems [SITE] The Computer Language Benchmarks Game [VIDEO] L&amp;#8217;API Management : au-delà des promesses [POST] The Day The Standard Library Died [POST] Advantages of monorepos [SITE] C&amp;#43;&amp;#43; Frequently Questioned Answers [POST] Fastest Way to Load Data Into PostgreSQL Using Python [POST] Exceptions [POST] Réussir la Developer eXperience de son API web [POST] Designer une API REST [POST] How to Make Other Developers Hate to Work with You [POST] Demystifying C++ lambdas [STACKOVERFLOW] Is int safe to read from multiple threads?</description>
     </item>
     
     <item>
@@ -87,8 +87,9 @@
       <pubDate>Wed, 01 Jan 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/references/</guid>
-      <description>Liste non-exhaustive (à compléter), et pas particulièrement triée (c&amp;#8217;est pas parce qu&amp;#8217;un item est en haut que je le juge mieux que son voisin du dessous)
-   Internal Pointers : a l&amp;#8217;air de regrouper des articles sur divers sujets dont des sujets tech. Pour le moment, je n&amp;#8217;ai lu que quelques articles (sur la concurrence et sur les type traits, notamment), mais ils étaient très pédagogiques. C&amp;#8217;est pas hyper clair qui est derrière.</description>
+      <description>Work in progress &amp;#8594; liste non-exhaustive.
+ Elle n&amp;#8217;est pas particulièrement triée : c&amp;#8217;est pas parce qu&amp;#8217;un item est en haut que je le juge plus intéressant que son voisin du dessous.
+   Sam &amp;amp; Max : on ne les présente plus. Si ? C&amp;#8217;est l&amp;#8217;une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c&amp;#8217;est l&amp;#8217;une des références qui m&amp;#8217;a donnée envie de blogger.</description>
     </item>
     
     <item>
@@ -97,7 +98,8 @@
       <pubDate>Wed, 01 Jan 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/about/</guid>
-      <description>C&amp;#8217;est quoi ce blog ? Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → la majorité des posts concerne des sujets liés au développement, en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. l&amp;#8217;algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.</description>
+      <description>Quoi Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → ce blog contient des posts liés au développement, surtout en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. l&amp;#8217;algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.g. le projet Aristote).
+   Comment Ce blog est généré avec hugo.</description>
     </item>
     
   </channel>
