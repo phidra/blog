@@ -9,20 +9,27 @@ draft: false
 = Packaging python
 
 
-Comme https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/[beaucoup] http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/[d'autres] https://philpep.org/blog/etat-de-l-art-du-packaging-python[avant] https://www.bernat.tech/pep-517-and-python-packaging/[moi], je fais un article sur le packaging python.
+Comme https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/[beaucoup] http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/[d'autres] https://philpep.org/blog/etat-de-l-art-du-packaging-python[avant] https://www.bernat.tech/pep-517-and-python-packaging/[moi], je blogge sur le packaging python.
 
-Je ne vais pas cependant *PAS* expliquer comment packager son projet (ou pas beaucoup, et ça reste facultatif ^^) : à la place, je vais essayer d'expliquer grossièrement ce dont on parle quand on s'intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j'ai faite moi.
+Je ne vais pas cependant *PAS* expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d'expliquer grossièrement ce dont on parle quand on s'intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j'ai faite moi.
 
-Ce post *n'est donc pas suffisant* pour naviguer comme un poisson dans les eaux du packaging python, l'objectif est plutôt d'en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.
+Ce post *n'est donc pas suffisant* pour naviguer comme un poisson dans les eaux du packaging python, l'objectif est plutôt d'en sortir un peu mieux armé pour *utiliser les autres ressources sur le sujet* : docs, articles, tutos, etc. Pour atteindre cet objectif, j'ai essayé de reléguer les infos non-essentielles (mais intéressantes tout de même) dans des collapsibles, que vous pouvez allègrement ignorer en première lecture, comme celui-ci :
+
++++ <details><summary> +++
+FACULTATIF = info non-essentielle (mais intéressante tout de même)
++++ </summary><div> +++
+
+Nan, mais là, c'était juste pour illustrer : passez votre chemin, y'a rien à voir ^^'
+
++++ </div></details> +++
 
 Buckle up.
 
-
 == [.line-through]#Fifty# Two shades of packaging
 
-La mère de toutes les confusions, c'est qu'il existe *DEUX* personnes qui sont intéressées par le packaging python, et elles ont des besoins différents :
+La mère de toutes les confusions : il existe *DEUX* types de personnes qui sont intéressées par le packaging python, et elles ont des besoins *TRÈS* différents :
 
-. Le *CONSOMMATEUR* du package : prenons un développeur (appelons-le Motoki) qui travaille sur son projet `killerapp`, destiné à révolutionner tous les serveurs de France et de Navarre. `killerapp` a parfois besoin de faire des requêtes HTTP, et le projet dépend donc de la librairie `requests`. Motoki va alors installer `requests` par exemple en lançant :
+. Le *CONSOMMATEUR* du package : prenons un développeur (appelons-le Motoki) qui travaille sur son projet `killerapp`, qui va révolutionner tous les serveurs de France et de Navarre. `killerapp` a parfois besoin de faire des requêtes HTTP, et le projet dépend donc de la librairie `requests`. Motoki va alors installer `requests` par exemple en lançant :
 +
 [source]
 ----
@@ -38,9 +45,7 @@ pip wheel .
 
 Typiquement, un dev sera bien plus souvent dans la peau de Motoki que dans celle de Kenneth. Pourtant, consommateur et producteur sont les deux facettes d'un même sujet : pour que Motoki puisse installer sa librairie, il a bien fallu que quelqu'un (Kenneth) ait préparé les fichiers d'abord.
 
-Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, `pip`, https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] pour installer les packages python, est utilisé par Motoki comme par Kenneth, alors que leurs besoins n'ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre utilisable par d'autres développeurs.
-
-Cette même confusion est par exemple entretenue sur https://packaging.python.org/[la page d'accueil du site référent sur la question], qui mentionne à égalité l'installation et la distribution de packages :
+Beaucoup de ressources mélangent les deux points de vue, ce qui nuit à la compréhension du sujet. Par exemple https://packaging.python.org/[la page d'accueil du site référent sur la question], qui mentionne à égalité l'installation et la distribution de packages :
 
 [quote,'https://packaging.python.org/[Python Packaging User Guide]']
 ____
@@ -51,12 +56,12 @@ Essential tools and concepts for working within the Python development ecosystem
 * to learn how to package and distribute your projects, see ...
 ____
 
+Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, `pip`, https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] pour installer les packages python, peut être utilisé aussi bien par Motoki que par Kenneth, alors que leurs besoins n'ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre utilisable par d'autres développeurs.
 
-== C'est marrant les petits bouts de fromage par terre, c'est ça que vous appelez le packaging ?
+
+== Le packaging vu par Motoki, CONSOMMATEUR de package
 
 Maintenant qu'on sait qu'il y a deux facettes au packaging, voyons un peu de quoi on parle.
-
-=== Le packaging vu par Motoki, CONSOMMATEUR de package
 
 Motoki veut que son code puisse utiliser `requests`. Par exemple, il veut pouvoir écrire :
 
@@ -79,7 +84,7 @@ FACULTATIF = plus de détails sur cet "emplacement accessible à python"
 
 La question est : où faut-il copier du code pour qu'il soit utilisable par une ligne du genre `import requests` ?
 
-Le plus souvent, sous Linux, il s'agit du répertoire `site-packages` du virtualenv.
+Le plus souvent, sous Linux, il s'agit du répertoire `site-packages` dans le virtualenv.
 
 En simplifiant grossièrement, (https://docs.python.org/3/reference/import.html[plus de détails ici]), lorsque python exécute `import requests`, il va rechercher un module nommé `requests` dans https://docs.python.org/3/library/sys.html#sys.path[l'un des chemins du `sys.path`], l'exécuter, et créer un objet représentant le module (contenant notamment la fonction membre `get`, utilisée ci-dessus), accessible par la variable `requests`.
 
@@ -116,7 +121,7 @@ python -c "import salut ; salut.coucou_le_monde()"
 
 +++ </div></details> +++
 
-==== Et l'archive de code téléchargée, elle provient d'où ?
+=== Et l'archive de code téléchargée, elle provient d'où ?
 
 Dans la majorité des cas, de https://pypi.org/[PyPI], un repo public de programmes et librairies python. Par défaut, c'est de PyPI que Motoki obtient `requests`, lorsqu'il fait :
 
@@ -190,14 +195,15 @@ Cependant, même si https://pypi.org/[PyPI] est son fournisseur de package par d
 pip install git+https://github.com/psf/requests#egg=requests
 ----
 +
-2. depuis une archive locale (éventuellement, téléchargée avec `pip download requests`) :
+2. depuis une archive locale (éventuellement, téléchargée avec `pip download`) :
 +
 [source]
 ----
-pip install /path/to/requests-2.23.0-py2.py3-none-any.whl
+pip download requests --dest /tmp/downloaded/
+pip install /tmp/downloaded/requests-2.23.0-py2.py3-none-any.whl
 ----
 +
-3. depuis un répertoire local contenant un projet python (dans ce cas, pip fabrique lui-même l'archive à partir du contenu du répertoire) :
+3. depuis un répertoire local contenant un projet python (dans ce cas, pip fabrique lui-même le package à partir du contenu du répertoire, avant de l'installer) :
 +
 [source]
 ----
@@ -214,12 +220,16 @@ cd /tmp/local-requests
 pip install .
 ----
 +
-Certains projets utilisent cette façon de faire (que je trouve moins intuitive qu'un `pip install -r requirements.txt`) pour installer leurs dépendances. L'apparente magie de `pip install .` m'a longtemps laissé perplexe et c'est allé mieux le jour où j'ai compris comment marchait le mécanisme d'installation de package décrit ci-dessus.
+Certains projets utilisent cette façon de faire (que je trouve moins intuitive qu'un `pip install -r requirements.txt`) pour installer leurs dépendances. L'apparente magie de `pip install .` m'a longtemps laissé perplexe et c'est allé mieux le jour où j'ai compris le mécanisme d'installation de package décrit ci-dessus.
 
-Le point important à garder à l'esprit, c'est que dans tous ces cas, le TL;DR ci-dessus reste vrai (à la provenance du code près), et pip se contente de récupérer du code pour le mettre à un emplacement accessible à python.
+Le point important à garder à l'esprit, c'est que dans tous ces cas, le TL;DR ci-dessus reste vrai : pip se contente de récupérer du code pour le mettre à un emplacement accessible à python.
 
 
-==== Points laissés de côté pour simplifier le propos
++++ <details><summary> +++
+FACULTATIF = pour aller plus loin, côté *consommateur* de package
++++ </summary><div> +++
+
+Pour simplifier le propos, j'ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d'ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :
 
 * les https://virtualenv.pypa.io/en/latest/#[virtualenvs] et ce qu'ils apportent : l'un des sujets les plus importants, mais dont la compréhension ne présente pas de difficulté particulière
 * `setuptools`, le fait d'utiliser `setup.py` pour installer des packages (`python setup.py install` ou `python setup.py develop`), et https://stackoverflow.com/questions/15724093/difference-between-python-setup-py-install-and-pip-install/15731459#15731459[pourquoi il reste préférable d'utiliser `pip`].
@@ -242,7 +252,9 @@ pip help install | grep "Base URL of Python Package Index"
 * la différence *à l'installation d'un package* entre https://packaging.python.org/glossary/#term-source-distribution-or-sdist[une source-distribution] et une https://packaging.python.org/glossary/#term-built-distribution[une built-distribution] (notamment si le package a https://docs.python.org/3/extending/extending.html[des extensions C], comme par exemple https://pypi.org/project/ujson/[ujson])
 * les alternatives à pip, notamment https://pipenv.pypa.io/en/latest/[pipenv] (https://packaging.python.org/tutorials/managing-dependencies/[officiellement recommandé]), et https://python-poetry.org/[poetry], vus comme le futur™
 
-=== Le packaging vu par Kenneth, PRODUCTEUR de package
++++ </div></details> +++
+
+== Le packaging vu par Kenneth, PRODUCTEUR de package
 
 TL;DR : une fois qu'on a compris ce que voulait faire Motoki, il devient plus facile de comprendre l'objectif de Kenneth :
 
@@ -250,13 +262,13 @@ TL;DR : une fois qu'on a compris ce que voulait faire Motoki, il devient plus fa
 2. ...assorties des méta-données et informations lui permettant de les installer correctement
 3. les publier sur PyPI
 
-La bonne nouvelle, c'est que pip va tout gérer automatiquement, sauf la publication sur PyPI : tout ce que Kenneth doit faire, c'est lui donner à manger les infos dont il aura besoin : quels sont les fichiers qu'on veut distribuer (en effet, ce serait ballot d'intégrer le `.gitignore` ou des `*.swp` au package), et quelles sont les métadonnées du package (version du package, dépendances, version de python supportée, mais également auteur, license, etc.).
+La bonne nouvelle, c'est que pip va (presque) tout gérer automatiquement : la seule chose que Kenneth doit faire, c'est lui donner à manger les infos dont il aura besoin : quels sont les fichiers qu'on veut distribuer (en effet, ce serait ballot d'intégrer le `.gitignore` ou des `*.swp` au package), et quelles sont les métadonnées du package (version du package, dépendances, version de python supportée, mais également auteur, license, etc.).
 
 La façon canonique de passer ces infos à pip, et de les mettre dans https://packaging.python.org/glossary/#term-setup-py[un fichier `setup.py`] à la racine du projet. Plus précisément, ce fichier `setup.py` https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L69[appelle la fonction `setuptools.setup`], en lui passant en argument les infos nécessaires pour builder le package. C'est un peu déroutant au début d'appeler une fonction pour définir des métadonnées, mais on s'y fait.
 
-==== Concrètement ça ressemble à quoi ?
+=== Concrètement ça ressemble à quoi ?
 
-Je garde le code de `requests` comme fil rouge, voici https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py[son setup.py à l'heure où j'écris ces lignes]. Morceaux choisis :
+Je garde le code de `requests` comme fil rouge, voici https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py[son setup.py à l'heure où j'écris ces lignes]. Quand je dis que Kenneth doit donner à manger à pip les infos nécesaires, ça ressemble à ça :
 
 * https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L78[l'argument `packages`] indique à pip quels sont les fichiers du repo qui doivent être packagés :
 +
@@ -300,22 +312,23 @@ __author__ = 'Kenneth Reitz'
 # [...]
 ----
 
-Allez, je vais me la jouer "site du zéro", et proposer un TP. C'est vraiment pas indispensable pour avoir compris cette partie, mais http://www.1001-citations.com/citation-31397/[comme dirait Confucius], faire les choses moi-même m'aide à les comprendre, je pars du principe que ça va être pareil avec toi, lecteur. C'est même pas obligé de prendre un vrai projet comme `requests` pour ça : c'est également très intéressant de packager un repo quasi-vide, et de trouver quelles sont les conditions minimales pour que pip accepte d'en faire un package.
-
+Allez, je vais me la jouer "site du zéro", et proposer un TP. C'est vraiment pas indispensable pour avoir compris cette partie, mais http://www.1001-citations.com/citation-31397/[j'entends -> j'oublie ; je vois -> je retiens ; toussa toussa] : faire les choses moi-même m'aide à les comprendre, je pars du principe que ça va être pareil pour vous.
 
 +++ <details><summary> +++
 FACULTATIF : installe `requests` via un package que tu as buildé toi-même avec amour <3
 +++ </summary><div> +++
+
+À noter que c'est même pas obligé de prendre un vrai projet comme `requests` pour ça : c'est également très intéressant de packager un repo quasi-vide, et de trouver quelles sont les conditions minimales pour que pip accepte d'en faire un package.
 
 
 1. builder un package à partir du repo requests
 +
 [source,bash]
 ----
-mkdir -p /tmp/monsupertp/{local-requests,wheel-dir,unzipped-wheel}
-cd /tmp/monsupertp/
+mkdir /tmp/monsupertp/ && cd /tmp/monsupertp/
 git clone --depth=1 https://github.com/psf/requests local-requests
 cd local-requests
+
 # la ligne suivante builde la wheel :
 pip wheel --wheel-dir=/tmp/monsupertp/wheel-dir .
 ----
@@ -328,6 +341,7 @@ cd /tmp/monsupertp/
 # la wheel n'est qu'une archive zip des fichiers packagés + des métadonnées :
 file wheel-dir/requests-2.23.0-py2.py3-none-any.whl
 # wheel-dir/requests-2.23.0-py2.py3-none-any.whl: Zip archive data, at least v2.0 to extract
+
 unzip wheel-dir/requests-2.23.0-py2.py3-none-any.whl -d /tmp/monsupertp/unzipped-wheel
 ls /tmp/monsupertp/unzipped-wheel/
 # requests  requests-2.23.0.dist-info
@@ -369,17 +383,19 @@ pip install /tmp/monsupertp/wheel-dir/requests-2.23.0-py2.py3-none-any.whl
 +
 4. Profit !
 
-On peut également jouer à builder un package minimaliste pour bien montrer 1. qu'il n'est nécessaire que d'avoir `setup.py` pour que pip reconnaisse un repo comme installable et 2. pour jouer avec les arguments passés à la fonction `setuptools.setup`, et voir quels sont ceux indispensables à pip. Je laisse cet exercice au lecteur.
-
 +++ </div></details> +++
 
 
 Pour résumer, côté PRODUCTEUR, on veut "juste" remplir un `setup.py` correct pour que pip puisse bosser, et transformer un repo de code (parfois appelé `source-tree`) en un package.
 
-==== Points laissés de côté pour simplifier le propos
++++ <details><summary> +++
+FACULTATIF = pour aller plus loin, côté *producteur* de package
++++ </summary><div> +++
+
+Pour simplifier le propos, j'ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d'ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :
 
 * https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives[l'utilisation directe de `setup.py` pour builder un package] (`python setup.py sdist/bidst/bidst_wheel`), le lien avec `pip wheel`, et l'absence de possibilité pour pip de builder des source-distribution (même si https://github.com/pypa/pip/issues/6041[une issue est ouverte sur le sujet])
-* c'est pas tout de créer un package, encore faut-il l'uploader sur PyPI : c'est le boulot de https://pypi.org/project/twine/[twine]
+* c'est pas tout de créer un package, encore faut-il l'uploader sur PyPI, ce que pip ne sait pas faire : c'est le boulot de https://pypi.org/project/twine/[twine]
 * la différence *à la création d'un package* entre https://packaging.python.org/glossary/#term-source-distribution-or-sdist[une source-distribution] et une https://packaging.python.org/glossary/#term-built-distribution[une built-distribution] (notamment si le package a https://docs.python.org/3/extending/extending.html[des extensions C], comme par exemple https://pypi.org/project/ujson/[ujson])
 * l'utilisation de https://setuptools.readthedocs.io/en/latest/setuptools.html#configuring-setup-using-setup-cfg-files[setup.cfg] pour avoir un appel à `setuptools.setup(...)` minimaliste
 * le subtil art de préciser les fichiers qui feront partie du package : https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages[find_packages], https://setuptools.readthedocs.io/en/latest/setuptools.html#including-data-files[MANIFEST.in + include_package_data], etc.
@@ -390,23 +406,26 @@ Pour résumer, côté PRODUCTEUR, on veut "juste" remplir un `setup.py` correct 
 * la https://docs.python.org/3/distutils/extending.html#integrating-new-commands[customisation de l'étape de build] de son package
 * les alternatives aux https://packaging.python.org/glossary/#term-wheel[wheels] comme format de built-distributions, et notamment https://packaging.python.org/glossary/#term-egg[les eggs], même s'ils sont https://packaging.python.org/discussions/wheel-vs-egg/[moins intéressants que les wheels], et https://stackoverflow.com/questions/6292652/what-is-the-difference-between-an-sdist-tar-gz-distribution-and-an-python-egg/6292710#6292710[considérés comme deprecated].
 
++++ </div></details> +++
+
+
 == En conclusion
 
-L'objectif de cet article était de donner une vue "générale" du sujet (ce qui se passe quand on installe un package, et ce qu'il faut donc faire pour en produire un) avec comme espoir qu'il soit ainsi plus facile de comprendre les articles, docs, tutos et autres ressources sur le sujet.
+L'objectif de cet article était de donner une vue générale du sujet (ce qui se passe quand on installe un package, et ce qu'il faut donc faire pour en produire un) avec comme espoir qu'il soit ainsi plus facile de comprendre les articles, docs, tutos et autres ressources sur le sujet.
 
 Si on garde cette vision avec un peu de hauteur, le packaging python, c'est pas si compliqué :
 
 * le *consommateur de package* veut un outil (`pip`) capable de récupérer une archive code (https://packaging.python.org/glossary/#term-wheel[une wheel]), et de la décompresser à un emplacement utilisable par python (sous Linux, un répertoire `site-packages`)
 * le *producteur de package* veut un outil (`pip` ou `setuptools`) capable de générer cette archive de code à partir de son repo, et le configure en indiquant dans un fichier `setup.py` le code à packager, et ses métadonnées
 
-En dehors de la confusion entre ces deux rôles, le sujet est rendu ardu par le joyeux bordel que sont la doc et les outils. J'aurais pu commencer par là tellement c'est le bazar : l'histoire du packaging python est un chemin de croix long et douloureux, parsemé d'une ribambelle de librairies, outils et formats aujourd'hui dépréciés (en vrac, et ne visitez les liens que pour faire de l'archéologie : https://setuptools.readthedocs.io/en/latest/easy_install.html[easy_install], https://wiki.python.org/moin/Distribute[distribute], https://pypi.org/project/Distutils2/[distutils2], https://packaging.python.org/glossary/#term-egg[les eggs], ...).
+En dehors de la confusion entre ces deux rôles, le sujet est rendu ardu par le joyeux bordel que sont la doc et les outils. J'aurais pu commencer par là tellement c'est le bazar : l'histoire du packaging python a été longue et douloureuse, parsemée d'une ribambelle de librairies, outils et formats aujourd'hui dépréciés (en vrac, et ne visitez les liens que pour faire de l'archéologie : https://setuptools.readthedocs.io/en/latest/easy_install.html[easy_install], https://wiki.python.org/moin/Distribute[distribute], https://pypi.org/project/Distutils2/[distutils2], https://packaging.python.org/glossary/#term-egg[les eggs], ...).
 
 Concernant la doc, ça va beaucoup mieux depuis quelques années, et il https://setuptools.readthedocs.io/en/latest/setuptools.html[n'est plus si compliqué de trouver la documentation des features, même inhabituelles]. Restez tout de même critique à la lecture des docs et autres billets de blog sur le sujet : comme il n'y en a pas tant que ça d'une part, et que le sujet évolue vite d'autre part, beaucoup d'articles sont maintenant (partiellement) dépréciés. Cette remarque est valable aussi pour le présent article : cher lecteur du futur (c'est un pléonasme, ça, non ?), je t'invite à bien vérifier la date à laquelle j'ai écrit cet article.
 
 Concernant les outils, ça vaut c'que ça vaut, mais pour commencer, j'aurais tendance à conseiller de tout ignorer à part :
 
 * `setuptools` = https://setuptools.readthedocs.io/en/latest/setuptools.html[package tierce permettant de packager un projet], s'appuie sur `distutils` (qui est standard, mais que vous pouvez ignorer car rarement utilisé directement)
-* `pip` = outil https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] (et le plus utilisé) pour installer les packages python. Utilise `setuptools` under the hood.
+* `pip` = outil https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing[officiellement recommandé] (et le plus utilisé) pour installer les packages python. pip utilise `setuptools` sous le capot.
 * `wheel` = à la fois le https://packaging.python.org/glossary/#term-wheel[format de built-distribution] recommandé, et un https://pypi.org/project/wheel/[package tierce] permettant de les builder et fournissant une CLI pour les manipuler. Défini dans la https://www.python.org/dev/peps/pep-0427/[PEP 427].
 * `twine` = utilitaire le plus utilisé pour https://pypi.org/project/twine/[publier son package sur PyPI]
 * `pipenv` / `poetry` = pipenv est https://pipenv.pypa.io/en/latest/[l'outil officiellement recommandé] faisant le café pour la gestion des packages, car mélangeant le métier de `virtualenv`, de `pip`, du `requirements.txt`, et du `package.json` https://docs.npmjs.com/creating-a-package-json-file[de npm]. poetry est une https://python-poetry.org/[alternative à pipenv] jouant le même rôle.
@@ -416,4 +435,4 @@ Une petite dernière confusion à ne pas faire pour la route : le même terme `p
 * https://packaging.python.org/glossary/#term-distribution-package[distribution package] : une archive contenant du code, des données et métadonnées. Le lecteur attentif remarquera que c'est ce dont il était question tout au long du présent article.
 * https://packaging.python.org/glossary/#term-import-package[import package] : ce sont des https://docs.python.org/3/tutorial/modules.html#packages[regroupements de modules python], c'est à dire grosso-modo, des répertoires contenant des fichiers de code.
 
-C'est le contexte qui dit de quoi on parle, n'hésitez-pas à vous référer au https://packaging.python.org/glossary/[glossaire officiel], car s'il n'est pas exhaustif, il a le mérite d'être clair et concis.
+C'est le contexte qui dit de quoi on parle, n'hésitez-pas à vous référer au https://packaging.python.org/glossary/[glossaire officiel], car à défaut d'être exhaustif, il a le mérite d'être particulièrement clair et concis.
