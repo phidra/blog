@@ -33,9 +33,9 @@ image::noncyclic.svg[role="text-center"]
 
 *TL;DR :*
 
-* attention : avec une implémentation naïve, toutes les permutations possibles ne sont pas équi-probables
-* Fisher-Yates est une implémentation correcte de ce point de vue
-* Sattolo est à utiliser lorsqu'on veut une permutation cyclique
+* attention : une implémentation naïve serait biaisée, et toutes les permutations possibles ne seraient pas équi-probables
+* l'algorithme de Fisher-Yates est une implémentation correcte de ce point de vue
+* l'algorithme de Sattolo est à utiliser lorsqu'on veut une permutation cyclique
 
 == Implémentation naïve
 
@@ -46,15 +46,17 @@ En première approche, on serait tenté d'itérer sur chaque carte de l'array, e
 ----
 def shuffle(array):
     n = len(array)
-    for i in range(n - 1):  # on itère sur chaque carte
-        swapped = random.randrange(0, n)  # on choisit une autre carte avec laquelle swapper
+    # on itère sur chaque carte :
+    for i in range(n - 1):
+        # pour chacune, on choisit une autre carte avec laquelle swapper :
+        swapped = random.randrange(0, n)
         array[i], array[swapped] = array[swapped], array[i]
 ----
 
 Le problème de cette implémentation, c'est qu'elle ne produit pas des permutations équi-probables !
 
 +++ <details><summary> +++
-Voir les explications sur le caractère non-équi-probable des permutations produites par l'algo naïf.
+Explications sur le caractère non-équi-probable des permutations
 +++ </summary><div> +++
 
 === Ma compréhension du problème avec les mains
@@ -65,7 +67,7 @@ Avec les mains (je suis très attaché aux explications avec les mains), on va r
 * (à noter que dans le cas général, *C~N~* n'est pas la dernière carte du tableau passé en entrée, vu qu'une autre carte a pu y être placée entretemps : c'est la dernière carte [.underline]#au moment de la dernière itération#)
 * on continue à fonctionner à rebours : lorsque l'algo en est à son avant-dernière itération, la position de *C~N-1~* sera, elle aussi, choisie de façon équi-probable parmi toutes les cases du tableau :
 ** si jamais *C~N-1~* est attribuée aux N-1 premières cases, tout va bien
-** MAIS si jamais *C~N-1~* se retrouve attribuée à la dernière case du tableau, alors à l'itération d'après, elle sera DEVENUE *C~N~*, et aura donc (presque) toutes les chances d'être déplacée ailleurs !
+** MAIS si jamais *C~N-1~* se retrouve attribuée à la dernière case du tableau, alors à l'itération d'après, elle sera DEVENUE *C~N~*, et sera donc sans doute déplacée ailleurs !
 * dit autrement, la carte qui était à l'avant-dernière position au moment de l'avant-dernière itération aura MOINS de chances de finir sur la dernière case que sur les autres !
 
 === Une preuve (un peu) plus formelle par l'absurde
@@ -76,13 +78,13 @@ Avec les mains (je suis très attaché aux explications avec les mains), on va r
 ** puis, on a de nouveau *N* positions possibles pour le shuffle de la SECONDE carte
 ** etc. jusqu'à ce qu'on ait mélangé chacune des *N* cartes
 * comme *N^N^ > N!*, fatalement, il existera des jeux de tirages aléatoires différents qui produiront des permutations finales de l'array _identiques_
-* si l'algo naïf était uniforme,, les *N^N^* permutations produites par l'algo se répartiraient équitablement entre les *N!* permutations possibles, ce qui est impossible dans le cas général, car *N^N^* n'est pas divisible par *N!*
+* si l'algo naïf était uniforme,, les *N^N^* permutations produites par l'algo se répartiraient équitablement entre les *N!* permutations possibles, ce qui est impossible car dans le cas général, *N^N^* n'est pas divisible par *N!*
 
 +++ </div></details> +++
 
-Ces explications ne sont pas indispensables pour la suite, vous pouvez allégrement les ignorer et passer directement à la suite.
+Ces explications ne sont pas indispensables pour la suite, vous pouvez allègrement les ignorer et passer directement à la suite.
 
-== Fisher-Yates
+== L'algorithme de Fisher-Yates
 
 Un algo qui produit des permutations équi-probables est https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle[l'algorithme de Fisher-Yates] :
 
@@ -92,7 +94,7 @@ Un algo qui produit des permutations équi-probables est https://en.wikipedia.or
 def shuffle(array):
     n = len(array)
     for i in range(n - 1):
-        swapped = random.randrange(i, n)
+        swapped = random.randrange(i, n)  # <--
         array[i], array[swapped] = array[swapped], array[i]
 ----
 
@@ -101,12 +103,13 @@ Et je vous entends déjà crier que c'est le même algo. Ben non ! C'est subtil,
 .Fisher-Yates, ce qui change
 [source,python]
 ----
-swapped = random.randrange(i, n)  # la borne inf du randrange est i, pas 0 !
+# la borne inf du randrange est i, pas 0 :
+swapped = random.randrange(i, n)
 ----
 
 C'est une petite modification, mais ça change tout !
 
-J'aime bien voir les choses comme ça, avec Fisher-Yates :
+J'aime bien voir les choses comme ça, avec l'algorithme de Fisher-Yates :
 
 * on itère sur les emplacements libres, et on attribue à chacun une carte au hasard parmi celles restantes
 * à chaque itération, la carte mise à l'emplacement l'est *définitivement* : elle ne sera plus déplacée par la suite
@@ -116,17 +119,19 @@ Alors qu'avec l'implémentation naïve, on avait plutôt :
 * on itère sur les cartes, et on va leur attribuer un emplacement au hasard
 * à chaque itération, la carte mise à l'emplacement *peut encore être déplacée* par les itérations suivantes
 
+Et ce coup-ci, les différentes permutations produites par l'algorithme sont équi-probables.
+
 +++ <details><summary> +++
-Voir les explications sur le caractère équi-probable des permutations produites par Fisher-Yates
+Explications sur le caractère équi-probable des permutations
 +++ </summary><div> +++
 
-Combien de permutations différentes Fisher-Yates peut-il produire ?
+Combien de permutations différentes l'algorithme de Fisher-Yates peut-il produire ?
 
 * on a *N* cartes possibles pour le choix de la carte qui finira en PREMIÈRE position
 * puis, il reste *N-1* cartes possibles pour le choix de la carte qui finira en SECONDE position
 * etc.
 
-Au final, Fisher-Yates peut produire *N!* permutations.
+Au final, l'algorithme de Fisher-Yates peut produire *N!* permutations.
 
 On produit donc bien chacune des *N!* permutations possibles, et comme les permutations produites sont toutes différentes, elles sont équi-probables.
 
@@ -147,13 +152,13 @@ image::noncyclic.svg[role="text-center"]
 
 On peut s'intéresser à ce qui se passe lorsqu'on part d'une case (par exemple `A`) et qu'on suit les flèches rouges.
 
-Par exemple, si on part de `A`, on produit la sortie `A > B > C > A > ...`.
+Par exemple, si on part de `A`, on produit la sortie `A > B > C > A > B > C > A ...`.
 
 Et si on part de `E`, on produit la sortie `E > D > E > ...`.
 
 En y regardant de plus près, on voit donc que cette permutation est en fait constituée de deux sous-permutations indépendantes : `A > B > C` qui mélange les 3 premières cartes, et `D > E` qui mélange les 2 dernières.
 
-Il existe pourtant des permutations constitutées "d'un seul tenant", comme celle-ci :
+Il existe pourtant des permutations "d'un seul tenant", comme celle-ci :
 
 .Permutation "d'un seul tenant"
 image::cyclic.svg[role="text-center"]
@@ -164,7 +169,7 @@ Par exemple avec `A`, on produit la sortie `A > B > C > E > D > A > ...`.
 
 Ce sont ces permutations "d'un seul tenant" qu'on appelle des permutations cycliques.
 
-Note : lorsqu'on calcule une permutation quelconque, chaque carte peut se retrouver n'importe où, et a donc une petite chance de se retrouver sur sa case initiale. Ainsi, même si elle n'a qu'une chance sur 120 (*5!*) d'arriver, la permutation produite par Fisher-Yates pourrait tout à fait être la suivante, qui ne mélange pas le jeu :
+Note : lorsqu'on calcule une permutation quelconque, chaque carte peut se retrouver n'importe où, et a donc une petite chance de se retrouver sur sa case initiale. Ainsi, même si elle n'a qu'une chance sur 120 (= *5!*) d'arriver, la permutation produite par l'algorithme de Fisher-Yates pourrait tout à fait être la suivante, qui ne mélange pas le jeu :
 
 .Permutation "identité"
 image::identity.svg[role="text-center"]
@@ -173,37 +178,38 @@ image::identity.svg[role="text-center"]
 
 === Et Sattolo dans tout ça ?
 
-L'algorithme de Sattolo, ressemble beaucoup à Fisher-Yates, mais ne produit QUE des permutations cycliques :
+L'algorithme de Sattolo, ressemble beaucoup à l'algorithme de Fisher-Yates, mais ne produit QUE des permutations cycliques :
 
-.Sattolo
+.Algorithme de Sattolo
 [source,python]
 ----
 def shuffle(array):
     n = len(array)
     for i in range(n - 1):
-        swapped = random.randrange(i + 1, n)
+        swapped = random.randrange(i + 1, n)  # <--
         array[i], array[swapped] = array[swapped], array[i]
 ----
 
 [.line-through]#Et je vous entends déjà crier que c'est le même algo# Bon je refais pas mon laïus, ce qui change, c'est :
 
-.Sattolo, ce qui change
+.Algorithme de Sattolo, ce qui change
 [source,python]
 ---- 
-swapped = random.randrange(i + 1, n)  # la place actuelle ne peut PAS se voir attribuée la carte déjà dessus
+# la place actuelle ne peut PAS se voir attribuée la carte déjà dessus :
+swapped = random.randrange(i + 1, n)
 ----
 
-Vous irez lire les références (notamment l'article de Dan LUU qui explique très bien les choses avec les mains, justement) pour les preuves, mais non seulement l'algo ne génère *QUE* des permutations cycliques, mais de plus, celles-ci sont équi-probables \o/
+Le truc cool : non seulement l'algo ne génère *QUE* des permutations cycliques, mais de plus, celles-ci sont équi-probables \o/
 
 == Références :
 
 * http://danluu.com/sattolo/[l'article qui a donné naissance à ce post]
-* https://blog.codinghorror.com/the-danger-of-naivete/[un post de Jeff ATWOOD sur Fisher-Yates vs. l'implémentation naïve]
-* https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle[la page wikipedia sur Fisher-Yates, bien fournie]
+* https://blog.codinghorror.com/the-danger-of-naivete/[un post de Jeff ATWOOD sur l'algorithme de Fisher-Yates vs. l'implémentation naïve]
+* https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle[la page wikipedia sur l'algorithme de Fisher-Yates, bien fournie]
 * https://en.wikipedia.org/wiki/Cyclic_permutation[la page wikipedia sur les permutations cycliques]
 
 
-Dans l'article qui a inspiré ce post, Dan LUU présente les permutations cycliques d'une autre façon, que j'avais initialement reprise à mon compte, avant de l'illustrer autrement :
+Dans l'article qui a inspiré ce post, Dan LUU présente les permutations cycliques d'une façon différente, que j'avais initialement reprise à mon compte, avant de choisir de les illustrer autrement :
 
 +++ <details><summary> +++
 Visualiser les permutations cycliques à partir d'un tableau trié
@@ -255,7 +261,7 @@ Produit deux cycles : `0 > 2 > 1 > 0 > ...` et `4 > 3 > 4 > ...`
 
 Bon, ben une permutation cyclique, c'est une permutation d'un [.underline]#array trié# de N entiers tel que l'array permuté *soit constitué d'un seul cycle*, de longueur N.
 
-Dans les exemples ci-dessus, si on part de l'array `012345`, `40123` en est une permutation cyclique, mais `20143` en est une permutation non-cyclique.
+Dans les exemples ci-dessus, si on part de l'array `01234`, `40123` en est une permutation cyclique, mais `20143` en est une permutation non-cyclique.
 
 +++ </div></details> +++
 
