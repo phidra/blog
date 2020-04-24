@@ -51,7 +51,7 @@ Ainsi, dans l'exemple précédent, on a :
 
 == Il dit qu'il voit pas le rapport
 
-Le rapport, c'est que les heap-allocations https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack[sont lentes, très lentes]...
+Le rapport, c'est que les heap-allocations https://stackoverflow.com/questions/2264969/why-is-memory-allocation-on-heap-much-slower-than-on-stack[sont lentes] ; en même temps, quand on voit https://sourceware.org/glibc/wiki/MallocInternals#Malloc_Algorithm[tout ce que malloc doit gérer], c'est pas étonnant...
 
 Et que sans `make_shared`, on en fait deux : une pour créer l'objet managé, et une pour allouer le control-block, alors qu'avec `make_shared`, les deux sont faites en une seule allocation.
 
@@ -130,3 +130,4 @@ ____
 * https://stackoverflow.com/a/20895705
 * https://github.com/llvm-mirror/libcxx/blob/78d6a7767ed57b50122a161b91f59f19c9bd0d19/include/memory#L3651[l'implémentation par la stdlib de clang++]
 * https://www.nextptr.com/tutorial/ta1358374985/shared_ptr-basics-and-internals-with-examples
+* https://sourceware.org/glibc/wiki/MallocInternals#Malloc_Algorithm
