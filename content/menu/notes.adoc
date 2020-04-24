@@ -43,6 +43,41 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [VIDEO] https://www.youtube.com/watch?v=Obt-vMVdM8s[Understanding the Python GIL], voir aussi le http://dabeaz.com/GIL/[post qui va avec]
+
+=== Vue le 2020-04-24, publiée à l'occasion de la PyCON 2010 le 2010-02-20 par http://www.dabeaz.com/[David BEAZLEY], speaker et dev python très influent.
+
+* attention, talk de 2010, deprecated (mais intéressant tout de même), il parle de python < 3.2
+* présentation d'un comportement curieux, avec un calcul CPU-bound :
+** monothread : 5s
+** 2 threads sur deux cores : 10s
+** 2 threads sur un seul core : 8s
+** 2 threads sur deux cores avec un process fils qui mouline en plus : 7s
+* GIL = un seul thread avance a chaque instant.
+* ancien modèle du GIL :
+** GIL relâché lors des io AINSI QUE lors du "check" (si un compteur de 100 ticks=instruction de la VM arrive a zéro), pour eviter qu'un thread cpubound ne monopolise le GIL
+** Lors du check, c'est l'os qui choisit quel thread va tourner : ça peut très bien rester celui qui tournait juste avant le check
+** Ce qu'on veut éviter c'est que l'os réveille un thread à tort : le thread essaye d'acquerir le GIL sans succès puis se rendort. 
+** Quand on a autant de cores que de thread, c'est EXACTEMENT ce qui se passe, du coup, BEAUCOUP de travail supplémentaire de l'os pour rien, qui empêche le thread "en cours" d'avancer, d'où les mauvaises perfs du cas 2 ci-dessus.
+* Nouveau GIL en python 3.2 développé par https://github.com/pitrou[Antoine PITROU]
+** on n'a plus de ticks pour empêcher les threads CPU-bounds de monopoliser le GIL
+** à la place, on a une variable globale, un thread CPU-bound tourne jusque a ce que cette variable soit mise à 1
+** pas hyper clair, mais il semblerait qu'à chaque instruction, le thread checke si la var est à 1, et si oui, relâche le GIL ?!
+** un thread tourne donc indéfiniment, tant que le GIL ne lui est pas réclamé (ou, bien sûr, tant qu'il ne fait pas d'io)
+** si un deuxième thread arrive, il commence par attendre un peu (par défaut 5 ms) voir si le premier thread relâche le GIL de lui même, puis met la variable globale à 1, ce qui force le premier thread à relâcher le GIL.
+** et pour éviter que l'os ne le refasse tourner immédiatement, le thread qui vient de relâcher le GIL sleep un peu.
+* défauts de ce modèle :
+** tous les threads (notamment les threads importants ou qui doivent faire de l'io) doivent purger les 5 ms avant d'agir... manque de responsiveness
+** si beaucoup de threads, rien ne dit que c'est le thread qui a réveillé le GIL qui va être exécuté par l'os, il peut starve
+* À noter que les io ne bloquent pas nécessairement : write bufferisé donc IO retardée, ou bien lecture depuis le page cache
+* Du coup, un thread qui fait beaucoup d'io va être TRÈS concurrencé par un autre thread cpu-bound, qui va lui piquer le GIL (et le garder! au moins le temps du timeout) à chaque io, même si cette io n'aurait pas bloqué
+* ce qui manque au nouveau GIL :
+** pouvoir prioriser les threads (e.g. certains threads vont rendre le GIL très vite)
+** possibilité de preempter : les threads importants (e.g. qui répondent à une requête réseau) devraient pouvoir préempter
+* certains OS ont un mécanisme de priorisation pas mal :
+** si un thread a rendu la main sans être préempté, il gagne en priorité
+** à l'inverse, si un thread a dû être préempté, il perd en priorité
+
 == [POST] https://thomasvilhena.com/2019/08/a-successful-deployment-model[A successful deployment model]
 
 === Lu le 2020-04-13, publié le 2019-08-02 par https://thomasvilhena.com/[Thomas VILHENA] dev web.
