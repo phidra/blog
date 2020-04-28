@@ -43,6 +43,54 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+
+== [VIDEO] https://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Andrei-Alexandrescu-Systematic-Error-Handling-in-C[Systematic error handling in C++], aussi sur https://www.youtube.com/watch?v=kaI4R0Ng4E8[youtube]
+
+=== Vue le 2020-04-27, publiée par Andrei ALEXANDRESCU, C++ legend, à l'occasion de https://cppandbeyond.com/[C++ and beyond 2012], une conf organisée par Scott MEYERS, Herbe SUTTER et Andrei ALEXANDRESCU.
+
+* contexte = error handling :
+    ** _error handling is about bad DATA (e.g. bad inputs), not bad STATE_ -> it's not about bugs
+    ** exemple de situation qui n'est PAS de l'error handling = ram défecteuse, programme incorrect, ...
+    ** exemple de situation qui est de l'error handling = plus d'espace disque, on a demandé à l'utilisateur un entier, et il a entré `toto`
+* présentation de `Expected` (malheureusement toujours pas standard à l'heure où j'écris ces lignes), un peu l'équivalent des `Maybe` d'Haskell
+* `Expected<T>` = contient soit `T`, soit l'exception qui a empêché d'avoir `T`
+* l'essentiel du talk présente l'implémentation de `Expected` comme union de `T` et `std::exception_ptr`
+* le reste du talk concerne ScopedGuard11, une intéressante forme de RAII (simplifiant la composabilité) : le principe reste du RAII : exécuter du code arbitraire (lambda) à la destruction, MAIS ça permet également d'annuler le code avec `sg.dismiss()`
+* pour voir l'intérêt dans le cadre de la gestion d'erreur, cf. l'exemple de la vidéo. On cherche à composer deux tâches `action` et `next` (qui peuvent échouer et raise une exception), en sachant d'une part que si `action` réussit, elle va nécessiter du `cleanup`, et d'autre part que `action` et `next` doivent réussir toutes les deux ou échouer toutes les deux (transaction) : si `next` échoue, il faut donc `rollback` ce qu'a fait `action`
+* façon "classique" avec RAII : 
++
+[source,cpp]
+----
+class RAII {
+RAII() { action(); }
+~RAII() { cleanup(); }
+}
+
+RAII raii;
+try {
+    next();
+} catch (...) {
+    rollback();
+    throw;
+}
+----
++
+* le problème de ce qui précède, c'est la composabilité : si `next` est à son tour une transaction de `second_action` et `second_next`, le code devient horrible à cause des nested try-catch.
+* les `ScopedGuard` simplifient le problème :
++
+[source,cpp]
+----
+action();
+auto sg1 = ScopeGuard([](){ cleanup() });  // en fin de scope, on cleanup
+auto sg2 = ScopeGuard([](){ rollback() });  // en fin de scope, on rollback
+next();
+sg2.dismiss();  // si on arrive ici, next a réussi -> on annule le rollback
+// fin du scope -> on va cleanup
+----
++
+* et on peut vérifier que même si on `next` est une transaction de `second_action` et `second_next`, le code reste simple
+
+
 == [VIDEO] https://www.youtube.com/watch?v=Obt-vMVdM8s[Understanding the Python GIL], voir aussi le http://dabeaz.com/GIL/[post qui va avec]
 
 === Vue le 2020-04-24, publiée à l'occasion de la PyCON 2010 le 2010-02-20 par http://www.dabeaz.com/[David BEAZLEY], speaker et dev python très influent.
