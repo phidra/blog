@@ -1,0 +1,63 @@
+---
+title: "R-tree et calcul d'itinéraire"
+date: 2020-05-01T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+= R-tree et calcul d'itinéraire
+
+== Position du problème
+
+=== Le vrai besoin
+
+Supposons qu'on ait une liste de toutes les rues de Bordeaux (identifiées par des ids entiers), assorties de leur géométrie : une rue est vue comme une polyline = une liste de N segments consécutifs, soit une liste de N+1 points, dont on connaît les coordonnées GPS).
+
+TODO : ici, insérer un schéma montrant une rue droite = 1 segment, une rue courbe = N segments, pour en arriver à N+1 points.
+
+TODO : insérer ici un CSV avec quelques rues : ids, name, geometry (sous forme d'une liste de points)
+
+On souhaite utiliser cette donnée pour implémenter un calculateur d'itinéraire permettant de retrouver le plus court chemin entre deux lieux de Bordeaux. Par exemple, on veut trouver le plus court chemin entre la place de la Victoire (44.831067;-0.572555) et la Gare Saint-Jean (44.826565;-0.556542).
+ 
+Pour cela, on peut stocker la topologie de Bordeaux comme un graphe dont les arêtes sont les rues, et les noeuds sont les extrémités de ces rues :
+
+TODO : insérer un plan d'un bout de Bordeaux bien adapté (si possible, la Place de la Victoire), et la façon dont on le stocke : des arêtes avec leur ids, reliées par des noeuds.
+
+Derrière on va rester simple, on peut utiliser ce bon vieil algorithme de Disjktra qui nous retrouvera le plus court chemin entre un tronçon de départ et un tronçon d'arrivée. (note : l'implémentation classique, c'est plutôt entre des noeuds, mais on passe facilement de l'un à l'autre -> je garde la représentation la plus adaptée à mon propos).
+
+Oui mais... 
+
+Ce que Dijkstra attend en entrée, ce sont deux ids de tronçons. Nous ce qu'on a, ce sont des *coordonnées GPS* !
+
+Il nous manque une étape préliminaire : comment retrouver la rue de Bordeaux la plus proche de coordonnées GPS données ?
+
+=== Un besoin équivalent à une dimension
+
+Simplifions un peu notre problème : on garde notre liste de toutes les rues de Bordeaux identifiées par des ids entiers, mais ce coup-ci on leur associe leur longueur (précise à 10 cm près, soyons fous) plutôt que leur géométrie.
+
+Supposons qu'on souhaite retrouver la rue de Bordeaux dont la longueur est la plus proche d'une longueur de référence L0 donnée. Bon, ça n'a pas beaucoup d'intérêt, c'est surtout pour introduire la suite.
+
+Par exemple, vous recherchez la rue dont la longueur est la plus proche de 50.0 mètres de long. Ça pourra être la rue d'id 10240, qui a une longueur de 49.8 mètres.
+
+Parmi beaucoup d'autres existantes, une façon efficace d'implémenter un tel service serait de stocker les rues dans un B-tree indexé par les longueurs des rues : comme le B-tree stocke les rues de façon ordonnée (sur les longueurs), et on peut requêter de façon efficace (en log(N)) la strcucture pour retrouver la rue dont la longueur est égale ou proche de la longueur voulue.
+
+Ce qui fait que ça marche bien (ou que marcherait bien un stockae dans un array trié avec dichotomie), c'est que les données sont triées selon le critère de requête (la longueur) : on peut traverser la structure, où à chaque étape, on ignore les données non-pertinentes.
+
+Si vous ne connaissez pas le b-tree, ça marche aussi avec un array trié + une dichotomie.
+
+TODO : illustrer quelques étapes.
+
+Au final, à chaque étape, on dégage la moitié des données -> log(N)
+
+=== À deux dimensions, c'est plus compliqué
+
+Ça a l'air bien, faisons ça pour stocker nos coordonnées !
+
+Ben le problème, c'est que c'est plus compliqué pour les coordonnées : comment "trier" des coordonnées, qui sont en 2D ?
+
+On pourrait envisager de trier comme les tuple : on tri d'abord sur la D1 (longitude), puis sur la D2 (latitude).
+
+Pourquoi ça ne marche pas ?
+
+TODO : montrer que c'est pas facile (si on indexe sur les longitudes uniquement, on a quand même beaucoup de données à envisager)
