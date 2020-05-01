@@ -59,5 +59,10 @@ Ben le problème, c'est que c'est plus compliqué pour les coordonnées : commen
 On pourrait envisager de trier comme les tuple : on tri d'abord sur la D1 (longitude), puis sur la D2 (latitude).
 
 Pourquoi ça ne marche pas ?
+REPONSE : parce que si on est proche en longitude, mais très éloigné en latitude, on va se retrouver calculé comme plus proche qu'un "vrai" point qui serait un peu plus éloigné en longitude mais plus proche en lattiude (car on privilégie la longitude).
+
+Dit autrement, il faut un critère de tri selon notre critère de recherche = la distance !
+
+MAIS pour calculer une distance, il faut un point de référence... casse-tête insoluble ?!
 
 TODO : montrer que c'est pas facile (si on indexe sur les longitudes uniquement, on a quand même beaucoup de données à envisager)
