@@ -10,7 +10,7 @@ draft: true
 
 == Position du problème
 
-=== Le vrai besoin
+NOTE : indiquer que ce post présuppose que le lecteur a une vague notion de comment fonctionne un b-tree.
 
 Supposons qu'on ait une liste de toutes les rues de Bordeaux (identifiées par des ids entiers), assorties de leur géométrie : une rue est vue comme une polyline = une liste de N segments consécutifs, soit une liste de N+1 points, dont on connaît les coordonnées GPS).
 
@@ -30,9 +30,9 @@ Oui mais...
 
 Ce que Dijkstra attend en entrée, ce sont deux ids de tronçons. Nous ce qu'on a, ce sont des *coordonnées GPS* !
 
-Il nous manque une étape préliminaire : comment retrouver la rue de Bordeaux la plus proche de coordonnées GPS données ?
+Il nous manque donc une étape préliminaire : comment faire le lien entre des *coordonnées GPS* et les *tronçons* dans le graphe (représentant les rues de bordeaux) ?
 
-=== Un besoin équivalent à une dimension
+== Un besoin équivalent à une dimension
 
 Simplifions un peu notre problème : on garde notre liste de toutes les rues de Bordeaux identifiées par des ids entiers, mais ce coup-ci on leur associe leur longueur (précise à 10 cm près, soyons fous) plutôt que leur géométrie.
 
@@ -50,7 +50,7 @@ TODO : illustrer quelques étapes.
 
 Au final, à chaque étape, on dégage la moitié des données -> log(N)
 
-=== À deux dimensions, c'est plus compliqué
+== À deux dimensions, c'est plus compliqué
 
 Ça a l'air bien, faisons ça pour stocker nos coordonnées !
 
@@ -61,8 +61,14 @@ On pourrait envisager de trier comme les tuple : on tri d'abord sur la D1 (longi
 Pourquoi ça ne marche pas ?
 REPONSE : parce que si on est proche en longitude, mais très éloigné en latitude, on va se retrouver calculé comme plus proche qu'un "vrai" point qui serait un peu plus éloigné en longitude mais plus proche en lattiude (car on privilégie la longitude).
 
-Dit autrement, il faut un critère de tri selon notre critère de recherche = la distance !
+TODO : illustrer graphiquement avec le cas où tous les points sauf 1 sont sur la même latitude/longitude que le point requêté, sauf 1 (qui est réellement plus proche, mais en diagonale).
 
-MAIS pour calculer une distance, il faut un point de référence... casse-tête insoluble ?!
+Dit autrement, il nous faut une structure permettant de trier les segments par "position géographique".
 
-TODO : montrer que c'est pas facile (si on indexe sur les longitudes uniquement, on a quand même beaucoup de données à envisager)
+== One solution : [.line-through]#revolution# rectangulation
+
+Le R-tree, http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[inventé en 1984], propose une solution sympa à ce type de problème.
+
+L'idée maîtresse est de proposer comme critère de "tri" des données leurs bounding-box.
+
+
