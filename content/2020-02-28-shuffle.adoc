@@ -13,7 +13,7 @@ draft: false
 
 Je suis tombé sur un https://danluu.com/sattolo/[article très intéressant], j'avais commencé à prendre des notes, mais ça se finit en post :-)
 
-Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible soit équi-probable ?
+Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible ait la même probabilité d'être choisie ?
 
 Exemple concret : prenons un jeu de 5 cartes ABCDE :
 
@@ -53,7 +53,7 @@ def shuffle(array):
         array[i], array[swapped] = array[swapped], array[i]
 ----
 
-Le problème de cette implémentation, c'est qu'elle ne produit pas des permutations équi-probables !
+Le problème de cette implémentation, c'est que certaines permutations ont plus de chances d'être retenues que d'autres : le caractère aléatoire du mélange est biaisé.
 
 +++ <details><summary> +++
 Explications sur le caractère non-équi-probable des permutations
