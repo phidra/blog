@@ -67,8 +67,54 @@ Dit autrement, il nous faut une structure permettant de trier les segments par "
 
 == One solution : [.line-through]#revolution# rectangulation
 
-Le R-tree, http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[inventé en 1984], propose une solution sympa à ce type de problème.
+Le R-tree, http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[inventé en 1984 par Antonin GUTTMAN], propose une solution sympa à ce type de problème.
 
-L'idée maîtresse est de proposer comme critère de "tri" des données leurs bounding-box.
+L'idée maîtresse est de proposer comme critère de "tri" des éléments géométriques à indexer... leur rectangle englobant (= leur bounding-box) : le *R* du R-tree est là pour *rectangle*.
 
+Ça ressemble beaucoup au B-tree, mais on va expliquer de zéro. Pour simplifier le propos, on va illustrer le principe de fonctionnement en supposant qu'on cherche à stocker des carrés C, représentés par un point = leur coin supérieur droit, et une distance = leur côté.
+
+Supposons qu'on ait les 8 carrés C suivants à stocker :
+
+TODO : illustrer les 8 carrés C1 à C8 sur un plan, chacun d'une couleur.
+
+De façon non-surprenant, un R-tree est un arbre. Les données sont stockées dans les noeuds-feuilles :
+
+TODO : illustrer un arbre à 3 niveaux (L1=racine / L2=3 noeuds  / L3=3+2+2 leaf-nodes) , où tout sauf le niveau final est un nuage gris. Les 3 noeuds finax contiennent C1 à C8.
+
+Chaque noeud non-leaf-node contient entre 2 et 4 noeuds, et ainsi de suite jusqu'à la racine :
+
+TODO : reprendre l'illustration en enlevant le nuage et en montrant les noeuds intermédaiires
+
+Le principe, c'est que chaque leaf-node contient quelques éléments géométriques stockés, ASSORTIS DE LEUR rectangle englobant (avec notre exemple, c'est facile : le rectangle englobant R d'un carré C, a les mêmes dimensions que le carré lui-même. On va l'appeler R tout de même pour pas confondre)
+
+TODO : reprendre l'illustration ou chaque élément dans les leaf-nodes se voient ajoutés un rectangle R1 à R8.
+
+Et tous les noeuds non-leaf-nodes contiennent le rectangle englobant minimal qui contient les rectangles englobants de ses fils :
+
+TODO : illustrer à la fois l'arbre avec des rectangle (d'une autre couleur ?) et le plan géométrique où on fait apparaître les rectangles englobants.
+
+note : tous les rectanble englobants dont il est question sont les rectanbles englobants MINIMAUX.
+
+Cette organisation par rectangles englobants est très puissante et permet de faire des recherche de façon très efficace.
+
+Exemple 1 : à quel carré appartient le point X,Y ?
+
+TODO : donner un schéma avec le point sur le plan géométrique pour illustrer le besoin
+
+Trop fastoche de répondre à cette question avec le r-tree :
+
+- on itère sur les éléments du noeud racine, et on regarde si leur rectangle englobant contient le point requêté 
+
+TODO : donner un double schéma : d'un côté le premier niveau de l'arbre, de l'autre le plan géométrique où seuls les 3 rectangles englobants du deuxième niveau apparaîssent
+
+- le point n'est ni dans R11, ni dans R13, et comme tous les éléments de ces sous-arbres sont contenus dans ces rectangles englobants, inutile d'explorer ces sous-arbres
+- le point est dans R12, on explore ce sous-arbre : on itère sur ses éléments, et on regarde si leur rectangle englobant contient le point requêté
+
+TODO : donner un double schéma : d'un côté le sous-arbre qui nous intéresse, de l'autre le plan géométrique où les 3 rectangles englobants du deuxième niveau apparaîssent (2 grisé, 1 dégrisé) et les 3 autres rectangles apparaissent aussi
+
+TODO : continuer.
+
+
+https://dl.acm.org/doi/pdf/10.1145/290593.290596[algo 1 de recherche de knn]
+https://dl.acm.org/doi/pdf/10.1145/320248.320255[algo 2 de recherche de knn]
 
