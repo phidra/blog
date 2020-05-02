@@ -97,9 +97,9 @@ note : tous les rectanble englobants dont il est question sont les rectanbles en
 
 Cette organisation par rectangles englobants est très puissante et permet de faire des recherche de façon très efficace.
 
-Exemple 1 : à quel carré appartient le point X,Y ?
+Exemple 1 : à quel carré appartient le point P(X,Y) ?
 
-TODO : donner un schéma avec le point sur le plan géométrique pour illustrer le besoin
+TODO : donner un schéma avec le point sur le plan géométrique, dans le carré C5, pour illustrer le besoin
 
 Trop fastoche de répondre à cette question avec le r-tree :
 
@@ -110,11 +110,35 @@ TODO : donner un double schéma : d'un côté le premier niveau de l'arbre, de l
 - le point n'est ni dans R11, ni dans R13, et comme tous les éléments de ces sous-arbres sont contenus dans ces rectangles englobants, inutile d'explorer ces sous-arbres
 - le point est dans R12, on explore ce sous-arbre : on itère sur ses éléments, et on regarde si leur rectangle englobant contient le point requêté
 
-TODO : donner un double schéma : d'un côté le sous-arbre qui nous intéresse, de l'autre le plan géométrique où les 3 rectangles englobants du deuxième niveau apparaîssent (2 grisé, 1 dégrisé) et les 3 autres rectangles apparaissent aussi
+TODO : donner un double schéma : d'un côté le sous-arbre qui nous intéresse (les autres étants grisés), de l'autre le plan géométrique où les 3 rectangles englobants du deuxième niveau apparaîssent (2 grisé, 1 dégrisé) et les 3 autres rectangles du niveau d'après apparaissent aussi.
 
-TODO : continuer.
+- le point n'est pas dans R21 ni R22, mais il est dans R23, qui est le rectangle englobant du carré C5 : le carré contenant le point P est C5, CQFD \o/
 
+On voit que l'intérêt du R-tree est de pouvoir couper au plus tôt des branches à ne pas explorer.
+
+Prenons un autre exemple : à quel carré appartient le point P'(X',Y') ?
+
+TODO : donner un schéma avec le point sur le plan géométrique, dans le carré C5, pour illustrer le besoin
+
+- comme avant, on itère sur les éléments du noeud racine, et comme avant, on sait déjà qu'on n'a que le sous-arbre central à explorer :
+
+TODO : donner un double schéma : d'un côté le sous-arbre qui nous intéresse (les autres étants grisés), de l'autre le plan géométrique où les 3 rectangles englobants du deuxième niveau apparaîssent (2 grisé, 1 dégrisé).
+
+- mais dès l'étape d'après, on voit qu'aucun des noeuds fils ne contient le point recherché : inutile d'explorer plus loin, on sait déjà que le point P' n'est contenu par aucun de nos carrés, CQFD \o/
+
+== et notre recherche du segment le plus proche alors ?
+
+C'est un poil plus compliqué, car on ne peut pas exclure les rectangles englobants aussi simplement qu'avant :
+
+TODO : donner un schéma où le point n'est pas dans le rectangle englobant, et poutant l'élément le pus proche y est.
+
+Je ne rentre pas dans les détails, voici deux algos si ça vous intéresse :
 
 https://dl.acm.org/doi/pdf/10.1145/290593.290596[algo 1 de recherche de knn]
 https://dl.acm.org/doi/pdf/10.1145/320248.320255[algo 2 de recherche de knn]
 
+Ce qu'il faut retenir, c'est que le R-tree permet également de répondre efficacement aux recherches de plus proches voisins, et donc à notre problème initial.
+
+== un peu de code 
+
+TODO : introduire ma POC.
