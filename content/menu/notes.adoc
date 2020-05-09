@@ -43,6 +43,19 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [POST] https://www.justsoftwaresolutions.co.uk/cplusplus/invariants.html[Invariants and Preconditions]
+
+=== Lu le 2020-05-07, publié le 2020-03-05 par Anthony WILLIAMS sur https://www.justsoftwaresolutions.co.uk/ qui semble être le site vitrine de consltants.
+
+* *invariant* = doit rester valable pour *TOUTES* les instances de l'objet.
+** y compris après un `move`, qui laisse l'objet dans un état "emptier than empty"
+** y compris avant un `init`, si des constructeurs défèrent la construction finale avec un `init`
+* si les invariants sont vrais tout le temps, sauf dans ces cas... c'est que ce ne sont pas des invariants !
+* dans le cas d'un `init`, plutôt que d'appeler ces "faux-invariants" des invariants, il est plus juste de considérer que *TOUTES* les méthodes de la classe *SAUF* `init` ont une précondition (qui est qu'`init` ait été appelé)
+* équivalent dans le cas du `move` : toutes les méthodes de la classe ont comme précondition que l'instance n'ait pas été `move`-ée.
+* de base, c'est ok que les méthodes de la classe brisent les invariants _temporairement_ (par exemple, au cours d'un appel de méthode), tant que ceux-ci restent vrais avant et après l'appel de méthode.
+* mais dans ce cas attention au multithreading : si l'état de l'instance est visible par un thread B pendant qu'un thread A est dans une méthode qui brise "temporairement" l'invariant -> le thread B a accès à une instance pour laquelle les invariants sont faux !
+* et ça peut arriver même si chaque ligne respecte les invariants : la thread-safety n'est pas composable
 
 == [VIDEO] https://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Andrei-Alexandrescu-Systematic-Error-Handling-in-C[Systematic error handling in C++], aussi sur https://www.youtube.com/watch?v=kaI4R0Ng4E8[youtube]
 
