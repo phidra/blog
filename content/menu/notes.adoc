@@ -43,6 +43,18 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [POST] https://robertovitillo.com/what-every-developer-should-know-about-tcp/[What every developer should know about TCP]
+
+=== Lu le 2020-05-15, publié le 2020-05-10 par https://robertovitillo.com/about[Roberto Vitillo], dev Microsoft, ancien dev Mozilla
+
+* RTT = round-trip time, qui dépend de la latency
+* TL;DR : latency et bandwidth ne sont pas indépendants. Plusieurs causes :
+** les handshakes TCP et TLS nécessitent plusieur RT -> le moment où on pourra envoyer le *premier* paquet dépend de la latency
+** cold start = le sender maintient une _congestion window_ , le temps qu'elle prend pour augmenter (et donc pour que la bandwidth augmente) dépend du RTT, donc de la latency
+** congestion control = le sender adapte ses envois de paquets en fonction du _receive buffer_ du receiver -> le temps pris pour revenir à la normale après un timeout dépend du RTT, donc de la latency
+* réutiliser les connexions déjà ouvertes est une façon de mitiger les deux premiers points
+
+
 == [POST] https://www.justsoftwaresolutions.co.uk/cplusplus/invariants.html[Invariants and Preconditions]
 
 === Lu le 2020-05-07, publié le 2020-03-05 par Anthony WILLIAMS sur https://www.justsoftwaresolutions.co.uk/ qui semble être le site vitrine de consltants.
