@@ -147,7 +147,7 @@ Ce qu'il faut retenir, c'est que le R-tree permet tout à fait de répondre effi
 Voyons toutes ces belles notions mises en pratique. On va utiliser l'implémentation du R-tree par https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html[boost::geometry] pour répondre à la problématique posée en début de post. Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code[ici] le code complet, ses dépendances, et ce qu'il faut pour le compiler, et je copie ici les extraits principaux.
 
 
-Voici comment on insère un point (assorti de son id de node OSM) dans un R-tree :
+Voici comment on insère un noeud du graphe (assorti de son id de node OSM) dans un R-tree :
 
 [source,cpp]
 ----
@@ -214,7 +214,7 @@ Côté librairies, les implémentations de R-tree ne manquent pas. On a utilisé
 Pour ne pas sucharger ce post déjà dense, j'ai laissé pas mal de points de côté, vous pouvez allègrement les ignorer en première lecture :
 
 +++ <details><summary> +++
-FACULTATIF : voici des infos complémentaires
+FACULTATIF : des infos complémentaires
 +++ </summary><div> +++
 
 ==== stockage vs. indexation
@@ -241,7 +241,7 @@ Or, avec le R-tree (et c'est également le cas avec son cousin, le B-tree), le n
 
 À titre d'exemple, le rtree d'OSRM https://github.com/Project-OSRM/osrm-backend/blob/cb4586ebee81bd5ffcad02278115a3ffa041bc15/include/util/static_rtree.hpp#L46[a une taille de node de 4kio] par défaut.
 
-Pour le cas des R-tree stockés en RAM (comme dans l'exemple avec boost::geometry donné plus haut), il semblerait intéressant d'ajuster la taille d'un node pour que celui-ci fitte tout pile dans une cache line, mais apparemment, http://pages.cs.wisc.edu/~jignesh/publ/cci.pdf[ce n'est pas aussi simple].
+Pour le cas des R-tree stockés en RAM (comme dans l'exemple avec boost::geometry donné plus haut), il semblerait intéressant au premier abord d'ajuster la taille d'un node pour que celui-ci fitte tout pile dans une cache line. Mais apparemment, http://pages.cs.wisc.edu/~jignesh/publ/cci.pdf[ce n'est pas aussi simple], et il vaut mieux prendre une taille de node plus grande. De toutes façons, ici comme partout ailleurs, la règle d'or s'applique : si les perfomances comptent, il faut benchmarker !
 
 ==== ce qu'on indexe, et ce qu'on requête
 
@@ -265,27 +265,21 @@ Le R-tree est sensible à l'ordre dans lequel les données y sont insérées : 2
 La complexité (et l'intérêt !) du R-tree est liée à la façon dont les données sont gérées dans l'arbre :
 
 * Comment construire un R-tree qui sera efficace à la requête ?
+* Comment éviter que les rectangles englobants de deux noeuds frères se recouvrent trop ?
 * Que se passe-t-il quand on y insère un nouvel élément ?
 * Et notamment, quid si cette insertion dépasse la capacité maximale du noeud le contenant (_node overflow_) ?
 * Et pour la suppression d'un élément ?
 
-Le papier original propose une implémentation (et même deux, dans le cas des _node overflow_) répondant à ces questions, mais il existe une ribambelle de structures et algorithmes dérivés du R-tree original. Pour l'essentiel, elles améliorent la construction initiale d'un R-tree à partir d'un jeu de données statiques (e.g. https://www.researchgate.net/publication/2303767_On_Packing_R-trees[l'algo qu'utilise OSRM pour remplir son R-tree]) ou bien la réorganisation des données lors des modifications dynamiques (e.g. http://www.cs.ucr.edu/~ravi/CS236Papers/rstar.pdf[le R*-tree], qui permet de mieux répartir les rectangles englobants en limitant leur recouvrement et leur étalement, et qui semble être massivement utilisé à la place du R-tree original).
+Le papier original propose une implémentation (et même deux, dans le cas des _node overflow_) répondant à ces questions, mais il existe une ribambelle de structures et algorithmes dérivés du R-tree original. Elles peuvent améliorer la construction initiale d'un R-tree à partir d'un jeu de données statiques (e.g. https://www.researchgate.net/publication/2303767_On_Packing_R-trees[l'algo qu'utilise OSRM pour remplir son R-tree]) ou bien la réorganisation des données lors des modifications dynamiques (e.g. http://www.cs.ucr.edu/~ravi/CS236Papers/rstar.pdf[le R*-tree], qui permet de mieux répartir les rectangles englobants en limitant leur recouvrement et leur étalement, et qui semble être massivement utilisé à la place du R-tree original), ou encore modifier le contenu des nodes pour fonctionner plus efficacement avec les caches des processeurs (e.g. https://dl.acm.org/doi/pdf/10.1145/376284.375679[le CR-tree]). Le sujet est tellement vaste qu'on peut en écrire https://www.springer.com/fr/book/9781852339777[des livres entiers].
 
 +++ </div></details> +++
 
-
-
-Le mot de la fin : si le sujet vous a intéressé, je vous recommande vivement d'aller lire http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[l'article original] : il est très abordable.
-
-
-TODO : lire l'algo de packing utilisé par OSRM : http://www.cs.cmu.edu/~christos/PUBLICATIONS.OLDER/cikm93.pdf
-
-TODO : éventuellement, lire l'article sur le R-tree en RAM ? http://pages.cs.wisc.edu/~jignesh/publ/cci.pdf
+Le mot de la fin : si le sujet vous a intéressé, je vous recommande vivement d'aller lire http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[l'article original] : il est particulièrement abordable.
 
 TODO : lire cet article en français sur KD-tree ?  https://www.lri.fr/~cfleury/media/rapportCTR_cfleury.pdf
 
-REPRISE =
+TODO : donner toutes les références vers les articles en pied de page ?
 
-* gérer le lien vers le code (faire un lien vers le github plutôt que vers le fichier de code ?)
+
 * écluser les TODOs
 * faire une dernière relecture puis publier
