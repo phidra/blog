@@ -58,8 +58,9 @@ details {
     border-left: 2px solid $primary-color;
 }
 
-// strike through :
+// text decoration :
 .line-through { text-decoration: line-through; }
+.underline {text-decoration: underline; }
 
 
 // tableaux :
@@ -76,3 +77,6 @@ th, td {
 }
 th { background-color: $darkest-color; }
 td > p { margin: 4px; }
+
+// background blanc pour images SVG transparentes :
+.img-white-background img { background-color: white; }
