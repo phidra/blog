@@ -144,15 +144,11 @@ Ce qu'il faut retenir, c'est que le R-tree permet tout à fait de répondre effi
 
 == Let me see the code
 
-Voyons toutes ces belles notions mises en pratique. On va utiliser l'implémentation du R-tree par https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html[boost geometry].
+Voyons toutes ces belles notions mises en pratique. On va utiliser l'implémentation du R-tree par https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html[boost::geometry] pour répondre à la problématique posée en début de post. Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code[ici] le code complet, ses dépendances, et ce qu'il faut pour le compiler, et je copie ici les extraits principaux.
 
-Le code est en détails (pour ne pas surcharger), et également ici (TODO, donner le lien), avec les instructions pour le compiler.
-
-* TODO : ici, donner le main complet.
 
 Voici comment on insère un point (assorti de son id de node OSM) dans un R-tree :
 
-.insérer un node dans un R-tree
 [source,cpp]
 ----
 namespace bg = boost::geometry;
@@ -170,11 +166,10 @@ m_rtree.insert({
 });
 ----
 
-À partir d'un extract OSM des rues de Bordeaux, on peut utiliser https://osmcode.org/libosmium/[libosmium] pour le parser, et construire le R-tree à requêter. Vous trouverez le code complet ICI (TODO : donner le lien).
+À partir d'un extract OSM des rues de Bordeaux, on peut utiliser https://osmcode.org/libosmium/[libosmium] pour le parser, et construire le R-tree à requêter.
 
 Une fois que le R-tree est construit, on peut le requêter pour trouver le node OSM le plus proche d'un point quelconque donné :
 
-.Requête du node OSM le plus proche d'un point quelconque
 [source,cpp]
 ----
 // point quelconque proche de la Place de la Victoire :
@@ -186,7 +181,6 @@ auto nearest_nodepoint = result.front();
 
 Histoire d'être sûr qu'on n'a pas requêté un point en dehors de la zone couverte, on peut également afficher la distance entre le node et le point requêté :
 
-.Affichage de la distance entre le node et le point requêté
 [source,cpp]
 ----
 auto distance = bg::distance(
@@ -292,7 +286,6 @@ TODO : lire cet article en français sur KD-tree ?  https://www.lri.fr/~cfleury/
 
 REPRISE =
 
-* gérer le lien vers le code
+* gérer le lien vers le code (faire un lien vers le github plutôt que vers le fichier de code ?)
 * écluser les TODOs
-* merger avec mon projet git du blog
 * faire une dernière relecture puis publier
