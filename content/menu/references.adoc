@@ -17,3 +17,4 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://www.internalpointers.com/[Internal Pointers] : a l'air de regrouper des articles sur divers sujets dont des sujets tech. Pour le moment, je n'ai lu que quelques articles (https://www.internalpointers.com/post-group/black-art-concurrency[sur la concurrence] et https://www.internalpointers.com/post/quick-primer-type-traits-modern-cpp[sur les type traits], notamment), mais ils étaient *très* pédagogiques. C'est pas hyper clair qui est derrière.
 * https://timur.audio/
 * https://www.fluentcpp.com/
+* https://h-deb.clg.qc.ca/[le site de Patrice ROY], une mine d'or où chaque article fait preuve d'une pédagogie hallucinante
