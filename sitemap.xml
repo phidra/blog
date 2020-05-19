@@ -3,12 +3,17 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://phidra.github.io/blog/2020-03-17-packaging-python/</loc>
-    <lastmod>2020-03-17T22:14:41+01:00</lastmod>
+    <loc>https://phidra.github.io/blog/</loc>
+    <lastmod>2020-05-01T10:00:00+01:00</lastmod>
   </url>
   
   <url>
-    <loc>https://phidra.github.io/blog/</loc>
+    <loc>https://phidra.github.io/blog/2020-05-01-rtree/</loc>
+    <lastmod>2020-05-01T10:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://phidra.github.io/blog/2020-03-17-packaging-python/</loc>
     <lastmod>2020-03-17T22:14:41+01:00</lastmod>
   </url>
   

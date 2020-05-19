@@ -6,10 +6,20 @@
     <description>Recent content on Phidra&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-fr</language>
-    <lastBuildDate>Tue, 17 Mar 2020 22:14:41 +0100</lastBuildDate>
+    <lastBuildDate>Fri, 01 May 2020 10:00:00 +0100</lastBuildDate>
     
 	<atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>R-tree et applications</title>
+      <link>https://phidra.github.io/blog/2020-05-01-rtree/</link>
+      <pubDate>Fri, 01 May 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-05-01-rtree/</guid>
+      <description>De quoi va-t-on causer : Une histoire de graphe One solution : revolution rectangulation Let me see the code Pour conclure     Une histoire de graphe Supposons qu&amp;#8217;on veuille implémenter un calculateur d&amp;#8217;itinéraire permettant de retrouver le plus court chemin entre deux lieux quelconques de Bordeaux. Par exemple, on veut trouver le plus court chemin entre la place de la Victoire et &#34;chez moi&#34;.
+ Pour cela, on dispose d&amp;#8217;une liste de toutes les rues de Bordeaux, accompagnées de leur géométrie.</description>
+    </item>
     
     <item>
       <title>Packaging python</title>
@@ -44,7 +54,7 @@
       
       <guid>https://phidra.github.io/blog/2020-02-28-shuffle/</guid>
       <description>Position du problème Je suis tombé sur un article très intéressant, j&amp;#8217;avais commencé à prendre des notes, mais ça se finit en post :-)
- Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible soit équi-probable ?
+ Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible ait la même probabilité d&amp;#8217;être choisie ?
  Exemple concret : prenons un jeu de 5 cartes ABCDE :
   Figure 1. Jeu de 5 cartes  L&amp;#8217;objectif final est de le mélanger :</description>
     </item>
@@ -78,7 +88,7 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19. Dynamic Programming I: Fibonacci, Shortest Paths [ARTICLE] Safe Systems Programming in Rust:The Promise and the Challenge [POST] My Coding Interview Style [VIDEO] P vs NP et le zoo de complexité informatique [ARTICLE] A brief introduction to C++’s model for type- and resource-safety [POST] A modern ‘Hello, World’ program needs more than just code [ARTICLE] Low-Cost Deterministic C++ Exceptions for Embedded Systems [SITE] The Computer Language Benchmarks Game [VIDEO] L&amp;#8217;API Management : au-delà des promesses [POST] The Day The Standard Library Died [POST] Advantages of monorepos [SITE] C&amp;#43;&amp;#43; Frequently Questioned Answers [POST] Fastest Way to Load Data Into PostgreSQL Using Python [POST] Exceptions [POST] Réussir la Developer eXperience de son API web [POST] Designer une API REST [POST] How to Make Other Developers Hate to Work with You [POST] Demystifying C++ lambdas [STACKOVERFLOW] Is int safe to read from multiple threads?</description>
+      <description>Liste des liens    Pourquoi cette page [POST] What every developer should know about TCP [POST] Invariants and Preconditions [VIDEO] Systematic error handling in C++, aussi sur youtube [VIDEO] Understanding the Python GIL, voir aussi le post qui va avec [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19. Dynamic Programming I: Fibonacci, Shortest Paths [ARTICLE] Safe Systems Programming in Rust:The Promise and the Challenge [POST] My Coding Interview Style [VIDEO] P vs NP et le zoo de complexité informatique [ARTICLE] A brief introduction to C++’s model for type- and resource-safety [POST] A modern ‘Hello, World’ program needs more than just code [ARTICLE] Low-Cost Deterministic C++ Exceptions for Embedded Systems [SITE] The Computer Language Benchmarks Game [VIDEO] L&amp;#8217;API Management : au-delà des promesses [POST] The Day The Standard Library Died [POST] Advantages of monorepos [SITE] C&amp;#43;&amp;#43; Frequently Questioned Answers [POST] Fastest Way to Load Data Into PostgreSQL Using Python [POST] Exceptions [POST] Réussir la Developer eXperience de son API web [POST] Designer une API REST [POST] How to Make Other Developers Hate to Work with You [POST] Demystifying C++ lambdas [STACKOVERFLOW] Is int safe to read from multiple threads?</description>
     </item>
     
     <item>

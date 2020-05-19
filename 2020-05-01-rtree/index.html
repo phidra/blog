@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>R-tree et applications // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.66.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.2a41bd2f7ef1bd69c99f34f43c6ddb961263cbecc4313c3c85c6ddedb128c22a.css" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">R-tree et applications</h1>
+      <div class="post-meta">
+        <div>
+          May 1, 2020
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          15 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+<div id="toc" class="toc">
+<div id="toctitle" class="title">De quoi va-t-on causer :</div>
+<ul class="sectlevel1">
+<li><a href="#_une_histoire_de_graphe">Une histoire de graphe</a></li>
+<li><a href="#_one_solution_span_class_line_through_revolution_span_rectangulation">One solution : <span class="line-through">revolution</span> rectangulation</a></li>
+<li><a href="#_let_me_see_the_code">Let me see the code</a></li>
+<li><a href="#_pour_conclure">Pour conclure</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_une_histoire_de_graphe">Une histoire de graphe</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Supposons qu&#8217;on veuille implémenter un calculateur d&#8217;itinéraire permettant de retrouver le plus court chemin entre deux lieux quelconques de Bordeaux. Par exemple, on veut trouver le plus court chemin entre la place de la Victoire et "chez moi".</p>
+</div>
+<div class="paragraph">
+<p>Pour cela, on dispose d&#8217;une liste de toutes les rues de Bordeaux, accompagnées de leur géométrie. La géométrie d&#8217;une rue est vue comme une liste de N segments consécutifs, donc une liste de N+1 points GPS.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, considérons la rue nommée <strong>Place de la Victoire</strong> ci-dessous :</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="../2020-05-01-rtree-img/place_de_la_victoire_capture.jpeg" alt="place de la victoire capture">
+</div>
+</div>
+<div class="paragraph">
+<p>La géométrie de cette rue peut être représentée par les 11 paires de {latitude+longitude} suivants :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/place_de_la_victoire_polyline.svg" alt="place de la victoire polyline" width="465" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>À partir de ces données, on peut stocker les rues de Bordeaux en tant qu&#8217;arêtes d&#8217;un graphe dont les poids sont les longueurs des rues, et les noeuds sont les extrémités de ces rues :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/bordeaux_graphe.svg" alt="bordeaux graphe" width="465" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>Chaque noeud <code>N</code> a pour identifiant unique sa position GPS, c&#8217;est à dire son couple {latitude+longitude}. Ce <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra">bon vieux Dijsktra</a> nous donnera le plus court chemin entre un noeud de départ et un noeud d&#8217;arrivée.</p>
+</div>
+<div class="paragraph">
+<p>Oui mais&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Ce que l&#8217;algorithme de Dijkstra attend en entrée, ce sont un noeud de départ et un noeud d&#8217;arrivée, c&#8217;est à dire deux positions GPS de <strong>noeuds du graphe</strong> (i.e. d&#8217;extrêmités de rue). Que vais-je donner à manger à Dijkstra si je souhaite partir non pas d&#8217;un <strong>noeud du graphe</strong>, mais plutôt d&#8217;une <strong>position quelconque</strong> du plan ?</p>
+</div>
+<div class="paragraph">
+<p>Il nous faut une étape préliminaire, cœur du présent post : à partir d&#8217;une <strong>position quelconque</strong> <code>X</code>, je veux retrouver le <strong>noeud du graphe</strong> <code>N₀</code> qui en est le plus proche, qui servira de noeud de départ à l&#8217;algorithme de Dijkstra :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/bordeaux_graphe_et_position_initiale.svg" alt="bordeaux graphe et position initiale" width="465" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>C&#8217;est une instance d&#8217;un problème plus général : la <a href="https://en.wikipedia.org/wiki/Nearest_neighbor_search">recherche du plus proche voisin</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_one_solution_span_class_line_through_revolution_span_rectangulation">One solution : <span class="line-through">revolution</span> rectangulation</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Le R-tree, <a href="http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf">inventé en 1984 par Antonin GUTTMAN</a>, permet de résoudre ce type de problème d&#8217;une façon sympa. C&#8217;est une sorte de généralisation à N dimensions du B-tree, mais il n&#8217;est pas nécessaire d&#8217;avoir entendu parler du B-tree pour lire le présent post.</p>
+</div>
+<div class="sect2">
+<h3 id="_rectangle_englobant">Rectangle englobant</h3>
+<div class="paragraph">
+<p>L&#8217;idée maîtresse est de proposer comme critère de "tri" des éléments géométriques à indexer&#8230;&#8203; leur rectangle englobant minimal (<em>Minimal Bounding Rectangle = MBR</em> dans la littérature) : le <code>R</code> du R-tree est là pour <strong>rectangle</strong>.</p>
+</div>
+<div class="paragraph">
+<p>Avant de résoudre notre problème de noeud dans un graphe, on va illustrer le principe de fonctionnement en supposant qu&#8217;on cherche à stocker un jeu de 10 carrés du plan. Par exemple, ces carrés peuvent être des représentations de villes :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/squares_only.svg" alt="squares only" height="360">
+</div>
+</div>
+<div class="paragraph">
+<p>Un R-tree est un arbre (!) équilibré, et dont les données sont stockées dans les noeuds terminaux (<em>leaf-nodes</em>). Dans notre exemple, chaque noeud a au minimum 2 et au maximum 3 cellules. Les cellules des leaf-nodes contiennent les données indexées, et les cellules des nodes intermédiaires pointent vers les noeuds fils :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/rtree_leaves_only.svg" alt="rtree leaves only" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>Le principe, c&#8217;est que chaque cellule d&#8217;un leaf-node contient une donnée géométrique à stocker, <span class="underline">assortie de son rectangle englobant minimal</span>. Dans notre exemple, c&#8217;est facile : le rectangle englobant d&#8217;un carré C, a les mêmes dimensions que le carré lui-même.</p>
+</div>
+<div class="paragraph">
+<p>De leur côté, chaque cellule d&#8217;un node intermédiaire contient le rectangle qui englobe tous les rectangles englobants des cellules son noeud fils. Si c&#8217;est pas clair dit comme ça, ça ira mieux avec le schéma : C1, C2 et C3 appartiennent au même leaf-node, dont le rectangle englobant minimal est R1 :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/squares_and_R1_only.svg" alt="squares and R1 only" height="360">
+</div>
+</div>
+<div class="paragraph">
+<p>Dans l&#8217;arbre, ça se traduit par le fait que la cellule parente du <em>leaf-node</em> contenant C1+C2+C3 stocke R1, rectangle minimal permettant d&#8217;englober C1, C2 et C3 :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/rtree_leaves_and_R1_only.svg" alt="rtree leaves and R1 only" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>De même, C4 et C5 appartiennent au même node dont le rectangle englobant est R2.</p>
+</div>
+<div class="paragraph">
+<p>Ce principe reste valable pour le niveau supérieur : R1 et R2 appartenant au même noeud, et ils sont tous deux englobés par un rectangle minimal RA :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/squares_and_RA_only.svg" alt="squares and RA only" height="360">
+</div>
+</div>
+<div class="paragraph">
+<p>Du coup dans l&#8217;arbre, le noeud parent de R1 et R2 stocke RA également :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/rtree_leaves_and_RA_only.svg" alt="rtree leaves and RA only" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>Vous l&#8217;aurez compris : à chaque niveau de l&#8217;arbre, on stocke le rectangle englobant l&#8217;ensemble des éléments du noeud fils, et ce jusqu&#8217;aux feuilles de l&#8217;arbre, où les rectangle englobants sont ceux des éléments géométriques stockés dans l&#8217;arbre :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/squares_full.svg" alt="squares full" height="360">
+</div>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/rtree_full.svg" alt="rtree full" height="260">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_et_ça_sert_à_quoi">Et ça sert à quoi ?</h3>
+<div class="paragraph">
+<p>Cette organisation par rectangles englobants est puissante et permet de faire des recherches de façon très efficace, en utilisant des algorithmes de type <a href="https://en.wikipedia.org/wiki/Branch_and_bound">branch and bound</a>. En deux mots, l&#8217;idée est d&#8217;éviter d&#8217;explorer tout l&#8217;arbre en élaguant (<em>prune</em> en anglais) au plus tôt les branches de l&#8217;arbre pour lesquelles on peut dire à coup sûr qu&#8217;elle ne contiennent pas la solution recherchée.</p>
+</div>
+<div class="paragraph">
+<p>Prenons comme exemple la requête suivante : à quel carré appartient le point P ?</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/searched_point1_step1.svg" alt="searched point1 step1" height="360">
+</div>
+</div>
+<div class="paragraph">
+<p>Ça peut paraître naïf comme question lorsqu&#8217;on regarde le schéma, mais pour un algo, c&#8217;est loin d&#8217;être aussi évident : si on itère naïvement sur tous les carrés pour renvoyer celui qui vérifie le prédicat, notre algo est en <code>O(N)</code>. Ça peut vite être trop lourd, si on indexe des millions de carrés&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Mais si ce million de carrés est indexé dans un R-tree, trouver celui qui contient P, c&#8217;est fastoche la brioche :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>on commence par itérer sur les rectangles du noeud racine : RA et RB. Pour chacun d&#8217;eux, on regarde s&#8217;il contient P :</p>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/searched_point1_step2.svg" alt="searched point1 step2" height="360">
+</div>
+</div>
+</li>
+<li>
+<p>RB ne contient pas P, donc aucun rectangle d&#8217;un fils direct de RB ne peut contenir P. Récursivement, <span class="underline">aucun</span> leaf-node de la branche RB de l&#8217;arbre ne peut contenir P : <span class="underline">on peut élaguer (<em>prune</em>) cette branche de l&#8217;arbre</span> car il est inutile de l&#8217;explorer.</p>
+</li>
+<li>
+<p>en revanche, RA contient P, il <strong>SE PEUT</strong> donc (mais ça n&#8217;est pas sûr) que l&#8217;un des leaf-nodes de la branche RA contiennent P → il faut explorer cette branche de l&#8217;arbre pour le vérifier.</p>
+</li>
+<li>
+<p>on itère sur les rectangles fils de RA. Pour chacun d&#8217;eux, on regarde s&#8217;il contient P :</p>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/searched_point1_step3.svg" alt="searched point1 step3" height="360">
+</div>
+</div>
+</li>
+<li>
+<p>R1 ne contient pas P, inutile d&#8217;explorer cette sous-branche de l&#8217;arbre. En revanche, R2 contient P, on va explorer tous les rectangles fils de R2 :</p>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/searched_point1_step4.svg" alt="searched point1 step4" height="360">
+</div>
+</div>
+</li>
+<li>
+<p>Le noeud fils de R2 étant un leaf-node, itérer sur ses cellules revient à itérer sur les données géométriques qu&#8217;il contient (ici, des carrés), et on peut enfin constater que c&#8217;est C5 qui contient P :-)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>On voit que l&#8217;intérêt du R-tree est de nous permettre d'<strong>élaguer au plus tôt des branches à ne pas explorer</strong>. Dans notre exemple simpliste, la seule branche explorée est la suivante :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/searched_point1_step5.svg" alt="searched point1 step5" height="260">
+</div>
+</div>
+<div class="paragraph">
+<p>Dans des cas réels, la situation est rarement aussi simple, notamment parce que des rectangles englobants de nodes différents peuvent se chevaucher, nous forçant à explorer plusieurs sous-branches, mais le principe général ne change fondamentalement pas.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_retour_à_notre_problème_initial">Retour à notre problème initial</h3>
+<div class="paragraph">
+<p>Bon, tout ça c&#8217;est bien joli, mais on ne cherche pas à trouver un carré du plan, mais plutôt le noeud du graphe le plus proche d&#8217;un point GPS quelconque !</p>
+</div>
+<div class="paragraph">
+<p>Le principe reste le même : chaque niveau de l&#8217;arbre stocke le rectangle enblobant d&#8217;un ensemble de noeuds du graphe. En revanche, la recherche du plus proche voisin est un poil plus compliquée, car on ne peut pas élaguer des branches de l&#8217;arbre aussi directement qu&#8217;avant, sous peine de risquer de manquer des points plus proches :</p>
+</div>
+<div class="imageblock img-white-background">
+<div class="content">
+<img src="../2020-05-01-rtree-img/points_are_more_complicated.svg" alt="points are more complicated" height="360">
+</div>
+</div>
+<div class="paragraph">
+<p>Le principe "branch and bound" ne change pas cependant : on se débrouille pour élaguer le plus vite possible les branches dont on peut dire à coup sûr qu&#8217;elles ne contiennent pas le plus proche voisin recherché.</p>
+</div>
+<div class="paragraph">
+<p>Je ne vais pas expliquer en détail la façon de procéder, vous trouverez <a href="http://www.postgis.org/support/nearestneighbor.pdf">ici</a> la première proposition d&#8217;implémentation d&#8217;une requête de nearest neighbour sur un R-tree, qui a été améliorée <a href="https://dl.acm.org/doi/pdf/10.1145/290593.290596">plusieurs</a> <a href="https://dl.acm.org/doi/pdf/10.1145/320248.320255">fois</a> depuis.</p>
+</div>
+<div class="paragraph">
+<p>Ce qu&#8217;il faut retenir, c&#8217;est que le R-tree permet tout à fait de répondre efficacement aux recherches de plus proches voisins, et donc à notre problème initial.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_let_me_see_the_code">Let me see the code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voyons toutes ces belles notions mises en pratique. On va utiliser l&#8217;implémentation du R-tree par <a href="https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html">boost::geometry</a> pour répondre à la problématique posée en début de post. En plus des extraits dans le présent post, vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code">ici</a> le code complet, ses dépendances, et ce qu&#8217;il faut pour le compiler.</p>
+</div>
+<div class="paragraph">
+<p>À partir d&#8217;un extract OSM des rues de Bordeaux, on peut utiliser <a href="https://osmcode.org/libosmium/">libosmium</a> pour le parser, et construire le R-tree à requêter avec les extrémités des rues. Voici une façon d&#8217;insérer un noeud du graphe (assorti de son id de node OSM) dans un R-tree :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">namespace</span> <span style="color: #f8f8f2">bg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">geometry;</span>
+<span style="color: #66d9ef">namespace</span> <span style="color: #f8f8f2">bgi</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">geometry</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">index;</span>
+
+<span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">Point</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">bg</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">model</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">point</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">double</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">bg</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cs</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">spherical_equatorial</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">bg</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">degree</span><span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">NodePoint</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">pair</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Point,</span> <span style="color: #f8f8f2">osmium</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">object_id_type</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">RTree</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">bgi</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">rtree</span><span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">NodePoint,</span> <span style="color: #f8f8f2">bgi</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">linear</span><span style="color: #f92672">&lt;</span><span style="color: #ae81ff">8</span><span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span>
+
+<span style="color: #f8f8f2">RTree</span> <span style="color: #f8f8f2">rtree;</span>
+
+<span style="color: #f8f8f2">m_rtree.insert({</span>
+    <span style="color: #f8f8f2">{</span><span style="color: #f92672">-</span><span style="color: #ae81ff">0.572297</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">44.831100</span><span style="color: #f8f8f2">},</span>  <span style="color: #75715e">// coordonnées du point</span>
+    <span style="color: #ae81ff">624671161</span>  <span style="color: #75715e">// id du node OSM</span>
+<span style="color: #f8f8f2">});</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Une fois que le R-tree est construit, on peut le requêter pour trouver le node OSM le plus proche d&#8217;un point quelconque donné :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// point quelconque proche de la Place de la Victoire :</span>
+<span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Point</span> <span style="color: #f8f8f2">REQUESTED_POINT</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">0.572555</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">44.831067</span><span style="color: #f8f8f2">};</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">NodePoint</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">result;</span>
+<span style="color: #f8f8f2">rtree.query(bgi</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">nearest(REQUESTED_POINT,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">back_inserter(result));</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">nearest_nodepoint</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">result.front();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Histoire d&#8217;être sûr qu&#8217;on n&#8217;a pas requêté un point en dehors de la zone couverte, on peut également afficher la distance entre le node et le point requêté :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">distance</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">bg</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance(</span>
+    <span style="color: #f8f8f2">nearest_nodepoint.first,</span>
+    <span style="color: #f8f8f2">REQUESTED_POINT,</span>
+    <span style="color: #f8f8f2">bg</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">strategy</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">haversine</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">double</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">6</span><span style="color: #960050; background-color: #1e0010">&#39;</span><span style="color: #ae81ff">371</span><span style="color: #960050; background-color: #1e0010">&#39;</span><span style="color: #ae81ff">000</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Nearest node is &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nearest_nodepoint.second</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; at &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">distance</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; meters.&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et voilà : le noeud du graphe le plus proche du point <code>-0.572555;44.831067</code> est <a href="https://www.openstreetmap.org/node/4068957236">le node OSM d&#8217;id 4068957236</a> \o/</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_pour_conclure">Pour conclure</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ce qu&#8217;il faut retenir : le R-tree est un moyen d&#8217;indexer des données par leur rectangle englobant. Il permet de les requêter efficacement sur des critères géométriques, comme "quel est l&#8217;élément qui contient ce point ?" ou "quels sont les 30 éléments les plus proches de ce point ?".</p>
+</div>
+<div class="paragraph">
+<p>Le R-tree est loin d&#8217;être la seule façon d&#8217;indexer des données spatiales, par exemple on peut utiliser un <a href="https://dl.acm.org/doi/pdf/10.1145/361002.361007">kd-tree</a> si les données sont ponctuelles et statiques. Utiliser <a href="https://www.researchgate.net/profile/Raphael_Finkel/publication/220197855_Quad_Trees_A_Data_Structure_for_Retrieval_on_Composite_Keys/links/0c9605273bba2ece7b000000/Quad-Trees-A-Data-Structure-for-Retrieval-on-Composite-Keys.pdf">un quadtree</a> est une alternative possible pour des données dynamiques, mais <a href="http://www.dpi.inpe.br/livros/bdados/artigos/oracle_r_tree.pdf">le R-tree semble le plus souvent permettre des requêtes plus rapides</a>.</p>
+</div>
+<div class="sect2">
+<h3 id="_dans_la_vraie_vie">Dans la vraie vie</h3>
+<div class="paragraph">
+<p>L&#8217;implémentation actuelle du <a href="http://project-osrm.org/">projet OSRM</a>, un moteur de calcul d&#8217;itinéraires associé au projet OSM, <a href="https://github.com/Project-OSRM/osrm-backend/blob/cb4586ebee81bd5ffcad02278115a3ffa041bc15/include/util/static_rtree.hpp#L79">utilise un R-tree</a> pour adresser précisément le problème qui a servi d&#8217;illustration à ce post : trouver dans un graphe <a href="https://github.com/Project-OSRM/osrm-backend/blob/2c7c18fd24f9a46de04c935126fc29992f57113f/include/engine/geospatial_query.hpp#L113">le node le plus proche d&#8217;un point donné</a>.</p>
+</div>
+<div class="paragraph">
+<p>Parmi les features de <a href="https://postgis.net/">PostGIS</a>, l&#8217;extension de postgres permettant de traiter des données géographiques, on retrouve l&#8217;indexing spatial, qui <a href="https://postgis.net/workshops/postgis-intro/indexing.html#how-spatial-indexes-work">utilise un R-tree</a>. C&#8217;est également le cas <a href="https://docs.oracle.com/database/121/SPATL/indexing-spatial-data.htm">d&#8217;Oracle Spatial and Graph</a>.</p>
+</div>
+<div class="paragraph">
+<p>Côté librairies, les implémentations de R-tree ne manquent pas. On a utilisé plus haut une implémentation en C++ dans <a href="https://www.boost.org/doc/libs/1_73_0/libs/geometry/doc/html/index.html">boost::geometry</a> ; <a href="https://agafonkin.com/">Vladimir AGAFONKIN</a> (l&#8217;auteur de <a href="https://leafletjs.com/">Leaflet</a>, librairie de cartographie en javascript) a écrit <a href="https://github.com/mourner/rbush">rbush</a>, une implémentation de R-tree en javascript.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pour_les_curieux">Pour les curieux</h3>
+<div class="paragraph">
+<p>Pour ne pas sucharger ce post déjà dense, j&#8217;ai laissé pas mal de points de côté, vous pouvez allègrement les ignorer en première lecture :</p>
+</div>
+<div class="paragraph">
+<p> <details><summary> 
+FACULTATIF : des infos complémentaires
+ </summary><div> </p>
+</div>
+<div class="sect3">
+<h4 id="_stockage_vs_indexation">stockage vs. indexation</h4>
+<div class="paragraph">
+<p>Contrairement à ce que j&#8217;ai illustré plus haut, l&#8217;utilisation canonique d&#8217;un R-tree n&#8217;est pas le <strong>stockage</strong> mais plutôt <strong>l&#8217;indexation</strong> de données géométriques. Concrètement, les données vivent ailleurs que dans le R-tree (par exemple dans une table d&#8217;une base de données), et chaque cellule d&#8217;un node du R-tree contient un couple {pointeur+rectangle englobant}.</p>
+</div>
+<div class="paragraph">
+<p>Prenons comme exemple une base de données, dont une table <code>cities</code> contient la liste des &gt;35k communes de France ; chaque ligne de la table contient les infos associées à la commune : son nom, le nombre de ses habitants, leur revenu médian, ainsi que — détail crucial — le polygone représentant ses limites géographiques. Si un R-tree est utilisé pour indexer cette table des communes sur leurs limites géographiques, chaque leaf-node du R-tree contiendra N cellules, et chaque cellule contiendra :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>un pointeur vers une ligne de la table <code>cities</code> (par exemple, un offset dans le fichier sur disque)</p>
+</li>
+<li>
+<p>le rectangle minimal englobant le polygone des limites géographiques de la commune</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>TL;DR : au lieu de stocker des données, chaque cellule d&#8217;un leaf-node stocke un pointeur vers ces données.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_taille_de_node_optimale">taille de node optimale</h4>
+<div class="paragraph">
+<p>Si je mentionne ce contexte d&#8217;indexation dans une base de données, ce n&#8217;est pas anodin : l&#8217;un des intérêts du R-tree est qu&#8217;il est redoutablement efficace lorsqu&#8217;il est stocké sur disque.</p>
+</div>
+<div class="paragraph">
+<p>Pour comprendre pourquoi, il faut savoir que les IO disques sont <a href="https://colin-scott.github.io/personal_website/research/interactive_latency.html">des ordres de grandeurs plus lentes</a> que les opérations effectuées par le CPU. Elles ont de bonnes chances d&#8217;être les goulots d&#8217;étranglements d&#8217;une requête utilisant l&#8217;index.</p>
+</div>
+<div class="paragraph">
+<p>Or, lorsque le CPU récupère des données depuis le disque dur, ces données sont transférées en pages de taille constante, par exemple 4 kio. Si notre application manipule les données par blocs plus petits (par exemple 1 kio), on effectue alors une coûteuse IO disque&#8230;&#8203; de laquelle on jettera 3 kio à la poubelle pour n&#8217;en lire qu'1 kio ! De même, on jettera également 3 kio à la poubelle si on manipule des blocs de 5 kio : l&#8217;idéal serait donc de se débrouiller pour manipuler des données par blocs de "tout pile 4 kio" : chaque IO serait alors "rentabilisée".</p>
+</div>
+<div class="paragraph">
+<p>Or, avec le R-tree (et c&#8217;est également le cas avec son cousin, le B-tree), le nombre maximal de cellules par node est un paramètre qu&#8217;on peut choisir statiquement : dans les illustrations ci-dessus, chaque node contient 3 cellules, mais j&#8217;aurais aussi bien pu en mettre 5, 50 ou 500. De plus, la taille de chaque cellule est fixe est connue statiquement : c&#8217;est la taille d&#8217;un pointeur + la taille nécessaire pour stocker un rectangle. On peut donc ajuster le nombre maximum d&#8217;éléments par node, de sorte que la taille d&#8217;un node &#8230;&#8203; fasse tout pile 4 kio ! On minimise ainsi le nombre de ces coûteuses IOs disque qui sont nécessaires pour traverser l&#8217;index \o/</p>
+</div>
+<div class="paragraph">
+<p>À titre d&#8217;exemple, le rtree d&#8217;OSRM <a href="https://github.com/Project-OSRM/osrm-backend/blob/cb4586ebee81bd5ffcad02278115a3ffa041bc15/include/util/static_rtree.hpp#L46">a une taille de node de 4kio</a> par défaut.</p>
+</div>
+<div class="paragraph">
+<p>Pour le cas des R-tree stockés en RAM (comme dans l&#8217;exemple avec boost::geometry donné plus haut), il semblerait intéressant au premier abord d&#8217;ajuster la taille d&#8217;un node pour que celui-ci fitte tout pile dans une cache line. Mais apparemment, <a href="http://pages.cs.wisc.edu/~jignesh/publ/cci.pdf">ce n&#8217;est pas aussi simple</a>, et il vaut mieux prendre une taille de node plus grande. De toutes façons, ici comme partout ailleurs, la règle d&#8217;or s&#8217;applique : si les perfomances comptent, il faut benchmarker !</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ce_qu_on_indexe_et_ce_qu_on_requête">ce qu&#8217;on indexe, et ce qu&#8217;on requête</h4>
+<div class="paragraph">
+<p>Tout comme le quadtree (mais à la différence du kd-tree), le R-tree n&#8217;est pas limité à l&#8217;indexation de points et de carrés : n&#8217;importe quel objet géométrique auquel on peut associer un rectangle englobant minimal peut y être indexé, par exemple des ellipses.</p>
+</div>
+<div class="paragraph">
+<p>D&#8217;ailleurs, les exemples ci-dessus sont donnés en dimension 2, i.e. sur un plan, mais le R-tree est utilisable en dimension quelconque, à condition de généraliser la notion de "rectangle englobant" en un N-uple d&#8217;intervalles, un sur chaque axe : en dimension 2, un rectangle est le 2-uple {intervalle sur l&#8217;axe des abscisses ; intervalle sur l&#8217;axe des ordonnées}.</p>
+</div>
+<div class="paragraph">
+<p>Enfin, signalons que l&#8217;un des intérêts des R-tree est d&#8217;être (comme le B-tree) un arbre qui s&#8217;auto-équilibre : il peut donc servir pour indexer les données d&#8217;une base de données dynamique (auquel on ajoutera / supprimera des éléments géométriques) à la différence, par exemple du kd-tree, qu&#8217;on doit reconstruire de zéro si les données sont modifiées.</p>
+</div>
+<div class="paragraph">
+<p>Côté requêtes, le R-tree permet des choses assez variées : appartenance d&#8217;un point, intersection ou recouvrement d&#8217;éléments géométrique, plus proches voisins, &#8230;&#8203; Voici par exemple <a href="https://www.boost.org/doc/libs/1_64_0/libs/geometry/doc/html/geometry/reference/spatial_indexes/boost<em>geometry</em>index<em>rtree/query_predicates_const</em><em>_outiter</em>.html">les prédicats que proposent boost::geometry</a>.</p>
+</div>
+<div class="paragraph">
+<p>Attention toutefois : supposons que vous fassiez une requête du genre "quels sont les points indexés qui sont inclus dans cet hexagone", et que l&#8217;hexagone couvre la majorité de l&#8217;espace des points, l&#8217;utilisation de l&#8217;index va <strong>ralentir</strong> la requête : aucune branche de l&#8217;arbre ou presque ne sera élaguée, et on va donc tout explorer : on aurait mieux fait de tester linéairement TOUS les points de l&#8217;espace, ce qui nous aurait évité d&#8217;avoir à traverser l&#8217;index.</p>
+</div>
+<div class="paragraph">
+<p>Ce "défaut" n&#8217;est pas propre aux R-tree, il est valable pour tous les index : utilisés à mauvais escients, ils peuvent <strong>ralentir</strong> les requêtes. Les SGBD ont des <a href="https://www.postgresql.org/docs/12/planner-optimizer.html">query planners</a> en charge de prédire si ça vaut le coup d&#8217;utiliser l&#8217;index ou non pour répondre à la requête, cf. la doc postgresql <a href="https://www.postgresql.org/docs/12/using-explain.html">ici</a> ou <a href="https://www.postgresql.org/docs/12/planner-stats.html">là</a>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_structures_dérivées">Structures dérivées</h4>
+<div class="paragraph">
+<p>Le R-tree est sensible à l&#8217;ordre dans lequel les données y sont insérées : 2 ordres d&#8217;insertions différents produiront deux R-tree différents, et l&#8217;un sera <strong>plus efficace</strong> que l&#8217;autre pour répondre aux requêtes !</p>
+</div>
+<div class="paragraph">
+<p>La complexité (et l&#8217;intérêt) du R-tree est liée à la façon dont les données sont gérées dans l&#8217;arbre :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Comment organiser les données au sein d&#8217;un R-tree pour que les requêtes soient les plus efficaces possibles ?</p>
+</li>
+<li>
+<p>Comment limiter le recouvrement entre les rectangles englobants de deux noeuds frères ?</p>
+</li>
+<li>
+<p>Que se passe-t-il quand on insère un nouvel élément ?</p>
+</li>
+<li>
+<p>Et notamment, quid si cette insertion dépasse la capacité maximale du noeud destinée à la contenir (<em>node overflow</em>) ?</p>
+</li>
+<li>
+<p>Et pour la suppression d&#8217;un élément ?</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Le papier original propose une implémentation (et même deux, dans le cas des <em>node overflow</em>) répondant à ces questions, mais il existe une ribambelle de structures et algorithmes dérivés du R-tree original. Elles peuvent améliorer la construction initiale d&#8217;un R-tree à partir d&#8217;un jeu de données statiques (e.g. <a href="https://www.researchgate.net/publication/2303767_On_Packing_R-trees">l&#8217;algo qu&#8217;utilise OSRM pour remplir son R-tree</a>) ou bien la réorganisation des données lors des modifications dynamiques (e.g. <a href="http://www.cs.ucr.edu/~ravi/CS236Papers/rstar.pdf">le R*-tree</a>, qui permet de mieux répartir les rectangles englobants en limitant leur recouvrement et leur étalement, et qui semble être massivement utilisé à la place du R-tree original), ou encore modifier le contenu des nodes pour fonctionner plus efficacement avec les caches des processeurs (e.g. <a href="https://dl.acm.org/doi/pdf/10.1145/376284.375679">le CR-tree</a>). Le sujet est tellement vaste qu&#8217;on peut en écrire <a href="https://www.springer.com/fr/book/9781852339777">des livres entiers</a>.</p>
+</div>
+<div class="paragraph">
+<p> </div></details> </p>
+</div>
+<div class="paragraph">
+<p>Le mot de la fin : si le sujet vous a intéressé, je vous recommande vivement d&#8217;aller lire <a href="http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf">l&#8217;article original</a> : il est particulièrement abordable.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+  </body>
+</html>
