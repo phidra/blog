@@ -86,7 +86,7 @@ Du coup dans l'arbre, le noeud parent de R1 et R2 stocke RA également :
 
 image::rtree_leaves_and_RA_only.svg[role="img-white-background",height=260]
 
-Vous l'aurez compris : à chaque niveau de l'arbre, on stocke le rectangle englobant l'ensemble des éléments du noeud fils, et ce jusqu'au dernier niveau de l'arbre, où les rectangle englobants sont ceux des éléments géométriques stockés dans l'arbre :
+Vous l'aurez compris : à chaque niveau de l'arbre, on stocke le rectangle englobant l'ensemble des éléments du noeud fils, et ce jusqu'aux feuilles de l'arbre, où les rectangle englobants sont ceux des éléments géométriques stockés dans l'arbre :
 
 image::squares_full.svg[role="img-white-background",height=360]
 
@@ -95,7 +95,7 @@ image::rtree_full.svg[role="img-white-background",height=260]
 
 === Et ça sert à quoi ?
 
-Cette organisation par rectangles englobants est puissante et permet de faire des recherche de façon très efficace, en utilisant des algorithmes de type https://en.wikipedia.org/wiki/Branch_and_bound[branch and bound]. En deux mots, l'idée est d'éviter d'explorer tout l'arbre en élaguant (_prune_ en anglais) au plus tôt les branches de l'arbre pour lesquelles on est sûr qu'elle ne contiennent pas la solution recherchée.
+Cette organisation par rectangles englobants est puissante et permet de faire des recherches de façon très efficace, en utilisant des algorithmes de type https://en.wikipedia.org/wiki/Branch_and_bound[branch and bound]. En deux mots, l'idée est d'éviter d'explorer tout l'arbre en élaguant (_prune_ en anglais) au plus tôt les branches de l'arbre pour lesquelles on peut dire à coup sûr qu'elle ne contiennent pas la solution recherchée.
 
 Prenons comme exemple la requête suivante : à quel carré appartient le point P ?
 
@@ -105,46 +105,48 @@ image::searched_point1_step1.svg[role="img-white-background",height=360]
 
 Mais si ce million de carrés est indexé dans un R-tree, trouver celui qui contient P, c'est fastoche la brioche :
 
-* on commence par itérer sur les rectangles du noeud racine. Pour chacun d'eux, on regarde s'il contient P :
+* on commence par itérer sur les rectangles du noeud racine : RA et RB. Pour chacun d'eux, on regarde s'il contient P :
 +
 image::searched_point1_step2.svg[role="img-white-background",height=360]
 +
-* P n'est pas dans RB, qui est le rectangle qui englobe pourtant [.underline]#tous# les leaf-nodes du noeud fils de RB. Du coup on est sûr qu'[.underline]#aucun# leaf-nodes de la branche RB de l'arbre ne contient P : [.underline]#on peut élaguer (_prune_) cette branche de l'arbre# car il est inutile de l'explorer.
-* en revanche, P est dans RA, il *SE PEUT* donc (mais ça n'est pas sûr) que l'un des leaf-nodes de la branche RA contiennent P → il faut explorer cette branche de l'arbre pour le vérifier.
-* on itère sur les rectangles du noeud-fils de RB. Pour chacun d'eux, on regarde s'il contient P :
+* RB ne contient pas P, donc aucun rectangle d'un fils direct de RB ne peut contenir P. Récursivement, [.underline]#aucun# leaf-node de la branche RB de l'arbre ne peut contenir P : [.underline]#on peut élaguer (_prune_) cette branche de l'arbre# car il est inutile de l'explorer.
+* en revanche, RA contient P, il *SE PEUT* donc (mais ça n'est pas sûr) que l'un des leaf-nodes de la branche RA contiennent P → il faut explorer cette branche de l'arbre pour le vérifier.
+* on itère sur les rectangles fils de RA. Pour chacun d'eux, on regarde s'il contient P :
 +
 image::searched_point1_step3.svg[role="img-white-background",height=360]
 +
-* P n'étant pas dans R1, inutile d'explorer cette branche de l'arbre. En revanche, P étant dans R2, on va explorer tous les rectangles du noeud fils de R2.
+* R1 ne contient pas P, inutile d'explorer cette sous-branche de l'arbre. En revanche, R2 contient P, on va explorer tous les rectangles fils de R2 :
 +
 image::searched_point1_step4.svg[role="img-white-background",height=360]
 +
-* Le noeud fils de R2 étant un leaf-node, itérer sur ses cellules revient à itérer sur les données qu'il contient (ici, des carrés), et on peut enfin constater que c'est C5 qui contient P :-)
+* Le noeud fils de R2 étant un leaf-node, itérer sur ses cellules revient à itérer sur les données géométriques qu'il contient (ici, des carrés), et on peut enfin constater que c'est C5 qui contient P :-)
 
-On voit que l'intérêt du R-tree est de *pouvoir élaguer au plus tôt des branches à ne pas explorer*. Dans notre exemple simpliste, la seule branche explorée est la suivante :
+On voit que l'intérêt du R-tree est de nous permettre d'*élaguer au plus tôt des branches à ne pas explorer*. Dans notre exemple simpliste, la seule branche explorée est la suivante :
 
 image::searched_point1_step5.svg[role="img-white-background",height=260]
 
+Dans des cas réels, la situation est rarement aussi simple, notamment parce que des rectangles englobants de nodes différents peuvent se chevaucher, nous forçant à explorer plusieurs sous-branches, mais le principe général ne change fondamentalement pas.
+
 === Retour à notre problème initial
 
-Bon, tout ça c'est bien joli, mais on ne cherche pas à trouver le carré contenant un point, mais plutôt à trouver le noeud du graphe le plus proche d'un point GPS quelconque !
+Bon, tout ça c'est bien joli, mais on ne cherche pas à trouver un carré du plan, mais plutôt le noeud du graphe le plus proche d'un point GPS quelconque !
 
-Le principe reste le même : chaque niveau de l'arbre stocke le rectangle enblobant un set de noeuds du graphe. Mais la recherche du plus proche voisin est un poil plus compliquée, car on ne peut pas élaguer des branches de l'arbre aussi directement qu'avant, sous peine de risquer de passer à côté de points plus proches :
+Le principe reste le même : chaque niveau de l'arbre stocke le rectangle enblobant d'un ensemble de noeuds du graphe. En revanche, la recherche du plus proche voisin est un poil plus compliquée, car on ne peut pas élaguer des branches de l'arbre aussi directement qu'avant, sous peine de risquer de manquer des points plus proches :
 
 image::points_are_more_complicated.svg[role="img-white-background",height=360]
 
-Le principe "branch and bound" ne change pas cependant : on se débrouille pour élaguer (différemment, mais le plus vite possible) les branches dont on est sûr qu'elles ne contiennent pas le plus proche voisin recherché.
+Le principe "branch and bound" ne change pas cependant : on se débrouille pour élaguer le plus vite possible les branches dont on peut dire à coup sûr qu'elles ne contiennent pas le plus proche voisin recherché.
 
-Je ne rentre pas dans les détails, vous trouverez http://www.postgis.org/support/nearestneighbor.pdf[ici] la première proposition d'implémentation d'une requête de nearest neighbour sur un R-tree, qui a été améliorée https://dl.acm.org/doi/pdf/10.1145/290593.290596[plusieurs] https://dl.acm.org/doi/pdf/10.1145/320248.320255[fois] depuis.
+Je ne vais pas expliquer en détail la façon de procéder, vous trouverez http://www.postgis.org/support/nearestneighbor.pdf[ici] la première proposition d'implémentation d'une requête de nearest neighbour sur un R-tree, qui a été améliorée https://dl.acm.org/doi/pdf/10.1145/290593.290596[plusieurs] https://dl.acm.org/doi/pdf/10.1145/320248.320255[fois] depuis.
 
 Ce qu'il faut retenir, c'est que le R-tree permet tout à fait de répondre efficacement aux recherches de plus proches voisins, et donc à notre problème initial.
 
 == Let me see the code
 
-Voyons toutes ces belles notions mises en pratique. On va utiliser l'implémentation du R-tree par https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html[boost::geometry] pour répondre à la problématique posée en début de post. Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code[ici] le code complet, ses dépendances, et ce qu'il faut pour le compiler, et je copie ici les extraits principaux.
+Voyons toutes ces belles notions mises en pratique. On va utiliser l'implémentation du R-tree par https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html[boost::geometry] pour répondre à la problématique posée en début de post. En plus des extraits dans le présent post, vous trouverez https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code[ici] le code complet, ses dépendances, et ce qu'il faut pour le compiler.
 
 
-Voici comment on insère un noeud du graphe (assorti de son id de node OSM) dans un R-tree :
+À partir d'un extract OSM des rues de Bordeaux, on peut utiliser https://osmcode.org/libosmium/[libosmium] pour le parser, et construire le R-tree à requêter avec les extrémités des rues. Voici une façon d'insérer un noeud du graphe (assorti de son id de node OSM) dans un R-tree :
 
 [source,cpp]
 ----
@@ -162,8 +164,6 @@ m_rtree.insert({
     624671161  // id du node OSM
 });
 ----
-
-À partir d'un extract OSM des rues de Bordeaux, on peut utiliser https://osmcode.org/libosmium/[libosmium] pour le parser, et construire le R-tree à requêter.
 
 Une fois que le R-tree est construit, on peut le requêter pour trouver le node OSM le plus proche d'un point quelconque donné :
 
@@ -188,13 +188,13 @@ auto distance = bg::distance(
 std::cout << "Nearest node is " << nearest_nodepoint.second << " at " << distance << " meters." << "\n";
 ----
 
-Et voilà ! Le node OSM le plus proche du point `-0.572555;44.831067` est https://www.openstreetmap.org/node/4068957236[le node d'id 4068957236] \o/
+Et voilà : le noeud du graphe le plus proche du point `-0.572555;44.831067` est https://www.openstreetmap.org/node/4068957236[le node OSM d'id 4068957236] \o/
 
 == Pour conclure
 
-Ce qu'il faut retenir : le R-tree est un moyen efficace d'indexer des données par leur rectangle englobant. Il permet de les requêter efficacement sur des critères géométriques, comme "quel est l'élément qui contient ce point ?" ou "quels sont les 30 éléments les plus proches de ce point ?".
+Ce qu'il faut retenir : le R-tree est un moyen d'indexer des données par leur rectangle englobant. Il permet de les requêter efficacement sur des critères géométriques, comme "quel est l'élément qui contient ce point ?" ou "quels sont les 30 éléments les plus proches de ce point ?".
 
-Le R-tree n'est pas la seule façon d'indexer des données spatiales, par exemple on peut utiliser un https://dl.acm.org/doi/pdf/10.1145/361002.361007[kd-tree] si les données sont ponctuelles et statiques. Utiliser https://www.researchgate.net/profile/Raphael_Finkel/publication/220197855_Quad_Trees_A_Data_Structure_for_Retrieval_on_Composite_Keys/links/0c9605273bba2ece7b000000/Quad-Trees-A-Data-Structure-for-Retrieval-on-Composite-Keys.pdf[un quadtree] est une alternative possible pour des données dynamiques, mais http://www.dpi.inpe.br/livros/bdados/artigos/oracle_r_tree.pdf[le R-tree semble le plus souvent permettre des requêtes plus rapides].
+Le R-tree est loin d'être la seule façon d'indexer des données spatiales, par exemple on peut utiliser un https://dl.acm.org/doi/pdf/10.1145/361002.361007[kd-tree] si les données sont ponctuelles et statiques. Utiliser https://www.researchgate.net/profile/Raphael_Finkel/publication/220197855_Quad_Trees_A_Data_Structure_for_Retrieval_on_Composite_Keys/links/0c9605273bba2ece7b000000/Quad-Trees-A-Data-Structure-for-Retrieval-on-Composite-Keys.pdf[un quadtree] est une alternative possible pour des données dynamiques, mais http://www.dpi.inpe.br/livros/bdados/artigos/oracle_r_tree.pdf[le R-tree semble le plus souvent permettre des requêtes plus rapides].
 
 === Dans la vraie vie
 
@@ -231,10 +231,10 @@ Si je mentionne ce contexte d'indexation dans une base de données, ce n'est pas
 
 Pour comprendre pourquoi, il faut savoir que les IO disques sont https://colin-scott.github.io/personal_website/research/interactive_latency.html[des ordres de grandeurs plus lentes] que les opérations effectuées par le CPU. Elles ont de bonnes chances d'être les goulots d'étranglements d'une requête utilisant l'index.
 
-Or, lorsque le CPU lit des données depuis le disque dur, ces données sont transférées en pages de taille constante, par exemple 4 kio. Si notre application manipule les données par blocs plus petits (par exemple 1 kio), on effectue alors une coûteuse IO disque... de laquelle on jettera 3 kio à la poubelle pour n'en lire qu'1 kio ! De même, on jettera également 3 kio à la poubelle si on manipule des blocs de 5 kio : l'idéal serait donc de se débrouiller pour manipuler des données par blocs de tout pile 4 kio : chaque IO serait alors "rentabilisée".
+Or, lorsque le CPU récupère des données depuis le disque dur, ces données sont transférées en pages de taille constante, par exemple 4 kio. Si notre application manipule les données par blocs plus petits (par exemple 1 kio), on effectue alors une coûteuse IO disque... de laquelle on jettera 3 kio à la poubelle pour n'en lire qu'1 kio ! De même, on jettera également 3 kio à la poubelle si on manipule des blocs de 5 kio : l'idéal serait donc de se débrouiller pour manipuler des données par blocs de "tout pile 4 kio" : chaque IO serait alors "rentabilisée".
 
 
-Or, avec le R-tree (et c'est également le cas avec son cousin, le B-tree), le nombre maximal de cellules par node est un paramètre qu'on peut choisir statiquement : dans les schémas ci-dessus, chaque node contient 3 cellules, mais j'aurais aussi bien pu en mettre 5, 50 ou 500. De plus, la taille de chaque cellule est fixe est connue statiquement : c'est la taille d'un pointeur + la taille nécessaire pour stocker un rectangle. On peut donc choisir le nombre maximum d'élément par node, de sorte que la taille d'un node ... fasse tout pile 4 kio ! On minimise ainsi le nombre de ces coûteuses IOs disque qui sont nécessaires pour traverser l'index \o/
+Or, avec le R-tree (et c'est également le cas avec son cousin, le B-tree), le nombre maximal de cellules par node est un paramètre qu'on peut choisir statiquement : dans les illustrations ci-dessus, chaque node contient 3 cellules, mais j'aurais aussi bien pu en mettre 5, 50 ou 500. De plus, la taille de chaque cellule est fixe est connue statiquement : c'est la taille d'un pointeur + la taille nécessaire pour stocker un rectangle. On peut donc ajuster le nombre maximum d'éléments par node, de sorte que la taille d'un node ... fasse tout pile 4 kio ! On minimise ainsi le nombre de ces coûteuses IOs disque qui sont nécessaires pour traverser l'index \o/
 
 À titre d'exemple, le rtree d'OSRM https://github.com/Project-OSRM/osrm-backend/blob/cb4586ebee81bd5ffcad02278115a3ffa041bc15/include/util/static_rtree.hpp#L46[a une taille de node de 4kio] par défaut.
 
@@ -242,29 +242,29 @@ Pour le cas des R-tree stockés en RAM (comme dans l'exemple avec boost::geometr
 
 ==== ce qu'on indexe, et ce qu'on requête
 
-Tout comme le quadtree (mais à la différence du kd-tree), le R-tree n'est pas limité à l'indexation de points et de carrés : tout objet géométrique auquel on peut associer un rectangle englobant minimal peut y être indexé. Par exemple des ellipses.
+Tout comme le quadtree (mais à la différence du kd-tree), le R-tree n'est pas limité à l'indexation de points et de carrés : n'importe quel objet géométrique auquel on peut associer un rectangle englobant minimal peut y être indexé, par exemple des ellipses.
 
 D'ailleurs, les exemples ci-dessus sont donnés en dimension 2, i.e. sur un plan, mais le R-tree est utilisable en dimension quelconque, à condition de généraliser la notion de "rectangle englobant" en un N-uple d'intervalles, un sur chaque axe : en dimension 2, un rectangle est le 2-uple {intervalle sur l'axe des abscisses ; intervalle sur l'axe des ordonnées}.
 
-Enfin, signalons que l'un des intérêts des R-tree = c'est (comme le B-tree) un self balancing tree : il peut donc servir pour indexer les données d'une BDD dynamique (auquel on ajoutera / supprimera des éléments géométriques) à la différence, par exemple du kd-tree, qu'on ne peut pas mettre à jour une fois construit.
+Enfin, signalons que l'un des intérêts des R-tree est d'être (comme le B-tree) un arbre qui s'auto-équilibre : il peut donc servir pour indexer les données d'une base de données dynamique (auquel on ajoutera / supprimera des éléments géométriques) à la différence, par exemple du kd-tree, qu'on doit reconstruire de zéro si les données sont modifiées.
 
-Côté requêtes, le R-tree permet des choses assez variées : appartenance d'un point, intersection ou recouvrement d'éléments géométrique, plus proches voisins, ... Voici par exemple https://www.boost.org/doc/libs/1_64_0/libs/geometry/doc/html/geometry/reference/spatial_indexes/boost__geometry__index__rtree/query_predicates_const____outiter_.html[les prédicats que proposent boost::geometry].
+Côté requêtes, le R-tree permet des choses assez variées : appartenance d'un point, intersection ou recouvrement d'éléments géométrique, plus proches voisins, ... Voici par exemple link:https://www.boost.org/doc/libs/1_64_0/libs/geometry/doc/html/geometry/reference/spatial_indexes/boost__geometry__index__rtree/query_predicates_const____outiter_.html[les prédicats que proposent boost::geometry].
 
-Attention toutefois : supposons que vous fassiez une requête du genre "quels sont les points indexés qui sont inclus dans cet hexagone", et que l'hexagone couvre la majorité de l'espace des points, l'utilisation de l'index va *ralentir* la requête : aucune branche de l'arbre ne sera prunée ou presque, donc on va tout explorer, et on aurait mieux fait de tester linéairement TOUS les points de l'espace, ce qui nous aurait évité d'avoir à traverser l'index.
+Attention toutefois : supposons que vous fassiez une requête du genre "quels sont les points indexés qui sont inclus dans cet hexagone", et que l'hexagone couvre la majorité de l'espace des points, l'utilisation de l'index va *ralentir* la requête : aucune branche de l'arbre ou presque ne sera élaguée, et on va donc tout explorer : on aurait mieux fait de tester linéairement TOUS les points de l'espace, ce qui nous aurait évité d'avoir à traverser l'index.
 
-Cette propriété n'est pas propre aux R-tree, elle est valable pour tous les index : utilisés à mauvais escients, ils peuvent *ralentir* les requêtes. Il y a d'ailleurs du code dans les query planner en charge de prédire si ça vaut le coup d'utiliser l'index ou non.
+Ce "défaut" n'est pas propre aux R-tree, il est valable pour tous les index : utilisés à mauvais escients, ils peuvent *ralentir* les requêtes. Les SGBD ont des https://www.postgresql.org/docs/12/planner-optimizer.html[query planners] en charge de prédire si ça vaut le coup d'utiliser l'index ou non pour répondre à la requête, cf. la doc postgresql https://www.postgresql.org/docs/12/using-explain.html[ici] ou https://www.postgresql.org/docs/12/planner-stats.html[là].
 
 
 ==== Structures dérivées
 
-Le R-tree est sensible à l'ordre dans lequel les données y sont insérées : 2 ordres d'insertions différents produiront deux R-tree différents, et l'un sera plus efficace que l'autre pour répondre aux requêtes.
+Le R-tree est sensible à l'ordre dans lequel les données y sont insérées : 2 ordres d'insertions différents produiront deux R-tree différents, et l'un sera *plus efficace* que l'autre pour répondre aux requêtes !
 
-La complexité (et l'intérêt !) du R-tree est liée à la façon dont les données sont gérées dans l'arbre :
+La complexité (et l'intérêt) du R-tree est liée à la façon dont les données sont gérées dans l'arbre :
 
-* Comment construire un R-tree qui sera efficace à la requête ?
-* Comment éviter que les rectangles englobants de deux noeuds frères se recouvrent trop ?
-* Que se passe-t-il quand on y insère un nouvel élément ?
-* Et notamment, quid si cette insertion dépasse la capacité maximale du noeud le contenant (_node overflow_) ?
+* Comment organiser les données au sein d'un R-tree pour que les requêtes soient les plus efficaces possibles ?
+* Comment limiter le recouvrement entre les rectangles englobants de deux noeuds frères ?
+* Que se passe-t-il quand on insère un nouvel élément ?
+* Et notamment, quid si cette insertion dépasse la capacité maximale du noeud destinée à la contenir (_node overflow_) ?
 * Et pour la suppression d'un élément ?
 
 Le papier original propose une implémentation (et même deux, dans le cas des _node overflow_) répondant à ces questions, mais il existe une ribambelle de structures et algorithmes dérivés du R-tree original. Elles peuvent améliorer la construction initiale d'un R-tree à partir d'un jeu de données statiques (e.g. https://www.researchgate.net/publication/2303767_On_Packing_R-trees[l'algo qu'utilise OSRM pour remplir son R-tree]) ou bien la réorganisation des données lors des modifications dynamiques (e.g. http://www.cs.ucr.edu/~ravi/CS236Papers/rstar.pdf[le R*-tree], qui permet de mieux répartir les rectangles englobants en limitant leur recouvrement et leur étalement, et qui semble être massivement utilisé à la place du R-tree original), ou encore modifier le contenu des nodes pour fonctionner plus efficacement avec les caches des processeurs (e.g. https://dl.acm.org/doi/pdf/10.1145/376284.375679[le CR-tree]). Le sujet est tellement vaste qu'on peut en écrire https://www.springer.com/fr/book/9781852339777[des livres entiers].
