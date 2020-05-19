@@ -23,28 +23,25 @@ Pour cela, on dispose d'une liste de toutes les rues de Bordeaux, accompagnées 
 Par exemple, considérons la rue nommée *Place de la Victoire* ci-dessous :
 
 
-.Rue "Place de la victoire" - screenshot
 image::place_de_la_victoire_capture.jpeg[role="text-center"]
 
-Sa géométrie peut être représentée par les 11 paires de longitude+latitude suivants :
+La géométrie de cette rue peut être représentée par les 11 paires de {latitude+longitude} suivants :
 
-.Rue "Place de la victoire" - polyline
 image::place_de_la_victoire_polyline.svg[role="img-white-background",width=465,height=260]
 
 À partir de ces données, on peut stocker les rues de Bordeaux en tant qu'arêtes d'un graphe dont les poids sont les longueurs des rues, et les noeuds sont les extrémités de ces rues :
 
 
-.Graphe des rues de Bordeaux
 image::bordeaux_graphe.svg[role="img-white-background",width=465,height=260]
 
 
-Chaque noeud N a pour identifiant unique sa position GPS = son couple {latitude+longitude}. Ce bon vieux Disjktra nous donnera le plus court chemin entre un noeud de départ et un noeud d'arrivée.
+Chaque noeud `N` a pour identifiant unique sa position GPS, c'est à dire son couple {latitude+longitude}. Ce https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra[bon vieux Dijsktra] nous donnera le plus court chemin entre un noeud de départ et un noeud d'arrivée.
 
 Oui mais... 
 
-Ce que l'algorithme de Dijkstra attend en entrée, ce sont un noeud de départ et un noeud d'arrivée, c'est à dire deux positions GPS de *noeuds du graphe* (i.e. d'extrêmités de rue). Que puis-je donner à manger à Dijkstra si je souhaite partir non pas d'un *noeud du graphe*, mais plutôt d'une *position quelconque* du plan ?
+Ce que l'algorithme de Dijkstra attend en entrée, ce sont un noeud de départ et un noeud d'arrivée, c'est à dire deux positions GPS de *noeuds du graphe* (i.e. d'extrêmités de rue). Que vais-je donner à manger à Dijkstra si je souhaite partir non pas d'un *noeud du graphe*, mais plutôt d'une *position quelconque* du plan ?
 
-Il nous faut une étape préliminaire, cœur du présent post : à partir d'une *position quelconque* `X`, je veux retrouver le *noeud du graphe* qui en est le plus proche, qui servira de noeud de départ `N₀` du Dijkstra :
+Il nous faut une étape préliminaire, cœur du présent post : à partir d'une *position quelconque* `X`, je veux retrouver le *noeud du graphe* `N₀` qui en est le plus proche, qui servira de noeud de départ à l'algorithme de Dijkstra :
 
 image::bordeaux_graphe_et_position_initiale.svg[role="img-white-background",width=465,height=260]
 
@@ -53,28 +50,28 @@ C'est une instance d'un problème plus général : la https://en.wikipedia.org/w
 
 == One solution : [.line-through]#revolution# rectangulation
 
-Le R-tree, http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[inventé en 1984 par Antonin GUTTMAN], permet d'adresser ce type de problème d'une façon sympa. C'est une sorte de généralisation à N dimensions du B-tree
+Le R-tree, http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[inventé en 1984 par Antonin GUTTMAN], permet de résoudre ce type de problème d'une façon sympa. C'est une sorte de généralisation à N dimensions du B-tree, mais il n'est pas nécessaire d'avoir entendu parler du B-tree pour lire le présent post.
 
 === Rectangle englobant
 
 L'idée maîtresse est de proposer comme critère de "tri" des éléments géométriques à indexer... leur rectangle englobant minimal (_Minimal Bounding Rectangle = MBR_ dans la littérature) : le `R` du R-tree est là pour *rectangle*.
 
-Avant d'adresser notre problème, on va illustrer le principe de fonctionnement en supposant qu'on cherche à stocker un jeu de 10 carrés du plan. Par exemple, ces carrés peuvent être des représentations de villes :
+Avant de résoudre notre problème de noeud dans un graphe, on va illustrer le principe de fonctionnement en supposant qu'on cherche à stocker un jeu de 10 carrés du plan. Par exemple, ces carrés peuvent être des représentations de villes :
 
 image::squares_only.svg[role="img-white-background",height=360]
 
-Un R-tree est un arbre (https://fr.wikipedia.org/wiki/Owen_Wilson[wow] !), qui est équilibré, et dont les données sont stockées dans les noeuds terminaux (_leaf-nodes_). Dans notre exemple, chaque noeud a au minimum 2 et au maximum 3 cellules. Les cellules des leaf-nodes contiennent les données indexées, et les cellules des nodes intermédiaires pointent vers les noeuds fils :
+Un R-tree est un arbre (!) équilibré, et dont les données sont stockées dans les noeuds terminaux (_leaf-nodes_). Dans notre exemple, chaque noeud a au minimum 2 et au maximum 3 cellules. Les cellules des leaf-nodes contiennent les données indexées, et les cellules des nodes intermédiaires pointent vers les noeuds fils :
 
 
 image::rtree_leaves_only.svg[role="img-white-background",height=260]
 
-Le principe, c'est que chaque cellule d'un leaf-node contient des éléments géométriques, [.underline]#assortis de leur rectangle englobant minimal#. Dans notre exemple, c'est facile : le rectangle englobant d'un carré C, a les mêmes dimensions que le carré lui-même.
+Le principe, c'est que chaque cellule d'un leaf-node contient une donnée géométrique à stocker, [.underline]#assortie de son rectangle englobant minimal#. Dans notre exemple, c'est facile : le rectangle englobant d'un carré C, a les mêmes dimensions que le carré lui-même.
 
-Chaque cellule d'un node intermédiaire contient le rectangle qui englobe tous les rectangles englobants des cellules son noeud fils. Si c'est pas clair dit comme ça, ça ira mieux avec le schéma : C1, C2 et C3 appartiennent au même leaf-node, dont le rectangle englobant minimal est R1 :
+De leur côté, chaque cellule d'un node intermédiaire contient le rectangle qui englobe tous les rectangles englobants des cellules son noeud fils. Si c'est pas clair dit comme ça, ça ira mieux avec le schéma : C1, C2 et C3 appartiennent au même leaf-node, dont le rectangle englobant minimal est R1 :
 
 image::squares_and_R1_only.svg[role="img-white-background",height=360]
 
-Dans l'arbre, ça se traduit par le fait que la cellule parente du node contenant C1+C2+C3 stocke R1, rectangle minimal permettant d'englober C1, C2 et C3 :
+Dans l'arbre, ça se traduit par le fait que la cellule parente du _leaf-node_ contenant C1+C2+C3 stocke R1, rectangle minimal permettant d'englober C1, C2 et C3 :
 
 image::rtree_leaves_and_R1_only.svg[role="img-white-background",height=260]
 
