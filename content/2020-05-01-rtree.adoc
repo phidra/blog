@@ -275,11 +275,3 @@ Le papier original propose une implémentation (et même deux, dans le cas des _
 +++ </div></details> +++
 
 Le mot de la fin : si le sujet vous a intéressé, je vous recommande vivement d'aller lire http://www-db.deis.unibo.it/courses/SI-LS/papers/Gut84.pdf[l'article original] : il est particulièrement abordable.
-
-TODO : lire cet article en français sur KD-tree ?  https://www.lri.fr/~cfleury/media/rapportCTR_cfleury.pdf
-
-TODO : donner toutes les références vers les articles en pied de page ?
-
-
-* écluser les TODOs
-* faire une dernière relecture puis publier
