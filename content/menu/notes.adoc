@@ -43,6 +43,16 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [GIST] https://gist.github.com/hellerbarde/2843375[Latency numbers every programmer should know]
+
+* résumé des ordres de grandeur des différentes latences
+* notamment :
+** L2 cache ~ 10x plus lent que L1 cache
+** main memory ~ 100x plus lent que L1 cache
+** disk seek+read ~ 10.000.000x plus lent que L1 cache
+* les représentations visuelles et "humaines" sont top
+
+
 == [POST] https://robertovitillo.com/what-every-developer-should-know-about-tcp/[What every developer should know about TCP]
 
 === Lu le 2020-05-15, publié le 2020-05-10 par https://robertovitillo.com/about[Roberto Vitillo], dev Microsoft, ancien dev Mozilla
