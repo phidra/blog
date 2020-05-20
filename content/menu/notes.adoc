@@ -43,6 +43,30 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+
+== [POST] https://instagram-engineering.com/dismissing-python-garbage-collection-at-instagram-4dca40b29172[Dismissing Python Garbage Collection at Instagram]
+
+=== Lu le 2020-05-20, publié le 2017-01-17 sur https://instagram-engineering.com/[le blog tech d'instagram]
+
+* sur un serveur instagram = django avec un process master qui forke pour spawner des douzaines de sous-process
+* lorsqu'un sous-process démarre, le RSS (resident set size) monte vite à 250 Mio, mais la fraction de la mémoire "partagée par les autres process" redescend vite à 140 Mio (ce qui montre que ~90 Mio sont devenus "propres au process forké" plutôt que "partagé avec le parent")
+* COW = copy-on-write = les sous-process partagent leurs memory-frames avec leur process parent, jusqu'à ce que celle-ci soit modifié par l'un ou l'autre
+* mais en python : même une lecture de variable modifie la memory frame (pour incrémenter le refcount) du coup, à la moindre lecture, le COW se déclenche (c'est en fait un ... COR = copy-on-read)
+* ils essayent de profiler d'abord, en monitorant les page-fault (vu que le mécanisme de COW fait un page-fault pour copier la memory frame) -> surprise, c'est en fait le garbage collector qui génère le plus de page fault
+* `gc.disable()` ne marche pas car une lib externe appelle `gc.enable()`, du coup ils ont utilisé https://docs.python.org/3/library/gc.html#gc.set_threshold[gc.set_threshold(0)]
+* la désactivation du GC évite de trigger les COW, du coup la part de mémoire partagée entre le process master et ses fork remonte de 140 Mio à 225 Mio \o/
+* MAIS désactiver le GC présente un effet de bord : redémarrer leurs process sur le serveur devient d'un seul coup très lent (merci au continuous deployement pour l'avoir détecté) :
+** avant de s'arrêter, l'interpréteur python fait un dernier `gc.collect` (qui n'est pas bypassé par `gc.set_threshold(0)`)
+** du coup TOUTES les COW des processus fils se déclenchent en même temps, augmentant fortement la consommation de RAM d'un seul coup -> il n'y a plus de RAM libre, et le page-cache se vide
+** du coup quand le process redémarre, au moment de recharger en RAM toutes les pages disques du processus, elles NE SONT PLUS dans le page cache, il faut les relire depuis le disque dur, ce qui est très lent
+* pour éviter ça, ils bypassent le process de finalization de python (l'idée est : de toute façons, le process s'arrête -> inutile de cleanup ou d'appeler gc)
+* question : disabler le GC n'est-il pas problématique ? Réponse : non, car le GC n'est là que pour briser les références cycliques, le mécanisme principal de désallocation est lorsque le refcount tombe à zéro.
+* bilan = 8Gio de RAM en moins consommée, mais surtout : amélioration de la vitesse d'exécution (mesurée en IPC = instruction CPU per cycle) :
+** en effet, à nombre de process identique, il y a moins de pages mémoire *différentes* existantes (vu qu'on a augmenté le *partage* des pages mémoires entre les process, en déclenchant moins souvent le COW)
+** et comme on a moins de pages mémoires différentes à code identique, on aura moins de cache-miss
+** or chaque cache-miss force le CPU à attendre, du coup diminuer les cache-miss implique qu'on augmente l'IPC \o/
+
+
 == [GIST] https://gist.github.com/hellerbarde/2843375[Latency numbers every programmer should know]
 
 * résumé des ordres de grandeur des différentes latences
