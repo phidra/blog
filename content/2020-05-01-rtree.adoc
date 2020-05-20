@@ -35,7 +35,7 @@ image::place_de_la_victoire_polyline.svg[role="img-white-background",width=465,h
 image::bordeaux_graphe.svg[role="img-white-background",width=465,height=260]
 
 
-Chaque noeud `N` a pour identifiant unique sa position GPS, c'est à dire son couple {latitude+longitude}. Ce https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra[bon vieux Dijsktra] nous donnera le plus court chemin entre un noeud de départ et un noeud d'arrivée.
+Chaque noeud `N` a pour identifiant unique sa position GPS, c'est à dire son couple {latitude+longitude}. Ce https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra[bon vieux Dijkstra] nous donnera le plus court chemin entre un noeud de départ et un noeud d'arrivée.
 
 Oui mais... 
 
