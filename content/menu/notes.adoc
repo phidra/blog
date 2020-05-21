@@ -26,7 +26,7 @@ Je croise souvent des articles/vidéos/posts/etc. dont j'ai envie de garder quel
 
 Par exemple, après avoir regardé une <<video-sur-P-egal-NP,vidéo sur les problèmes P et NP-difficiles>>, je vais créer un fichier `notes/algorithmic_complexity.otl`, et y mettre ce que j'en aurais compris, reformulé et réorganisé à ma sauce, éventuellement en ajoutant le lien vers la vidéo en référence. Si par la suite j'enrichis ma connaissance du sujet, alors je complèterai ou corrigerai ce fichier.
 
-Avantage : j'ai des notes structurées sur les sujets que j'ai étudiés. L'outil que j'utilise, https://www.vim.org/scripts/script.php?script_id=3515[vim-outliner], produit un format texte particulièrement lisible et facile à grepper. Le process de structuration et reformulation de l'information est *très* formateur puisqu'il me permet d'identifier les points mal compris.
+Avantage : j'ai des notes structurées sur les sujets que j'ai étudiés. L'outil que j'utilise, https://www.vim.org/scripts/script.php?script_id=3515[vim-outliner], produit un format texte facile à grepper, que je trouve particulièrement lisible. Le process de structuration et reformulation de l'information est *très* formateur puisqu'il me permet d'identifier les points mal compris.
 
 Inconvénient : produires ces notes "raffinées" (dans le sens de "traitées pour en extraire l'essentiel") et structurées demande beaucoup de temps. Par ailleurs, je n'y mets que de l'info "académique", rarement partielle ou brute, et jamais ce qui est de l'ordre de l'opinion. De façon plus anecdotique, le format otl est parfois limitant, et elles sont compliquées à partager.
 
@@ -42,6 +42,62 @@ Je veux tester sur cette page une autre façon de prendre des notes, probablemen
 La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inclure que des références consultées et terminées : pas de "à lire" ou "à finir de visionner".
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
+
+
+
+== [ARTICLE] https://cacm.acm.org/magazines/2013/2/160173-the-tail-at-scale/fulltext[The Tail at Scale]
+
+=== Lu le 2020-05-21, publié le 2013-20-?? sur le https://research.google/[site présentant de google dédié à la recherche]
+
+* TL;DR : article assez varié présentant les causes de latences dans le traitement des requêtes, et tout un tas de pistes pour y être robuste. Un point important : inutile de chercher à être _fault-free_ : mieux vaut être _fault-tolerant_.
+* objectif = répondre en moins de 100 ms (quelques dizaines de ms pour le service de suggest du moteur de recherche de google)
+* même de rares augmentations de la latence dégradent l'ensemble des requêtes : plutôt que de viser à un système *sans* latence, il faut concevoir un système pour répondre rapidement *même en présence* de latence occasionnelle : _latency tail-tolerant_
+* causes de latence "individuelle" (i.e. sans prendre en compte le fait qu'une requête est un agrégat complexe d'agents et de sous-requêtes) :
+** *compétition pour des ressources partagées localement* : temps CPU, cache, memory bandwidth, network bandwidth, ...
+** *daemons* : peu consommateur _en moyenne_, mais lorsqu'ils se déclenchent, peuvent consommer des ressources _en burst_
+** *compétition pour des ressources partagées globalement* : network switches, shared filesystems
+** *maintenance automatiques* : e.g. passage du garbage collector d'un runtime (e.g. java)
+** **queuing** : passage obligé dans une queue potentiellement déjà chargée
+** **hardware power limit** : throttling automatique si le CPU chauffe trop
+** **hardware garbage collection** : pour les SSD, il y a un GC hardware qui multiplie la latence par 100
+** **hardware energy management** : latence nécessaire pour sortir d'un mode "économie d'énergie"
+* même si on répartit les sous-requêtes sur différents sous-systèmes, la queue de la distribution va être limitante :
+** leur approche est de regarder le 99ième percentile de temps de réponse (d'où le "tail")
+** si les services répondent en 10 ms mais que le 99ième percentile répond en une seconde, une requête sur cent sera longue
+** sur un service qui requête 100 sous-serveurs en parallèle, 63% des requêtes prendra plus d'une seconde (1 - 0.99^100)
+** même si seule 1/10000 requête est lente, si on a besoin de 2000 sous-requêtes, alors 1 requêtes sur 5 (0.18 = 1 - 0.9999^2000) prendra plus d'une seconde
+* comment diminuer cette latency-tail pour un composant donné ?
+** prioriser les éléments d'une queue qui sont destinés à servir une requête qu'un utilisateur final attend (par opposition aux requêtes où c'est pas très grave si ça prend ponctuellement du temps, par exemple pour des tâches automatiques)
+** autoriser la préemption des requêtes, pour éviter qu'une seule requête très lente bloque toutes celles derrière elle (en effet, celles-ci pourront préempter la requête lente au bout d'un moment)
+** limiter l'impact des activités en tâche de fond (e.g. en ne les lançant que lorsque l'activité est faible)
+** note : le caching est hors de propos ici, puisqu'il n'adresse pas le problème de la queue de la distribution (car les requêtes responsables de la queue de la latency-distribution ne sont pas cachées)
+* étant donné qu'on ne pourra de toutes façons *pas* supprimer la latency-tail, comment réduire la sensibilité à celle-ci ?
+** **hedged requests** :
+*** profiter du fait que les serveurs soient répliqués en envoyant N fois la même requête en parallèle à différent serveur, en gardant la première réponse (et en discardant les suivantes)
+*** pour ne pas surcharger le système inutilement, plutôt que de faire ça systématiquement, on ne le fait que lorsque la première requête met un peu de temps à répondre
+*** en n'augmentant le volume des requêtes que de 2%, ils arrivent à réduire la latence du 99.9 percentile de 1800 ms à 74 ms !
+** **tied requests** :
+*** proglème des hedged requêtes = on est coincés entre Charybde (sursolliciter les serveurs de façon inutile) et Scylla (devoir attendre avant de déclencher les requêtes supplémentaires).
+*** l'une des causes principales des variabilités de latences est le temps de queuing des serveurs : une fois la requête en cours en cours de traitement par le serveur, la variabilité n'est pas énorme.
+*** du coup solution simple = le load balancer tient compte de l'encombrement des queues pour choisir le serveur
+*** solution alternative = enqueuer plusieurs requêtes en parallèle dans plusieurs serveurs, et leur permettre de communiquer : quand un serveur commence à traiter une requête, il transmet aux autres serveurs un message d'annulation de leur requête équivalente.
+*** encore une autre alternative = avant de faire une requête à un serveur, on le probe pour savoir s'il est occupé. Cette solution créée d'autres problèmes : l'occupation du serveur peut augmenter entre la probe et la requête, il peut-être difficile à un serveur de savoir s'il est occupé, et ça peut occasionner un pic de charge sur un serveur considéré comme le moins occupé.
+* en temps normal, on essaye de partitionner le problème uniformément entre les ressources permettant de le résoudre. En pratique, d'une part les ressources ne répondent pas toutes de façon uniforme, et d'autre part une portion du problème peut prendre de l'importance *après* le partitionnement (e.g. si une recherche google se met à être à la mode). Pistes :
+** **micro-partition** : si on a 10 serveurs, au lieu de partionner le problème en 10 morceaux, on le partitionne en 100, et chaque serveur en traite 10. Si l'une des micro-partitions  (on peut plus facilement redispatcher les micros-partitions si nécessaires)
+** **selective replication** : répliquer dynamiquement les morceaux qui sont cause de surcharge, pour les faire traiter par plus de serveurs. Deux exemples :
+*** sur 24h, en fonction des fuseaux horaires, la répartition des langues des requêtes change avec l'avancée des heures -> on adapte les documents servis en répliquant les langues les plus populaires à une heure dite
+*** si un data-center en Asie est down, on réplique dynamiquement les documents de langues asiatiques sur un serveur nord-américain pour répondre aux requêtes
+** **latency-induced probation** : on sort temporairement du flux un serveur qui semble occupé, par exemple par un autre job sur le serveur (paradoxalement, c'est donc en réduisant les ressources qu'on améliore la latence moyenne)
+* dans les information retrieval systems , c'est plus important de renvoyer un bon résultat rapidement que de renvoyer le meilleur résultat lentement :
+** **good enough** : de temps en temps, on n'attend pas que 100% des leaf-servers aient répondu, on se permet de répondre si une fraction suffisamment grande a déjà répondu, en supposant qu'il y a peu de chances que les réponses manquantes améliorent la réponse globale
+** **canary requests** : un risque est qu'une requête particulière fasse emprunter un chemin de code buggé, qui fait planter TOUS les leaf servers d'un coup. Pour éviter ça, on envoie d'abord la requête à 1 ou 2 leaf-servers, et seulement s'ils répondent correctement, on envoie la requête à tout le monde.
+* mutations : la latence sur les requêtes de mutation est plus simple à gérer :
+** souvent les attentes sont moindres
+** les mutations peuvent être effectuées **après** avoir répondu à l'utilisateur, donc sans se presser
+** les services nécessitant des mutations peuvent être structurés pour être plus latency-tolerant
+** lorsqu'on cherche à muter, souvent on utilise un algo (genre Lamport-Paxos) pour recueillir un consensus, et on n'a pas besoin de la queue de la distribution
+
+
 
 == [ARTICLE] https://www.nngroup.com/articles/response-times-3-important-limits/[Response Times: The 3 Important Limits]
 
