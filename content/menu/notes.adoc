@@ -43,6 +43,16 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [ARTICLE] https://www.nngroup.com/articles/response-times-3-important-limits/[Response Times: The 3 Important Limits]
+
+=== Lu le 2020-05-20, publié le 1993-01-01 (mis à jour en 2014 : l'article reste d'actualité) par Jakob NIELSEN, un spécialiste de l'UX sur le site du https://www.nngroup.com/[Nielsen Norman Group], supposément "World Leaders in Research-Based User Experience".
+
+* 3 temps de réponses pertinents :
+** < 100 ms = le système semble répondre instantanément, l'utilisateur a l'impression d'agir _directement_ sur les données
+** < 1 seconde = l'utilisateur perd l'impression d'agir directement sur les données, mais le système n'interrompt pas le "flow of thoughts" de l'utilisateur
+** < 10 secondes = le système interrompt le "flow of thoughts", mais est suffisamment réactif pour qu'on n'ait pas envie d'aller faire autre chose pendant qu'il mouline
+** > 10 secondes = l'utilisateur va aller faire autre chose pendant que le système mouline -> il _faut_ lui donner un indicateur de "quand la tâche sera finie" (e.g. un indcateur de pourcentage restant, ou spinner)
+* un peu plus de temps : https://www.nngroup.com/articles/powers-of-10-time-scales-in-ux/
 
 == [POST] https://instagram-engineering.com/dismissing-python-garbage-collection-at-instagram-4dca40b29172[Dismissing Python Garbage Collection at Instagram]
 
