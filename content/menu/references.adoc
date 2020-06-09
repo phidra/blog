@@ -18,3 +18,4 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://timur.audio/
 * https://www.fluentcpp.com/
 * https://h-deb.clg.qc.ca/[le site de Patrice ROY], une mine d'or où chaque article fait preuve d'une pédagogie hallucinante
+* https://kunigami.blog
