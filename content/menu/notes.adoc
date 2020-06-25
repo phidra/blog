@@ -45,6 +45,29 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [ARTICLE] https://eklitzke.org/how-tcp-sockets-work[How TCP Sockets Work]
+
+=== Lu le 2020-06-25, publié le 2017-01-27 sur le https://eklitzke.org/[blog d'Evan KLITZKE] semble être un ex-dev über + bitcoin core
+
+* TL;DR : explications de haut-niveau sur la stack TCP/IP Linux
+* quand un paquet arrive, le kernel est soit notifié (interrupt), soit polle le NIC (= network interface) pour savoir qu'il y a un nouveau paquet
+* le paquet est alors décodé, et attribué à une connexion TCP à partir de ip+port de source/destination
+* son payload est copié dans le receive buffer de la socket, puis "réveille" un éventuel read/select qui bloquait jusqu'ici
+* en userland, le process peut alors copier le contenu du receive buffer dans le buffer en userland (c'est ce que fait `read`, cf. `man 2 read`) -> le receive buffer en kernelspace est vidé par cette opération
+* conséquence = si on appelle `read` trop rarement, le receive buffer peut grossir démesurément. Pour éviter ça, le kernel limite la taille du receive buffer... qui peut donc finir par être plein si on `read` trop rarement !
+* en résumé, quand on appelle `read` :
+** si le receive buffer est vide, `read` bloque jusqu'à ce qu'on ait des données
+** si le receive buffer n'est pas vide, `read` retourne en copiant les données du receive buffer dans le userland buffer (éventuellement, partiellement si on n'en avait pas assez reçu)
+** si le receive buffer est plein, tout envoi de paquet sur la socket sera refusé par la pile TCP/IP (`ACK` ne sera pas envoyé). C'est ue partie de la https://en.wikipedia.org/wiki/TCP_congestion_control[TCP congestion control] , déjà évoqué dans l'article https://robertovitillo.com/what-every-developer-should-know-about-tcp/[What every developer should know about TCP]
+* (l'article détaille également le fonctionnement de `write`, je ne le reproduis pas ici)
+* c'est le même principe pour write (je ne détaille pas ici), ainsi que pour une listen-socket (chargée de spawner d'autres sockets en réponse aux tentatives de connexion par des clients) : si elle n'`accept` pas assez vite, le kernel va refuser les nouvelles connexions.
+* le mécanisme est donc similaire dans les 3 cas : `read` / `write` / `accept`, je l'illustre avec `read` :
+** on a une queue = le receive buffer
+** on a un producteur = les paquets reçus par la stack TCP/IP (resp. envoyés, ou les demandes de connexions)
+** on a un consommateur = les appels à `read` (resp. `write` / `accept`) pour vider la queue
+* si le consommateur ne consomme pas assez vite, le kernel bloque (refuse de recevoir/envoyer de nouveaux paquets, ou bien refuse les nouvelles connexions)
+
+
 == [ARTICLE] https://cacm.acm.org/magazines/2013/2/160173-the-tail-at-scale/fulltext[The Tail at Scale]
 
 === Lu le 2020-05-21, publié le 2013-20-?? sur le https://research.google/[site présentant de google dédié à la recherche]
