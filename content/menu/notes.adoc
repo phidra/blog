@@ -49,13 +49,13 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 === Lu le 2020-06-26, publié le 2016-06-12 sur le https://eklitzke.org/[blog d'Evan KLITZKE] ex-dev über + dev bitcoin core
 
-* CRC et hash functions semblent similaire : à partir d'une entrée quelconque, ils produisent une sortie "réduite" (checksum pour CRC, digest pour hash function), typiquement de 32 à 512 bits
+* CRC et hash functions semblent similaires : à partir d'une entrée quelconque, ils produisent une sortie "réduite" (checksum pour CRC, digest pour hash function), typiquement de 32 à 512 bits
 * objectif de CRC = détecter les erreurs de transmission :
 ** mathématiquement, les 32bits-CRC de deux messages différents seront *obligatoirement* inégaux si la différence de message est < 32 bits, quel que soit le message.
 ** (ils seront *sans doute* inégaux même pour des différences plus importantes)
-** Mais même si les CRC sont inégaux, ils peuvent être très similaires, on s'en fiche : l'important c'est qu'on puisse dire "si les CRC sont différents, le message a été altéré"
+** Mais même si les CRC sont inégaux, ils peuvent être très similaires, et on s'en fiche : l'important c'est qu'on puisse dire "si les CRC sont différents, le message a été altéré"
 * objectif de hash = ne pas être biaisé en fonction de l'entrée :
-** deux messages différents mais très proches doivent produire des digest *aussi dissemblables* que deux messages différents mais très éloignés
+** deux messages différents *mais très proches* doivent produire des digest *aussi dissemblables* que deux messages différents *et très éloignés*
 ** dit autrement : étant donné deux digests différents, on ne doit pas être capables de dire si les messages initiaux étaient proches ou non (à la différence des CRC)
 ** une autre façon de voir ça : si on change un seul bit sur un message d'entrée, chaque bit de son digest doit avoir une chance sur deux d'être modifié
 
