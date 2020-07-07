@@ -50,12 +50,15 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 === Lu le 2020-07-07, publié le 2019-02-01 sur https://medium.com/@jayphelps[la page medium de Jay PHELPS], dev google, ancien dev Netflix
 
 * backpressure = résistance au flow
-* exemple typique = un producteur de message, et un consommateur de message, la backpressure apparaît lorsque le producteur produit plus vite que le consommateur ne consomme
+* cas typique = un producteur de message, et un consommateur de message, la backpressure apparaît lorsque le producteur produit plus vite que le consommateur ne consomme
 * 3 stratégies pour y faire face :
 ** *buffering* = on accumule les messages en trop dans un buffer, en espérant pouvoir les dépiler lorsque le pic de charge sera passé. *inconvénient* = attention à ce que le buffer ne grossisse pas indéfiniment + quid si le buffer est plein ?
 ** *dropping* = on droppe les messages en trop. *inconvénient* = on perd des messages.
-** *control the producer* = on avertit le producteur qu'il va trop vite, et qu'il doit ralentir. La meilleure solution si elle est disponible. *inconvénient* = pas toujours réalisable + peut-être compliquée à implémenter.
-
+** *control the producer* (flow control) = on avertit le producteur qu'il va trop vite, et qu'il doit ralentir. La meilleure solution si elle est disponible. *inconvénient* = pas toujours réalisable + peut-être compliquée à implémenter.
+* exemple (tiré de cet https://lucumr.pocoo.org/2020/1/1/async-pressure/[autre excellent article]) : la gestion des bagages dans un aéroport : quand on veut faire voyager des bagages, on les mets (= produits) dans un container. Lorsqu'ils sont pleins, chaque container est alors chargé (= consommé) dans un avion. Quid si de nouveaux bagages arrivent alors qu'on n'a plus de containers vides à charger ?
+** buffering = on garde le bagage de côté, et on attend qu'un nouveau container vide arrive
+** dropping = on brûle discrètement le bagage en trop sur le côté de l'aéroport
+** control the producer = on avertit l'aéroport de ne plus accepter de nouveau bagage
 
 == [ARTICLE] https://eklitzke.org/crcs-vs-hash-functions[CRC vs hash functions]
 
