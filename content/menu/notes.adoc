@@ -45,6 +45,18 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [ARTICLE] https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7[Backpressure explained — the resisted flow of data through software]
+
+=== Lu le 2020-07-07, publié le 2019-02-01 sur https://medium.com/@jayphelps[la page medium de Jay PHELPS], dev google, ancien dev Netflix
+
+* backpressure = résistance au flow
+* exemple typique = un producteur de message, et un consommateur de message, la backpressure apparaît lorsque le producteur produit plus vite que le consommateur ne consomme
+* 3 stratégies pour y faire face :
+** *buffering* = on accumule les messages en trop dans un buffer, en espérant pouvoir les dépiler lorsque le pic de charge sera passé. *inconvénient* = attention à ce que le buffer ne grossisse pas indéfiniment + quid si le buffer est plein ?
+** *dropping* = on droppe les messages en trop. *inconvénient* = on perd des messages.
+** *control the producer* = on avertit le producteur qu'il va trop vite, et qu'il doit ralentir. La meilleure solution si elle est disponible. *inconvénient* = pas toujours réalisable + peut-être compliquée à implémenter.
+
+
 == [ARTICLE] https://eklitzke.org/crcs-vs-hash-functions[CRC vs hash functions]
 
 === Lu le 2020-06-26, publié le 2016-06-12 sur le https://eklitzke.org/[blog d'Evan KLITZKE] ex-dev über + dev bitcoin core
