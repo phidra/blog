@@ -44,6 +44,37 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
+== [ARTICLE] https://lucumr.pocoo.org/2020/1/1/async-pressure/[I'm not feeling the async pressure]
+
+=== Lu le 2020-07-07, publié le 2020-01-01 par https://lucumr.pocoo.org/about/[Armin RONACHER], co-leader de http://www.pocoo.org/[pocoo], un groupe de dev open-source bossant sur des projets comme sphinx, flask, werkzeug, ou encore pygments.
+
+* point de vocabulaire = confusion (qui semble assumée) entre back pressure et back pressure management :
+** back pressure = resistance that opposes the flow of data through a system
+** back pressure management = moyen de faire en sorte que la back pressure ne pose pas problème
+** dans l'article (et https://github.com/aio-libs/aiohttp/issues/1368[ailleurs]), on peut lire des choses comme _this library doesn't have back pressure_, mais il faut lire _this library doesn't have back pressure MANAGEMENT_
+* exemple pris = la gestion des bagages dans un aéroport :
+** quand on veut faire voyager des bagages, on les mets (= produits) dans un container
+** lorsqu'un container est plein, il est alors chargé (= consommé) dans un avion
+** backpressure = quid si de nouveaux bagages arrivent alors qu'on n'a plus de containers de disponibles à charger ?
+* les 3 stratégies possibles (cf. les notes précédentes ci-dessous) :
+** buffering = on garde le bagage de côté, et on attend qu'un nouveau container vide arrive
+** dropping = on brûle discrètement le bagage en trop sur le côté de l'aéroport
+** control the producer = on avertit l'aéroport de ne plus accepter de nouveau bagage
+* pourquoi l'async a changé les choses ? quelle différence avec le code synchrone (multi-threadé) qu'on utilisait avant pour faire de l'IO bloquant ?
+** exemple donné avec un echo server
+** en asyncio : le serveur accepte toutes les connexions, y compris quand il ne pourra pas les traiter : mais si le write buffer est plein, la lib va bufferiser indéfiniment
+** en synchrone : lorsque le pool de threads capable d'accepter une connexion est vide (tous les threads sont occupés), la connexion va être mise en attente / refusée
+* à noter qu'on peut très bien accepter plus que ce qu'on peut traiter, pour être sûr d'avoir toujours de quoi traiter : si on n'a que 50 connexions BDD possibles (ou 50 threads dans le pool), on peut accpeter 200 requêtes (4 x plus), une partie va attendre un peu, mais les threads/connexions seront exploitées à fond
+* la "bonne" façon de faire selon l'auteur :
+** le service doit être capable de connaître son état : "prêt à traiter" ou "surchargé, je ne traiterai pas une prochaine requête"
+** si une requête arrive alors que le service est surchargé, on retourne 503 (éventuellement, en indiquant dans combien de temps réessayer avec le header `retry-after`)
+** en gros : plutôt que d'essayer de répondre à toute requête qu'on nous passe (et c'est niveau OS que ça va bloquer), on faile early si on voit qu'on est surchargé
+* cas du streaming :
+** ce qui est exposé ci-dessus marche bien pour des patterns de type request→response, mais pour des patterns de type stream c'est plus compliqué
+** normalement, https://en.wikipedia.org/wiki/Transmission_Control_Protocol#Flow_control[il y a du control-flow intégré dans TCP], mais en pratique, des mécanismes de flow-control custom sont souvent implémentés par dessus. Par exemple, en HTTP2, plusieurs streams peuvent être multiplexés sur une seule connexion TCP, d'où le besoin d'un mécanisme custom de flow-control.
+** MAIS le fait que le mécanisme de flow-control de TCP soit plutôt invisible (en effet, il n'est pas accessible via l'API socket) est *DANGEREUX* : le dev PEUT faire comme si c'était transparent pour lui, alor qu'il FAUT qu'il prenne en compte le cas où il y a de la backpressure : lorsqu'on implémente un protocole de streaming, il FAUT qu'il soit bidirectionnel : du client vers le serveur pour envoyer les données *ET* du serveur vers le client pour réguler la vitesse
+** et ça c'est pas trivial du tout !
+* le problème (ne pas gérer la backpressure) est commun à plein de monde : go, rust, aiohttp, etc.
 
 == [ARTICLE] https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7[Backpressure explained — the resisted flow of data through software]
 
@@ -55,7 +86,7 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 ** *buffering* = on accumule les messages en trop dans un buffer, en espérant pouvoir les dépiler lorsque le pic de charge sera passé. *inconvénient* = attention à ce que le buffer ne grossisse pas indéfiniment + quid si le buffer est plein ?
 ** *dropping* = on droppe les messages en trop. *inconvénient* = on perd des messages.
 ** *control the producer* (flow control) = on avertit le producteur qu'il va trop vite, et qu'il doit ralentir. La meilleure solution si elle est disponible. *inconvénient* = pas toujours réalisable + peut-être compliquée à implémenter.
-* exemple (tiré de cet https://lucumr.pocoo.org/2020/1/1/async-pressure/[autre excellent article]) : la gestion des bagages dans un aéroport : quand on veut faire voyager des bagages, on les mets (= produits) dans un container. Lorsqu'ils sont pleins, chaque container est alors chargé (= consommé) dans un avion. Quid si de nouveaux bagages arrivent alors qu'on n'a plus de containers vides à charger ?
+* exemple (tiré de cet https://lucumr.pocoo.org/2020/1/1/async-pressure/[autre excellent article]) : la gestion des bagages dans un aéroport : quand on veut faire voyager des bagages, on les mets (= produits) dans un container. Lorsqu'ils sont pleins, chaque container est alors chargé (= consommé) dans un avion. Quid si de nouveaux bagages arrivent alors qu'on n'a plus de containers de disponibles à charger ?
 ** buffering = on garde le bagage de côté, et on attend qu'un nouveau container vide arrive
 ** dropping = on brûle discrètement le bagage en trop sur le côté de l'aéroport
 ** control the producer = on avertit l'aéroport de ne plus accepter de nouveau bagage
