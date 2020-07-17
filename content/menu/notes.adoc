@@ -44,6 +44,30 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
+== [ARTICLE] https://cacm.acm.org/magazines/2016/7/204032-why-google-stores-billions-of-lines-of-code-in-a-single-repository/fulltext[Why Google Stores Billions of Lines of Code in a Single Repository]
+
+=== Lu le 2020-07-17, publié le 2016-07-?? par Rachel POTVIN, Josh LEVENBERG deux ingénieurs de Google.
+
+* présentation du monorepo utilisé par google, des outils qui vont avec, et des avantages/inconvénients
+* le début de l'article donne quelques chiffres, ils sont assez hallucinants, alors même qu'ils sont obsolètes car anciens !
+** ~80 TiB de data
+** 2 milliards de lignes de code, 9 millions de fichiers source
+** toutes les semaines, 15 millions de lignes de code sont modifiées (soit l'équivalent du repo complet du noyau linux) sur 250k fichiers
+** 25000 devs google, qui font 16k commits chaque jour (plus 24k commits faits par des outils automatiques)
+** 500k queries / seconde en moyenne sur le repo (et jusqu'à 800k en pic)
+* extraits (non-exhaustifs) :
+** In sum, Google has developed a number of practices and tools to support its enormous monolithic codebase, including trunk-based development, the distributed source-code repository Piper, the workspace client CitC, and workflow-support-tools Critique, CodeSearch, Tricorder, and Rosie.
+** The ability to make atomic changes is also a very powerful feature of the monolithic model. A developer can make a major change touching hundreds or thousands of files across the repository in a single consistent operation. For instance, a developer can rename a class or function in a single commit and yet not break any builds or tests.
+** More complex codebase modernization efforts (such as updating it to C++11 or rolling out performance optimizations9) are often managed centrally by dedicated codebase maintainers. Such efforts can touch half a million variable declarations or function-call sites spread across hundreds of thousands of files of source code. Because all projects are centrally stored, teams of specialists can do this work for the entire company, rather than require many individuals to develop their own tools, techniques, or expertise.
+** Old APIs can be removed with confidence, because it can be proven that all callers have been migrated to new APIs.
+** However, as the scale increases, code discovery can become more difficult, as standard tools like grep bog down.
+** Some would argue this model, which relies on the extreme scalability of the Google build system, makes it too easy to add dependencies and reduces the incentive for software developers to produce stable and well-thought-out APIs.
+** The fact that most Google code is available to all Google developers has led to a culture where some teams expect other developers to read their code rather than providing them with separate user documentation. There are pros and cons to this approach. No effort goes toward writing or keeping documentation up to date, but developers sometimes read more than the API code and end up relying on underlying implementation details.
+** Google chose the monolithic-source-management strategy in 1999 when the existing Google codebase was migrated from CVS to Perforce. Early Google engineers maintained that a single repository was strictly better than splitting up the codebase, though at the time they did not anticipate the future scale of the codebase and all the supporting tooling that would be built to make the scaling feasible.
+** Over the years, as the investment required to continue scaling the centralized repository grew, Google leadership occasionally considered whether it would make sense to move from the monolithic model. Despite the effort required, Google repeatedly chose to stick with the central repository due to its advantages.
+
+
+
 == [ARTICLE] https://lucumr.pocoo.org/2020/1/1/async-pressure/[I'm not feeling the async pressure]
 
 === Lu le 2020-07-07, publié le 2020-01-01 par https://lucumr.pocoo.org/about/[Armin RONACHER], co-leader de http://www.pocoo.org/[pocoo], un groupe de dev open-source bossant sur des projets comme sphinx, flask, werkzeug, ou encore pygments.
