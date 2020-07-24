@@ -78,5 +78,33 @@ th, td {
 th { background-color: $darkest-color; }
 td > p { margin: 4px; }
 
+
+// tableaux représentant des graphes linéaires :
+.linear-graph {
+    background-color: $lightest-color;
+    margin: 15px;
+    padding: 15px;
+    display: inline-block;
+}
+
+.linear-graph tr, td {
+    background-color: $lightest-color;
+    color: $darkest-color;
+	border: 4px solid $darkest-color;
+    padding: 5px 5px 5px 5px;
+    font-size: 140%;
+    text-align: center;
+    font-family: monospace;
+}
+
+.bg-green  { background-color: yellowgreen; }
+.bg-orange { background-color: orange; }
+.bg-darkorange { background-color: darkorange; }
+.bg-red    { background-color: brown; }
+.bg-grey   { background-color: grey; }
+.bg-lavender   { background-color: lavender; }
+.bg-royalblue   { background-color: royalblue; }
+
+
 // background blanc pour images SVG transparentes :
 .img-white-background img { background-color: white; }
