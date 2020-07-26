@@ -54,6 +54,18 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 === Visionnée le 2020-07-08, cours publiée le 2013-01-13 mais semble mur https://www.youtube.com/channel/UCEBb1b_L6zDS3xTUrIALZOw[la chaîne MIT OpenCourseWare] (mais semble plutôt correspondre à un cours présenté en 2011) , présenté par Srini DEVADAS, professeur au MIT. La vidéo fait partie de la série de cours https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/[Introduction to Algorithms].
 
+==== oveview
+
+* 16:15 définition du problème 1D
+* 18:43 algo naïf en O(n) = parcours linéaire du tableau
+* 24:40 algo efficace en O(logn), détaillé ci-dessous
+* 33:35 étude de la complexité 1D
+* 36:15 définition du problème 2D
+* 37:20 algo naïf en O(n²) = greedy ascent
+* 45:00 algo efficace... mais incorrect !
+* 47:00 algo efficace et correct divide-and-conquer en O(m x logn), détaillé ci-dessous
+* 51:20 étude de la complexité 2D
+
 ==== objectif = trouver un peak
 
 * définition d'un peak ⛰ = une cellule supérieure ou égale à ses voisines
@@ -512,7 +524,7 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 ==== greedy algo en 2D
 * on trouvera forcément un peak local...
-* ...si on n'a pas de pot, on parcourera tout le tableau ou presque avant de le trouver → O(N)
+* ...si on n'a pas de pot, on parcourera tout le tableau ou presque avant de le trouver → O(N*M)
 
 == [ARTICLE] https://lucumr.pocoo.org/2020/1/1/async-pressure/[I'm not feeling the async pressure]
 
