@@ -1,0 +1,30 @@
+PUBLICATION SUR GITHUB PAGES :
+	workflow retenu :
+		un seul repo : phidra/blog
+		branche master = sources du blog
+		branche gh-pages = site publié
+		github pages est branché sur la branche gh-pages
+	WHAT I DID (basé sur ça, avec quelques modifications = https://gohugo.io/hosting-and-deployment/hosting-on-github/) :
+		à ne faire qu'une fois = création de la branche :
+			cd /path/to/blog/
+			git checkout --orphan gh-pages
+			git reset --hard  # la branche gh-pages est initialement VIDE
+			rm -rf themes  # semble nécessaire car mal géré par le reset
+			git commit --allow-empty  -m "Initializing gh-pages branch"
+			git push origin gh-pages
+		à ne faire qu'une fois = publication initiale :
+			cd /path/to/blog/
+			rm -rf public
+			git worktree add public gh-pages
+			hugo -D
+			cd public
+			git add --all
+			git commit -m "Publishing to gh-pages"
+			git push
+		publier une nouvelle version du blog (sans tout rebuilder de zéro) :
+			cd /path/to/blog
+			hugo  # ou hugo -D si je veux inclure les brouillons
+			cd public
+			git diff  # revoir les modifications
+			git commit -a -m "publishing"
+			git push
