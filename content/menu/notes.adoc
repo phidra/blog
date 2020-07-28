@@ -51,7 +51,7 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 * fait écho au cours d'Erik DEMAINE annoté plus bas
 * conditions d'application de la programmation dynamique :
 ** problème découpable en sous-problèmes discrets
-** la combinaison de solutions optimales à des sous-problèmes doit donner naissance à une solution optimale au problème global
+** le problème a une _optimal substructure_ : la combinaison de solutions optimales à des sous-problèmes doit donner naissance à une solution optimale au problème global
 ** NdM : j'ajoute "les sous-problèmes se recouvrent" (sans quoi inutile de faire de la prog dynamique, on peut faire un classique divide-and-conquer)
 * programmation dynamique =
 ** expression du problème sous forme d'une relation de récurrence  <- c'est la partie difficile
