@@ -47,8 +47,35 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 === Lu le 2020-07-28, c'est pas très clair quand le cours a été publié. Fait partie d'un https://www.supinfo.com/cours/2ADS[cours d'algorithmique à Supinfo], présenté par https://www.supinfo.com/fr/News0870864f-e0af-4ba1-b2ff-d488f356ef03.aspx[Laurent GODEFROY], enseignant là-bas.
 
-* présentation propre de la programmation dynamique
-* fait écho au cours d'Erik DEMAINE annoté ci-dessous
+* présentation propre de la programmation dynamique, avec notamment deux très bons exemples (rendu de monnaie et sac-à-dos)
+* fait écho au cours d'Erik DEMAINE annoté plus bas
+* conditions d'application de la programmation dynamique :
+** problème découpable en sous-problèmes discrets
+** la combinaison de solutions optimales à des sous-problèmes doit donner naissance à une solution optimale au problème global
+** NdM : j'ajoute "les sous-problèmes se recouvrent" (sans quoi inutile de faire de la prog dynamique, on peut faire un classique divide-and-conquer)
+* programmation dynamique =
+** expression du problème sous forme d'une relation de récurrence  <- c'est la partie difficile
+** condition d'arrêt
+** memoization
+* inconvénients de l'approche bottom-up = on peut se retrouver à calculer des valeurs intermédiaires inutiles (elles ne nous servent pas pour la solution)
+* inconvénients de l'approche top-down = on peut se retrouver à faire une trop grosse récursion, et à exploser la callstack (en revanche, on ne calcule que ce qui sert réelement)
+* la partie difficile est d'exprimer le problème sous forme d'une relation de récurrence. Par exemple celle pour le sac-à-dos est issue de ces considérations :
+** Les objets ont un poids `wi` et une valeur `vi`.
+** on récurse sur l'indice `i` de l'objet parmi les `N` objets (en partant de la fin du tableau des objets).
+** la donnée pertinente est `V[i][w]` = le valeur maximale qu'on peut transporter dans un sac de capacité `w`, en ne considérant que les `i` premiers objets. Elle est issue de la combinaison optimale des `i` premiers objets dans le tableau (ce sont les objets "restants", vu qu'on a commencé à la fin du tableau)
+** notamment, la relation de récurrence indique que lorsqu'on traite l'objet `i`, on retient le MAX entre :
+*** `vi + V[i-1][w-wi]` = la valeur optimale si ON METS l'objet `i` dans le sac
+*** `V[i-1][w]` = la valeur optimale si ON NE METS PAS l'objet `i` dans le sac
+** en quelque sorte, ce max "choisit" si on mets ou non l'objet `i` dans le sac, en supposant connue la façon optimale d'agencer les `i-1` objets précédents dans un sac (de poids `w` ou `w-wi`).
+** et c'est ce qu'on veut au plus haut niveau : `V[N][W]` choisit si on mets le dernier objet (d'indice `N`) dans le sac de poids `W`, en supposant connue la meillere façon de mettre les `N-1` objets dans un sac de capacité `W` (si on ne retient pas l'objet `N`) ou de capacité `W-wn` (si on retient l'objet `N`)
+* à noter qu'il est plus simple de commencer par exprimer la relation de récurrence et l'algo en supposant que ce qui nous intéressent c'est la VALEUR recherchée, et pas la façon dont elle est construite :
+** dans le cadre du rendu de monnaie, commencer par se limiter à rechercher le nombre de pièces minimal
+** dans le cadre du sac à dos, commencer par se limiter à rechercher la valeur maximale
+** dans le cadre de Bellman-Ford, commencer par rechercher le poids du plus court chemin
+* complexité pour le problème du sac-à-dos :
+** à noter que lorsque la complexité algorithmique dépend d'une *VALEUR* plutôt que d'une *TAILLE*, on l'exprime sous forme du nombre de bits de sa représentation, i.e. `complexité_VALEUR = log2(VALEUR)`
+** ici, l'approche bottom-up avec deux boucles imbriquées montre que la complexité est en `N.W` où `N` est le nombre d'objets, et `W` la capacité du sac-à-dos
+** *MAIS* comme la capacité est une valeur, on utilise son nombre de bits : `W = 2 ^ log2(W) = 2 ^ complexité_W`, et la complexité de l'algo est en fait exponentielle en la taille de `W`
 
 == [VIDEO] https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-1-algorithmic-thinking-peak-finding/[Lecture 1: Algorithmic Thinking, Peak Finding]
 
