@@ -43,6 +43,12 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== [COURS] https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique[Programmation dynamique]
+
+=== Lu le 2020-07-28, c'est pas très clair quand le cours a été publié. Fait partie d'un https://www.supinfo.com/cours/2ADS[cours d'algorithmique à Supinfo], présenté par https://www.supinfo.com/fr/News0870864f-e0af-4ba1-b2ff-d488f356ef03.aspx[Laurent GODEFROY], enseignant là-bas.
+
+* présentation propre de la programmation dynamique
+* fait écho au cours d'Erik DEMAINE annoté ci-dessous
 
 == [VIDEO] https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-1-algorithmic-thinking-peak-finding/[Lecture 1: Algorithmic Thinking, Peak Finding]
 
