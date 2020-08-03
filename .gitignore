@@ -7,3 +7,6 @@ resources/_gen/
 *NOGIT*
 *GITIGNORE*
 _build
+
+a.out
+core
