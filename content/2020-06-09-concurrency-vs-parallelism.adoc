@@ -1,0 +1,535 @@
+---
+title: "Concurrence et parallélisme"
+date: 2020-06-09T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= Concurrence et parallélisme
+
+toc::[]
+
+== Concurrence == parallélisme ?
+
+À l'oral, on mélange souvent _concurrence_ et _parallélisme_. D'ailleurs, en première approche, à la question _"C'est quoi un programme qui exécute des tâches concurrentes ?"_, on serait tenté de répondre :
+
+[quote]
+____
+
+— C'est un programme qui exécute plusieurs tâches en même temps.
+____
+
+Et à la question _"C'est quoi un programme qui exécute des tâches en parallèle ?"_, on peut également fournir la même réponse :
+
+[quote]
+____
+
+— C'est un programme qui exécute plusieurs tâches en même temps.
+____
+
+Alors ? Concurrence == parallélisme ?
+
+En fait, les deux réponses ci-dessus sont correctes... selon le sens qu'on attribue aux mots "_en même temps_" !
+
+== Concurrence
+
+Voyons la définition qu'en donne Wikipedia :
+
+[quote, 'https://en.wikipedia.org/wiki/Concurrent_computing[Concurrent computing sur Wikipedia]']
+____
+Concurrent computing is a form of computing in which several computations are executed concurrently—during overlapping time periods—instead of sequentially, with one completing before the next starts. 
+____
+
+Vue la définition, on va opposer une exécution *concurrente* à une exécution *séquentielle*. Comme toujours ça va mieux avec une illustration :
+
+* Supposons qu'ont ait deux tâches à compléter, `A` et `B`.
+* Chaque tâche est représentée par des "ticks" unitaire représentant un bout du travail.
+* Pour simplifier, on va supposer que l'exécution de chaque tick prend le même temps, peu importe la tâche.
+* Histoire d'introduire un peu de dissymétrie, on va supposer que `A` nécessite 25 ticks pour se terminer, mais que `B` n'en nécessite que 15.
+
+=== Exécution séquentielle
+
+Si `A` et `B` sont exécutées *séquentiellement*, on pourra observer l'exécution suivante :
+
+----
+Tâche A  |AAAAAAAAAAAAAAAAAAAAAAAAA---------------|   (25 ticks A)
+Tâche B  |-------------------------BBBBBBBBBBBBBBB|   (15 ticks B)
+         0                                        T   (temps total = 40 ticks en tout)
+       début                                     fin
+----
+
+Le point important, c'est que `B` ne commencera à s'exécuter QUE lorsque `A` sera terminée. Dit autrement, à tout instant, seule UNE tâche est en cours (commencée mais pas encore terminée) : soit `A`, soit `B`, mais on n'observe jamais de moment où `A` et `B` ont toutes deux commencé leur exécution, sans l'avoir encore terminée.
+
+=== Exécution concurrente
+
+À l'inverse, si `A` et `B` sont exécutées *de façon concurrente*, on pourra observer l'exécution suivante :
+
+----
+Tâche A  |AAAA--AA---AAAA-AAAA-AA---AAA--AA-A-AA-A|   (25 ticks A)
+Tâche B  |----BB--BBB----B----B--BBB---BB--B-B--B-|   (15 ticks B)
+         0                                        T   (temps total = 40 ticks en tout)
+       début                                     fin
+----
+
+Ici, `B` n'a pas attendu la fin de `A` pour démarrer : il existe des moments (qui sont même majoritaires) où `A` et `B` ont toutes deux commencé leur exécution, sans l'avoir encore terminée.
+
+Alors, est-ce que `A` et `B` s'exécutent _"en même temps"_ ? Ça dépend du sens donné à _"en même temps"_ :
+
+* *OUI* : au fur et à mesure que le temps passe, les deux tâches progressent tour à tour de sorte qu'après un certain temps (par exemple lorsqu'on est à mi-chemin), les DEUX tâches ont progressé.
+* *NON* : si un fait un cliché à un instant donné, seule UNE tâche progresse pendant que l'autre attend, on n'a jamais deux ticks `A` et `B` qui s'exécutent réellement au même instant.
+
+Le premier point est particulièrement vrai si l'alternance a lieu trop vite pour être suivie à l'oeil nu (par exemple si la durée de chaque tick est de 10 ms) : un observateur humain aura l'impression que les deux tâches s'exécutent _"en même temps"_, sans voir qu'en réalité elles s'exécutent plutôt _"chacune à leur tour"_.
+
+== Parallélisme
+
+=== La théorie
+
+Voyons la définition qu'en donne Wikipedia :
+
+[quote, 'https://en.wikipedia.org/wiki/Parallel_computing[Parallel computing sur Wikipedia]']
+____
+Parallel computing is a type of computation in which many calculations or the execution of processes are carried out simultaneously.
+____
+
+Ici aussi, une illustration aide à comprendre la différence :
+
+----
+Tâche A  |AAAAAAAAAAAAAAAAAAAAAAAAA|   (25 ticks A)
+Tâche B  |BBBBBBBBBBBBBBB----------|   (15 ticks B)
+         0                         T   (temps total = 25 ticks en tout)
+       début                      fin
+----
+
+Il y a une différence de taille par rapport à la situation précédente : à un instant donné, les tâches A et B progressent réellement *en même temps*, et ce quelle que soit notre définition de *en même temps* :
+
+* *OUI* : au fur et à mesure que le temps passe, les deux tâches progressent tour à tour de sorte qu'après un certain temps (par exemple lorsqu'on est à mi-chemin), les DEUX tâches ont progressé.
+* *OUI* : si un fait un cliché à un instant donné, aucune tâche "n'attend son tour" : on a toujours deux ticks `A` et `B` en cours d'exécution au même instant (sauf quand l'une des deux a fini de s'exécuter et pas l'autre, bien sûr).
+
+Une exécution parallèle n'est donc possible que sur un processeur qui dispose d'au moins deux coeurs, afin qu'à un instant donné celui-ci puisse faire progresser `A` et `B` en même temps plutôt que tour à tour. Jusqu'à l'avènement des processeurs multi-coeurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu'un encodage d'une vidéo en tâche de fond se termine) n'était qu'une illusion : les deux tâches alternaient juste très vite, l'exécution était *concurrente non-parallèle*. Certes cette illusion ne fait pas gagner _de temps_ par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même _en utilisabilité_ : il ne serait pas très pratique qu'un ordinateur freeze complètement tant que l'encodage d'une vidéo n'est pas terminé...
+
+=== parallélisme vs. concurrence
+
+À noter que l'exécution parallèle illustrée ci-dessus est un *cas particulier* d'exécution concurrente : ici non plus, `B` n'a pas eu à "attendre" la fin de `A` pour progresser.
+
+Il n'est donc pas du tout pertinent d'opposer exécution concurrente et exécution parallèle, on a plutôt les catégories suivantes :
+
+* exécution *séquentielle*
+* exécution *concurrente*, parmi lesquelles il faut distinguer :
+** exécution *concurrente non-parallèle*
+** exécution *concurente parallèle*
+
+=== J'ai parallélisé mon programme, son temps d'exécution va être divisé par 2 !
+
+*En théorie*, avec une exécution réellement parallèle, on peut espérer un temps d'exécution total plus rapide, ce qu'on voit sur l'illustration ci-dessus : pour le même nombre de ticks (25 `A` et 15 `B`), le temps total pour l'exécution parallèle est de 25 ticks contre 40 ticks pour les exécutions séquentielle et concurrente précédentes.
+
+En fait, l'illustration ci-dessus est idéalisée. Dans la pratique, il se peut que l'exécution parallèle se rapproche plutôt de cette illustration plus réaliste :
+
+----
+Tâche A  |AAAA-AA--AAAAA-AAAAAA--A-AAAAAAA|   (25 ticks A)
+Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
+         0                                T   (temps total = 32 ticks en tout)
+       début                             fin
+----
+
+On passe de 40 à 32 ticks, le temps total est divisé par 1,25.
+
+*En pratique*, le gain de temps d'exécution théorique est donc à prendre avec des pincettes : on ne le divise pas toujours par deux, et comme illustré en fin d'article, on peut même ralentir un programme en le parallélisant ! Sans aller jusque là, de nombreux facteurs peuvent expliquer que le temps d'exécution observé est supérieur à celui attendu :
+
+* les tâches partagent de l'information : elles ne sont pas indépendantes et doivent s'attendre mutuellement
+* le travail n'est pas forcément équitablement réparti entre les tâches. Même pour l'illustration idéalisée un peu plus haut qui ignore tous les autres effets, `A` et `B` n'ont pas le même nombre de ticks : le temps total n'est pas divisé par 2 mais par 1,6
+* l'exécution et la synchronisation de plusieurs tâches rajoute du travail qui n'existait pas dans le programme séquentiel : coût des context-switchs : virtual-memory bookkeeping, cache-eviction, exécution du scheduler, ...
+* des effets bas-niveaux comme le https://en.wikipedia.org/wiki/False_sharing[false-sharing], illustré plus bas, peuvent ralentir un programme multithreadé
+* les tâches concurrentes doivent se partager les IOs
+* des détails d'implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux https://en.wikipedia.org/wiki/Global_interpreter_lock[GIL] empêchera de tirer parti d'un programme multithreadé, même sur des processeurs à plusieurs coeurs
+* etc. j'en passe et des meilleurs
+
+Comme partout ailleurs quand on parle de perfs, il faut mesurer et benchmarker son cas d'usage plutôt que de faire des prédictions ou des suppositions.
+
+== Un peu de code
+
+Voyons voir tout ça concrètement, on va essayer de produire quelque chose qui ressemble aux illustrations ci-dessus.
+
+Pour comparer ce qui est comparable, on va utiliser exactement le même code, mais l'exécuter de trois façons différentes :
+
+- de façon séquentielle
+- de façon concurrente parallèle
+- de façon concurrente non-parallèle
+
+TODO : donner quelque part le lien vers le code complet.
+
+=== Nos briques de base
+
+Tout d'abord, on va simuler un travail à réaliser : `_heavy_work`. Celui-ci va faire une série de `amount` calculs inutiles :
+
+[source,cpp]
+----
+void _heavy_work(const unsigned long long amount) {
+    unsigned long long unused_result = 0;
+    for (int i = 0; i < amount; ++i) {
+        unused_result += (i % 2 == 0) ? 3 : -2;
+    }
+}
+----
+
+Il serait plus illustratif de randomiser un peu, ou d'avoir une charge de travail asymétrique entre A et B, mais ça nuirait à la simplicité de l'exemple, et surtout aux mesures qu'on va faire : on va en rester à cet exemple simpliste.
+
+Ce travail est exécuté en boucle dans une `computer_task`, identifiée par une `letter` (`A` ou `B`), et ce autant de fois qu'il y a de ticks `nb_of_ticks`. Lorsqu'elle a fini un tick, la task publie son identifiant dans une queue `data_to_write`, et notifie une condition-variable `cv` :
+
+[source,cpp]
+----
+void computer_task(char letter,
+                   size_t nb_of_ticks,
+                   queue<char>& data_to_write,
+                   const unsigned long long amount,
+                   mutex& m,
+                   condition_variable& cv) {
+    for (size_t x = 0; x < nb_of_ticks; ++x) {
+        _heavy_work(amount);
+        {
+            lock_guard<mutex> lock(m);
+            data_to_write.push(letter);
+        }
+        cv.notify_one();
+    }
+}
+----
+
+Une autre tâche `displayer_task` est chargée de consommer les lettres publiées dans la queue lorsqu'elle est notifiée par la condition-variable `cv`, et convertit progressivement une string `result` depuis un état initial (`initial_string`) du type `------------` vers un état final indiquant comment le travail a progressé `BAABBABBBAAA` :
+
+[source,cpp]
+----
+void displayer_task(const string& initial_string,
+                    const atomic<bool>& is_finished,
+                    queue<char>& data_to_write,
+                    mutex& m,
+                    condition_variable& cv) {
+    string result{initial_string};
+    size_t next_index_to_write = 0;
+    while (!is_finished.load()) {
+        // wait to be notified that there is something to write (or there is no more work to do) :
+        unique_lock<mutex> lock(m);
+        auto wakeup_predicate = [&data_to_write, &is_finished]() {
+            return is_finished.load() || !data_to_write.empty();
+        };
+        cv.wait(lock, wakeup_predicate);
+
+        // writes all the data to the result string :
+        while (!data_to_write.empty()) {
+            result[next_index_to_write++] = data_to_write.back();
+            data_to_write.pop();
+        }
+        lock.unlock();
+
+        // displays the written string :
+        cout << "\r" << result << flush;  // might not work on windows/mac bc of EOL
+    }
+    cout << endl;
+}
+----
+
+=== Exécution séquentielle
+
+Pour l'*exécution séquentielle*, la `displayer_task` s'exécute en tâche de fond dans un thread `displayer`, mais les deux `computer_task` sont lancées successivement dans le thread principal :
+
+[source,cpp]
+----
+// displayer thread runs in background :
+auto displayer = thread(displayer_task, cref(initial_string), cref(is_finished), ref(data_to_write), ref(m), ref(cv));
+
+// computer tasks run in foreground, sequentially :
+computer_task('A', half_length, data_to_write, base_amount, m, cv);
+computer_task('B', half_length, data_to_write, base_amount, m, cv);
+
+{
+    lock_guard<mutex>{m};
+    is_finished.store(true);
+}
+cv.notify_one();
+displayer.join();
+----
+
+=== Exécution concurrente parallèle
+
+L'*exécution concurrente parallèle* est identique à l'exécution séquentielle, sauf que les deux `computer_task` sont lancées chacune dans un thread indépendant. Le thread principal ne fait rien d'autre que coordonner tout ce beau monde :
+
+[source,cpp]
+----
+// displayer thread runs in background :
+auto displayer = thread(displayer_task, cref(initial_string), cref(is_finished), ref(data_to_write), ref(m), ref(cv));
+
+// computer tasks also run in background, concurrently (and maybe in parallel) :
+auto taskA = thread(computer_task, 'A', half_length, ref(data_to_write), base_amount, ref(m), ref(cv));
+auto taskB = thread(computer_task, 'B', half_length, ref(data_to_write), base_amount, ref(m), ref(cv));
+taskA.join();
+taskB.join();
+
+{
+    lock_guard<mutex>{m};
+    is_finished.store(true);
+}
+cv.notify_one();
+displayer.join();
+----
+
+=== Exécution concurrente non-parallèle
+
+Pour l'*exécution concurrente non-parallèle*, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s'exécuter sur un seul coeur de processeur avec `taskset` :
+
+[quote, man taskset]
+____
+taskset - set or retrieve a process's CPU affinity
+
+CPU affinity is a scheduler property that "bonds" a process to a given set of CPUs on the system.
+The Linux scheduler will honor the given CPU affinity and the process will not run on any other CPUs. 
+____
+
+Du coup, si le binaire parallèle est `bin_PARALLEL`, pour tester le cas où l'exécution est concurrente non-parallèle, on peut lancer :
+
+[source, bash]
+----
+taskset -c 0 ./bin_PARALLEL
+----
+
+Ceci aura pour effet d'exécuter `bin_PARALLEL` sur un seul (le premier) coeur de processeur : à tout instant, le processeur ne pourra faire progresser qu'un seul thread, et il alternera entre les différents threads, c'est bien la définition d'une exécution concurrente non-parallèle.
+
+=== Observations
+
+==== comment mesurer
+
+Pour mesurer le temps pris par les différentes exécutions, j'utilise https://www.gnu.org/software/time/[GNU time], qui en plus de mesurer précisément le temps d'exécution, présente l'avantage de donner d'autres infos bien utiles, comme le nombre de context-switchs.
+
+Attention, il y a un loup, la commande `time` est souvent une shell builtin, et pour utiliser GNU time, il faut préciser le chemin explicitement `/usr/bin/time` ou mieux, utiliser `env time` :
+
+[source, bash]
+----
+env time -f "time took = %E" ./bin_PARALLEL
+----
+
+La valeur des mesures n'est pas particulièrement pertinente, puisqu'elle dépend de la quantité de travail (ici, `amount = 50000000`), du processeur (qui au passage est `Intel(R) Core(TM) i3-6100U CPU @ 2.30GHz`), et probablement de la version du noyau linux (ici, `4.15.0-107-generic`). En revanche, l'ordre de grandeur des mesures les unes par rapport aux autres est intéressante.
+
+==== résultats
+
+Voici un exemple de ce que j'observe :
+
+TODO : donner l'asciinema de ce que j'observe
+
+TODO : link:../records/2020-06-09-concurrency-vs-parallelism.asciinema[lien vers asciinema] APRES
+
+
+L'état final est :
+
+[source]
+----
++++ running SEQUENTIAL :
+AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
+time took               = 0:05.51
+
++++ running CONCURRENT NON-PARALLEL :
+ABABABBAABABBAABABBABABAABBAABABABABABAB
+time took               = 0:06.25
+
++++ running CONCURRENT PARALLEL :
+BABABABABABABABABABABABABABABABABAABBABA
+time took               = 0:03.27
+----
+
+Dit autrement, si le temps d'*exécution séquentielle* est notée `100` :
+
+* le temps d'exécution concurrente parallèle est à `59`
+* le temps d'exécution concurrente non-parallèle est à `113`
+
+Tout d'abord, on note que, comme attendu, le temps de l'exécution parallèle n'est pas exactement la moitié du temps de l'exécution séquentielle. En règle générale, ce n'est jamais le cas, et je trouve même que réduire le temps d'exécution à ~60% du temps d'exécution initiale est plutôt un bon score.
+
+On note également que l'exécution concurrente non-parallèle est plus lente que l'exécution séquentielle. Ici aussi ce n'est pas réellement une surprise, comme expliqué plus haut il y a du travail supplémentaire à effectuer rien que pour gérer le fait d'avoir plusieurs tâches. Je n'ai pas fait d'étude poussée pour confirmer que c'était bien la cause principale du ralentissement, mais par exemple, on peut relancer notre test en affichant les context-switchs avec `time`, et on constatera qu'avec l'exécution séquentielle, on en a très peu, alors qu'avec l'exécution concurrente non-parallèle, on en a 10 fois plus :
+
+[source]
+----
++++ running SEQUENTIAL :
+AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
+time took               = 0:05.54
+ctx switch (involuntar) = 118
+ctx switch (voluntar)   = 42
+
+
++++ running CONCURRENT NON-PARALLEL :
+ABABABABABBABABABAABABBABABAABABBABABAAB
+time took               = 0:06.05
+ctx switch (involuntar) = 1114
+ctx switch (voluntar)   = 45
+
+
++++ running CONCURRENT PARALLEL :
+AABABABBABABABABABABABABABABABABAABABABB
+time took               = 0:03.56
+ctx switch (involuntar) = 1616
+ctx switch (voluntar)   = 49
+----
+
+À noter cependant que sur une autre machine (même `amount`, processeur plus lent = `Intel(R) Core(TM) i3-6100U CPU @ 2.30GHz`, noyau linux proche, mais pas tout à fait identique = `4.15.0-112-generic`), j'obtiens des résultats assez différents, et notamment un écart plus faible entre l'exécution séquentielle et l'exécution concurrente non-parallèle, avec beaucoup moins de context-switchs pour les exécutions concurrentes. https://dictionary.cambridge.org/fr/dictionnaire/anglais/ymmv[YMMV].
+
+== BONUS = toi aussi, ralentis ton programme en le parallélisant
+
+L'objectif du post était de préciser les notions de concurrence et de parallélisme, c'est chose faite. Le paragraphe qui suit est donc surtout donné en bonus : on va montrer qu'on peut *ralentir* l'exécution de son programme en le parallélisant.
+
+Comme précédemment, on va travailler sur un cas bateau : on va simuler la répétition d'un calcul lourd, qui met à jour un résultat passé en référence :
+
+[source,cpp]
+----
+void heavy_task(int& result, const int amount)
+{
+    for (int i = 0; i < amount; ++i)
+    {
+        (i % 2 == 0) ? result += 3 : result -= 2;
+    }
+}
+----
+
+On va supposer qu'on doit effectuer ce calcul deux fois, par exemple sur les cellules paires (`even`) et impaires (`odd`) d'un tableau.
+
+=== séquentiel
+
+En séquentiel, ça pourrait donner quelque chose comme :
+
+[source,cpp]
+----
+int main(int argc, char* argv[])
+{
+    if (argc < 2)
+    {
+        std::cerr << "USAGE: " << argv[0] << "  AMOUNT" << std::endl;
+        return 1;
+    }
+
+    const int amount = std::stoi(argv[1]);
+    int result_even = 0;
+    int result_odd = 0;
+    heavy_task(result_even, amount);
+    heavy_task(result_odd, amount);
+
+    return 0;
+}
+----
+
+Sur ma machine, lancé avec un `amount` de `500000000`, `time` m'indique que ce programme séquentiel mets `2,71` secondes à s'exécuter :
+
+[source, bash]
+----
+# running SEQUENTIAL implementation as a REFERENCE :
+time took  = 0:02.71
+----
+
+Comme précédemment, les mesures individuelles n'ont pas d'importance en soi, seule leur importance relative compte.
+
+=== en parallèle, ça ira forcément plus vite
+
+Un dev vigilant remarquera que ce type de calcul, répété deux fois, où les entrées comme les sorties sont indépendantes, se prête particulièrement bien à la parallélisation, et il n'aurait pas tort. Lançons donc les deux calculs en parallèle, dans deux threads :
+
+[source,cpp]
+----
+int result_even = 0;
+int result_odd = 0;
+auto th = std::thread(compute, std::ref(result_even), amount);
+compute(result_odd, amount);
+th.join();
+----
+
+Ce dev vigilant, mais un peu trop confiant, pourrait se dire qu'il est inutile de benchmarker son cas d'usage, car avec un exemple aussi simple, dans des conditions aussi idéales, on ne peut *QUE* accélérer le programme en le parallélisant. Pourtant, il aurait tort de ne pas refaire ses mesures :
+
+[source, bash]
+----
+# running PARALLEL NAIVE implementation :
+time took  = 0:04.09
+----
+
+Surprise ! Le temps d'exécution a *AUGMENTÉ*, et pas qu'un peu : on est à `151%` du temps d'exécution séquentiel !
+
+Incrédule ? Vous pouvez faire l'expérience chez vous le code est ici (TODO : donner un lien vers le code). Vu que l'exemple est simpliste, attention à compiler en `-O0` pour que g++ n'optimise pas notre code bateau.
+
+=== false sharing
+
+Expliquer en détail l'origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables `result_even` et `result_odd` étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du coeur de processeur de l'autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu'il n'aurait pas eu à faire sinon.
+
+Le surcoût apporté par ces opérations dépasse le gain obtenu par la parallélisation, et au final, on dégrade les performances. La partie contre-intuitive est que ce phénomène intervient alors même que les variables sont indépendantes dans le code, d'où le nom de https://en.wikipedia.org/wiki/False_sharing[_false sharing_]. C'est un exemple de situation où les détails bas-niveau du fonctionnement d'un processeur ont un effet direct sur les performances d'un programme ; pour les curieux, https://github.com/Kobzol/hardware-effects[ce repo] est une mine d'or qui en montre bien d'autres.
+
+Pour éviter ce phénomène, il suffit d'espacer les variables en mémoire, de sorte que la modification d'une variable n'ait pas d'impact sur le cache mémoire du processeur contenant l'autre variable. Voici un exemple d'implémentation avec https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributesi[l'attribut aligned de g++] :
+
+[source,cpp]
+----
+int result_even __attribute__ ((aligned (64))) = 0;
+int result_odd __attribute__ ((aligned (64))) = 0;
+auto th = std::thread(compute, std::ref(result_even), amount);
+compute(result_odd, amount);
+th.join();
+----
+
+Avec cette modification, on obtient bien un temps d'exécution plus conforme à ce qu'on attendait, à `57%` du programme séquentiel :
+
+[source]
+----
+# running PARALLEL FAST ALIGNED implementation :
+time took  = 0:01.56
+----
+
+À noter que le code ci-dessus, s'il permet de montrer qu'on est bien en face d'un _false sharing_, n'est pas la meilleure façon d'adresse le problème. Mieux vaut en effet ne pas toucher à l'alignement des variables :
+
+[source,cpp]
+----
+int result_even = 0;
+int result_odd = 0;
+auto th = std::thread(compute, std::ref(result_even), amount);
+compute(result_odd, amount);
+th.join();
+----
+
+Et à la place modifier la fonction `heavy_task` pour qu'elle travaille principalement sur une variable locale, et ne mute la variable "partagée" qu'une seule fois, à la fin du traitement :
+
+[source,cpp]
+----
+void heavy_task(int& result, const int amount)
+{
+    int acc = 0;
+    for (int i = 0; i < amount; ++i)
+    {
+        (i % 2 == 0) ? acc += 3 : acc -= 2;
+    }
+    result = acc;
+}
+----
+
+On trouve alors un temps d'exécution encore meilleur, à `53%` du programme séquentiel :
+
+[source]
+----
+# running PARALLEL FAST OFFLINE implementation :
+time took  = 0:01.43
+----
+
+=== le mot de la fin
+
+Ce qu'il faut retirer de ce bonus, ce n'est ni le phénomène de _false sharing_, ni la façon de l'éviter.
+
+Ce qu'il faut retenir, c'est qu'*il est indispensable de benchmarker son cas d'usage*, plutôt que de supposer ou prévoir les résultats d'une parallélisation de son code. Et si possible, sur la machine qui exécutera le programme.
+
+En effet, non seulement paralléliser son code apporte une tétra-chiée d'écueils pas toujours faciles à éviter, et encore moins faciles à reproduire et débugger, mais en plus, le gain en temps d'exécution n'est pas garanti.
+
+
+----
+TACHES RESTANTES :
+
+pour pas m'embêter, merger le thème dans mon repo hugo (quel intérêt de le forker ?)
+modifier le thème pour inclure mon CSS ?
+une fois que j'ai mon post définitif, faire un asciinema, et réussir à l'intégrer à la page
+    1. pouvoir inclure un fichier CSS custom
+    2. pouvoir inclure un fichier JS custom
+    3. pouvoir jouer le asciinema sur ma page
+    4. vérifier que ça se charge bien sur les navigateurs (comment tester sur windows ? mac ?)
+écluser mes TODOs
+
+http://localhost:1515/blog/records/2020-06-09-concurrency-vs-parallelism.asciinema
+
+une fois que j'ai mergé dans le repo principal, donner des liens vers le code
+----
