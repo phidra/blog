@@ -160,7 +160,7 @@ Pour comparer ce qui est comparable, on va utiliser exactement le même code, ma
 - de façon concurrente parallèle
 - de façon concurrente non-parallèle
 
-TODO : donner quelque part le lien vers le code complet.
+Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code[en suivant ce lien] les codes d'exemple, de quoi les compiler, et de quoi mesurer leur temps d'exécution.
 
 === Nos briques de base
 
@@ -447,7 +447,7 @@ time took  = 0:04.09
 
 Surprise ! Le temps d'exécution a *AUGMENTÉ*, et pas qu'un peu : on est à `151%` du temps d'exécution séquentiel !
 
-Incrédule ? Vous pouvez faire l'expérience chez vous le code est ici (TODO : donner un lien vers le code). Vu que l'exemple est simpliste, attention à compiler en `-O0` pour que g++ n'optimise pas notre code bateau.
+Incrédule ? Vous pouvez faire l'expérience chez vous, https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code/false_sharing[le code est ici]. Vu que l'exemple est simpliste, attention à compiler en `-O0` pour que g++ n'optimise pas notre code bateau.
 
 === false sharing
 
@@ -515,16 +515,3 @@ Ce qu'il faut retirer de ce bonus, ce n'est ni le phénomène de _false sharing_
 Ce qu'il faut retenir, c'est qu'*il est indispensable de benchmarker son cas d'usage*, plutôt que de supposer ou prévoir les résultats d'une parallélisation de son code. Et si possible, sur la machine qui exécutera le programme.
 
 En effet, non seulement paralléliser son code apporte une tétra-chiée d'écueils pas toujours faciles à éviter, et encore moins faciles à reproduire et débugger, mais en plus, le gain en temps d'exécution n'est pas garanti.
-
-
-----
-TACHES RESTANTES :
-
-pour pas m'embêter, merger le thème dans mon repo hugo (quel intérêt de le forker ?)
-modifier le thème pour inclure mon CSS ?
-écluser mes TODOs
-
-http://localhost:1515/blog/records/2020-06-09-concurrency-vs-parallelism.asciinema
-
-une fois que j'ai mergé dans le repo principal, donner des liens vers le code
-----
