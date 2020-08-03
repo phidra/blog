@@ -143,7 +143,7 @@ On passe de 40 à 32 ticks, le temps total est divisé par 1,25.
 * les tâches partagent de l'information : elles ne sont pas indépendantes et doivent s'attendre mutuellement
 * le travail n'est pas forcément équitablement réparti entre les tâches. Même pour l'illustration idéalisée un peu plus haut qui ignore tous les autres effets, `A` et `B` n'ont pas le même nombre de ticks : le temps total n'est pas divisé par 2 mais par 1,6
 * l'exécution et la synchronisation de plusieurs tâches rajoute du travail qui n'existait pas dans le programme séquentiel : coût des context-switchs : virtual-memory bookkeeping, cache-eviction, exécution du scheduler, ...
-* des effets bas-niveaux comme le https://en.wikipedia.org/wiki/False_sharing[false-sharing], illustré plus bas, peuvent ralentir un programme multithreadé
+* des effets bas-niveau comme le https://en.wikipedia.org/wiki/False_sharing[false-sharing], illustré plus bas, peuvent ralentir un programme multithreadé
 * les tâches concurrentes doivent se partager les IOs
 * des détails d'implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux https://en.wikipedia.org/wiki/Global_interpreter_lock[GIL] empêchera de tirer parti d'un programme multithreadé, même sur des processeurs à plusieurs coeurs
 * etc. j'en passe et des meilleurs
@@ -337,7 +337,7 @@ ABABABABABABABABABABABABABABABABABABABAB
 time took               = 0:03.57   
 ----
 
-Dit autrement, si le temps d'*exécution séquentielle* est notée `100` :
+Dit autrement, si le temps d'*exécution séquentielle* est noté `100` :
 
 * le temps d'exécution concurrente non-parallèle est à `101`
 * le temps d'exécution concurrente parallèle est à `51`
