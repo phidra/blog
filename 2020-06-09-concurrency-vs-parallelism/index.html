@@ -1,0 +1,785 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Concurrence et parallélisme // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.c2567e9db7d7175810bf56b211d59f43310e91cac3ff1f10377c1a1b935960b9.css" />
+
+    
+    
+    <link rel="stylesheet" href="/blog/asciinema-v2.6.1/asciinema-player.css"/>
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Concurrence et parallélisme</h1>
+      <div class="post-meta">
+        <div>
+          Jun 9, 2020
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          16 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+<div id="toc" class="toc">
+<div id="toctitle" class="title">De quoi va-t-on causer :</div>
+<ul class="sectlevel1">
+<li><a href="#_concurrence_parallélisme">Concurrence == parallélisme ?</a></li>
+<li><a href="#_concurrence">Concurrence</a></li>
+<li><a href="#_parallélisme">Parallélisme</a></li>
+<li><a href="#_un_peu_de_code">Un peu de code</a></li>
+<li><a href="#_bonus_toi_aussi_ralentis_ton_programme_en_le_parallélisant">BONUS = toi aussi, ralentis ton programme en le parallélisant</a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_concurrence_parallélisme">Concurrence == parallélisme ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>À l&#8217;oral, on mélange souvent <em>concurrence</em> et <em>parallélisme</em>. D&#8217;ailleurs, en première approche, à la question <em>"C&#8217;est quoi un programme qui exécute des tâches concurrentes ?"</em>, on serait tenté de répondre :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>— C&#8217;est un programme qui exécute plusieurs tâches en même temps.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Et à la question <em>"C&#8217;est quoi un programme qui exécute des tâches en parallèle ?"</em>, on peut également fournir la même réponse :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>— C&#8217;est un programme qui exécute plusieurs tâches en même temps.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Alors ? Concurrence == parallélisme ?</p>
+</div>
+<div class="paragraph">
+<p>En fait, les deux réponses ci-dessus sont correctes&#8230;&#8203; selon le sens qu&#8217;on attribue aux mots "<em>en même temps</em>" !</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_concurrence">Concurrence</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voyons la définition qu&#8217;en donne Wikipedia :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Concurrent computing is a form of computing in which several computations are executed concurrently—during overlapping time periods—instead of sequentially, with one completing before the next starts.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://en.wikipedia.org/wiki/Concurrent_computing">Concurrent computing sur Wikipedia</a>
+</div>
+</div>
+<div class="paragraph">
+<p>Vue la définition, on va opposer une exécution <strong>concurrente</strong> à une exécution <strong>séquentielle</strong>. Comme toujours ça va mieux avec une illustration :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Supposons qu&#8217;ont ait deux tâches à compléter, <code>A</code> et <code>B</code>.</p>
+</li>
+<li>
+<p>Chaque tâche est représentée par des "ticks" unitaire représentant un bout du travail.</p>
+</li>
+<li>
+<p>Pour simplifier, on va supposer que l&#8217;exécution de chaque tick prend le même temps, peu importe la tâche.</p>
+</li>
+<li>
+<p>Histoire d&#8217;introduire un peu de dissymétrie, on va supposer que <code>A</code> nécessite 25 ticks pour se terminer, mais que <code>B</code> n&#8217;en nécessite que 15.</p>
+</li>
+</ul>
+</div>
+<div class="sect2">
+<h3 id="_exécution_séquentielle">Exécution séquentielle</h3>
+<div class="paragraph">
+<p>Si <code>A</code> et <code>B</code> sont exécutées <strong>séquentiellement</strong>, on pourra observer l&#8217;exécution suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Tâche A  |AAAAAAAAAAAAAAAAAAAAAAAAA---------------|   (25 ticks A)
+Tâche B  |-------------------------BBBBBBBBBBBBBBB|   (15 ticks B)
+         0                                        T   (temps total = 40 ticks en tout)
+       début                                     fin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Le point important, c&#8217;est que <code>B</code> ne commencera à s&#8217;exécuter QUE lorsque <code>A</code> sera terminée. Dit autrement, à tout instant, seule UNE tâche est en cours (commencée mais pas encore terminée) : soit <code>A</code>, soit <code>B</code>, mais on n&#8217;observe jamais de moment où <code>A</code> et <code>B</code> ont toutes deux commencé leur exécution, sans l&#8217;avoir encore terminée.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exécution_concurrente">Exécution concurrente</h3>
+<div class="paragraph">
+<p>À l&#8217;inverse, si <code>A</code> et <code>B</code> sont exécutées <strong>de façon concurrente</strong>, on pourra observer l&#8217;exécution suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Tâche A  |AAAA--AA---AAAA-AAAA-AA---AAA--AA-A-AA-A|   (25 ticks A)
+Tâche B  |----BB--BBB----B----B--BBB---BB--B-B--B-|   (15 ticks B)
+         0                                        T   (temps total = 40 ticks en tout)
+       début                                     fin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ici, <code>B</code> n&#8217;a pas attendu la fin de <code>A</code> pour démarrer : il existe des moments (qui sont même majoritaires) où <code>A</code> et <code>B</code> ont toutes deux commencé leur exécution, sans l&#8217;avoir encore terminée.</p>
+</div>
+<div class="paragraph">
+<p>Alors, est-ce que <code>A</code> et <code>B</code> s&#8217;exécutent <em>"en même temps"</em> ? Ça dépend du sens donné à <em>"en même temps"</em> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OUI</strong> : au fur et à mesure que le temps passe, les deux tâches progressent tour à tour de sorte qu&#8217;après un certain temps (par exemple lorsqu&#8217;on est à mi-chemin), les DEUX tâches ont progressé.</p>
+</li>
+<li>
+<p><strong>NON</strong> : si un fait un cliché à un instant donné, seule UNE tâche progresse pendant que l&#8217;autre attend, on n&#8217;a jamais deux ticks <code>A</code> et <code>B</code> qui s&#8217;exécutent réellement au même instant.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Le premier point est particulièrement vrai si l&#8217;alternance a lieu trop vite pour être suivie à l&#8217;oeil nu (par exemple si la durée de chaque tick est de 10 ms) : un observateur humain aura l&#8217;impression que les deux tâches s&#8217;exécutent <em>"en même temps"</em>, sans voir qu&#8217;en réalité elles s&#8217;exécutent plutôt <em>"chacune à leur tour"</em>.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_parallélisme">Parallélisme</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_la_théorie">La théorie</h3>
+<div class="paragraph">
+<p>Voyons la définition qu&#8217;en donne Wikipedia :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Parallel computing is a type of computation in which many calculations or the execution of processes are carried out simultaneously.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://en.wikipedia.org/wiki/Parallel_computing">Parallel computing sur Wikipedia</a>
+</div>
+</div>
+<div class="paragraph">
+<p>Ici aussi, une illustration aide à comprendre la différence :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Tâche A  |AAAAAAAAAAAAAAAAAAAAAAAAA|   (25 ticks A)
+Tâche B  |BBBBBBBBBBBBBBB----------|   (15 ticks B)
+         0                         T   (temps total = 25 ticks en tout)
+       début                      fin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il y a une différence de taille par rapport à la situation précédente : à un instant donné, les tâches A et B progressent réellement <strong>en même temps</strong>, et ce quelle que soit notre définition de <strong>en même temps</strong> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>OUI</strong> : au fur et à mesure que le temps passe, les deux tâches progressent tour à tour de sorte qu&#8217;après un certain temps (par exemple lorsqu&#8217;on est à mi-chemin), les DEUX tâches ont progressé.</p>
+</li>
+<li>
+<p><strong>OUI</strong> : si un fait un cliché à un instant donné, aucune tâche "n&#8217;attend son tour" : on a toujours deux ticks <code>A</code> et <code>B</code> en cours d&#8217;exécution au même instant (sauf quand l&#8217;une des deux a fini de s&#8217;exécuter et pas l&#8217;autre, bien sûr).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une exécution parallèle n&#8217;est donc possible que sur un processeur qui dispose d&#8217;au moins deux coeurs, afin qu&#8217;à un instant donné celui-ci puisse faire progresser <code>A</code> et <code>B</code> en même temps plutôt que tour à tour. Jusqu&#8217;à l&#8217;avènement des processeurs multi-coeurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu&#8217;un encodage d&#8217;une vidéo en tâche de fond se termine) n&#8217;était qu&#8217;une illusion : les deux tâches alternaient juste très vite, l&#8217;exécution était <strong>concurrente non-parallèle</strong>. Certes cette illusion ne fait pas gagner <em>de temps</em> par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même <em>en utilisabilité</em> : il ne serait pas très pratique qu&#8217;un ordinateur freeze complètement tant que l&#8217;encodage d&#8217;une vidéo n&#8217;est pas terminé&#8230;&#8203;</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_parallélisme_vs_concurrence">parallélisme vs. concurrence</h3>
+<div class="paragraph">
+<p>À noter que l&#8217;exécution parallèle illustrée ci-dessus est un <strong>cas particulier</strong> d&#8217;exécution concurrente : ici non plus, <code>B</code> n&#8217;a pas eu à "attendre" la fin de <code>A</code> pour progresser.</p>
+</div>
+<div class="paragraph">
+<p>Il n&#8217;est donc pas du tout pertinent d&#8217;opposer exécution concurrente et exécution parallèle, on a plutôt les catégories suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>exécution <strong>séquentielle</strong></p>
+</li>
+<li>
+<p>exécution <strong>concurrente</strong>, parmi lesquelles il faut distinguer :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>exécution <strong>concurrente non-parallèle</strong></p>
+</li>
+<li>
+<p>exécution <strong>concurente parallèle</strong></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_j_ai_parallélisé_mon_programme_son_temps_d_exécution_va_être_divisé_par_2">J&#8217;ai parallélisé mon programme, son temps d&#8217;exécution va être divisé par 2 !</h3>
+<div class="paragraph">
+<p><strong>En théorie</strong>, avec une exécution réellement parallèle, on peut espérer un temps d&#8217;exécution total plus rapide, ce qu&#8217;on voit sur l&#8217;illustration ci-dessus : pour le même nombre de ticks (25 <code>A</code> et 15 <code>B</code>), le temps total pour l&#8217;exécution parallèle est de 25 ticks contre 40 ticks pour les exécutions séquentielle et concurrente précédentes.</p>
+</div>
+<div class="paragraph">
+<p>En fait, l&#8217;illustration ci-dessus est idéalisée. Dans la pratique, il se peut que l&#8217;exécution parallèle se rapproche plutôt de cette illustration plus réaliste :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>Tâche A  |AAAA-AA--AAAAA-AAAAAA--A-AAAAAAA|   (25 ticks A)
+Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
+         0                                T   (temps total = 32 ticks en tout)
+       début                             fin</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On passe de 40 à 32 ticks, le temps total est divisé par 1,25.</p>
+</div>
+<div class="paragraph">
+<p><strong>En pratique</strong>, le gain de temps d&#8217;exécution théorique est donc à prendre avec des pincettes : on ne le divise pas toujours par deux, et comme illustré en fin d&#8217;article, on peut même ralentir un programme en le parallélisant ! Sans aller jusque là, de nombreux facteurs peuvent expliquer que le temps d&#8217;exécution observé est supérieur à celui attendu :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>les tâches partagent de l&#8217;information : elles ne sont pas indépendantes et doivent s&#8217;attendre mutuellement</p>
+</li>
+<li>
+<p>le travail n&#8217;est pas forcément équitablement réparti entre les tâches. Même pour l&#8217;illustration idéalisée un peu plus haut qui ignore tous les autres effets, <code>A</code> et <code>B</code> n&#8217;ont pas le même nombre de ticks : le temps total n&#8217;est pas divisé par 2 mais par 1,6</p>
+</li>
+<li>
+<p>l&#8217;exécution et la synchronisation de plusieurs tâches rajoute du travail qui n&#8217;existait pas dans le programme séquentiel : coût des context-switchs : virtual-memory bookkeeping, cache-eviction, exécution du scheduler, &#8230;&#8203;</p>
+</li>
+<li>
+<p>des effets bas-niveaux comme le <a href="https://en.wikipedia.org/wiki/False_sharing">false-sharing</a>, illustré plus bas, peuvent ralentir un programme multithreadé</p>
+</li>
+<li>
+<p>les tâches concurrentes doivent se partager les IOs</p>
+</li>
+<li>
+<p>des détails d&#8217;implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux <a href="https://en.wikipedia.org/wiki/Global_interpreter_lock">GIL</a> empêchera de tirer parti d&#8217;un programme multithreadé, même sur des processeurs à plusieurs coeurs</p>
+</li>
+<li>
+<p>etc. j&#8217;en passe et des meilleurs</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Comme partout ailleurs quand on parle de perfs, il faut mesurer et benchmarker son cas d&#8217;usage plutôt que de faire des prédictions ou des suppositions.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_un_peu_de_code">Un peu de code</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voyons voir tout ça concrètement, on va essayer de produire quelque chose qui ressemble aux illustrations ci-dessus.</p>
+</div>
+<div class="paragraph">
+<p>Pour comparer ce qui est comparable, on va utiliser exactement le même code, mais l&#8217;exécuter de trois façons différentes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>de façon séquentielle</p>
+</li>
+<li>
+<p>de façon concurrente parallèle</p>
+</li>
+<li>
+<p>de façon concurrente non-parallèle</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code">en suivant ce lien</a> les codes d&#8217;exemple, de quoi les compiler, et de quoi mesurer leur temps d&#8217;exécution.</p>
+</div>
+<div class="sect2">
+<h3 id="_nos_briques_de_base">Nos briques de base</h3>
+<div class="paragraph">
+<p>Tout d&#8217;abord, on va simuler un travail à réaliser : <code>_heavy_work</code>. Celui-ci va faire une série de <code>amount</code> calculs inutiles :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">_heavy_work</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">amount)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">unused_result</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #f8f8f2">unused_result</span> <span style="color: #f92672">+=</span> <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f92672">-</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il serait plus illustratif de randomiser un peu, ou d&#8217;avoir une charge de travail asymétrique entre A et B, mais ça nuirait à la simplicité de l&#8217;exemple, et surtout aux mesures qu&#8217;on va faire : on va en rester à cet exemple simpliste.</p>
+</div>
+<div class="paragraph">
+<p>Ce travail est exécuté en boucle dans une <code>computer_task</code>, identifiée par une <code>letter</code> (<code>A</code> ou <code>B</code>), et ce autant de fois qu&#8217;il y a de ticks <code>nb_of_ticks</code>. Lorsqu&#8217;elle a fini un tick, la task publie son identifiant dans une queue <code>data_to_write</code>, et notifie une condition-variable <code>cv</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">computer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">char</span> <span style="color: #f8f8f2">letter,</span>
+                   <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">nb_of_ticks,</span>
+                   <span style="color: #f8f8f2">queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">data_to_write,</span>
+                   <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">amount,</span>
+                   <span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">m,</span>
+                   <span style="color: #f8f8f2">condition_variable</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">cv)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">nb_of_ticks;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">x)</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #f8f8f2">_heavy_work(amount);</span>
+        <span style="color: #f8f8f2">{</span>
+            <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">lock(m);</span>
+            <span style="color: #f8f8f2">data_to_write.push(letter);</span>
+        <span style="color: #f8f8f2">}</span>
+        <span style="color: #f8f8f2">cv.notify_one();</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Une autre tâche <code>displayer_task</code> est chargée de consommer les lettres publiées dans la queue lorsqu&#8217;elle est notifiée par la condition-variable <code>cv</code>, et convertit progressivement une string <code>result</code> depuis un état initial (<code>initial_string</code>) du type <code>------------</code> vers un état final indiquant comment le travail a progressé <code>BAABBABBBAAA</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">displayer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">string</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">initial_string,</span>
+                    <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">atomic</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">is_finished,</span>
+                    <span style="color: #f8f8f2">queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">data_to_write,</span>
+                    <span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">m,</span>
+                    <span style="color: #f8f8f2">condition_variable</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">cv)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">result{initial_string};</span>
+    <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">next_index_to_write</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">while</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">is_finished.load())</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #75715e">// wait to be notified that there is something to write (or there is no more work to do) :</span>
+        <span style="color: #f8f8f2">unique_lock</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">lock(m);</span>
+        <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">wakeup_predicate</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">is_finished]()</span> <span style="color: #f8f8f2">{</span>
+            <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">is_finished.load()</span> <span style="color: #f92672">||</span> <span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty();</span>
+        <span style="color: #f8f8f2">};</span>
+        <span style="color: #f8f8f2">cv.wait(lock,</span> <span style="color: #f8f8f2">wakeup_predicate);</span>
+
+        <span style="color: #75715e">// writes all the data to the result string :</span>
+        <span style="color: #66d9ef">while</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty())</span> <span style="color: #f8f8f2">{</span>
+            <span style="color: #f8f8f2">result[next_index_to_write</span><span style="color: #f92672">++</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">data_to_write.back();</span>
+            <span style="color: #f8f8f2">data_to_write.pop();</span>
+        <span style="color: #f8f8f2">}</span>
+        <span style="color: #f8f8f2">lock.unlock();</span>
+
+        <span style="color: #75715e">// displays the written string :</span>
+        <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;</span><span style="color: #ae81ff">\r</span><span style="color: #e6db74">&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">flush;</span>  <span style="color: #75715e">// might not work on windows/mac bc of EOL</span>
+    <span style="color: #f8f8f2">}</span>
+    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exécution_séquentielle_2">Exécution séquentielle</h3>
+<div class="paragraph">
+<p>Pour l'<strong>exécution séquentielle</strong>, la <code>displayer_task</code> s&#8217;exécute en tâche de fond dans un thread <code>displayer</code>, mais les deux <code>computer_task</code> sont lancées successivement dans le thread principal :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// displayer thread runs in background :</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">displayer</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task,</span> <span style="color: #f8f8f2">cref(initial_string),</span> <span style="color: #f8f8f2">cref(is_finished),</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+
+<span style="color: #75715e">// computer tasks run in foreground, sequentially :</span>
+<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">m,</span> <span style="color: #f8f8f2">cv);</span>
+<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">m,</span> <span style="color: #f8f8f2">cv);</span>
+
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
+    <span style="color: #f8f8f2">is_finished.store(true);</span>
+<span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">cv.notify_one();</span>
+<span style="color: #f8f8f2">displayer.join();</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exécution_concurrente_parallèle">Exécution concurrente parallèle</h3>
+<div class="paragraph">
+<p>L'<strong>exécution concurrente parallèle</strong> est identique à l&#8217;exécution séquentielle, sauf que les deux <code>computer_task</code> sont lancées chacune dans un thread indépendant. Le thread principal ne fait rien d&#8217;autre que coordonner tout ce beau monde :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// displayer thread runs in background :</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">displayer</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task,</span> <span style="color: #f8f8f2">cref(initial_string),</span> <span style="color: #f8f8f2">cref(is_finished),</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+
+<span style="color: #75715e">// computer tasks also run in background, concurrently (and maybe in parallel) :</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">taskA</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task,</span> <span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">taskB</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task,</span> <span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+<span style="color: #f8f8f2">taskA.join();</span>
+<span style="color: #f8f8f2">taskB.join();</span>
+
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
+    <span style="color: #f8f8f2">is_finished.store(true);</span>
+<span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">cv.notify_one();</span>
+<span style="color: #f8f8f2">displayer.join();</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_exécution_concurrente_non_parallèle">Exécution concurrente non-parallèle</h3>
+<div class="paragraph">
+<p>Pour l'<strong>exécution concurrente non-parallèle</strong>, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s&#8217;exécuter sur un seul coeur de processeur avec <code>taskset</code> :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>taskset - set or retrieve a process&#8217;s CPU affinity</p>
+</div>
+<div class="paragraph">
+<p>CPU affinity is a scheduler property that "bonds" a process to a given set of CPUs on the system.
+The Linux scheduler will honor the given CPU affinity and the process will not run on any other CPUs.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; man taskset
+</div>
+</div>
+<div class="paragraph">
+<p>Du coup, si le binaire parallèle est <code>bin_PARALLEL</code>, pour tester le cas où l&#8217;exécution est concurrente non-parallèle, on peut lancer :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">taskset -c <span style="color: #ae81ff">0</span> ./bin_PARALLEL</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ceci aura pour effet d&#8217;exécuter <code>bin_PARALLEL</code> sur un seul (le premier) coeur de processeur : à tout instant, le processeur ne pourra faire progresser qu&#8217;un seul thread, et il alternera entre les différents threads, c&#8217;est bien la définition d&#8217;une exécution concurrente non-parallèle.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_observations">Observations</h3>
+<div class="sect3">
+<h4 id="_comment_mesurer">comment mesurer</h4>
+<div class="paragraph">
+<p>Pour mesurer le temps pris par les différentes exécutions, j&#8217;utilise <a href="https://www.gnu.org/software/time/">GNU time</a>, qui en plus de mesurer précisément le temps d&#8217;exécution, présente l&#8217;avantage de donner d&#8217;autres infos bien utiles, comme le nombre de context-switchs.</p>
+</div>
+<div class="paragraph">
+<p>Attention, il y a un loup, la commande <code>time</code> est souvent une shell builtin, et pour utiliser GNU time, il faut préciser le chemin explicitement <code>/usr/bin/time</code> ou mieux, utiliser <code>env time</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">env <span style="color: #f8f8f2">time</span> -f <span style="color: #e6db74">&quot;time took = %E&quot;</span> ./bin_PARALLEL</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>La valeur des mesures n&#8217;est pas particulièrement pertinente, puisqu&#8217;elle dépend de la quantité de travail (ici, <code>amount = 50000000</code>), du processeur (qui au passage est <code>Intel&#174; Core&#8482; i3-6100U CPU @ 2.30GHz</code>), et probablement de la version du noyau linux (ici, <code>4.15.0-112-generic</code>). En revanche, l&#8217;ordre de grandeur des mesures les unes par rapport aux autres est intéressante.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_résultats">résultats</h4>
+<div class="paragraph">
+<p>Voici un exemple de ce que j&#8217;observe :</p>
+</div>
+<asciinema-player src="../records/2020-06-09-concurrency-vs-parallelism.asciinema" rows="16" cols="60" preload="true" poster="npt:0:24"></asciinema-player>
+<div class="paragraph">
+<p>L&#8217;état final est :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>+++ running SEQUENTIAL :
+AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
+time took               = 0:06.97
+
++++ running CONCURRENT NON-PARALLEL :
+ABABABBAABBAABBABABABABABABABAABBAABABAB
+time took               = 0:07.01
+
++++ running CONCURRENT PARALLEL :
+ABABABABABABABABABABABABABABABABABABABAB
+time took               = 0:03.57</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dit autrement, si le temps d'<strong>exécution séquentielle</strong> est notée <code>100</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>le temps d&#8217;exécution concurrente non-parallèle est à <code>101</code></p>
+</li>
+<li>
+<p>le temps d&#8217;exécution concurrente parallèle est à <code>51</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Les temps d&#8217;exécution varient d&#8217;un lancement à l&#8217;autre, et vue la petitesse de l&#8217;écart, on est sans doute plutôt dans le bruit, mais on observe systématiquement que l&#8217;exécution concurrente non-parallèle est à peu près égale à l&#8217;exécution séquentielle, mais un chouïa plus lente. Comme expliqué plus haut il y a un peu de travail supplémentaire à effectuer rien que pour gérer le fait d&#8217;avoir plusieurs tâches.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, on peut relancer notre test en comptant les context-switchs avec <code>time</code>, et on constatera qu&#8217;avec l&#8217;exécution séquentielle, on en a très peu, alors qu&#8217;avec l&#8217;exécution concurrente non-parallèle, on en environ 25 fois plus :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code>+++ running SEQUENTIAL :
+AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
+time took               = 0:06.96
+ctx switch (involuntar) = 24
+ctx switch (voluntar)   = 42
+
+
++++ running CONCURRENT NON-PARALLEL :
+BAABBABABABABABABABAABBABABABAABBABABAAB
+time took               = 0:07.04
+ctx switch (involuntar) = 616
+ctx switch (voluntar)   = 44
+
+
++++ running CONCURRENT PARALLEL :
+ABABABABABABABABABABABABABABABABABABABAB
+time took               = 0:03.57
+ctx switch (involuntar) = 6
+ctx switch (voluntar)   = 47</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Concernant l&#8217;exécution parallèle, on se trouve dans la situation idéale où répartir le travail sur deux threads a divisé le temps d&#8217;exécution par deux. Notre bonne fortune est probablement dûe à la simplicité du cas-test : comme dit plus haut, dans une situation réelle, c&#8217;est loin d&#8217;être toujours le cas.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bonus_toi_aussi_ralentis_ton_programme_en_le_parallélisant">BONUS = toi aussi, ralentis ton programme en le parallélisant</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>L&#8217;objectif du post était de préciser les notions de concurrence et de parallélisme, c&#8217;est chose faite. Le paragraphe qui suit est donc surtout donné en bonus : on va montrer qu&#8217;on peut <strong>ralentir</strong> l&#8217;exécution de son programme en le parallélisant.</p>
+</div>
+<div class="paragraph">
+<p>Comme précédemment, on va travailler sur un cas bateau : on va simuler la répétition d&#8217;un calcul lourd, qui met à jour un résultat passé en référence :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
+    <span style="color: #f8f8f2">{</span>
+        <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">-=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On va supposer qu&#8217;on doit effectuer ce calcul deux fois, par exemple sur les cellules paires (<code>even</code>) et impaires (<code>odd</code>) d&#8217;un tableau.</p>
+</div>
+<div class="sect2">
+<h3 id="_séquentiel">séquentiel</h3>
+<div class="paragraph">
+<p>En séquentiel, ça pourrait donner quelque chose comme :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">argc,</span> <span style="color: #66d9ef">char</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">argv[])</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(argc</span> <span style="color: #f92672">&lt;</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">)</span>
+    <span style="color: #f8f8f2">{</span>
+        <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cerr</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;USAGE: &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;  AMOUNT&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">endl;</span>
+        <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">}</span>
+
+    <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">stoi(argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]);</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">heavy_task(result_even,</span> <span style="color: #f8f8f2">amount);</span>
+    <span style="color: #f8f8f2">heavy_task(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+
+    <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sur ma machine, lancé avec un <code>amount</code> de <code>500000000</code>, <code>time</code> m&#8217;indique que ce programme séquentiel mets <code>2,71</code> secondes à s&#8217;exécuter :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># running SEQUENTIAL implementation as a REFERENCE :</span>
+<span style="color: #f8f8f2">time</span> <span style="color: #f8f8f2">took</span>  <span style="color: #f92672">=</span> 0:02.71</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme précédemment, les mesures individuelles n&#8217;ont pas d&#8217;importance en soi, seule leur importance relative compte.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_en_parallèle_ça_ira_forcément_plus_vite">en parallèle, ça ira forcément plus vite</h3>
+<div class="paragraph">
+<p>Un dev vigilant remarquera que ce type de calcul, répété deux fois, où les entrées comme les sorties sont indépendantes, se prête particulièrement bien à la parallélisation, et il n&#8217;aurait pas tort. Lançons donc les deux calculs en parallèle, dans deux threads :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(compute,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">compute(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">th.join();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ce dev vigilant, mais un peu trop confiant, pourrait se dire qu&#8217;il est inutile de benchmarker son cas d&#8217;usage, car avec un exemple aussi simple, dans des conditions aussi idéales, on ne peut <strong>QUE</strong> accélérer le programme en le parallélisant. Pourtant, il aurait tort de ne pas refaire ses mesures :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># running PARALLEL NAIVE implementation :</span>
+<span style="color: #f8f8f2">time</span> <span style="color: #f8f8f2">took</span>  <span style="color: #f92672">=</span> 0:04.09</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Surprise ! Le temps d&#8217;exécution a <strong>AUGMENTÉ</strong>, et pas qu&#8217;un peu : on est à <code>151%</code> du temps d&#8217;exécution séquentiel !</p>
+</div>
+<div class="paragraph">
+<p>Incrédule ? Vous pouvez faire l&#8217;expérience chez vous, <a href="https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code/false_sharing">le code est ici</a>. Vu que l&#8217;exemple est simpliste, attention à compiler en <code>-O0</code> pour que g++ n&#8217;optimise pas notre code bateau.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_false_sharing">false sharing</h3>
+<div class="paragraph">
+<p>Expliquer en détail l&#8217;origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables <code>result_even</code> et <code>result_odd</code> étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du coeur de processeur de l&#8217;autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu&#8217;il n&#8217;aurait pas eu à faire sinon.</p>
+</div>
+<div class="paragraph">
+<p>Le surcoût apporté par ces opérations dépasse le gain obtenu par la parallélisation, et au final, on dégrade les performances. La partie contre-intuitive est que ce phénomène intervient alors même que les variables sont indépendantes dans le code, d&#8217;où le nom de <a href="https://en.wikipedia.org/wiki/False_sharing"><em>false sharing</em></a>. C&#8217;est un exemple de situation où les détails bas-niveau du fonctionnement d&#8217;un processeur ont un effet direct sur les performances d&#8217;un programme ; pour les curieux, <a href="https://github.com/Kobzol/hardware-effects">ce repo</a> est une mine d&#8217;or qui en contient bien d&#8217;autres.</p>
+</div>
+<div class="paragraph">
+<p>Pour éviter ce phénomène, il suffit d&#8217;espacer les variables en mémoire, de sorte que la modification d&#8217;une variable n&#8217;ait pas d&#8217;impact sur le cache mémoire du processeur contenant l&#8217;autre variable. Voici un exemple d&#8217;implémentation avec <a href="https://gcc.gnu.org/onlinedocs/gcc/Common-Variable-Attributes.html#Common-Variable-Attributesi">l&#8217;attribut aligned de g++</a> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #a6e22e">__attribute__</span> <span style="color: #f8f8f2">((aligned</span> <span style="color: #f8f8f2">(</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">)))</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #a6e22e">__attribute__</span> <span style="color: #f8f8f2">((aligned</span> <span style="color: #f8f8f2">(</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">)))</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(compute,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">compute(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">th.join();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec cette modification, on obtient bien un temps d&#8217;exécution plus conforme à ce qu&#8217;on attendait, à <code>57%</code> du programme séquentiel :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code># running PARALLEL FAST ALIGNED implementation :
+time took  = 0:01.56</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À noter que le code ci-dessus, s&#8217;il permet de montrer qu&#8217;on est bien en face d&#8217;un <em>false sharing</em>, n&#8217;est pas la meilleure façon d&#8217;adresse le problème. Mieux vaut en effet ne pas toucher à l&#8217;alignement des variables :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(compute,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">compute(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">th.join();</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et à la place modifier la fonction <code>heavy_task</code> pour qu&#8217;elle travaille principalement sur une variable locale, et ne mute la variable "partagée" qu&#8217;une seule fois, à la fin du traitement :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
+    <span style="color: #f8f8f2">{</span>
+        <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">-=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #f8f8f2">}</span>
+    <span style="color: #f8f8f2">result</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">acc;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On trouve alors un temps d&#8217;exécution encore meilleur, à <code>53%</code> du programme séquentiel :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code># running PARALLEL FAST OFFLINE implementation :
+time took  = 0:01.43</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_le_mot_de_la_fin">le mot de la fin</h3>
+<div class="paragraph">
+<p>Ce qu&#8217;il faut retirer de ce bonus, ce n&#8217;est ni le phénomène de <em>false sharing</em>, ni la façon de l&#8217;éviter.</p>
+</div>
+<div class="paragraph">
+<p>Ce qu&#8217;il faut retenir, c&#8217;est qu'<strong>il est indispensable de benchmarker son cas d&#8217;usage</strong>, plutôt que de supposer ou prévoir les résultats d&#8217;une parallélisation de son code. Et si possible, sur la machine qui exécutera le programme.</p>
+</div>
+<div class="paragraph">
+<p>En effet, non seulement paralléliser son code apporte une tétra-chiée d&#8217;écueils pas toujours faciles à éviter, et encore moins faciles à reproduire et débugger, mais en plus, le gain en temps d&#8217;exécution n&#8217;est pas garanti.</p>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+      <script src="/blog/asciinema-v2.6.1/asciinema-player.js"></script>
+    
+
+  </body>
+</html>

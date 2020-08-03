@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Concurrence et parallélisme</title>
+      <link>https://phidra.github.io/blog/2020-06-09-concurrency-vs-parallelism/</link>
+      <pubDate>Tue, 09 Jun 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-06-09-concurrency-vs-parallelism/</guid>
+      <description>De quoi va-t-on causer : Concurrence == parallélisme ? Concurrence Parallélisme Un peu de code BONUS = toi aussi, ralentis ton programme en le parallélisant     Concurrence == parallélisme ? À l&amp;#8217;oral, on mélange souvent concurrence et parallélisme. D&amp;#8217;ailleurs, en première approche, à la question &#34;C&amp;#8217;est quoi un programme qui exécute des tâches concurrentes ?&#34;, on serait tenté de répondre :
+  — C&amp;#8217;est un programme qui exécute plusieurs tâches en même temps.</description>
+    </item>
+    
+    <item>
       <title>R-tree et applications</title>
       <link>https://phidra.github.io/blog/2020-05-01-rtree/</link>
       <pubDate>Fri, 01 May 2020 10:00:00 +0100</pubDate>
