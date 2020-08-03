@@ -1,7 +1,7 @@
 ---
 title: "Concurrence et parallélisme"
 date: 2020-06-09T10:00:00+01:00
-draft: true
+draft: false
 has_asciinema: true
 ---
 :source-highlighter: pygments
