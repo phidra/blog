@@ -15,6 +15,9 @@
     
 
     <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.c2567e9db7d7175810bf56b211d59f43310e91cac3ff1f10377c1a1b935960b9.css" />
+
+    
+
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   </head>
   <body>
@@ -55,7 +58,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          65 min read
+          68 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -70,6 +73,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__cours_a_href_https_www_supinfo_com_cours_2ads_chapitres_05_programmation_dynamique_programmation_dynamique_a">[COURS] <a href="https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique">Programmation dynamique</a></a></li>
 <li><a href="#__video_a_href_https_ocw_mit_edu_courses_electrical_engineering_and_computer_science_6_006_introduction_to_algorithms_fall_2011_lecture_videos_lecture_1_algorithmic_thinking_peak_finding_lecture_1_algorithmic_thinking_peak_finding_a">[VIDEO] <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-1-algorithmic-thinking-peak-finding/">Lecture 1: Algorithmic Thinking, Peak Finding</a></a></li>
 <li><a href="#__article_a_href_https_lucumr_pocoo_org_2020_1_1_async_pressure_i_m_not_feeling_the_async_pressure_a">[ARTICLE] <a href="https://lucumr.pocoo.org/2020/1/1/async-pressure/">I&#8217;m not feeling the async pressure</a></a></li>
 <li><a href="#__article_a_href_https_medium_com_jayphelps_backpressure_explained_the_flow_of_data_through_software_2350b3e77ce7_backpressure_explained_the_resisted_flow_of_data_through_software_a">[ARTICLE] <a href="https://medium.com/@jayphelps/backpressure-explained-the-flow-of-data-through-software-2350b3e77ce7">Backpressure explained — the resisted flow of data through software</a></a></li>
@@ -160,6 +164,129 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__cours_a_href_https_www_supinfo_com_cours_2ads_chapitres_05_programmation_dynamique_programmation_dynamique_a">[COURS] <a href="https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique">Programmation dynamique</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2020_07_28_c_est_pas_très_clair_quand_le_cours_a_été_publié_fait_partie_d_un_a_href_https_www_supinfo_com_cours_2ads_cours_d_algorithmique_à_supinfo_a_présenté_par_a_href_https_www_supinfo_com_fr_news0870864f_e0af_4ba1_b2ff_d488f356ef03_aspx_laurent_godefroy_a_enseignant_là_bas">Lu le 2020-07-28, c&#8217;est pas très clair quand le cours a été publié. Fait partie d&#8217;un <a href="https://www.supinfo.com/cours/2ADS">cours d&#8217;algorithmique à Supinfo</a>, présenté par <a href="https://www.supinfo.com/fr/News0870864f-e0af-4ba1-b2ff-d488f356ef03.aspx">Laurent GODEFROY</a>, enseignant là-bas.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>présentation propre de la programmation dynamique, avec notamment deux très bons exemples (rendu de monnaie et sac-à-dos)</p>
+</li>
+<li>
+<p>fait écho au cours d&#8217;Erik DEMAINE annoté plus bas</p>
+</li>
+<li>
+<p>conditions d&#8217;application de la programmation dynamique :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>problème découpable en sous-problèmes discrets</p>
+</li>
+<li>
+<p>le problème a une <em>optimal substructure</em> : la combinaison de solutions optimales à des sous-problèmes doit donner naissance à une solution optimale au problème global</p>
+</li>
+<li>
+<p>NdM : j&#8217;ajoute "les sous-problèmes se recouvrent" (sans quoi inutile de faire de la prog dynamique, on peut faire un classique divide-and-conquer)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>programmation dynamique =</p>
+<div class="ulist">
+<ul>
+<li>
+<p>expression du problème sous forme d&#8217;une relation de récurrence  &#8592; c&#8217;est la partie difficile</p>
+</li>
+<li>
+<p>condition d&#8217;arrêt</p>
+</li>
+<li>
+<p>memoization</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>inconvénients de l&#8217;approche bottom-up = on peut se retrouver à calculer des valeurs intermédiaires inutiles (elles ne nous servent pas pour la solution)</p>
+</li>
+<li>
+<p>inconvénients de l&#8217;approche top-down = on peut se retrouver à faire une trop grosse récursion, et à exploser la callstack (en revanche, on ne calcule que ce qui sert réelement)</p>
+</li>
+<li>
+<p>la partie difficile est d&#8217;exprimer le problème sous forme d&#8217;une relation de récurrence. Par exemple celle pour le sac-à-dos est issue de ces considérations :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Les objets ont un poids <code>wi</code> et une valeur <code>vi</code>.</p>
+</li>
+<li>
+<p>on récurse sur l&#8217;indice <code>i</code> de l&#8217;objet parmi les <code>N</code> objets (en partant de la fin du tableau des objets).</p>
+</li>
+<li>
+<p>la donnée pertinente est <code>V[i][w]</code> = le valeur maximale qu&#8217;on peut transporter dans un sac de capacité <code>w</code>, en ne considérant que les <code>i</code> premiers objets. Elle est issue de la combinaison optimale des <code>i</code> premiers objets dans le tableau (ce sont les objets "restants", vu qu&#8217;on a commencé à la fin du tableau)</p>
+</li>
+<li>
+<p>notamment, la relation de récurrence indique que lorsqu&#8217;on traite l&#8217;objet <code>i</code>, on retient le MAX entre :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>vi + V[i-1][w-wi]</code> = la valeur optimale si ON METS l&#8217;objet <code>i</code> dans le sac</p>
+</li>
+<li>
+<p><code>V[i-1][w]</code> = la valeur optimale si ON NE METS PAS l&#8217;objet <code>i</code> dans le sac</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>en quelque sorte, ce max "choisit" si on mets ou non l&#8217;objet <code>i</code> dans le sac, en supposant connue la façon optimale d&#8217;agencer les <code>i-1</code> objets précédents dans un sac (de poids <code>w</code> ou <code>w-wi</code>).</p>
+</li>
+<li>
+<p>et c&#8217;est ce qu&#8217;on veut au plus haut niveau : <code>V[N][W]</code> choisit si on mets le dernier objet (d&#8217;indice <code>N</code>) dans le sac de poids <code>W</code>, en supposant connue la meillere façon de mettre les <code>N-1</code> objets dans un sac de capacité <code>W</code> (si on ne retient pas l&#8217;objet <code>N</code>) ou de capacité <code>W-wn</code> (si on retient l&#8217;objet <code>N</code>)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>à noter qu&#8217;il est plus simple de commencer par exprimer la relation de récurrence et l&#8217;algo en supposant que ce qui nous intéressent c&#8217;est la VALEUR recherchée, et pas la façon dont elle est construite :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>dans le cadre du rendu de monnaie, commencer par se limiter à rechercher le nombre de pièces minimal</p>
+</li>
+<li>
+<p>dans le cadre du sac à dos, commencer par se limiter à rechercher la valeur maximale</p>
+</li>
+<li>
+<p>dans le cadre de Bellman-Ford, commencer par rechercher le poids du plus court chemin</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>complexité pour le problème du sac-à-dos :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>à noter que lorsque la complexité algorithmique dépend d&#8217;une <strong>VALEUR</strong> plutôt que d&#8217;une <strong>TAILLE</strong>, on l&#8217;exprime sous forme du nombre de bits de sa représentation, i.e. <code>complexité_VALEUR = log2(VALEUR)</code></p>
+</li>
+<li>
+<p>ici, l&#8217;approche bottom-up avec deux boucles imbriquées montre que la complexité est en <code>N.W</code> où <code>N</code> est le nombre d&#8217;objets, et <code>W</code> la capacité du sac-à-dos</p>
+</li>
+<li>
+<p><strong>MAIS</strong> comme la capacité est une valeur, on utilise son nombre de bits : <code>W = 2 ^ log2(W) = 2 ^ complexité_W</code>, et la complexité de l&#8217;algo est en fait exponentielle en la taille de <code>W</code></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -3304,6 +3431,8 @@ If you are loading a freshly created table, the fastest method is to create the 
   </article>
 
     </main>
+
+    
 
   </body>
 </html>
