@@ -1,6 +1,5 @@
-{"version": 2, "width": 217, "height": 63, "timestamp": 1596462256, "env": {"SHELL": "/usr/bin/zsh", "TERM": "xterm-256color"}}
-[0.793644, "o", "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                        \r \r"]
-[0.794577, "o", "\u001b]2;creanov@creanov-pc: /media/truecrypt1/gitprojects/preparing_blog_posts/content/2020-06-09-concurrency-vs-parallelism-code\u0007\u001b]1;..allelism-code\u0007\r\u001b[0m\u001b[27m\u001b[24m\u001b[Jdemo> \u001b[K\u001b[?1h\u001b=\u001b[?2004h"]
+{"version": 2, "width": 60, "height": 16, "timestamp": 1596462256, "env": {"SHELL": "/usr/bin/zsh", "TERM": "xterm-256color"}}
+[0.794577, "o", "\rdemo> "]
 [1.334513, "o", "."]
 [1.50484, "o", "\b./"]
 [1.804956, "o", "b"]
@@ -156,10 +155,4 @@
 [23.570061, "o", "\rABABABABABABABABABABABABABABABABABABABAB\r\n"]
 [23.570323, "o", "time to"]
 [23.570434, "o", "ok               = 0:03.57\r\n"]
-[23.57096, "o", "\u001b[1m\u001b[7m%\u001b[27m\u001b[1m\u001b[0m                                                                                                                                                                                                                        \r \r"]
-[23.571101, "o", "\u001b]2;creanov@creanov-pc: /media/truecrypt1/gitprojects/preparing_blog_posts/content/2020-06-09-concurrency-vs-parallelism-code\u0007"]
-[23.571172, "o", "\u001b]1;..allelism-code\u0007"]
-[23.571298, "o", "\r\u001b[0m\u001b[27m\u001b[24m\u001b[Jdemo> \u001b[K"]
-[23.571349, "o", "\u001b[?1h\u001b="]
-[23.571476, "o", "\u001b[?2004h"]
-[24.726541, "o", "\u001b[?2004l\r\r\n"]
+[23.571298, "o", "\rdemo> "]

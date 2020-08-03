@@ -2,6 +2,7 @@
 title: "Concurrence et parallélisme"
 date: 2020-06-09T10:00:00+01:00
 draft: true
+has_asciinema: true
 ---
 :source-highlighter: pygments
 :pygments-css: style
@@ -309,16 +310,15 @@ Attention, il y a un loup, la commande `time` est souvent une shell builtin, et 
 env time -f "time took = %E" ./bin_PARALLEL
 ----
 
-La valeur des mesures n'est pas particulièrement pertinente, puisqu'elle dépend de la quantité de travail (ici, `amount = 50000000`), du processeur (qui au passage est `Intel(R) Core(TM) i3-6100U CPU @ 2.30GHz`), et probablement de la version du noyau linux (ici, `4.15.0-107-generic`). En revanche, l'ordre de grandeur des mesures les unes par rapport aux autres est intéressante.
+La valeur des mesures n'est pas particulièrement pertinente, puisqu'elle dépend de la quantité de travail (ici, `amount = 50000000`), du processeur (qui au passage est `Intel(R) Core(TM) i3-6100U CPU @ 2.30GHz`), et probablement de la version du noyau linux (ici, `4.15.0-112-generic`). En revanche, l'ordre de grandeur des mesures les unes par rapport aux autres est intéressante.
 
 ==== résultats
 
 Voici un exemple de ce que j'observe :
 
-TODO : donner l'asciinema de ce que j'observe
-
-TODO : link:../records/2020-06-09-concurrency-vs-parallelism.asciinema[lien vers asciinema] APRES
-
+++++
+<asciinema-player src="../records/2020-06-09-concurrency-vs-parallelism.asciinema" rows="16" cols="60" preload="true" poster="npt:0:24"></asciinema-player>
+++++
 
 L'état final est :
 
@@ -326,50 +326,50 @@ L'état final est :
 ----
 +++ running SEQUENTIAL :
 AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
-time took               = 0:05.51
+time took               = 0:06.97
 
 +++ running CONCURRENT NON-PARALLEL :
-ABABABBAABABBAABABBABABAABBAABABABABABAB
-time took               = 0:06.25
+ABABABBAABBAABBABABABABABABABAABBAABABAB
+time took               = 0:07.01
 
 +++ running CONCURRENT PARALLEL :
-BABABABABABABABABABABABABABABABABAABBABA
-time took               = 0:03.27
+ABABABABABABABABABABABABABABABABABABABAB
+time took               = 0:03.57   
 ----
 
 Dit autrement, si le temps d'*exécution séquentielle* est notée `100` :
 
-* le temps d'exécution concurrente parallèle est à `59`
-* le temps d'exécution concurrente non-parallèle est à `113`
+* le temps d'exécution concurrente non-parallèle est à `101`
+* le temps d'exécution concurrente parallèle est à `51`
 
-Tout d'abord, on note que, comme attendu, le temps de l'exécution parallèle n'est pas exactement la moitié du temps de l'exécution séquentielle. En règle générale, ce n'est jamais le cas, et je trouve même que réduire le temps d'exécution à ~60% du temps d'exécution initiale est plutôt un bon score.
+Les temps d'exécution varient d'un lancement à l'autre, et vue la petitesse de l'écart, on est sans doute plutôt dans le bruit, mais on observe systématiquement que l'exécution concurrente non-parallèle est à peu près égale à l'exécution séquentielle, mais un chouïa plus lente. Comme expliqué plus haut il y a un peu de travail supplémentaire à effectuer rien que pour gérer le fait d'avoir plusieurs tâches.
 
-On note également que l'exécution concurrente non-parallèle est plus lente que l'exécution séquentielle. Ici aussi ce n'est pas réellement une surprise, comme expliqué plus haut il y a du travail supplémentaire à effectuer rien que pour gérer le fait d'avoir plusieurs tâches. Je n'ai pas fait d'étude poussée pour confirmer que c'était bien la cause principale du ralentissement, mais par exemple, on peut relancer notre test en affichant les context-switchs avec `time`, et on constatera qu'avec l'exécution séquentielle, on en a très peu, alors qu'avec l'exécution concurrente non-parallèle, on en a 10 fois plus :
+Par exemple, on peut relancer notre test en comptant les context-switchs avec `time`, et on constatera qu'avec l'exécution séquentielle, on en a très peu, alors qu'avec l'exécution concurrente non-parallèle, on en environ 25 fois plus :
 
 [source]
 ----
 +++ running SEQUENTIAL :
 AAAAAAAAAAAAAAAAAAAABBBBBBBBBBBBBBBBBBBB
-time took               = 0:05.54
-ctx switch (involuntar) = 118
+time took               = 0:06.96
+ctx switch (involuntar) = 24
 ctx switch (voluntar)   = 42
 
 
 +++ running CONCURRENT NON-PARALLEL :
-ABABABABABBABABABAABABBABABAABABBABABAAB
-time took               = 0:06.05
-ctx switch (involuntar) = 1114
-ctx switch (voluntar)   = 45
+BAABBABABABABABABABAABBABABABAABBABABAAB
+time took               = 0:07.04
+ctx switch (involuntar) = 616
+ctx switch (voluntar)   = 44
 
 
 +++ running CONCURRENT PARALLEL :
-AABABABBABABABABABABABABABABABABAABABABB
-time took               = 0:03.56
-ctx switch (involuntar) = 1616
-ctx switch (voluntar)   = 49
+ABABABABABABABABABABABABABABABABABABABAB
+time took               = 0:03.57
+ctx switch (involuntar) = 6
+ctx switch (voluntar)   = 47
 ----
 
-À noter cependant que sur une autre machine (même `amount`, processeur plus lent = `Intel(R) Core(TM) i3-6100U CPU @ 2.30GHz`, noyau linux proche, mais pas tout à fait identique = `4.15.0-112-generic`), j'obtiens des résultats assez différents, et notamment un écart plus faible entre l'exécution séquentielle et l'exécution concurrente non-parallèle, avec beaucoup moins de context-switchs pour les exécutions concurrentes. https://dictionary.cambridge.org/fr/dictionnaire/anglais/ymmv[YMMV].
+Concernant l'exécution parallèle, on se trouve dans la situation idéale où répartir le travail sur deux threads a divisé le temps d'exécution par deux. Notre bonne fortune est probablement dûe à la simplicité du cas-test : comme dit plus haut, dans une situation réelle, c'est loin d'être toujours le cas.
 
 == BONUS = toi aussi, ralentis ton programme en le parallélisant
 
@@ -522,11 +522,6 @@ TACHES RESTANTES :
 
 pour pas m'embêter, merger le thème dans mon repo hugo (quel intérêt de le forker ?)
 modifier le thème pour inclure mon CSS ?
-une fois que j'ai mon post définitif, faire un asciinema, et réussir à l'intégrer à la page
-    1. pouvoir inclure un fichier CSS custom
-    2. pouvoir inclure un fichier JS custom
-    3. pouvoir jouer le asciinema sur ma page
-    4. vérifier que ça se charge bien sur les navigateurs (comment tester sur windows ? mac ?)
 écluser mes TODOs
 
 http://localhost:1515/blog/records/2020-06-09-concurrency-vs-parallelism.asciinema
