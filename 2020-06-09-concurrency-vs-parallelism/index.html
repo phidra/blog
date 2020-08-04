@@ -61,7 +61,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          16 min read
+          17 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -240,7 +240,7 @@ Tâche B  |BBBBBBBBBBBBBBB----------|   (15 ticks B)
 </ul>
 </div>
 <div class="paragraph">
-<p>Une exécution parallèle n&#8217;est donc possible que sur un processeur qui dispose d&#8217;au moins deux coeurs, afin qu&#8217;à un instant donné celui-ci puisse faire progresser <code>A</code> et <code>B</code> en même temps plutôt que tour à tour. Jusqu&#8217;à l&#8217;avènement des processeurs multi-coeurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu&#8217;un encodage d&#8217;une vidéo en tâche de fond se termine) n&#8217;était qu&#8217;une illusion : les deux tâches alternaient juste très vite, l&#8217;exécution était <strong>concurrente non-parallèle</strong>. Certes cette illusion ne fait pas gagner <em>de temps</em> par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même <em>en utilisabilité</em> : il ne serait pas très pratique qu&#8217;un ordinateur freeze complètement tant que l&#8217;encodage d&#8217;une vidéo n&#8217;est pas terminé&#8230;&#8203;</p>
+<p>Une exécution parallèle n&#8217;est donc possible que sur un processeur qui dispose d&#8217;au moins deux cœurs, afin qu&#8217;à un instant donné celui-ci puisse faire progresser <code>A</code> et <code>B</code> en même temps plutôt que tour à tour. Jusqu&#8217;à l&#8217;avènement des processeurs multi-cœurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu&#8217;un encodage d&#8217;une vidéo en tâche de fond se termine) n&#8217;était qu&#8217;une illusion : les deux tâches alternaient juste très vite, l&#8217;exécution était <strong>concurrente non-parallèle</strong>. Certes cette illusion ne fait pas gagner <em>de temps</em> par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même <em>en utilisabilité</em> : il ne serait pas très pratique qu&#8217;un ordinateur freeze complètement tant que l&#8217;encodage d&#8217;une vidéo n&#8217;est pas terminé&#8230;&#8203;</p>
 </div>
 </div>
 <div class="sect2">
@@ -312,7 +312,7 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 <p>les tâches concurrentes doivent se partager les IOs</p>
 </li>
 <li>
-<p>des détails d&#8217;implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux <a href="https://en.wikipedia.org/wiki/Global_interpreter_lock">GIL</a> empêchera de tirer parti d&#8217;un programme multithreadé, même sur des processeurs à plusieurs coeurs</p>
+<p>des détails d&#8217;implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux <a href="https://en.wikipedia.org/wiki/Global_interpreter_lock">GIL</a> empêchera de tirer parti d&#8217;un programme multithreadé, même sur des processeurs à plusieurs cœurs</p>
 </li>
 <li>
 <p>etc. j&#8217;en passe et des meilleurs</p>
@@ -348,7 +348,7 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 </ul>
 </div>
 <div class="paragraph">
-<p>Vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code">en suivant ce lien</a> les codes d&#8217;exemple, de quoi les compiler, et de quoi mesurer leur temps d&#8217;exécution.</p>
+<p>Vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code">en suivant ce lien</a> les sources, de quoi les compiler, et de quoi mesurer leur temps d&#8217;exécution.</p>
 </div>
 <div class="sect2">
 <h3 id="_nos_briques_de_base">Nos briques de base</h3>
@@ -476,7 +476,7 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 <div class="sect2">
 <h3 id="_exécution_concurrente_non_parallèle">Exécution concurrente non-parallèle</h3>
 <div class="paragraph">
-<p>Pour l'<strong>exécution concurrente non-parallèle</strong>, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s&#8217;exécuter sur un seul coeur de processeur avec <code>taskset</code> :</p>
+<p>Pour l'<strong>exécution concurrente non-parallèle</strong>, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s&#8217;exécuter sur un seul cœur de processeur avec <code>taskset</code> :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -501,15 +501,15 @@ The Linux scheduler will honor the given CPU affinity and the process will not r
 </div>
 </div>
 <div class="paragraph">
-<p>Ceci aura pour effet d&#8217;exécuter <code>bin_PARALLEL</code> sur un seul (le premier) coeur de processeur : à tout instant, le processeur ne pourra faire progresser qu&#8217;un seul thread, et il alternera entre les différents threads, c&#8217;est bien la définition d&#8217;une exécution concurrente non-parallèle.</p>
+<p>Ceci aura pour effet d&#8217;exécuter <code>bin_PARALLEL</code> sur un seul (le premier) cœur de processeur : à tout instant, le processeur ne pourra faire progresser qu&#8217;un seul thread, et il alternera entre les différents threads, c&#8217;est bien la définition d&#8217;une exécution concurrente non-parallèle. Une alternative est d&#8217;utiliser un mutex pour garantir que seul un thread s&#8217;exécute à chaque instant.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_observations">Observations</h3>
 <div class="sect3">
-<h4 id="_comment_mesurer">comment mesurer</h4>
+<h4 id="_mesure_du_temps_d_exécution">mesure du temps d&#8217;exécution</h4>
 <div class="paragraph">
-<p>Pour mesurer le temps pris par les différentes exécutions, j&#8217;utilise <a href="https://www.gnu.org/software/time/">GNU time</a>, qui en plus de mesurer précisément le temps d&#8217;exécution, présente l&#8217;avantage de donner d&#8217;autres infos bien utiles, comme le nombre de context-switchs.</p>
+<p>Il va être intéressant de mesurer le temps pris par les différentes exécutions ; j&#8217;utilise <a href="https://www.gnu.org/software/time/">GNU time</a>, qui en plus de mesurer précisément le temps d&#8217;exécution, présente l&#8217;avantage de donner d&#8217;autres infos bien utiles, comme le nombre de context-switchs.</p>
 </div>
 <div class="paragraph">
 <p>Attention, il y a un loup, la commande <code>time</code> est souvent une shell builtin, et pour utiliser GNU time, il faut préciser le chemin explicitement <code>/usr/bin/time</code> ou mieux, utiliser <code>env time</code> :</p>
@@ -548,7 +548,20 @@ time took               = 0:03.57</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Dit autrement, si le temps d'<strong>exécution séquentielle</strong> est noté <code>100</code> :</p>
+<p>Les différentes exécutions se comportent bien comme souhaité :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>dans l&#8217;exécution séquentielle, la tâche <code>B</code> ne commence qu&#8217;une fois la tâche <code>A</code> terminée</p>
+</li>
+<li>
+<p>dans les deux exécutions concurrentes, les deux tâches semblent s&#8217;exécuter "en même temps", et c&#8217;est surtout la mesure du temps d&#8217;exécution qui nous permet de voir qu&#8217;en non-parallèle, les tâches s&#8217;exécutent plutôt tour à tour</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Côte mesure, si le temps d'<strong>exécution séquentielle</strong> est noté <code>100</code> :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -690,7 +703,7 @@ ctx switch (voluntar)   = 47</code></pre>
 <div class="sect2">
 <h3 id="_false_sharing">false sharing</h3>
 <div class="paragraph">
-<p>Expliquer en détail l&#8217;origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables <code>result_even</code> et <code>result_odd</code> étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du coeur de processeur de l&#8217;autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu&#8217;il n&#8217;aurait pas eu à faire sinon.</p>
+<p>Expliquer en détail l&#8217;origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables <code>result_even</code> et <code>result_odd</code> étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du cœur de processeur de l&#8217;autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu&#8217;il n&#8217;aurait pas eu à faire sinon.</p>
 </div>
 <div class="paragraph">
 <p>Le surcoût apporté par ces opérations dépasse le gain obtenu par la parallélisation, et au final, on dégrade les performances. La partie contre-intuitive est que ce phénomène intervient alors même que les variables sont indépendantes dans le code, d&#8217;où le nom de <a href="https://en.wikipedia.org/wiki/False_sharing"><em>false sharing</em></a>. C&#8217;est un exemple de situation où les détails bas-niveau du fonctionnement d&#8217;un processeur ont un effet direct sur les performances d&#8217;un programme ; pour les curieux, <a href="https://github.com/Kobzol/hardware-effects">ce repo</a> est une mine d&#8217;or qui en contient bien d&#8217;autres.</p>
