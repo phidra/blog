@@ -110,7 +110,7 @@ Il y a une différence de taille par rapport à la situation précédente : à u
 * *OUI* : au fur et à mesure que le temps passe, les deux tâches progressent tour à tour de sorte qu'après un certain temps (par exemple lorsqu'on est à mi-chemin), les DEUX tâches ont progressé.
 * *OUI* : si un fait un cliché à un instant donné, aucune tâche "n'attend son tour" : on a toujours deux ticks `A` et `B` en cours d'exécution au même instant (sauf quand l'une des deux a fini de s'exécuter et pas l'autre, bien sûr).
 
-Une exécution parallèle n'est donc possible que sur un processeur qui dispose d'au moins deux coeurs, afin qu'à un instant donné celui-ci puisse faire progresser `A` et `B` en même temps plutôt que tour à tour. Jusqu'à l'avènement des processeurs multi-coeurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu'un encodage d'une vidéo en tâche de fond se termine) n'était qu'une illusion : les deux tâches alternaient juste très vite, l'exécution était *concurrente non-parallèle*. Certes cette illusion ne fait pas gagner _de temps_ par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même _en utilisabilité_ : il ne serait pas très pratique qu'un ordinateur freeze complètement tant que l'encodage d'une vidéo n'est pas terminé...
+Une exécution parallèle n'est donc possible que sur un processeur qui dispose d'au moins deux cœurs, afin qu'à un instant donné celui-ci puisse faire progresser `A` et `B` en même temps plutôt que tour à tour. Jusqu'à l'avènement des processeurs multi-cœurs, le fait pour un ordinateur de faire "plusieurs choses en même temps" (par exemple jouer au solitaire en attendant qu'un encodage d'une vidéo en tâche de fond se termine) n'était qu'une illusion : les deux tâches alternaient juste très vite, l'exécution était *concurrente non-parallèle*. Certes cette illusion ne fait pas gagner _de temps_ par rapport à une exécution séquentielle (dans les deux cas, le temps total est de 40 ticks), mais on y gagne tout de même _en utilisabilité_ : il ne serait pas très pratique qu'un ordinateur freeze complètement tant que l'encodage d'une vidéo n'est pas terminé...
 
 === parallélisme vs. concurrence
 
@@ -145,7 +145,7 @@ On passe de 40 à 32 ticks, le temps total est divisé par 1,25.
 * l'exécution et la synchronisation de plusieurs tâches rajoute du travail qui n'existait pas dans le programme séquentiel : coût des context-switchs : virtual-memory bookkeeping, cache-eviction, exécution du scheduler, ...
 * des effets bas-niveau comme le https://en.wikipedia.org/wiki/False_sharing[false-sharing], illustré plus bas, peuvent ralentir un programme multithreadé
 * les tâches concurrentes doivent se partager les IOs
-* des détails d'implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux https://en.wikipedia.org/wiki/Global_interpreter_lock[GIL] empêchera de tirer parti d'un programme multithreadé, même sur des processeurs à plusieurs coeurs
+* des détails d'implémentation propre à chaque langage peuvent jouer, par exemple en python, le fameux https://en.wikipedia.org/wiki/Global_interpreter_lock[GIL] empêchera de tirer parti d'un programme multithreadé, même sur des processeurs à plusieurs cœurs
 * etc. j'en passe et des meilleurs
 
 Comme partout ailleurs quand on parle de perfs, il faut mesurer et benchmarker son cas d'usage plutôt que de faire des prédictions ou des suppositions.
@@ -160,7 +160,7 @@ Pour comparer ce qui est comparable, on va utiliser exactement le même code, ma
 - de façon concurrente parallèle
 - de façon concurrente non-parallèle
 
-Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code[en suivant ce lien] les codes d'exemple, de quoi les compiler, et de quoi mesurer leur temps d'exécution.
+Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-06-09-concurrency-vs-parallelism-code[en suivant ce lien] les sources, de quoi les compiler, et de quoi mesurer leur temps d'exécution.
 
 === Nos briques de base
 
@@ -278,7 +278,7 @@ displayer.join();
 
 === Exécution concurrente non-parallèle
 
-Pour l'*exécution concurrente non-parallèle*, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s'exécuter sur un seul coeur de processeur avec `taskset` :
+Pour l'*exécution concurrente non-parallèle*, soyons rusé comme le renard : on va réutiliser le code parallèle, mais on va le forcer à s'exécuter sur un seul cœur de processeur avec `taskset` :
 
 [quote, man taskset]
 ____
@@ -295,13 +295,13 @@ Du coup, si le binaire parallèle est `bin_PARALLEL`, pour tester le cas où l'e
 taskset -c 0 ./bin_PARALLEL
 ----
 
-Ceci aura pour effet d'exécuter `bin_PARALLEL` sur un seul (le premier) coeur de processeur : à tout instant, le processeur ne pourra faire progresser qu'un seul thread, et il alternera entre les différents threads, c'est bien la définition d'une exécution concurrente non-parallèle.
+Ceci aura pour effet d'exécuter `bin_PARALLEL` sur un seul (le premier) cœur de processeur : à tout instant, le processeur ne pourra faire progresser qu'un seul thread, et il alternera entre les différents threads, c'est bien la définition d'une exécution concurrente non-parallèle. Une alternative est d'utiliser un mutex pour garantir que seul un thread s'exécute à chaque instant.
 
 === Observations
 
-==== comment mesurer
+==== mesure du temps d'exécution
 
-Pour mesurer le temps pris par les différentes exécutions, j'utilise https://www.gnu.org/software/time/[GNU time], qui en plus de mesurer précisément le temps d'exécution, présente l'avantage de donner d'autres infos bien utiles, comme le nombre de context-switchs.
+Il va être intéressant de mesurer le temps pris par les différentes exécutions ; j'utilise https://www.gnu.org/software/time/[GNU time], qui en plus de mesurer précisément le temps d'exécution, présente l'avantage de donner d'autres infos bien utiles, comme le nombre de context-switchs.
 
 Attention, il y a un loup, la commande `time` est souvent une shell builtin, et pour utiliser GNU time, il faut préciser le chemin explicitement `/usr/bin/time` ou mieux, utiliser `env time` :
 
@@ -337,7 +337,12 @@ ABABABABABABABABABABABABABABABABABABABAB
 time took               = 0:03.57   
 ----
 
-Dit autrement, si le temps d'*exécution séquentielle* est noté `100` :
+Les différentes exécutions se comportent bien comme souhaité :
+
+* dans l'exécution séquentielle, la tâche `B` ne commence qu'une fois la tâche `A` terminée
+* dans les deux exécutions concurrentes, les deux tâches semblent s'exécuter "en même temps", et c'est surtout la mesure du temps d'exécution qui nous permet de voir qu'en non-parallèle, les tâches s'exécutent plutôt tour à tour
+
+Côte mesure, si le temps d'*exécution séquentielle* est noté `100` :
 
 * le temps d'exécution concurrente non-parallèle est à `101`
 * le temps d'exécution concurrente parallèle est à `51`
@@ -451,7 +456,7 @@ Incrédule ? Vous pouvez faire l'expérience chez vous, https://github.com/phidr
 
 === false sharing
 
-Expliquer en détail l'origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables `result_even` et `result_odd` étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du coeur de processeur de l'autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu'il n'aurait pas eu à faire sinon.
+Expliquer en détail l'origine de ce ralentissement dépasse le cadre de ce post, mais en résumé, les variables `result_even` et `result_odd` étant contigües en mémoire, si un thread modifie la première variable, il invalide le cache du cœur de processeur de l'autre thread, qui doit donc effectuer de coûteuses lectures/écritures mémoire qu'il n'aurait pas eu à faire sinon.
 
 Le surcoût apporté par ces opérations dépasse le gain obtenu par la parallélisation, et au final, on dégrade les performances. La partie contre-intuitive est que ce phénomène intervient alors même que les variables sont indépendantes dans le code, d'où le nom de https://en.wikipedia.org/wiki/False_sharing[_false sharing_]. C'est un exemple de situation où les détails bas-niveau du fonctionnement d'un processeur ont un effet direct sur les performances d'un programme ; pour les curieux, https://github.com/Kobzol/hardware-effects[ce repo] est une mine d'or qui en contient bien d'autres.
 
