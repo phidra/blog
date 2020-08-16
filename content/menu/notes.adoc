@@ -43,6 +43,22 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+
+== [POST] http://codefol.io/posts/urban-legend-of-the-10x-developer/[The Urban Legend of the 10X Developer]
+
+=== Lu le 2020-08-??, sur http://codefol.io/ , blog d'un dev anonyme (surtout ruby)
+
+* l'article a un point de vue intéressant sur le mythe du dev 10x
+* pas de recherche et de donnée formelle sur le sujet
+* sujet difficile à quantifier de toutes façons
+* lien avec la façon dont l'organisation soutient le dev : _A lot of stories of 10X developers have their roots in “well supported by the company” situations._
+* point de vue pragmatique (que j'incline à partager) sur la rareté des dev 10x :
++
+[quote]
+____
+That’s not to say that “anybody could be one.” I think actual “solid, ordinary” developers who can do good work on many different types of projects are rare and underrated. But they’re not magic unicorns. They’re about as rare as good plumbers, good mechanics or good doctors. You wouldn’t expect to find one every time you hire a professional. But you’d also expect to be able to find one with some time, work and patience. They may already be booked solid, of course.
+____
+
 == [COURS] https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique[Programmation dynamique]
 
 === Lu le 2020-07-28, c'est pas très clair quand le cours a été publié. Fait partie d'un https://www.supinfo.com/cours/2ADS[cours d'algorithmique à Supinfo], présenté par https://www.supinfo.com/fr/News0870864f-e0af-4ba1-b2ff-d488f356ef03.aspx[Laurent GODEFROY], enseignant là-bas.
