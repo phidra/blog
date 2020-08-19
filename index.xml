@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Application pratique du paradoxe des anniversaires</title>
+      <link>https://phidra.github.io/blog/2020-08-08-birthday-problem/</link>
+      <pubDate>Sat, 08 Aug 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-08-08-birthday-problem/</guid>
+      <description>De quoi va-t-on causer : Création d&amp;#8217;une base temporaire Paradoxe des anniversaires Implémentations alternatives Le meilleur code est celui qu&amp;#8217;on n&amp;#8217;écrit pas Pour conclure     Création d&amp;#8217;une base temporaire Lors d&amp;#8217;une revue de code, je suis tombé récemment sur la création d&amp;#8217;une base de données temporaire :
+ db_name = &amp;quot;test_{}&amp;quot;.format(randrange(1000))   Le contexte : un test a besoin d&amp;#8217;une base de données vierge, il créée donc une base temporaire dont le nom est celui de la ligne ci-dessus, puis la supprime après utilisation.</description>
+    </item>
+    
+    <item>
       <title>Concurrence et parallélisme</title>
       <link>https://phidra.github.io/blog/2020-06-09-concurrency-vs-parallelism/</link>
       <pubDate>Tue, 09 Jun 2020 10:00:00 +0100</pubDate>
@@ -98,7 +108,7 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [COURS] Programmation dynamique [VIDEO] Lecture 1: Algorithmic Thinking, Peak Finding [ARTICLE] I&amp;#8217;m not feeling the async pressure [ARTICLE] Backpressure explained — the resisted flow of data through software [ARTICLE] CRC vs hash functions [ARTICLE] How TCP Sockets Work [ARTICLE] The Tail at Scale [ARTICLE] Response Times: The 3 Important Limits [POST] Dismissing Python Garbage Collection at Instagram [GIST] Latency numbers every programmer should know [POST] What every developer should know about TCP [POST] Invariants and Preconditions [VIDEO] Systematic error handling in C++, aussi sur youtube [VIDEO] Understanding the Python GIL, voir aussi le post qui va avec [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19.</description>
+      <description>Liste des liens    Pourquoi cette page [POST] The Urban Legend of the 10X Developer [COURS] Programmation dynamique [VIDEO] Lecture 1: Algorithmic Thinking, Peak Finding [ARTICLE] I&amp;#8217;m not feeling the async pressure [ARTICLE] Backpressure explained — the resisted flow of data through software [ARTICLE] CRC vs hash functions [ARTICLE] How TCP Sockets Work [ARTICLE] The Tail at Scale [ARTICLE] Response Times: The 3 Important Limits [POST] Dismissing Python Garbage Collection at Instagram [GIST] Latency numbers every programmer should know [POST] What every developer should know about TCP [POST] Invariants and Preconditions [VIDEO] Systematic error handling in C++, aussi sur youtube [VIDEO] Understanding the Python GIL, voir aussi le post qui va avec [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19.</description>
     </item>
     
     <item>
