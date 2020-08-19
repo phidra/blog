@@ -1,0 +1,243 @@
+---
+title: "Application pratique du paradoxe des anniversaires"
+date: 2020-08-08T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= Application pratique du paradoxe des anniversaires
+
+toc::[]
+
+== Création d'une base temporaire
+
+Lors d'une revue de code, je suis tombé récemment sur la création d'une base de données temporaire :
+
+[source, python]
+----
+db_name = "test_{}".format(randrange(1000))
+----
+
+Le contexte : un test a besoin d'une base de données vierge, il créée donc une base temporaire dont le nom est celui de la ligne ci-dessus, puis la supprime après utilisation. Le sujet qui nous intéresse aujourd'hui : pour s'assurer sans trop d'effort que des exécutions concurrentes du test ne se marcheront pas dessus, le nom de la base temporaire comporte un suffixe aléatoire : `randrange(1000)`.
+
+Est-ce suffisant ? Stricto sensu, non : si un premier test créée la base `test_42`, un deuxième test a une petite chance de tomber sur le même suffixe `42`. La _petite chance_ en question est faible : une chance sur mille, si le générateur de nombres aléatoires est parfait.
+
+On peut ainsi choisir un seuil à partir duquel on considèrera que les collisions sont tellement peu probables qu'elles peuvent être ignorées. Par exemple, on peut considérer que tant qu'on a moins de `5%` de chances de tomber sur un suffixe déjà pris, ça nous conviendra. Avec `randrange(1000)`, un deuxième test concurrent a une probabilité de collision de `0.1%` ce qui est bien inférieur à notre seuil de `5%`, on confirme donc qu'utiliser `randrange(1000)` est suffisant.
+
++++ <details><summary> +++
+FACULTATIF : sur ce seuil de `5%`
++++ </summary><div> +++
+
+Ce seuil de `5%` peut paraître élevé, surtout si une collision a des conséquences gênantes : le test échoue de façon non-reproductible, et peut-être d'une façon obscure. Considérer comme acceptable d'avoir une chance sur vingt que ça arrive semble douteux, et en pratique, on utiliserait sans doute un seuil plus restrictif. La suite de l'article proposera de meilleures approches, mais pour le moment, ce seuil de `5%` m'arrange bien pour illustrer mon exemple. À titre anecdotique, le contexte est différent, mais ce seuil de 5% est souvent https://fr.wikipedia.org/wiki/Valeur_p#Approche_classique[retenu en statistique], notamment en médecine (même si ça https://www.tandfonline.com/doi/full/10.1080/00031305.2016.1154108[suscite des discussions]). Par exemple, voici un extrait d'un des premiers résultats obtenus en recherchant `médecine p-value` sur Google :
+
+[quote, 'https://www.revmed.ch/RMS/2015/RMS-N-459/Statistiquement-significatif-benefique-pour-le-patient[Statistiquement significatif : bénéfique pour le patient ?]']
+____
+La valeur «p» est la probabilité de commettre une erreur en affirmant l’existence d’une différence quand en réalité aucune différence n’est présente. Plus elle est petite, moins le hasard est responsable du résultat observé, mais elle n’est jamais nulle car elle correspond à une surface sous une courbe asymptotique. Un résultat est usuellement considéré comme statistiquement significatif si la valeur «p» est strictement inférieure à 5% (p < 0,05).
+____
+
++++ </div></details> +++
+
+Si on n'y prend pas garde, on pourrait se dire qu'avec notre seuil de `5%`, avec un suffixe aléatoire choisi entre `0` et `999`, on "s'autorise" une cinquantaine d'exécutions concurrentes du test. Et on aurait tout faux : avec cinquante exécutions concurrentes, la probabilité d'une collision n'est pas de `5%` mais de ... `71%` !
+
+
+== Paradoxe des anniversaires
+
+Cette situation est une application du https://fr.wikipedia.org/wiki/Paradoxe_des_anniversaires[paradoxe des anniversaires], qui n'est pas vraiment un paradoxe, mais plutôt un résultat contre-intuitif. Il tire son nom du problème suivant, formellement identique au nôtre : si on a un groupe de `N` personnes, à partir de quelle valeur de `N` a-t-on une majorité de chances qu'au moins deux personnes partagent le même anniversaire ?
+
+Plutôt que d'estimer la probabilité que deux personnes partagent le même anniversaire (probabilité d'une collision), il est plus facile de commencer par estimer la probabilité que *toutes les personnes* aient des anniversaires *différents*, c'est à dire la probabilité de NE PAS avoir de collision. Pour cela, on va compter pour chacune des `N` personnes du groupe les jours "libres" :
+
+* pour la *première* personne du groupe, il y a `365` jours libres sur les `365` que comptent le calendrier (on pourrait ignorer cette première personne car elle ne modifie pas la probabilité, mais la formule est plus jolie si on la prend en compte)
+* pour la *deuxième* personne du groupe, comme l'un des 365 jours a été "consommé" par la première personne, il ne reste plus que `364` jours libres sur les `365` du calendrier
+* pour la *troisième* personne du groupe, même principe : il ne reste plus que `363` jours libres sur `365`
+* etc.
+* pour la *`N`-ième et dernière* personne du groupe, il ne reste plus que `366-N` jours libres sur `365`
+* (et si `N` est supérieur à `365`, on n'a plus aucune chance d'éviter une collision)
+
+La probabilité que les `N` personnes du groupe aient toutes des anniversaires différents est donc de :
+
+`365/365 +++*+++ 364/365 +++*+++ ... * (366-N)/365`
+
+Soit :
+
+`365+++*+++364+++*+++...*(366-N) / 365^N`
+
+La probabilité d'avoir au moins une collision étant complémentaire de la probabilité de ne pas en avoir, on en déduit que la probabilité qu'au moins deux personnes aient leur anniversaire le même jour dans un groupe de `N` personnes est de :
+
+`1  -  365+++*+++364+++*+++...*(366-N) / 365^N`
+
+On peut alors calculer la réponse recherchée : on aura une majorité de chances que deux personnes aient le même anniversaire à partir de `23` personnes dans le groupe :
+
+[source, python]
+----
+from functools import reduce
+1 - (reduce(lambda x, y: x*y, range(366-23, 366)) / 365**23)
+# 0.5072972343239854
+----
+
+Ce résultat se généralise : lorsqu'on peut tirer aléatoirement parmi `RANGE` valeurs, si on fait `N` tirages, la probabilité d'avoir au moins une collision est :
+
+[source, python]
+----
+RANGE=365
+N = 23
+1 - (reduce(lambda x, y: x*y, range(RANGE+1-N, RANGE+1)) / RANGE**N)
+# 0.5072972343239854
+----
+
+Appliquée à notre création d'une base de données temporaire suffixée par `randrange(1000)`, avec 50 exécutions temporaires, on trouve une probabilité de collision de `71%` :
+
+[source, python]
+----
+RANGE=1000
+N = 50
+1 - (reduce(lambda x, y: x*y, range(RANGE+1-N, RANGE+1)) / RANGE**N)
+# 0.712268656879987
+----
+
+Et le nombre maximal d'exécutions concurrentes autorisées pour rester en dessous de notre seuil de `5%` est tout pile `10` : au delà, on dépasse le seuil.
+
+== Implémentations alternatives
+
+Fort de tous ces beaux calculs, on fait quoi ? Voici quelques implémentations alternatives à ce `randrange(1000)` :
+
+=== Garder le même principe
+
+Si on veut conserver une probabilité de collisions inférieure à `5%` tout en autorisant `50` exécutions concurrentes, on a vu que `randrange(1000)` était trop petit. Mais en augmentant le nombre de suffixes possibles, on va finir par faire baisser suffisamment la probabilité de collisions pour descendre sous notre seuil. En l'occurence, tirer un suffixe au hasard parmi environ `24000` est suffisant.
+
+L'inconvénient de cette approche est que le seuil dépend du contexte : si demain on a besoin de `100` exécutions concurrentes, il ne faudra pas oublier d'adapter cette valeur de `24000`. De plus, la raison pour laquelle on choisit cette constante plutôt qu'une autre peut ne pas apparaître clairement à la lecture du code, ou être lourde à documenter.
+
+=== Utiliser la date
+
+Une possibilité est d'utiliser la date du lancement du test pour nommer la base, par exemple `test_2020-08-08T10:24:31`.
+
+L'inconvénient de cette approche est qu'il est facile de se tirer une balle dans le pied : on entre dans le royaume des problèmes-qui-viennent-avec-la-gestion-du-temps.
+
+Par exemple, la précision du datetime utilisé doit être suffisante pour éviter les collisions. Avec l'exemple deux lignes plus haut, si deux tests s'exécutent dans la même seconde, ils partageront la même base de données. De plus, si la base est créée sur un serveur centralisé, et si les horloges de deux clients ne sont pas synchronisées, ils pourraient créer la même base même si les deux exécutions ne sont pas simultanées. Ou encore si le datetime utilisé est exprimé dans une timezone locale plutôt qu'UTC, deux devs dans des fuseaux horaires différents pourront créer la même base à plusieurs heures d'intervalle.
+
+Évidemment, on peut coupler cette approche avec une composante random, mais ça complexifie l'implémentation, ça fait un peu doublon, et on en revient alors de toutes façons aux soucis liés à la randomisation.
+
+Mais il faut reconnaître que dans des situations simples, où les problèmes mentionnés ci-dessus ne se produiront pas, cette approche présente l'avantage de la simplicité et de la fiabilité (pas d'aléatoire). En outre, elle facilite l'identification d'une base : `test_2020-08-08T10:24:31` véhicule plus d'information que `test_4552`.
+
+=== Utiliser un uuid
+
+Les https://en.wikipedia.org/wiki/Universally_unique_identifier[UUID], ou plutôt les https://tools.ietf.org/html/rfc4122.html#section-4.4[UUID version 4], répondent exactement à notre besoin. Ils permettent d'attribuer un identifiant unique à un objet. Le principe est le même que notre `randrange(24000)`, mais avec une constante très importante. C'est standardisé, et (correctement) implémenté à peu près partout :
+
+----
+# bash :
+uuid -v 4
+
+# python :
+import uuid ; uuid.uuid4()
+
+# cpp :
+#include <boost/uuid/uuid_generators.hpp>
+boost::uuids::uuid u = boost::uuids::random_generator()();
+
+# js :
+npm install uuid4
+const uuid4 = require("uuid4");
+uuid4();
+----
+
+Même si dire qualifier d'unique l'identifiant est un abus de langage (car il n'est unique qu'_avec une forte probabilité_), en pratique on est tranquilles : pour avoir une chance sur deux d'obtenir une collision, il faut générer *1 milliard* d'uuid4 par seconde... pendant 85 ans !
+
+L'un des défauts des uuids, c'est que l'identifiant généré est long est pas très lisible : il est plus difficile de faire la différence entre `test_bbd5fbc0-f321-4b7c-93fb-0ff3bd927117` et `test_9f4cd855-0fab-499f-8920-a04c1a32eb10` qu'entre `test_23565` et `test_19901`. De plus, la génération de l'id peut-être plus longue :
+
+
+[source, bash]
+----
+# uuid4 :
+python3 -m timeit --setup 'import uuid' 'uuid.uuid4()'
+100000 loops, best of 3: 7.35 usec per loop
+
+# randrange(24000) :
+python3 -m timeit --setup 'import random' 'random.randrange(24000)'
+1000000 loops, best of 3: 1.39 usec per loop
+----
+
+Même si ce n'est pas ce que je recommande dans notre cas, ça reste une approche que j'aime bien.
+
+=== Améliorer la façon dont on tire
+
+Idéalement, au lieu de tirer un suffixe parmis tous ceux POSSIBLES, on devrait plutôt tirer un suffixe parmi tous ceux DISPONIBLES, à l'exclusion de ceux qui ont déjà été tirés.
+
+Mais ça n'est pas toujours faisable, et même si c'est faisable, ça peut ne pas être très efficace : dans notre cas, il faudrait pouvoir interroger le serveur de base de données pour connaître les bases existantes, afin d'en choisir une libre.
+
+Même dans ce cas, on a une race condition de type https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use[TOCTOU] : entre le moment où on connaît les suffixes libres, et le moment où on en utlise un, un autre client pourra l'avoir consommé...
+
+=== Tirer de nouveau si nécessaire
+
+À défaut de pouvoir tirer le suffixe de façon idéale dès le début, on peut tirer de façon non-idéale, mais refaire le tirage si on tombe sur un suffixe déjà pris.
+
+Ici aussi, l'approche n'est pas sans inconvénients : dans notre exemple ci-dessus, si jamais on se retrouve dans une situation où 990 clients ont utilisé un suffixe, on n'a plus que 1% de chances de tomber sur un suffixe libre. On se retrouverait alors à devoir refaire le tirage plusieurs fois (100 fois en moyenne) avant de tomber sur un suffixe libre.
+
+Et même en tirant 100 fois, on a encore https://fr.wikipedia.org/wiki/Processus_de_Bernoulli[près de 40% de chances] de n'avoir toujours pas récupéré un suffixe disponible... Sans compter qu'on est confrontés au même TOCTOU que dans le paragraphe précédent.
+
+== Le meilleur code est celui qu'on n'écrit pas
+
+La meilleure alternative à mes yeux est en fait d'éviter d'avoir à gérer soi-même le caractère temporaire de la base de données. Je n'ai pas l'impression qu'il soit possible de créer une *base* temporaire, mais https://www.postgresql.org/docs/12/sql-createtable.html[postgresql permet de créer des *tables* temporaires] :
+
+
+[source, sql]
+----
+CREATE TEMPORARY TABLE test ( ... );
+----
+
+Une telle table temporaire est propre à chaque session (inaccessible depuis une autre session), ce qui correspond exactement à notre besoin et nous garantit une absence de collision. On supprime par la même occasion les problèmes de TOCTOU mentionnés plus haut, et — cerise sur le gâteau — la table temporaire sera détruite une fois la session terminée, nous évitant ainsi de leaker des bases en cas d'exception ou de crash.
+
+Pour illustrer cette approche, voici une deuxième situation très fréquente : la création d'un répertoire temporaire. Plutôt que de faire quelque chose comme :
+
+[source,bash]
+----
+my_temp_dir="/tmp/test_$(uuid -v 4)"
+mkdir $my_temp_dir
+# /tmp/test_45d06639-ff20-4ec8-88bd-228b77f60372
+----
+
+Il vaut mieux utiliser `mktemp`, qui est fait pour ça :
+
+[source,bash]
+----
+my_temp_dir="$(mktemp -d)"
+mkdir $my_temp_dir
+# /tmp/tmp.wy1TxYKZLM
+----
+
+L'exemple ci-dessus est donné pour des scripts shell, mais la plupart des langages proposent un moyen de créer un répertoire temporaire, voire de le supprimer automatiquement : https://docs.python.org/3/library/tempfile.html[exemple en python], https://docs.oracle.com/javase/7/docs/api/java/nio/file/Files.html#createTempDirectory%28java.nio.file.Path,%20java.lang.String,%20java.nio.file.attribute.FileAttribute...%29[exemple en java], ...
+
+Petite astuce bash, c'est cadeau, ça me fait plaisir : même si `mktemp` se contente de *créer* une ressource temporaire, il reste possible de la *supprimer* automatiquement en sortie de script, avec `trap`, cf. `man bash` :
+
+[source,bash]
+----
+# $my_temp_dir n'a même pas besoin d'être définie lorsqu'on mets le trap
+trap 'rm -rf "$my_temp_dir"' EXIT
+
+# ... du code ...
+
+my_temp_dir="$(mktemp -d)"
+
+# ... du code utilisant my_temp_dir ...
+# my_temp_dir sera supprimé lorsque le script terminera, y compris en cas d'exception, ou d'erreur de syntaxe
+----
+
+== Pour conclure
+
+Comme d'habitude, il ne faut pas retenir de ce post les détails des calculs ou les propositions d'implémentations, mais plutôt l'idée générale, qu'on pourrait résumer en deux points :
+
+=== Attention aux conclusions hâtives
+
+Je parle des conclusions hâtives du genre de "_en choisissant au hasard parmi 1000 valeurs possibles, je suis tranquille_".
+
+Les probabilités sont parfois contre-intuitives, et elles dépendent fortement du contexte, notamment du nombre de tirages : une valeur pourra convenir lorsqu'il y a quelques exécutions concurrentes possibles, mais devenir inadaptée lorsqu'il y en a 50 ou 100.
+
+Lorsque c'est possible — comme dans notre exemple — ne pas hésiter à calculer les probabilités exactes pour dimensionner l'ordre de grandeur de ses constantes.
+
+=== Utiliser ce qui existe
+
+Avant d'implémenter soi-même des outils de gestion de ressources temporaires, commencer par regarder si les outils ou langages utilisés n'en proposent pas *déjà*.
+
+En fait, ce conseil s'applique plus généralement : je ne dis pas qu'on ne devrait jamais rien implémenter soi-même (surtout si ça permet d'éviter de créer une nouvelle dépendance), mais on devrait toujours avoir une solide raison de le faire plutôt que d'utiliser ce qui existe déjà.
