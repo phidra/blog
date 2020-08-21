@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Bash et les nested quotes // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.e5d131409cac231aa780bea0095dbf1d95c4563e65c24d2dfe3dd767c289c2de.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Bash et les nested quotes</h1>
+      <div class="post-meta">
+        <div>
+          Aug 19, 2020
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div class="sect1">
+<h2 id="_pourquoi_mettre_des_quotes">Pourquoi mettre des quotes</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Même s&#8217;ils sont bien pratiques car utilisables presque partout et proches du système, dès que j&#8217;ai un besoin complexe, je préfère éviter les scripts bash.</p>
+</div>
+<div class="paragraph">
+<p>L&#8217;une des raisons à cela est que la gestion des chaînes de caractères est bug-prone. Prenons l&#8217;exemple d&#8217;un fichier dans un répertoire, avec les deux noms contenant un espace :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">mkdir <span style="color: #e6db74">&quot;this directory&quot;</span>
+<span style="color: #f8f8f2">myfile</span><span style="color: #f92672">=</span><span style="color: #e6db74">&quot;this directory/that file.txt&quot;</span>
+touch <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span>
+tree
+<span style="color: #75715e"># .</span>
+<span style="color: #75715e"># └── this directory</span>
+<span style="color: #75715e">#     └── that file.txt</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si on oublie de quoter, ce genre de situation peut nous sauter à la figure :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">ko_parent</span><span style="color: #f92672">=</span><span style="color: #66d9ef">$(</span>dirname $myfile<span style="color: #66d9ef">)</span>
+<span style="color: #f8f8f2">echo</span> <span style="color: #e6db74">&quot;WRONG (unquoted) PARENT IS : &#39;</span>$<span style="color: #e6db74">ko_parent&#39;&quot;</span>
+<span style="color: #75715e"># WRONG (unquoted) PARENT IS : &#39;.</span>
+<span style="color: #75715e"># directory</span>
+<span style="color: #75715e"># .&#39;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À force de se manger ce type de soucis, on apprend vite en bash à mettre des quotes partout. En effet, ceci fonctionne comme attendu :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">ok_parent</span><span style="color: #f92672">=</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span><span style="color: #66d9ef">)</span>
+<span style="color: #f8f8f2">echo</span> <span style="color: #e6db74">&quot;CORRECT (quoted) PARENT IS : &#39;</span>$<span style="color: #e6db74">ok_parent&#39;&quot;</span>
+<span style="color: #75715e"># CORRECT (quoted) PARENT IS : &#39;this directory&#39;</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quand_une_paire_de_quotes_ne_suffit_plus">Quand une paire de quotes ne suffit plus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Le problème, c&#8217;est qu&#8217;une paire de quotes ne suffit pas toujours. En poursuivant notre exemple, si on veut itérer sur plusieurs répertoires dont notre répertoire parent, ça pète de nouveau :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span><span style="color: #66d9ef">)</span> /bin
+<span style="color: #66d9ef">do</span>
+    du -sh <span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">$d</span><span style="color: #e6db74">irectory&quot;</span>
+<span style="color: #66d9ef">done</span>
+<span style="color: #75715e"># 494M    /usr/bin/</span>
+<span style="color: #75715e"># 26M     /usr/sbin</span>
+<span style="color: #75715e"># du: impossible d&#39;accéder à &#39;this&#39;: Aucun fichier ou dossier de ce type</span>
+<span style="color: #75715e"># du: impossible d&#39;accéder à &#39;directory&#39;: Aucun fichier ou dossier de ce type</span>
+<span style="color: #75715e"># 14M     /bin</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En effet, <code>$(dirname "$myfile")</code> est remplacé par <code>this directory</code>, qui est vu comme deux items indépendants par la boucle <code>for</code>. Modifier la position des quotes ne fait que déplacer le problème, ce qui n&#8217;est pas surprenant vu le début de ce post :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>dirname $myfile<span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span> /bin
+<span style="color: #66d9ef">do</span>
+    du -sh <span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">$d</span><span style="color: #e6db74">irectory&quot;</span>
+<span style="color: #66d9ef">done</span>
+<span style="color: #75715e"># 494M    /usr/bin/</span>
+<span style="color: #75715e"># 26M     /usr/sbin</span>
+<span style="color: #75715e"># du: impossible d&#39;accéder à &#39;.&#39;$&#39;\n&#39;&#39;directory&#39;$&#39;\n&#39;&#39;.&#39;: Aucun fichier ou dossier de ce type</span>
+<span style="color: #75715e"># 14M     /bin</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En fait, ce qu&#8217;on aimerait, c&#8217;est utiliser <strong>DEUX</strong> paires de quotes, comme ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span> /bin
+                                     <span style="color: #ae81ff">1</span>          <span style="color: #ae81ff">2</span>       <span style="color: #ae81ff">2</span> 1</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ah_ben_tiens_ça_marche">Ah ben tiens, ça marche !</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Aussi surprenant que ça puisse paraître, cette syntaxe bizarre&#8230;&#8203; <a href="https://unix.stackexchange.com/questions/118433/quoting-within-command-substitution-in-bash/118438#118438">fonctionne parfaitement</a> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span> /bin
+<span style="color: #66d9ef">do</span>
+    du -sh <span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">$d</span><span style="color: #e6db74">irectory&quot;</span>
+<span style="color: #66d9ef">done</span>
+<span style="color: #75715e"># 494M    /usr/bin/</span>
+<span style="color: #75715e"># 26M     /usr/sbin</span>
+<span style="color: #75715e"># 4,0K    this directory</span>
+<span style="color: #75715e"># 14M     /bin</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Je dis "bizarre" car je me serais plutôt attendu à ce que les quotes fonctionnent naïvement par paire, et que <code>"$(dirname "$myfile")"</code> soit parsé en 3 tokens :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>$(dirname </code></p>
+</li>
+<li>
+<p><code>$myfile</code> (non-protégé par les quotes)</p>
+</li>
+<li>
+<p><code>)</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Mais pas du tout, les <em>command substitutions</em> créent un nouveau contexte pour les quotes : le contenu de <code>$(&#8230;&#8203;)</code> est en quelque sorte indépendant de ce qui l&#8217;entoure :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>When using the $(command) form, all characters between the parentheses make up the command; none are treated specially.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://manpages.debian.org/buster/bash/bash.1.en.html#Command_Substitution">man bash ; command substitution</a>
+</div>
+</div>
+<div class="paragraph">
+<p>On peut même imbriquer plusieurs sous-commandes (ce qui, au passage, est une raison de préférer la syntaxe <code>$(subcommand)</code> à l&#8217;ancienne syntaxe <code>`subcommand`</code>), ça marche tout pareil :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash"><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>realpath <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>readlink -e <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&quot;</span>$<span style="color: #e6db74">myfile&quot;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span> /bin
+<span style="color: #66d9ef">do</span>
+    du -sh <span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">$d</span><span style="color: #e6db74">irectory&quot;</span>
+<span style="color: #66d9ef">done</span>
+<span style="color: #75715e"># 494M    /usr/bin/</span>
+<span style="color: #75715e"># 26M     /usr/sbin</span>
+<span style="color: #75715e"># 4,0K    /tmp/nested_quote_example.a3C1cH7Y/this directory</span>
+<span style="color: #75715e"># 14M     /bin</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_quelques_infos_en_plus">Quelques infos en plus</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-08-19-nested-quotes-in-bash-code/nestedquotes.sh">ici</a> un script regroupant les exemples ci-dessus, permettant de tester et jouer avec la syntaxe.</p>
+</div>
+<div class="paragraph">
+<p>Détail croustillant : le comportement problématique illustré plus haut lorsqu&#8217;on oublie les quotes n&#8217;existe pas avec zsh, qui semble donc plus robuste out-of-the-box que bash.</p>
+</div>
+<div class="paragraph">
+<p>Un outil intéressant pour détecter les problèmes de guillemets dans les scripts shell est <a href="https://www.shellcheck.net/">shellcheck</a>, un analyseur statique écrit en Haskell. En plus de détecter les risques et les erreurs, il a le bon goût de proposer des corrections :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">shellcheck nestedquotes.sh
+
+In nestedquotes.sh line 25:
+<span style="color: #f8f8f2">ko_parent</span><span style="color: #f92672">=</span><span style="color: #66d9ef">$(</span>dirname $myfile<span style="color: #66d9ef">)</span>
+                    ^-- SC2086: Double quote to prevent globbing and word splitting.
+
+
+In nestedquotes.sh line 45:
+<span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&quot;</span><span style="color: #66d9ef">$(</span>dirname $myfile<span style="color: #66d9ef">)</span><span style="color: #e6db74">&quot;</span> /bin
+                                                ^-- SC2086: Double quote to prevent globbing and word splitting.</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Malgré shellcheck, et même si j&#8217;ai maintenant connaissance de cette possibilité d&#8217;imbriquer les quotes, ce genre de gotcha continue à me faire préférer un langage plus puissant lorsque j&#8217;ai un besoin complexe.</p>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>

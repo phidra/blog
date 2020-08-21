@@ -12,6 +12,17 @@
     
     
     <item>
+      <title>Bash et les nested quotes</title>
+      <link>https://phidra.github.io/blog/2020-08-19-nested-quotes-in-bash/</link>
+      <pubDate>Wed, 19 Aug 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-08-19-nested-quotes-in-bash/</guid>
+      <description>Pourquoi mettre des quotes Même s&amp;#8217;ils sont bien pratiques car utilisables presque partout et proches du système, dès que j&amp;#8217;ai un besoin complexe, je préfère éviter les scripts bash.
+ L&amp;#8217;une des raisons à cela est que la gestion des chaînes de caractères est bug-prone. Prenons l&amp;#8217;exemple d&amp;#8217;un fichier dans un répertoire, avec les deux noms contenant un espace :
+ mkdir &amp;quot;this directory&amp;quot; myfile=&amp;quot;this directory/that file.txt&amp;quot; touch &amp;quot;$myfile&amp;quot; tree # .</description>
+    </item>
+    
+    <item>
       <title>Application pratique du paradoxe des anniversaires</title>
       <link>https://phidra.github.io/blog/2020-08-08-birthday-problem/</link>
       <pubDate>Sat, 08 Aug 2020 10:00:00 +0100</pubDate>
