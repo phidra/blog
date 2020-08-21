@@ -47,7 +47,7 @@ echo "CORRECT (quoted) PARENT IS : '$ok_parent'"
 
 == Quand une paire de quotes ne suffit plus
 
-Le problème, c'est qu'une paire de quote ne suffit pas toujours. En poursuivant notre exemple, si on veut itérer sur plusieurs répertoires dont notre répertoire parent, ça pète de nouveau :
+Le problème, c'est qu'une paire de quotes ne suffit pas toujours. En poursuivant notre exemple, si on veut itérer sur plusieurs répertoires dont notre répertoire parent, ça pète de nouveau :
 
 [source, bash]
 ----
@@ -62,7 +62,7 @@ done
 # 14M     /bin
 ----
 
-En effet, `$(dirname "$myfile")` est remplacé par `this directory`, qui est vu comme deux items par la boucle `for`. Modifier la position des quotes déplace le problème, ce qui n'est pas surprenant, vu le début de ce post :
+En effet, `$(dirname "$myfile")` est remplacé par `this directory`, qui est vu comme deux items indépendants par la boucle `for`. Modifier la position des quotes ne fait que déplacer le problème, ce qui n'est pas surprenant vu le début de ce post :
 
 [source, bash]
 ----
@@ -100,7 +100,7 @@ done
 # 14M     /bin
 ----
 
-Je me serais attendu à ce que les quotes fonctionnent naïvement par paire, et que `"$(dirname "$myfile")"` soit parsé en 3 tokens :
+Je dis "bizarre" car je me serais plutôt attendu à ce que les quotes fonctionnent naïvement par paire, et que `"$(dirname "$myfile")"` soit parsé en 3 tokens :
 
 * `$(dirname `
 * `$myfile` (non-protégé par les quotes)
@@ -113,7 +113,7 @@ ____
 When using the $(command) form, all characters between the parentheses make up the command; none are treated specially.
 ____
 
-On peut même imbriquer plusieurs sous-commandes (ce qui, au passage, est une raison de préférer la syntaxe `$(subcommand)` à la syntaxe `{backtick}subcommand{backtick}`), ça marche tout pareil :
+On peut même imbriquer plusieurs sous-commandes (ce qui, au passage, est une raison de préférer la syntaxe `$(subcommand)` à l'ancienne syntaxe `{backtick}subcommand{backtick}`), ça marche tout pareil :
 
 [source, bash]
 ----
@@ -131,9 +131,9 @@ done
 
 Vous trouverez https://github.com/phidra/blog/tree/master/content/2020-08-19-nested-quotes-in-bash-code/nestedquotes.sh[ici] un script regroupant les exemples ci-dessus, permettant de tester et jouer avec la syntaxe.
 
-Détail croustillant : le comportement problématique illustré plus haut lorsqu'on oublie les quotes n'existe pas avec zsh, qui semble donc plus robuste que bash out-of-the-box.
+Détail croustillant : le comportement problématique illustré plus haut lorsqu'on oublie les quotes n'existe pas avec zsh, qui semble donc plus robuste out-of-the-box que bash.
 
-Un outil intéressant pour détecter les problèmes de guillemets est https://www.shellcheck.net/[shellcheck], un analyseur statique écrit en Haskell. En plus de détecter les risques et les erreurs, il a le bon goût de proposer des corrections :
+Un outil intéressant pour détecter les problèmes de guillemets dans les scripts shell est https://www.shellcheck.net/[shellcheck], un analyseur statique écrit en Haskell. En plus de détecter les risques et les erreurs, il a le bon goût de proposer des corrections :
 
 [source, bash]
 ----
