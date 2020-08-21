@@ -1,0 +1,152 @@
+---
+title: "Bash et les nested quotes"
+date: 2020-08-19T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+= Bash et les nested quotes
+
+== Pourquoi mettre des quotes
+
+Même s'ils sont bien pratiques car utilisables presque partout et proches du système, dès que j'ai un besoin complexe, je préfère éviter les scripts bash.
+
+L'une des raisons à cela est que la gestion des chaînes de caractères est bug-prone. Prenons l'exemple d'un fichier dans un répertoire, avec les deux noms contenant un espace :
+
+[source, bash]
+----
+mkdir "this directory"
+myfile="this directory/that file.txt"
+touch "$myfile"
+tree
+# .
+# └── this directory
+#     └── that file.txt
+----
+
+Si on oublie de quoter, ce genre de situation peut nous sauter à la figure :
+
+[source, bash]
+----
+ko_parent=$(dirname $myfile)
+echo "WRONG (unquoted) PARENT IS : '$ko_parent'"
+# WRONG (unquoted) PARENT IS : '.
+# directory
+# .'
+----
+
+À force de se manger ce type de soucis, on apprend vite en bash à mettre des quotes partout. En effet, ceci fonctionne comme attendu :
+
+[source, bash]
+----
+ok_parent=$(dirname "$myfile")
+echo "CORRECT (quoted) PARENT IS : '$ok_parent'"
+# CORRECT (quoted) PARENT IS : 'this directory'
+----
+
+== Quand une paire de quotes ne suffit plus
+
+Le problème, c'est qu'une paire de quote ne suffit pas toujours. En poursuivant notre exemple, si on veut itérer sur plusieurs répertoires dont notre répertoire parent, ça pète de nouveau :
+
+[source, bash]
+----
+for directory in /usr/bin/ /usr/sbin $(dirname "$myfile") /bin
+do
+    du -sh "$directory"
+done
+# 494M    /usr/bin/
+# 26M     /usr/sbin
+# du: impossible d'accéder à 'this': Aucun fichier ou dossier de ce type
+# du: impossible d'accéder à 'directory': Aucun fichier ou dossier de ce type
+# 14M     /bin
+----
+
+En effet, `$(dirname "$myfile")` est remplacé par `this directory`, qui est vu comme deux items par la boucle `for`. Modifier la position des quotes déplace le problème, ce qui n'est pas surprenant, vu le début de ce post :
+
+[source, bash]
+----
+for directory in /usr/bin/ /usr/sbin "$(dirname $myfile)" /bin
+do
+    du -sh "$directory"
+done
+# 494M    /usr/bin/
+# 26M     /usr/sbin
+# du: impossible d'accéder à '.'$'\n''directory'$'\n''.': Aucun fichier ou dossier de ce type
+# 14M     /bin
+----
+
+En fait, ce qu'on aimerait, c'est utiliser *DEUX* paires de quotes, comme ceci :
+
+[source, bash]
+----
+for directory in /usr/bin/ /usr/sbin "$(dirname "$myfile")" /bin
+                                     1          2       2 1
+----
+
+== Ah ben tiens, ça marche !
+
+Aussi surprenant que ça puisse paraître, cette syntaxe bizarre... https://unix.stackexchange.com/questions/118433/quoting-within-command-substitution-in-bash/118438#118438[fonctionne parfaitement] :
+
+[source, bash]
+----
+for directory in /usr/bin/ /usr/sbin "$(dirname "$myfile")" /bin
+do
+    du -sh "$directory"
+done
+# 494M    /usr/bin/
+# 26M     /usr/sbin
+# 4,0K    this directory
+# 14M     /bin
+----
+
+Je me serais attendu à ce que les quotes fonctionnent naïvement par paire, et que `"$(dirname "$myfile")"` soit parsé en 3 tokens :
+
+* `$(dirname `
+* `$myfile` (non-protégé par les quotes)
+* `)`
+
+Mais pas du tout, les _command substitutions_ créent un nouveau contexte pour les quotes : le contenu de `$(...)` est en quelque sorte indépendant de ce qui l'entoure :
+
+[quote, 'https://manpages.debian.org/buster/bash/bash.1.en.html#Command_Substitution[man bash ; command substitution]']
+____
+When using the $(command) form, all characters between the parentheses make up the command; none are treated specially.
+____
+
+On peut même imbriquer plusieurs sous-commandes (ce qui, au passage, est une raison de préférer la syntaxe `$(subcommand)` à la syntaxe `{backtick}subcommand{backtick}`), ça marche tout pareil :
+
+[source, bash]
+----
+for directory in /usr/bin/ /usr/sbin "$(realpath "$(readlink -e "$(dirname "$myfile")")")" /bin
+do
+    du -sh "$directory"
+done
+# 494M    /usr/bin/
+# 26M     /usr/sbin
+# 4,0K    /tmp/nested_quote_example.a3C1cH7Y/this directory
+# 14M     /bin
+----
+
+== Quelques infos en plus
+
+Vous trouverez les extraits ci-dessus dans un script d'exemple permettant de tester et jouer avec la syntaxe. (TODO : donner le lien vers le code).
+
+Détail croustillant : le comportement problématique illustré plus haut lorsqu'on oublie les quotes n'existe pas avec zsh, qui semble donc plus robuste out-of-the-box.
+
+Un outil intéressant pour détecter les problèmes de guillemets est https://www.shellcheck.net/[shellcheck], un analyseur statique écrit en Haskell. En plus de détecter les risques et les erreurs, il a le bon goût de proposer des corrections :
+
+[source, bash]
+----
+shellcheck nestedquotes.sh
+
+In nestedquotes.sh line 25:
+ko_parent=$(dirname $myfile)
+                    ^-- SC2086: Double quote to prevent globbing and word splitting.
+
+
+In nestedquotes.sh line 45:
+for directory in /usr/bin/ /usr/sbin "$(dirname $myfile)" /bin
+                                                ^-- SC2086: Double quote to prevent globbing and word splitting.
+----
+
+Malgré shellcheck, et même si j'ai maintenant connaissance de cette possibilité d'imbriquer les quotes, ce genre de gotcha continue à me faire préférer un langage plus puissant lorsque j'ai un besoin complexe.
