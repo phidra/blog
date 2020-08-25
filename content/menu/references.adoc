@@ -9,6 +9,8 @@ Work in progress -> liste non-exhaustive.
 
 Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut que je le juge plus intéressant que son voisin du dessous.
 
+== Sources
+
 * http://sametmax.com/[Sam & Max] : on ne les présente plus. Si ? C'est l'une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c'est l'une des références qui m'a donnée envie de blogger.
 * https://sebsauvage.net/links/[Seb Sauvage], un peu de tout, pas mal orienté libre et sécurité. Ça a été remplacé par shaarli (dont il est l'auteur), mais à une époque, il poussait https://sebsauvage.net/rhaa/[des coups de gueule] intéressants.
 * https://www.jesuisundev.com/[Je suis un dev] : des posts assez généraux sur le métier de dev, et des introductions à des concepts qui buzzent
@@ -20,3 +22,16 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://h-deb.clg.qc.ca/[le site de Patrice ROY], une mine d'or où chaque article fait preuve d'une pédagogie hallucinante
 * https://kunigami.blog
 * https://www.youtube.com/channel/UCgkhWgBGRp0sdFy2MHDWfSg[Chaîne youtube d'El Ji] - vulgarisation mathématique
+
+
+== Références
+
+Référence = ressource à laquelle je me réfère régulièrement :
+
+* https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines[C++ Core Guidelines]
+* https://godbolt.org/[Godbolt aka Compiler Explorer]
+* https://cppinsights.io/[C++ insights], même principe que Godbolt, mais pour visualiser ce que "voit" le compilateur
+* https://google.github.io/styleguide/cppguide.html[Google C++ Style Guide]
+* https://nullprogram.com/blog/2020/08/01/[bonnes pratiques pour gérer les options dans une CLI]
+* Et son petit frère : http://www.catb.org/~esr/writings/taoup/html/ch10s05.html[les valeurs "conventionnelles" de certains paramètres]
+
