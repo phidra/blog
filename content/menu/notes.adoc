@@ -44,6 +44,25 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
+
+
+
+== [POST] https://pankajraghav.com/2020/08/16/RVO.html[But I was helping the compiler!]
+
+=== Lu le 2020-08-28, publié le 2020-08-16 sur le https://pankajraghav.com/[blog de Pankaj SARATHY], un dev C++ / python / embarqué (_an electrical power engineer turned software developer_)
+
+* TL;DR : ne pas faire de move explicite quand la NRVO se débrouille très bien toute seule
+* Je note deux analogies que j'aime bien car très "visuelles" :
+** un document papier que détient un collègue, sur lequel je dois travailler :
+*** passage par copie = j'en fais une photocopie, et il garde l'original
+*** (NdM) passage par référence = je le lui emprunte pour travailler, et le lui rend quand j'ai fini
+*** move = quand il a définitivement fini de travailler avec, il me le donne
+** j'ai une bouteille que je veux remplir, et c'est quelqu'un d'autre qui a le robinet :
+*** pas de (N)RVO : avec son robinet, il remplit une bouteille "temporaire", que je transvase plus tard dans ma bouteille
+*** avec (N)RVO : je lui donne ma bouteille, qu'il peut remplir avec son robinet
+*** la bouteille est la zone mémoire destinée à accueillir l'objet
+
+
 == [POST] http://codefol.io/posts/urban-legend-of-the-10x-developer/[The Urban Legend of the 10X Developer]
 
 === Lu le 2020-08-??, sur http://codefol.io/ , blog d'un dev anonyme (surtout ruby)
