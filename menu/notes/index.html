@@ -58,7 +58,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          68 min read
+          69 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -73,6 +73,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></a></li>
 <li><a href="#__post_a_href_http_codefol_io_posts_urban_legend_of_the_10x_developer_the_urban_legend_of_the_10x_developer_a">[POST] <a href="http://codefol.io/posts/urban-legend-of-the-10x-developer/">The Urban Legend of the 10X Developer</a></a></li>
 <li><a href="#__cours_a_href_https_www_supinfo_com_cours_2ads_chapitres_05_programmation_dynamique_programmation_dynamique_a">[COURS] <a href="https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique">Programmation dynamique</a></a></li>
 <li><a href="#__video_a_href_https_ocw_mit_edu_courses_electrical_engineering_and_computer_science_6_006_introduction_to_algorithms_fall_2011_lecture_videos_lecture_1_algorithmic_thinking_peak_finding_lecture_1_algorithmic_thinking_peak_finding_a">[VIDEO] <a href="https://ocw.mit.edu/courses/electrical-engineering-and-computer-science/6-006-introduction-to-algorithms-fall-2011/lecture-videos/lecture-1-algorithmic-thinking-peak-finding/">Lecture 1: Algorithmic Thinking, Peak Finding</a></a></li>
@@ -165,6 +166,60 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>TL;DR : ne pas faire de move explicite quand la NRVO se débrouille très bien toute seule</p>
+</li>
+<li>
+<p>Je note deux analogies que j&#8217;aime bien car très "visuelles" :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>un document papier que détient un collègue, sur lequel je dois travailler :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>passage par copie = j&#8217;en fais une photocopie, et il garde l&#8217;original</p>
+</li>
+<li>
+<p>(NdM) passage par référence = je le lui emprunte pour travailler, et le lui rend quand j&#8217;ai fini</p>
+</li>
+<li>
+<p>move = quand il a définitivement fini de travailler avec, il me le donne</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>j&#8217;ai une bouteille que je veux remplir, et c&#8217;est quelqu&#8217;un d&#8217;autre qui a le robinet :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>pas de (N)RVO : avec son robinet, il remplit une bouteille "temporaire", que je transvase plus tard dans ma bouteille</p>
+</li>
+<li>
+<p>avec (N)RVO : je lui donne ma bouteille, qu&#8217;il peut remplir avec son robinet</p>
+</li>
+<li>
+<p>la bouteille est la zone mémoire destinée à accueillir l&#8217;objet</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
