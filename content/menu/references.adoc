@@ -22,6 +22,8 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://h-deb.clg.qc.ca/[le site de Patrice ROY], une mine d'or où chaque article fait preuve d'une pédagogie hallucinante
 * https://kunigami.blog
 * https://www.youtube.com/channel/UCgkhWgBGRp0sdFy2MHDWfSg[Chaîne youtube d'El Ji] - vulgarisation mathématique
+* https://snarky.ca/[blog de Brett CANNON], core-dev python
+* https://vorpus.org/blog/[blog de Nathaniel SMITH], auteur de https://trio.readthedocs.io/en/stable/[trio]
 
 
 == Références
