@@ -437,8 +437,8 @@ Un dev vigilant remarquera que ce type de calcul, répété deux fois, où les e
 ----
 int result_even = 0;
 int result_odd = 0;
-auto th = std::thread(compute, std::ref(result_even), amount);
-compute(result_odd, amount);
+auto th = std::thread(heavy_task, std::ref(result_even), amount);
+heavy_task(result_odd, amount);
 th.join();
 ----
 
@@ -466,8 +466,8 @@ Pour éviter ce phénomène, il suffit d'espacer les variables en mémoire, de s
 ----
 int result_even __attribute__ ((aligned (64))) = 0;
 int result_odd __attribute__ ((aligned (64))) = 0;
-auto th = std::thread(compute, std::ref(result_even), amount);
-compute(result_odd, amount);
+auto th = std::thread(heavy_task, std::ref(result_even), amount);
+heavy_task(result_odd, amount);
 th.join();
 ----
 
@@ -485,8 +485,8 @@ time took  = 0:01.56
 ----
 int result_even = 0;
 int result_odd = 0;
-auto th = std::thread(compute, std::ref(result_even), amount);
-compute(result_odd, amount);
+auto th = std::thread(heavy_task, std::ref(result_even), amount);
+heavy_task(result_odd, amount);
 th.join();
 ----
 
