@@ -47,6 +47,42 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+
+== [VIDEO] https://www.youtube.com/watch?v=w0sz5WbS5AM[KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019]
+
+=== Vue le 2020-09-01, publié le 2019-02-15 sur https://cpponsea.uk/[C{plus}{plus} on sea] = conférence C{plus}{plus}
+
+* TL;DR = une revue d'optimisations chouettes des compilos, et quelques guidelines pour tirer parti au mieux de leurs optimisations
+* Compiler awesome at math :
+** 20:05  si j'essaye d'être futé À TORT, le compilo est capable de s'en rendre compte et de me corriger
+** 21:05  il vaut mieux essayer d'être explicite sur l'intention que j'ai, pour que le compilo puisse trouver la meilleure façon de le faire
+** 21:20  trust the compiler to do the right thing, don't try to be clever
+* Compiler awesome at vectorization :
+** 30:20  version lisible de la vectorization effectuée par le compilateur
+** 31:05  le même algo implémenté "correctement" (i.e. de façon idiomatique)
+** 33:10  le compilo N'EST PAS CAPABLE (sur x86-64, en tout cas) de vectoriser la somme des carrés d'un vector de char -> il vaut mieux rester à des ints !
+** 34:25  vu par un processeur, l'addition de flottants n'est pas commutative ou associative ! (alors que l'addition d'entiers l'est). C'est à cause de la précision relative des flottants : la précision d'un flottant dépend de sa valeur (cf. https://fabiensanglard.net/floating_point_visually_explained/)
+* Compiler awesome at control-flow
+* Compiler awesome at architectural tricks :
+** 41:30  clang reconnaît qu'on essaye de compter les bits, et utilise l'instruction dédiée
+** 44:30  idem pour le fait de changer d'endianness
+** 45:00  comparaison futée pour savoir si un caractère appartient à un jeu donné
+* Compilers slightly less awesome at reading minds :
+** 49:20  si on utilise une fonction qui n'est pas visible par le compilo (e.g. pas dans l'unite de compilation), il ne pourra pas optimiser
+** 50:30  on peut tout de même donner de l'info au compilo via `[[gnu::pure]]` pour dire que la fonction est pure -> il retrouve la possibilité d'opitmiser
+** 51:40  en plus de la vtable, les fonctions virtuelles EMPÊCHENT les compilos de savoir quels sont les effets des fonctions, et donc de les optimiser (car une fonction virtuelle peut... faire n'importe quoi)
+** 53:20  wow, inline virtual function ! "au cas où" la fonction appelée est bien la fonction qui m'intéresse, on l'optimise !!
+** 55:00  le compilo peut pas optimiser, car il peut pas vérifier que mTotal n'overlappe pas avec le vector lu. Juste changer le type suffit à aider.
+* 58:00 conclusion :
+** compilers are cleverer than we are + assembly isn't THAT scary
+** trust your compiler
+** don't compromise readability
+** attention à l'aliasing (si le compilo n'est pas capable de prouver l'absence d'aliasing, il ne pourra pas optimiser)
+** attention à la visibilité des fonctions (il faut que le compilo puisse inspecter pour optimiser)
+
+=== Lu le 2020-08-28, publié le 2020-08-16 sur le https://pankajraghav.com/[blog de Pankaj SARATHY], un dev C++ / python / embarqué (_an electrical power engineer turned software developer_)
+
+
 == [POST] https://pankajraghav.com/2020/08/16/RVO.html[But I was helping the compiler!]
 
 === Lu le 2020-08-28, publié le 2020-08-16 sur le https://pankajraghav.com/[blog de Pankaj SARATHY], un dev C++ / python / embarqué (_an electrical power engineer turned software developer_)
