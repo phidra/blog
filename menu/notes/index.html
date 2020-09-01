@@ -58,7 +58,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          69 min read
+          72 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -73,6 +73,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__video_a_href_https_www_youtube_com_watch_v_w0sz5wbs5am_keynote_what_everyone_should_know_about_how_amazing_compilers_are_matt_godbolt_c_on_sea_2019_a">[VIDEO] <a href="https://www.youtube.com/watch?v=w0sz5WbS5AM">KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019</a></a></li>
 <li><a href="#__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></a></li>
 <li><a href="#__post_a_href_http_codefol_io_posts_urban_legend_of_the_10x_developer_the_urban_legend_of_the_10x_developer_a">[POST] <a href="http://codefol.io/posts/urban-legend-of-the-10x-developer/">The Urban Legend of the 10X Developer</a></a></li>
 <li><a href="#__cours_a_href_https_www_supinfo_com_cours_2ads_chapitres_05_programmation_dynamique_programmation_dynamique_a">[COURS] <a href="https://www.supinfo.com/cours/2ADS/chapitres/05-programmation-dynamique">Programmation dynamique</a></a></li>
@@ -171,10 +172,127 @@ Liste des liens
 </div>
 </div>
 <div class="sect1">
+<h2 id="__video_a_href_https_www_youtube_com_watch_v_w0sz5wbs5am_keynote_what_everyone_should_know_about_how_amazing_compilers_are_matt_godbolt_c_on_sea_2019_a">[VIDEO] <a href="https://www.youtube.com/watch?v=w0sz5WbS5AM">KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2020_09_01_publié_le_2019_02_15_sur_a_href_https_cpponsea_uk_c_on_sea_a_conférence_c">Vue le 2020-09-01, publié le 2019-02-15 sur <a href="https://cpponsea.uk/">C&#43;&#43; on sea</a> = conférence C&#43;&#43;</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>TL;DR = une revue d&#8217;optimisations chouettes des compilos, et quelques guidelines pour tirer parti au mieux de leurs optimisations</p>
+</li>
+<li>
+<p>Compiler awesome at math :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>20:05  si j&#8217;essaye d&#8217;être futé À TORT, le compilo est capable de s&#8217;en rendre compte et de me corriger</p>
+</li>
+<li>
+<p>21:05  il vaut mieux essayer d&#8217;être explicite sur l&#8217;intention que j&#8217;ai, pour que le compilo puisse trouver la meilleure façon de le faire</p>
+</li>
+<li>
+<p>21:20  trust the compiler to do the right thing, don&#8217;t try to be clever</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Compiler awesome at vectorization :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>30:20  version lisible de la vectorization effectuée par le compilateur</p>
+</li>
+<li>
+<p>31:05  le même algo implémenté "correctement" (i.e. de façon idiomatique)</p>
+</li>
+<li>
+<p>33:10  le compilo N&#8217;EST PAS CAPABLE (sur x86-64, en tout cas) de vectoriser la somme des carrés d&#8217;un vector de char &#8594; il vaut mieux rester à des ints !</p>
+</li>
+<li>
+<p>34:25  vu par un processeur, l&#8217;addition de flottants n&#8217;est pas commutative ou associative ! (alors que l&#8217;addition d&#8217;entiers l&#8217;est). C&#8217;est à cause de la précision relative des flottants : la précision d&#8217;un flottant dépend de sa valeur (cf. <a href="https://fabiensanglard.net/floating_point_visually_explained/" class="bare">https://fabiensanglard.net/floating_point_visually_explained/</a>)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Compiler awesome at control-flow</p>
+</li>
+<li>
+<p>Compiler awesome at architectural tricks :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>41:30  clang reconnaît qu&#8217;on essaye de compter les bits, et utilise l&#8217;instruction dédiée</p>
+</li>
+<li>
+<p>44:30  idem pour le fait de changer d&#8217;endianness</p>
+</li>
+<li>
+<p>45:00  comparaison futée pour savoir si un caractère appartient à un jeu donné</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Compilers slightly less awesome at reading minds :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>49:20  si on utilise une fonction qui n&#8217;est pas visible par le compilo (e.g. pas dans l&#8217;unite de compilation), il ne pourra pas optimiser</p>
+</li>
+<li>
+<p>50:30  on peut tout de même donner de l&#8217;info au compilo via <code><a id="gnu::pure"></a></code> pour dire que la fonction est pure &#8594; il retrouve la possibilité d&#8217;opitmiser</p>
+</li>
+<li>
+<p>51:40  en plus de la vtable, les fonctions virtuelles EMPÊCHENT les compilos de savoir quels sont les effets des fonctions, et donc de les optimiser (car une fonction virtuelle peut&#8230;&#8203; faire n&#8217;importe quoi)</p>
+</li>
+<li>
+<p>53:20  wow, inline virtual function ! "au cas où" la fonction appelée est bien la fonction qui m&#8217;intéresse, on l&#8217;optimise !!</p>
+</li>
+<li>
+<p>55:00  le compilo peut pas optimiser, car il peut pas vérifier que mTotal n&#8217;overlappe pas avec le vector lu. Juste changer le type suffit à aider.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>58:00 conclusion :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>compilers are cleverer than we are + assembly isn&#8217;t THAT scary</p>
+</li>
+<li>
+<p>trust your compiler</p>
+</li>
+<li>
+<p>don&#8217;t compromise readability</p>
+</li>
+<li>
+<p>attention à l&#8217;aliasing (si le compilo n&#8217;est pas capable de prouver l&#8217;absence d&#8217;aliasing, il ne pourra pas optimiser)</p>
+</li>
+<li>
+<p>attention à la visibilité des fonctions (il faut que le compilo puisse inspecter pour optimiser)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
+
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
+<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em_2">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
 <div class="ulist">
 <ul>
 <li>
