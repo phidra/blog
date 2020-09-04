@@ -24,7 +24,7 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://www.youtube.com/channel/UCgkhWgBGRp0sdFy2MHDWfSg[Chaîne youtube d'El Ji] - vulgarisation mathématique
 * https://snarky.ca/[blog de Brett CANNON], core-dev python
 * https://vorpus.org/blog/[blog de Nathaniel SMITH], auteur de https://trio.readthedocs.io/en/stable/[trio]
-
+* https://cor3ntin.github.io[blog de Corentin JABOT], dev C++ bordelais impliqué dans le comité C++
 
 == Références
 
