@@ -149,4 +149,4 @@ for directory in /usr/bin/ /usr/sbin "$(dirname $myfile)" /bin
                                                 ^-- SC2086: Double quote to prevent globbing and word splitting.
 ----
 
-Malgré shellcheck, et même si j'ai maintenant connaissance de cette possibilité d'imbriquer les quotes, ce genre de gotcha continue à me faire préférer un langage plus puissant lorsque j'ai un besoin complexe.
+Malgré shellcheck, et même si j'ai maintenant connaissance de cette possibilité d'imbriquer les quotes, ce genre de gotcha, https://mywiki.wooledge.org/BashPitfalls[loin d'être le seul], continue à me faire préférer un langage plus puissant lorsque j'ai un besoin complexe.
