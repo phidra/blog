@@ -28,7 +28,7 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 
 == Références
 
-Référence = ressource à laquelle je me réfère régulièrement :
+Référence = ressource à laquelle je peux me référer régulièrement :
 
 * https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines[C++ Core Guidelines]
 * https://godbolt.org/[Godbolt aka Compiler Explorer]
@@ -36,4 +36,4 @@ Référence = ressource à laquelle je me réfère régulièrement :
 * https://google.github.io/styleguide/cppguide.html[Google C++ Style Guide]
 * https://nullprogram.com/blog/2020/08/01/[bonnes pratiques pour gérer les options dans une CLI]
 * Et son petit frère : http://www.catb.org/~esr/writings/taoup/html/ch10s05.html[les valeurs "conventionnelles" de certains paramètres]
-
+* https://github.com/TheAlgorithms/Python (il y a des repos équivalents en java, C, C++, go, javascript)
