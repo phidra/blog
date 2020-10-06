@@ -9,7 +9,7 @@ draft: false
 = Packaging python
 
 
-Comme https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/[beaucoup] http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/[d'autres] https://philpep.org/blog/etat-de-l-art-du-packaging-python[avant] https://www.bernat.tech/pep-517-and-python-packaging/[moi], je blogge sur le packaging python.
+Comme https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/[beaucoup] (https://www.stella.coop/blog/00003-l-enfer-des-paquets-python-le-sac-de-noeuds.html[beaucoup]) http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/[d'autres] https://philpep.org/blog/etat-de-l-art-du-packaging-python[avant] https://www.bernat.tech/pep-517-and-python-packaging/[moi], je blogge sur le packaging python.
 
 Je ne vais pas cependant *PAS* expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d'expliquer grossièrement ce dont on parle quand on s'intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j'ai faite moi.
 
