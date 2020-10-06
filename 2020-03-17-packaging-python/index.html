@@ -58,14 +58,14 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          15 min read
+          16 min read
         </div></div>
     </header>
     <div class="post-content">
       <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Comme <a href="https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/">beaucoup</a> <a href="http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/">d&#8217;autres</a> <a href="https://philpep.org/blog/etat-de-l-art-du-packaging-python">avant</a> <a href="https://www.bernat.tech/pep-517-and-python-packaging/">moi</a>, je blogge sur le packaging python.</p>
+<p>Comme <a href="https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/">beaucoup</a> (<a href="https://www.stella.coop/blog/00003-l-enfer-des-paquets-python-le-sac-de-noeuds.html">beaucoup</a>) <a href="http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/">d&#8217;autres</a> <a href="https://philpep.org/blog/etat-de-l-art-du-packaging-python">avant</a> <a href="https://www.bernat.tech/pep-517-and-python-packaging/">moi</a>, je blogge sur le packaging python.</p>
 </div>
 <div class="paragraph">
 <p>Je ne vais pas cependant <strong>PAS</strong> expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d&#8217;expliquer grossièrement ce dont on parle quand on s&#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&#8217;ai faite moi.</p>
@@ -587,7 +587,7 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <p><a href="https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives">l&#8217;utilisation directe de <code>setup.py</code> pour builder un package</a> (<code>python setup.py sdist/bidst/bidst_wheel</code>), le lien avec <code>pip wheel</code>, et l&#8217;absence de possibilité pour pip de builder des source-distribution (même si <a href="https://github.com/pypa/pip/issues/6041">une issue est ouverte sur le sujet</a>)</p>
 </li>
 <li>
-<p>c&#8217;est pas tout de créer un package, encore faut-il l&#8217;uploader sur PyPI, ce que pip ne sait pas faire : c&#8217;est le boulot de <a href="https://pypi.org/project/twine/">twine</a></p>
+<p>c&#8217;est pas tout de créer un package, encore faut-il l&#8217;uploader sur PyPI, ce que pip ne sait pas faire : c&#8217;est le boulot de <a href="https://pypi.org/project/twine/">twine</a> ou de <a href="https://flit.readthedocs.io/en/latest/">flit</a></p>
 </li>
 <li>
 <p>la différence <strong>à la création d&#8217;un package</strong> entre <a href="https://packaging.python.org/glossary/#term-source-distribution-or-sdist">une source-distribution</a> et une <a href="https://packaging.python.org/glossary/#term-built-distribution">une built-distribution</a> (notamment si le package a <a href="https://docs.python.org/3/extending/extending.html">des extensions C</a>, comme par exemple <a href="https://pypi.org/project/ujson/">ujson</a>)</p>
@@ -664,10 +664,10 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <p><code>wheel</code> = à la fois le <a href="https://packaging.python.org/glossary/#term-wheel">format de built-distribution</a> recommandé, et un <a href="https://pypi.org/project/wheel/">package tierce</a> permettant de les builder et fournissant une CLI pour les manipuler. Défini dans la <a href="https://www.python.org/dev/peps/pep-0427/">PEP 427</a>.</p>
 </li>
 <li>
-<p><code>twine</code> = utilitaire le plus utilisé pour <a href="https://pypi.org/project/twine/">publier son package sur PyPI</a></p>
+<p><code>twine</code> / <code>flit</code> = utilitaires utilisés pour publier son package sur PyPI</p>
 </li>
 <li>
-<p><code>pipenv</code> / <code>poetry</code> = pipenv est <a href="https://pipenv.pypa.io/en/latest/">l&#8217;outil officiellement recommandé</a> faisant le café pour la gestion des packages, car mélangeant le métier de <code>virtualenv</code>, de <code>pip</code>, du <code>requirements.txt</code>, et du <code>package.json</code> <a href="https://docs.npmjs.com/creating-a-package-json-file">de npm</a>. poetry est une <a href="https://python-poetry.org/">alternative à pipenv</a> jouant le même rôle.</p>
+<p><code>pipenv</code> / <code>poetry</code> = pipenv est <a href="https://pipenv.pypa.io/en/latest/">l&#8217;outil officiellement recommandé</a> faisant le café pour la gestion des packages, car mélangeant le métier de <code>virtualenv</code>, de <code>pip</code>, du <code>requirements.txt</code>, et du <code>package.json</code> <a href="https://docs.npmjs.com/creating-a-package-json-file">de npm</a>. poetry est une <a href="https://python-poetry.org/">alternative à pipenv</a> jouant le même rôle, souvent considérée comme mieux foutue.</p>
 </li>
 </ul>
 </div>

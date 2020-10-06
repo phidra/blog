@@ -58,7 +58,7 @@
       <pubDate>Tue, 17 Mar 2020 22:14:41 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-03-17-packaging-python/</guid>
-      <description>Comme beaucoup d&amp;#8217;autres avant moi, je blogge sur le packaging python.
+      <description>Comme beaucoup (beaucoup) d&amp;#8217;autres avant moi, je blogge sur le packaging python.
  Je ne vais pas cependant PAS expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d&amp;#8217;expliquer grossièrement ce dont on parle quand on s&amp;#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&amp;#8217;ai faite moi.
  Ce post n&amp;#8217;est donc pas suffisant pour naviguer comme un poisson dans les eaux du packaging python, l&amp;#8217;objectif est plutôt d&amp;#8217;en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.</description>
     </item>
