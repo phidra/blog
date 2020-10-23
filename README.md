@@ -1,8 +1,6 @@
 # blog
 
-Code[footnote1] source[footnote2] de https://phidra.github.io/blog/
+Code source[^footnote] de https://phidra.github.io/blog/
 
-[footnote1]: ceci est un essai de footnote, qui peut être ignoré.
-
-[footnote2]: [lien](fr.wikipedia.org/)
+[^footnote]: ceci est un essai de footnote, qui peut être ignoré.
 
