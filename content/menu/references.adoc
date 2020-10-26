@@ -38,3 +38,4 @@ Référence = ressource à laquelle je peux me référer régulièrement :
 * Et son petit frère : http://www.catb.org/~esr/writings/taoup/html/ch10s05.html[les valeurs "conventionnelles" de certains paramètres]
 * https://github.com/TheAlgorithms/Python (il y a des repos équivalents en java, C, C++, go, javascript)
 * https://abseil.io/tips/[C++ Tips of the Week] (abseil)
+* https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/[glossaire C++]
