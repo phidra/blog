@@ -1,0 +1,257 @@
+---
+title: "Un usage de std::ref"
+date: 2020-08-31T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= Un usage de std::ref
+
+toc::[]
+
+Je repars aujourd'hui de https://www.nextptr.com/tutorial/ta1441164581/stdref-and-stdreference_wrapper-common-use-cases[ce post] sur `std::reference_wrapper`, pour expliquer l'intérêt de `std::ref` dans les appels de fonctions template.
+
+Dans link:{{< ref "2020-06-09-concurrency-vs-parallelism.adoc" >}}[un précédent post], on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :
+
+
+[source,cpp]
+----
+void heavy_task(int& result, const int amount) { /* ... */ }
+int main(void)
+{
+    int result_even = 0;
+    auto th = std::thread(heavy_task, std::ref(result_even), amount);
+}
+----
+
+On s'intéresse à `std::ref(result_even)` : qu'apporte `std::ref`, et pourquoi est-il nécessaire ici ?
+
+== ce qu'en dit la doc
+
+Commençons par voir ce que https://en.cppreference.com/w/cpp/utility/functional/ref[cppreference] dit de `std::ref` :
+
+
+[quote, 'https://en.cppreference.com/w/cpp/utility/functional/ref[std::ref sur cppreference.com]']
+____
+Function templates ref and cref are helper functions that generate an object of type std::reference_wrapper.
+____
+
+Et effectivement, on voit dans le prototype de `std::ref<T>` qu'elle renvoie un `std::reference_wrapper<T>` :
+
+[source,cpp]
+----
+template< class T >
+std::reference_wrapper<T> ref(T& t) noexcept;
+----
+
+
+Ok, on a juste décalé notre question, voyons ce que dit https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper[cppreference] au sujet des `std::reference_wrapper`. C'est un peu plus verbeux, pour le sujet du jour, on va se limiter à ça :
+
+[quote, 'https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper[std::refeference_wrapper sur cppreference.com]']
+____
+std::reference_wrapper is a class template that wraps a reference in a copyable, assignable object. +
+(...) +
+Instances of std::reference_wrapper (...) are implicitly convertible to T&, so that they can be used as arguments with the functions that take the underlying type by reference. 
+____
+
+== conversion implicite en T&
+
+Considérons cette fonction template, dont l'objectif est d'incrémenter de 100 tout ce qu'on lui donne à manger :
+
+[source,cpp]
+----
+template <typename T>
+void add100(T x) { x += 100; }
+----
+
+Question : peut-on l'utiliser comme ceci ? Que va afficher le code ci-dessous, `142` ?
+
+[source,cpp]
+----
+int a = 42;
+add100(a);
+std::cout << a;
+----
+
+Non bien sûr : l'argument template est `int`, `a` est passé à la fonction `add100` par copie, et c'est bien une *copie locale* de `a` qui vaut `142` : `a` conserve sa valeur initiale.
+
+On pourrait alors être tenté de l'utiliser comme ça. Que va afficher le code ci-dessous, `142` ?
+
+[source,cpp]
+----
+int a = 42;
+int& ref_to_a = a;
+add100(ref_to_a);
+std::cout << a;
+----
+
+Toujours pas ! L'argument-template reste `int`, et `a` conserve ici aussi sa valeur initiale... 
+
+Pour permettre à `add100` de muter `a`, il faut indiquer explicitement que le type template est `int&` : le code suivant mute `a` et affiche bien `142` :
+
+[source,cpp]
+----
+int a = 42;
+int& ref_to_a = a;
+add100<int&>(ref_to_a);
+std::cout << a;
+// finally displays 142
+----
+
+Ce comportement peut paraître surprenant au premier abord, mais https://en.cppreference.com/w/cpp/language/template_argument_deduction[c'est ainsi que fonctionne la déduction de type pour les fonctions template] : une référence vers une variable de type `T` est toujours déduite comme `T`, et non comme `T&`. Un exemple simple pour résumer :
+
+[source,cpp]
+----
+template <typename T> void pouet(T)    {}
+template <>           void pouet(int)  { std::cout << "int"; }
+template <>           void pouet(int&) { std::cout << "int&"; }
+int main(void)
+{
+    int x = 42;
+    int& x_ref = x;
+
+    pouet(x);            // int
+    pouet(x_ref);        // int  !
+    pouet<int&>(x_ref);  // int&
+}
+----
+
+== et std::ref dans tout ça ?
+
+Il se trouve que laisser le compilateur faire la déduction de type est pratique : les types en C++ peuvent vite devenir imbittables, ça peut être galère (voire même impossible, cf. plus bas) de préciser explicitement les types à chaque appel de fonction template :
+
+[source,cpp]
+----
+// argh
+do_something_clever<std::map<std::string, std::pair<unsigned int, std::vector<std::thread> > > & >(thread_groups);
+// le template-type est passé explicitement ...               ... juste pour pouvoir mettre ça ^
+----
+
+Alors certes, on a toujours les typedef/using, mais ce qu'on aimerait avoir, c'est un moyen de "forcer" la déduction de type à `T&`... et à la surprise de personne au vu du titre du post, c'est justement ce que permet `std::ref`. Ceci est tout de même plus lisible :
+
+[source,cpp]
+----
+do_something_clever(std::ref(thread_groups));
+----
+
+Pour revenir à notre exemple haut :
+
+[source,cpp]
+----
+int a = 42;
+add100(std::ref(a));
+std::cout << a;
+// ok, also displays 142
+----
+
+Dans code ci-dessus, `add100` mute bien `a`, et on affiche correctement `142`.
+
+
+== exemple 1 : std::bind
+
+Un exemple classique où `std::ref` est utile : pour passer un argument à `std::bind`, qui sert à obtenir un foncteur en "figeant" certains arguments d'une fonction de base un peu trop configurable.
+
+Supposons qu'on ait un container de gros objets, et qu'on souhaite supprimer avec https://en.cppreference.com/w/cpp/algorithm/remove[std::remove_if] ceux qui sont trop proches (disons à 20% près) d'une valeur pivot. On souhaite réutiliser une fonction `is_approx_equal` permettant de comparer deux `BigObject`, à un facteur de tolérance près :
+
+[source,cpp]
+----
+struct BigObject { /*...*/ };
+bool is_approx_equal(BigObject const& left, BigObject const& right, float tolerance) {/*...*/}
+
+float tolerance = 0.2;
+BigObject pivot = /* creates or get a pivot */;
+vector<BigObject> vec = get_big_objects();
+
+// ce qu'on aimerait faire :
+auto past_the_end = remove_if(
+    vec.begin(),
+    vec.end(),
+    /* is_approx_equal(pivot, element, tolerance) */
+    );
+----
+
+Comme `remove_if` a besoin d'un opérateur unaire, dont le seul paramètre est l'élément du container en cours de parcours, il faut "figer" les deux autres paramètres de `is_approx_equal`, à savoir le pivot et le facteur de tolérance. Même si dans ce cas on utiliserait sans doute plutôt une lambda, `std::bind` est fait pour ça :
+
+[source,cpp]
+----
+auto remove_checker = bind(is_approx_equal, placeholders::_1, pivot, tolerance);
+auto past_the_end = remove_if(vec.begin(), vec.end(), remove_checker);
+----
+
+Problème : avec le code-ci-dessus, `pivot`, coûteux à copier, est passé par copie à chaque appel de `is_approx_equal`. Pour le passer par référence, on utilise `std::ref`, ou plutôt son équivalent pour les références constantes `std::cref` :
+
+[source,cpp]
+----
+auto remove_checker = bind(is_approx_equal, placeholders::_1, std::cref(pivot), tolerance);
+auto past_the_end = remove_if(vec.begin(), vec.end(), remove_checker);
+----
+
+Détail rigolo : il semblerait que le comportement de bind soit implémenté dans la libstdc++ par une https://github.com/gcc-mirror/gcc/blob/160061ac10f9143d9698daac5f7e46b5a615825c/libstdc%2B%2B-v3/include/std/functional#L291[template-specialization] du cas où l'argument est un `reference_wrapper`.
+
+== exemple 2 : std::thread
+
+Une autre situation où on utilise `std::ref`, donné au début de ce post : la création d'un `std::thread` :
+
+[source,cpp]
+----
+void heavy_task(int& result)
+{
+    result = 42;
+}
+
+int main(void)
+{
+    int result = 0;
+    int& ref_to_result = result;
+
+    // auto th = std::thread(heavy_task, result);         // won't compile
+    // auto th = std::thread(heavy_task, ref_to_result);  // won't compile
+    auto th = std::thread(heavy_task, std::ref(result));  // ok
+}
+----
+
+Ici, `heavy_task` attend un `int&`, et `std::ref` permet de le lui passer.
+
+Le cas de `std::thread` est même particulier : la classe `std::thread` n'est *PAS* une classe template, mais https://en.cppreference.com/w/cpp/thread/thread/thread[elle dispose d'un constructeur template] acceptant une fonction et ses arguments :
+
+[source,cpp]
+----
+template< class Function, class... Args >
+explicit thread( Function&& f, Args&&... args );
+----
+
+Or, le C++ https://stackoverflow.com/questions/2786946/c-invoke-explicit-template-constructor/2786963#2786963[ne propose pas] de syntaxe permettant une instanciation explicite d'un constructeur template : on est obligé de se reposer sur la _template argument deduction_... Par conséquent, il n'est pas possible comme pour les exemples avec `add100` ci-dessous d'indiquer explicitement le `int&` comme argument template explicite :
+
+[source,cpp]
+----
+auto th = std::thread<void (*)(int&), int&>(heavy_task, result);  // won't compile
+----
+
+En effet, le code ci-dessus ne compile pas, car il est interprété comme l'instanciation de la *classe template* `std::thread`, alors que `std::thread` n'est PAS une classe template : c'est une classe "normale", dont un membre (son constructeur) est template.
+
+== résumé et autre usage
+
+En résumé, `std::ref` créée un `std::reference_wrapper`, qui permet la déduction template de `T&`. Ça simplifie grandement les appels templates, voire, ça les rend possibles tout court dans le cas de `std::thread`.
+
+Signalons, même si ce n'est pas le focus de ce post, que les reference_wrapper sont utiles dans d'autres situations, notamment pour faire des conteneurs de références.
+
+En effet, `T&` n'est pas https://en.cppreference.com/w/cpp/named_req/Erasable[Erasable], or c'est https://en.cppreference.com/w/cpp/container/vector[un _requirement_ ]du template parameter de `std::vector`. Du coup le code suivant ne compilera pas :
+
+[source,cpp]
+----
+vector<int&> v;  // won't compile
+----
+
+À la place, on peut utiliser un `std::reference_wrapper` :
+
+[source,cpp]
+----
+int a=42, b=19;
+std::vector<std::reference_wrapper<int>> v{a, b};
+v[1] += 1000;
+std::cout << b;  // 1019
+----
