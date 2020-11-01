@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Un usage de std::ref // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.e5d131409cac231aa780bea0095dbf1d95c4563e65c24d2dfe3dd767c289c2de.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Un usage de std::ref</h1>
+      <div class="post-meta">
+        <div>
+          Aug 31, 2020
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          6 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+<div id="toc" class="toc">
+<div id="toctitle" class="title">De quoi va-t-on causer :</div>
+<ul class="sectlevel1">
+<li><a href="#_ce_qu_en_dit_la_doc">ce qu&#8217;en dit la doc</a></li>
+<li><a href="#_conversion_implicite_en_t">conversion implicite en T&amp;</a></li>
+<li><a href="#_et_std_ref_dans_tout_ça">et std::ref dans tout ça ?</a></li>
+<li><a href="#_exemple_1_std_bind">exemple 1 : std::bind</a></li>
+<li><a href="#_exemple_2_std_thread">exemple 2 : std::thread</a></li>
+<li><a href="#_résumé_et_autre_usage">résumé et autre usage</a></li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Je repars aujourd&#8217;hui de <a href="https://www.nextptr.com/tutorial/ta1441164581/stdref-and-stdreference_wrapper-common-use-cases">ce post</a> sur <code>std::reference_wrapper</code>, pour expliquer l&#8217;intérêt de <code>std::ref</code> dans les appels de fonctions template.</p>
+</div>
+<div class="paragraph">
+<p>Dans <a href="https://phidra.github.io/blog/2020-06-09-concurrency-vs-parallelism/">un précédent post</a>, on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount)</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #66d9ef">int</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On s&#8217;intéresse à <code>std::ref(result_even)</code> : qu&#8217;apporte <code>std::ref</code>, et pourquoi est-il nécessaire ici ?</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_ce_qu_en_dit_la_doc">ce qu&#8217;en dit la doc</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Commençons par voir ce que <a href="https://en.cppreference.com/w/cpp/utility/functional/ref">cppreference</a> dit de <code>std::ref</code> :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Function templates ref and cref are helper functions that generate an object of type std::reference_wrapper.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://en.cppreference.com/w/cpp/utility/functional/ref">std::ref sur cppreference.com</a>
+</div>
+</div>
+<div class="paragraph">
+<p>Et effectivement, on voit dans le prototype de <code>std::ref&lt;T&gt;</code> qu&#8217;elle renvoie un <code>std::reference_wrapper&lt;T&gt;</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span><span style="color: #f92672">&lt;</span> <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">T</span> <span style="color: #f92672">&gt;</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">reference_wrapper</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">ref(T</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">t)</span> <span style="color: #66d9ef">noexcept</span><span style="color: #f8f8f2">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ok, on a juste décalé notre question, voyons ce que dit <a href="https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper">cppreference</a> au sujet des <code>std::reference_wrapper</code>. C&#8217;est un peu plus verbeux, pour le sujet du jour, on va se limiter à ça :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>std::reference_wrapper is a class template that wraps a reference in a copyable, assignable object.<br>
+(&#8230;&#8203;)<br>
+Instances of std::reference_wrapper (&#8230;&#8203;) are implicitly convertible to T&amp;, so that they can be used as arguments with the functions that take the underlying type by reference.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; <a href="https://en.cppreference.com/w/cpp/utility/functional/reference_wrapper">std::refeference_wrapper sur cppreference.com</a>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conversion_implicite_en_t">conversion implicite en T&amp;</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Considérons cette fonction template, dont l&#8217;objectif est d&#8217;incrémenter de 100 tout ce qu&#8217;on lui donne à manger :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span>
+<span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">add100(T</span> <span style="color: #f8f8f2">x)</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">100</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Question : peut-on l&#8217;utiliser comme ceci ? Que va afficher le code ci-dessous, <code>142</code> ?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">add100(a);</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">a;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Non bien sûr : l&#8217;argument template est <code>int</code>, <code>a</code> est passé à la fonction <code>add100</code> par copie, et c&#8217;est bien une <strong>copie locale</strong> de <code>a</code> qui vaut <code>142</code> : <code>a</code> conserve sa valeur initiale.</p>
+</div>
+<div class="paragraph">
+<p>On pourrait alors être tenté de l&#8217;utiliser comme ça. Que va afficher le code ci-dessous, <code>142</code> ?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">ref_to_a</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">a;</span>
+<span style="color: #f8f8f2">add100(ref_to_a);</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">a;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Toujours pas ! L&#8217;argument-template reste <code>int</code>, et <code>a</code> conserve ici aussi sa valeur initiale&#8230;&#8203;</p>
+</div>
+<div class="paragraph">
+<p>Pour permettre à <code>add100</code> de muter <code>a</code>, il faut indiquer explicitement que le type template est <code>int&amp;</code> : le code suivant mute <code>a</code> et affiche bien <code>142</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">ref_to_a</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">a;</span>
+<span style="color: #f8f8f2">add100</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;&gt;</span><span style="color: #f8f8f2">(ref_to_a);</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">a;</span>
+<span style="color: #75715e">// finally displays 142</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ce comportement peut paraître surprenant au premier abord, mais <a href="https://en.cppreference.com/w/cpp/language/template_argument_deduction">c&#8217;est ainsi que fonctionne la déduction de type pour les fonctions template</a> : une référence vers une variable de type <code>T</code> est toujours déduite comme <code>T</code>, et non comme <code>T&amp;</code>. Un exemple simple pour résumer :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">pouet(T)</span>    <span style="color: #f8f8f2">{}</span>
+<span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;&gt;</span>           <span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">pouet(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span>  <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;int&quot;</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;&gt;</span>           <span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">pouet(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;int&amp;&quot;</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">main(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">x_ref</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">x;</span>
+
+    <span style="color: #f8f8f2">pouet(x);</span>            <span style="color: #75715e">// int</span>
+    <span style="color: #f8f8f2">pouet(x_ref);</span>        <span style="color: #75715e">// int  !</span>
+    <span style="color: #f8f8f2">pouet</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;&gt;</span><span style="color: #f8f8f2">(x_ref);</span>  <span style="color: #75715e">// int&amp;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_et_std_ref_dans_tout_ça">et std::ref dans tout ça ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il se trouve que laisser le compilateur faire la déduction de type est pratique : les types en C++ peuvent vite devenir imbittables, ça peut être galère (voire même impossible, cf. plus bas) de préciser explicitement les types à chaque appel de fonction template :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// argh</span>
+<span style="color: #f8f8f2">do_something_clever</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">map</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">string,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">pair</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span> <span style="color: #f92672">&amp;</span> <span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(thread_groups);</span>
+<span style="color: #75715e">// le template-type est passé explicitement ...               ... juste pour pouvoir mettre ça ^</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alors certes, on a toujours les typedef/using, mais ce qu&#8217;on aimerait avoir, c&#8217;est un moyen de "forcer" la déduction de type à <code>T&amp;</code>&#8230;&#8203; et à la surprise de personne au vu du titre du post, c&#8217;est justement ce que permet <code>std::ref</code>. Ceci est tout de même plus lisible :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">do_something_clever(std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(thread_groups));</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour revenir à notre exemple haut :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">add100(std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(a));</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">a;</span>
+<span style="color: #75715e">// ok, also displays 142</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans code ci-dessus, <code>add100</code> mute bien <code>a</code>, et on affiche correctement <code>142</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exemple_1_std_bind">exemple 1 : std::bind</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un exemple classique où <code>std::ref</code> est utile : pour passer un argument à <code>std::bind</code>, qui sert à obtenir un foncteur en "figeant" certains arguments d&#8217;une fonction de base un peu trop configurable.</p>
+</div>
+<div class="paragraph">
+<p>Supposons qu&#8217;on ait un container de gros objets, et qu&#8217;on souhaite supprimer avec <a href="https://en.cppreference.com/w/cpp/algorithm/remove">std::remove_if</a> ceux qui sont trop proches (disons à 20% près) d&#8217;une valeur pivot. On souhaite réutiliser une fonction <code>is_approx_equal</code> permettant de comparer deux <code>BigObject</code>, à un facteur de tolérance près :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">BigObject</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/*...*/</span> <span style="color: #f8f8f2">};</span>
+<span style="color: #66d9ef">bool</span> <span style="color: #a6e22e">is_approx_equal</span><span style="color: #f8f8f2">(BigObject</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">left,</span> <span style="color: #f8f8f2">BigObject</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">right,</span> <span style="color: #66d9ef">float</span> <span style="color: #f8f8f2">tolerance)</span> <span style="color: #f8f8f2">{</span><span style="color: #75715e">/*...*/</span><span style="color: #f8f8f2">}</span>
+
+<span style="color: #66d9ef">float</span> <span style="color: #f8f8f2">tolerance</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0.2</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">BigObject</span> <span style="color: #f8f8f2">pivot</span> <span style="color: #f92672">=</span> <span style="color: #75715e">/* creates or get a pivot */</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">BigObject</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">vec</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get_big_objects();</span>
+
+<span style="color: #75715e">// ce qu&#39;on aimerait faire :</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">past_the_end</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">remove_if(</span>
+    <span style="color: #f8f8f2">vec.begin(),</span>
+    <span style="color: #f8f8f2">vec.end(),</span>
+    <span style="color: #75715e">/* is_approx_equal(pivot, element, tolerance) */</span>
+    <span style="color: #f8f8f2">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme <code>remove_if</code> a besoin d&#8217;un opérateur unaire, dont le seul paramètre est l&#8217;élément du container en cours de parcours, il faut "figer" les deux autres paramètres de <code>is_approx_equal</code>, à savoir le pivot et le facteur de tolérance. Même si dans ce cas on utiliserait sans doute plutôt une lambda, <code>std::bind</code> est fait pour ça :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">remove_checker</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">bind(is_approx_equal,</span> <span style="color: #f8f8f2">placeholders</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">_1,</span> <span style="color: #f8f8f2">pivot,</span> <span style="color: #f8f8f2">tolerance);</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">past_the_end</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">remove_if(vec.begin(),</span> <span style="color: #f8f8f2">vec.end(),</span> <span style="color: #f8f8f2">remove_checker);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Problème : avec le code-ci-dessus, <code>pivot</code>, coûteux à copier, est passé par copie à chaque appel de <code>is_approx_equal</code>. Pour le passer par référence, on utilise <code>std::ref</code>, ou plutôt son équivalent pour les références constantes <code>std::cref</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">remove_checker</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">bind(is_approx_equal,</span> <span style="color: #f8f8f2">placeholders</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">_1,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cref(pivot),</span> <span style="color: #f8f8f2">tolerance);</span>
+<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">past_the_end</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">remove_if(vec.begin(),</span> <span style="color: #f8f8f2">vec.end(),</span> <span style="color: #f8f8f2">remove_checker);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Détail rigolo : il semblerait que le comportement de bind soit implémenté dans la libstdc++ par une <a href="https://github.com/gcc-mirror/gcc/blob/160061ac10f9143d9698daac5f7e46b5a615825c/libstdc%2B%2B-v3/include/std/functional#L291">template-specialization</a> du cas où l&#8217;argument est un <code>reference_wrapper</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exemple_2_std_thread">exemple 2 : std::thread</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Une autre situation où on utilise <code>std::ref</code>, donné au début de ce post : la création d&#8217;un <code>std::thread</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">result</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #66d9ef">int</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+    <span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">ref_to_result</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">result;</span>
+
+    <span style="color: #75715e">// auto th = std::thread(heavy_task, result);         // won&#39;t compile</span>
+    <span style="color: #75715e">// auto th = std::thread(heavy_task, ref_to_result);  // won&#39;t compile</span>
+    <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result));</span>  <span style="color: #75715e">// ok</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ici, <code>heavy_task</code> attend un <code>int&amp;</code>, et <code>std::ref</code> permet de le lui passer.</p>
+</div>
+<div class="paragraph">
+<p>Le cas de <code>std::thread</code> est même particulier : la classe <code>std::thread</code> n&#8217;est <strong>PAS</strong> une classe template, mais <a href="https://en.cppreference.com/w/cpp/thread/thread/thread">elle dispose d&#8217;un constructeur template</a> acceptant une fonction et ses arguments :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span><span style="color: #f92672">&lt;</span> <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">Function</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">class...</span> <span style="color: #f8f8f2">Args</span> <span style="color: #f92672">&gt;</span>
+<span style="color: #66d9ef">explicit</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(</span> <span style="color: #f8f8f2">Function</span><span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">f,</span> <span style="color: #f8f8f2">Args</span><span style="color: #f92672">&amp;&amp;</span><span style="color: #f8f8f2">...</span> <span style="color: #f8f8f2">args</span> <span style="color: #f8f8f2">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or, le C++ <a href="https://stackoverflow.com/questions/2786946/c-invoke-explicit-template-constructor/2786963#2786963">ne propose pas</a> de syntaxe permettant une instanciation explicite d&#8217;un constructeur template : on est obligé de se reposer sur la <em>template argument deduction</em>&#8230;&#8203; Par conséquent, il n&#8217;est pas possible comme pour les exemples avec <code>add100</code> ci-dessous d&#8217;indiquer explicitement le <code>int&amp;</code> comme argument template explicite :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">),</span> <span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;&gt;</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">result);</span>  <span style="color: #75715e">// won&#39;t compile</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En effet, le code ci-dessus ne compile pas, car il est interprété comme l&#8217;instanciation de la <strong>classe template</strong> <code>std::thread</code>, alors que <code>std::thread</code> n&#8217;est PAS une classe template : c&#8217;est une classe "normale", dont un membre (son constructeur) est template.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_résumé_et_autre_usage">résumé et autre usage</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En résumé, <code>std::ref</code> créée un <code>std::reference_wrapper</code>, qui permet la déduction template de <code>T&amp;</code>. Ça simplifie grandement les appels templates, voire, ça les rend possibles tout court dans le cas de <code>std::thread</code>.</p>
+</div>
+<div class="paragraph">
+<p>Signalons, même si ce n&#8217;est pas le focus de ce post, que les reference_wrapper sont utiles dans d&#8217;autres situations, notamment pour faire des conteneurs de références.</p>
+</div>
+<div class="paragraph">
+<p>En effet, <code>T&amp;</code> n&#8217;est pas <a href="https://en.cppreference.com/w/cpp/named_req/Erasable">Erasable</a>, or c&#8217;est <a href="https://en.cppreference.com/w/cpp/container/vector">un <em>requirement</em> </a>du template parameter de <code>std::vector</code>. Du coup le code suivant ne compilera pas :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;&gt;</span> <span style="color: #f8f8f2">v;</span>  <span style="color: #75715e">// won&#39;t compile</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À la place, on peut utiliser un <code>std::reference_wrapper</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">a</span><span style="color: #f92672">=</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">b</span><span style="color: #f92672">=</span><span style="color: #ae81ff">19</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">reference_wrapper</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;&gt;</span> <span style="color: #f8f8f2">v{a,</span> <span style="color: #f8f8f2">b};</span>
+<span style="color: #f8f8f2">v[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">1000</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">b;</span>  <span style="color: #75715e">// 1019</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>

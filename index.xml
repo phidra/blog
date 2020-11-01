@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Un usage de std::ref</title>
+      <link>https://phidra.github.io/blog/2020-08-31-std-ref/</link>
+      <pubDate>Mon, 31 Aug 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-08-31-std-ref/</guid>
+      <description>De quoi va-t-on causer : ce qu&amp;#8217;en dit la doc conversion implicite en T&amp;amp; et std::ref dans tout ça ? exemple 1 : std::bind exemple 2 : std::thread résumé et autre usage   Je repars aujourd&amp;#8217;hui de ce post sur std::reference_wrapper, pour expliquer l&amp;#8217;intérêt de std::ref dans les appels de fonctions template.
+ Dans un précédent post, on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :</description>
+    </item>
+    
+    <item>
       <title>Bash et les nested quotes</title>
       <link>https://phidra.github.io/blog/2020-08-19-nested-quotes-in-bash/</link>
       <pubDate>Wed, 19 Aug 2020 10:00:00 +0100</pubDate>
