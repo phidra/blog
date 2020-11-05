@@ -1,0 +1,161 @@
+---
+title: "Où linker ses librairies"
+date: 2020-11-03T10:00:00+01:00
+draft: false
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+= Où linker ses librairies
+
+== Mise en situation
+
+Allez, pour une fois, on attaque cash pistache avec du code :
+
+[source,cpp]
+----
+#include <iostream>
+#include <zlib.h>
+
+int main(void)
+{
+    std::cout << "zlib version = " << zlibVersion() << std::endl;
+    return 0;
+}
+----
+
+On a un `main.cpp` qui utilise une librairie, en l'occurence la https://zlib.net/[zlib] ; la question du jour concerne la commande à utiliser pour le builder. On https://github.com/lviennot/hl-csa-raptor/blob/e855eb19dd1a156c7bc21f23be09e7837bbe24d8/Makefile#L12[trouve parfois] ce type de commande :
+
+[source,bash]
+----
+g++ -lz main.cpp
+----
+
+Sur mon poste, cette commande ne marche pas :
+
+[source,bash]
+----
+g++ -lz main.cpp
+/tmp/ccAT3A7Z.o: In function `main':
+main.cpp:(.text+0xa): undefined reference to `zlibVersion'
+collect2: error: ld returned 1 exit status
+----
+
+Quoi quoi quoi ? `undefined reference to zlibVersion` ?! Pourtant, on passe bien `-lz` ?! Et on peut vérifier que `libz.so` est bien dans le search-path de gcc...
+
+En cherchant un peu, on peut https://stackoverflow.com/a/9741049[se voir suggérer] de déplacer `-lz` en fin de commande. Effectivement, ceci fonctionne :
+
+[source,bash]
+----
+g++ main.cpp -lz
+# succès :-)
+----
+
+Alors, que se passe-t-il ? Et pourquoi diable l'auteur du `Makefile` référencé ci-dessus n'a-t-il pas eu le même problème que moi ?
+
+== Explication
+
+Signalons d'abord que stricto sensu, le code *compile* sans souci, c'est l'exécution du *linker* qui pose problème : la commande `g++ -S main.cpp`, qui s'arrête après la compilation, n'échoue pas.
+
+On peut regarder de plus près la ligne de commande utilisée par g++ pour invoquer le linker. Dans la sortie un poil verbeuse, la ligne qui nous intéresse est l'appel de `collect2`, https://gcc.gnu.org/onlinedocs/gccint/Collect2.html[qui est en fait] l'appel au linker `ld` :
+
+[source]
+----
+g++ -### -lz main.cpp
+[...]
+/usr/lib/gcc/i686-linux-gnu/5/collect2 -plugin /usr/lib/gcc/i686-linux-gnu/5/liblto_plugin.so "-plugin-opt=/usr/lib/gcc/i686-linux-gnu/5/lto-wrapper" "-plugin-opt=-fresolution=/tmp/ccFNBq2t.res" "-plugin-opt=-pass-through=-lgcc_s" "-plugin-opt=-pass-through=-lgcc" "-plugin-opt=-pass-through=-lc" "-plugin-opt=-pass-through=-lgcc_s" "-plugin-opt=-pass-through=-lgcc" "--sysroot=/" --build-id --eh-frame-hdr -m elf_i386 "--hash-style=gnu" --as-needed -dynamic-linker /lib/ld-linux.so.2 -z relro /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crt1.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crti.o /usr/lib/gcc/i686-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/i686-linux-gnu/5 -L/usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu -L/usr/lib/gcc/i686-linux-gnu/5/../../../../lib -L/lib/i386-linux-gnu -L/lib/../lib -L/usr/lib/i386-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/i686-linux-gnu/5/../../.. -lz /tmp/ccHUyW4C.o "-lstdc++" -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/i686-linux-gnu/5/crtend.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crtn.o
+----
+
+Je sais, je sais, c'est pas tip-top, niveau lisibilité ; mais comme je suis sympa, en voici une version condensée :
+
+[source]
+----
+g++ -### -lz main.cpp
+[...]
+/usr/lib/gcc/i686-linux-gnu/5/collect2 [...] --as-needed [...]
+----
+
+Dans cette ligne absconse d'invocation du linker, on trouve donc l'option `--as-needed`. Voyons ce qu'en dit le man de `ld` :
+
+[quote, 'https://linux.die.net/man/1/ld[man ld]']
+____
+--as-needed +
+--no-as-needed +
+Normally the linker will add a DT_NEEDED tag for each dynamic library mentioned on the command line, regardless of whether the library is actually needed or not. --as-needed causes a DT_NEEDED tag to only be emitted for a library that satisfies an undefined symbol reference from a regular object file.
+____
+
+En clair, avec l'option `--as-needed`, un symbole d'une librairie linkée (ici, `libz.so`) ne sera chargé *que* si un fichier objet passé *plus tôt dans la ligne de commande* en a besoin.
+
+Comme l'option `--no-as-needed` inverse ce comportement (les symboles sont chargés quoi qu'il arrive), on a un moyen simple de confirmer que c'est bien `--as-needed` qui est responsable de l'échec sur mon poste :
+
+[source,bash]
+----
+g++ -Wl,--no-as-needed -lz main.cpp
+# succès :-)
+----
+
+Et on comprend maintenant pourquoi le fait de déplacer `-lz` en fin de la ligne marche :
+
+[source,bash]
+----
+g++ main.cpp -lz
+# succès :-)
+----
+
+En effet, dans ce cas, lorsque le linker traite `libz.so`, `main.o` *a déjà été traité* et le linker a donc connaissance d'un symbole `zlibVersion` encore non-résolu, et il sait donc que c'est un symbole nécessaire lorsqu'il trouve enfin sa définition dans `libz.so`.
+
+== L'enfer c'est les autres
+
+Reste une dernière petite question : pourquoi ça marchait chez l'auteur du `Makefile` référencé plus haut ?
+
+On vient de voir que passer `-lz` avant `main.cpp` dans la ligne de commande pouvait fonctionner ou non, en fonction de si l'option `--as-needed` était passée au linker par *gcc*.
+
+Or, selon les cas, le comportement par défaut de gcc (dont j'ai un peu de mal à cerner l'origine), est parfois d'ajouter `--as-needed`, parfois non, ce qu'on peut facilement observer sur ces images docker :
+
+[source,bash]
+----
+cat << EOF > /tmp/main.cpp
+#include <iostream>
+#include <zlib.h>
+
+int main(void)
+{
+    std::cout << "zlib version = " << zlibVersion() << std::endl;
+    return 0;
+}
+EOF
+
+# 1. sur une image récente de gcc, --as-needed n'est pas passé :
+docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c "g++ -### -lz /main.cpp"
+
+# du coup, ceci fonctionne :
+docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c "g++ -lz /main.cpp && ./a.out"
+zlib version = 1.2.11
+
+# 2. sur une image récente d'ubuntu, le paquet g++ passe l'option --as-needed au linker :
+docker run --rm -it -v /tmp/main.cpp:/main.cpp ubuntu:latest /bin/bash -c \
+    "apt update ; apt install -y g++ zlib1g-dev ; g++ -### -lz /main.cpp"
+# on retrouve --as-needed dans la sortie
+----
+
+Il se peut donc tout simplement que l'auteur du `Makefile` ait un gcc configuré pour *ne pas* passer `--as-needed` au linker (d'autant https://stackoverflow.com/a/35922660[qu'il semble] que c'était le comportement de g++ par le passé).
+
+== Conclusion
+
+Au final, nos discussions ne remettent pas en cause la suggestion proposée au début de déplacer `-lz` en fin de ligne :
+
+[source,bash]
+----
+g++ main.cpp -lz
+# succès :-)
+----
+
+En revanche, on comprend maintenant mieux *pourquoi* elle résout notre problème. De plus, on dispose maintenant d'une autre corde à notre arc en cas de besoin :
+
+[source,bash]
+----
+g++ -Wl,--no-as-needed -lz main.cpp
+# succès :-)
+----
+
+Un détail pour finir : dans ce dernier cas, attention, que `-Wl,--no-as-needed` doit être placé *avant* `-lz` pour bien s'y appliquer.
