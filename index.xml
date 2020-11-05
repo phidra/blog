@@ -12,6 +12,16 @@
     
     
     <item>
+      <title>Où linker ses librairies</title>
+      <link>https://phidra.github.io/blog/2020-11-03-linker-options-order/</link>
+      <pubDate>Tue, 03 Nov 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-11-03-linker-options-order/</guid>
+      <description>Mise en situation Allez, pour une fois, on attaque cash pistache avec du code :
+ #include &amp;lt;iostream&amp;gt; #include &amp;lt;zlib.h&amp;gt; int main(void) { std::cout &amp;lt;&amp;lt; &amp;quot;zlib version = &amp;quot; &amp;lt;&amp;lt; zlibVersion() &amp;lt;&amp;lt; std::endl; return 0; }   On a un main.cpp qui utilise une librairie, en l&amp;#8217;occurence la zlib ; la question du jour concerne la commande à utiliser pour le builder. On trouve parfois ce type de commande :</description>
+    </item>
+    
+    <item>
       <title>Un usage de std::ref</title>
       <link>https://phidra.github.io/blog/2020-08-31-std-ref/</link>
       <pubDate>Mon, 31 Aug 2020 10:00:00 +0100</pubDate>
