@@ -309,6 +309,9 @@
 <p>Voyons toutes ces belles notions mises en pratique. On va utiliser l&#8217;implémentation du R-tree par <a href="https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/spatial_indexes/rtree_quickstart.html">boost::geometry</a> pour répondre à la problématique posée en début de post. En plus des extraits dans le présent post, vous trouverez <a href="https://github.com/phidra/blog/tree/master/content/2020-05-01-rtree-code">ici</a> le code complet, ses dépendances, et ce qu&#8217;il faut pour le compiler.</p>
 </div>
 <div class="paragraph">
+<p>Attention à utiliser une version récente de boost : la version 1.58 présente un bug de précision qui le rend inutilisable. Le problème est corrigé au moins à partir de la version 1.64 (et même possiblement avant, car à la lecture des <a href="https://www.boost.org/doc/libs/1_72_0/libs/geometry/doc/html/geometry/release_notes.html">release-notes</a>, je soupçonne un lien avec <a href="https://svn.boost.org/trac10/ticket/9162">ce bug</a>, corrigé dès la 1.61).</p>
+</div>
+<div class="paragraph">
 <p>À partir d&#8217;un extract OSM des rues de Bordeaux, on peut utiliser <a href="https://osmcode.org/libosmium/">libosmium</a> pour le parser, et construire le R-tree à requêter avec les extrémités des rues. Voici une façon d&#8217;insérer un noeud du graphe (assorti de son id de node OSM) dans un R-tree :</p>
 </div>
 <div class="listingblock">
