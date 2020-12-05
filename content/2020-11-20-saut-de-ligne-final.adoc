@@ -1,0 +1,504 @@
+---
+title: "Saut de ligne en fin de fichier"
+date: 2020-11-20T10:00:00+01:00
+draft: false
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= Saut de ligne final en fin de fichier
+
+toc::[]
+
+== Tout commence en parsant du CSV
+
+Récemment, j'ai eu à parser un fichier CSV en C++. C'est souvent une fausse bonne idée de parser soi-même du CSV, car c'est https://sebsauvage.net/wiki/doku.php?id=csv[plus compliqué qu'il n'y paraît], mais là ça s'y prêtait bien.
+
+J'ai écrit quelque chose comme :
+
+[source,cpp]
+----
+#include <sstream>
+#include <vector>
+
+using namespace std;
+
+vector<string> parse(istream& stream)
+{
+    vector<string> tokens;
+    string line;
+    while(getline(stream, line).good())
+    {
+        tokens.push_back(line);
+    }
+    return tokens;
+}
+
+int main(void)
+{
+    istringstream iss("line1\nline2\n");
+    parse(iss);   // {"line1", "line2"}
+}
+----
+
+Et ce code fonctionne correctement... ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n'a pas de saut de ligne final (`\n`), la dernière ligne est ignorée :
+
+[source,cpp]
+----
+istringstream iss("line1\nline2\nline3");
+parse(iss);   // {"line1", "line2"}
+// je m'attendais plutôt à {"line1", "line2", "line3"} !
+----
+
+Alors : un "bon" fichier CSV a-t-il obligatoirement un saut de ligne final ? Dans quelle mesure est-ce "grave" s'il en est dépourvu ?
+
+== Faut-il un saut de ligne final ?
+
+[[back-from-annexe1]]Déjà, ce n'est  <<annexe1,pas toujours simple>> de distinguer un fichier avec et sans saut de ligne final.
+
+Quand on creuse un peu, on constate que la présence d'un saut de ligne final est requise par https://pubs.opengroup.org/onlinepubs/9699919799/[le standard POSIX]. La https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html[troisième section] du standard est consacrée aux définitions des termes utilisés, et on y trouve celles d'un fichier texte, d'une ligne, et d'un saut de ligne :
+
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_403[*Text File*] : A file that contains characters organized into zero or more lines.
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_206[*Line*] : A sequence of zero or more non-<newline> characters plus a terminating <newline> character.
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_243[*Newline Character*] : A character that in the output stream indicates that printing should start at the beginning of the next line. It is the character designated by '\n' in the C language.
+
+Vues ces trois définitions, tout fichier texte non-vide doit obligatoirement se terminer par un `\n`. C'est d'ailleurs confirmé par les définitions des lignes vides, blanches ,et incomplètes :
+
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_145[*Empty Line*] : A line consisting of only a <newline>; see also Blank Line.
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_75[*Blank Line*] : A line consisting solely of zero or more <blank> characters terminated by a <newline>; see also Empty Line.
+* https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_195[*Incomplete Line*] : A sequence of one or more non-<newline> characters at the end of the file.
+
+Le standard est clair : un fichier texte doit obligatoirement se terminer par un `\n`, y compris si c'est une ligne vide (ou _blank_). Une ligne qui ne se terminerait pas par ce `\n` n'est pas une ligne vide : c'est une ligne *incomplète* !
+
+[[back-from-annexe2]]La raison de cette situation est à la fois historique et pratique, j'en touche un mot <<annexe2,en annexe>>.
+
+== Robust or not robust ?
+
+=== Utilisation idiomatique de getline
+
+[[back-from-annexe3]]Pour revenir sur l'exemple initial, le code donné plus haut utilise `getline(...).good()` (<<annexe3,qui me paraît plus clair>>), dans la boucle while :
+
+[source,cpp]
+----
+while(getline(stream, line).good()) { /* process line */ }
+----
+
+Mais la façon http://www.cplusplus.com/doc/tutorial/files/[idiomatique] d'utiliser `getline` est plutôt sans `.good()`, comme ceci :
+
+[source,cpp]
+----
+while(getline(stream, line)) { /* process line */ }
+----
+
+[[back-from-annexe4]]Et effectivement, en suivant la façon idiomatique, le dernier token est correctement parsé, peu importe que le fichier soit ou non pourvu d'un `\n` final. L'explication tient à la gestion des _state flags_ du stream utilisé par getline, j'explique en détail <<annexe4,en fin de post>> pourquoi `getline(...).good()` et `getline(...)` se comportent différement.
+
+Une façon de présenter les choses, c'est de dire que la façon idiomatique d'utiliser `getline` rend le code *robuste* à l'absence de `\n` final, alors qu'un code utilisant `.good()` comme présenté en début de post n'y est *pas robuste*.
+
+=== Exception dans le modèle mental
+
+Utiliser `getline` de façon idiomatique me pose un (petit) problème : le "modèle mental" que je me forge pour comprendre le comportement du parser doit alors forcément inclure une "règle exceptionnelle".
+
+Voici un exemple pour illustrer de quoi je parle :
+
+[source,cpp]
+----
+vector<string> parse(string str)
+{
+    istringstream stream(str);
+    vector<string> tokens;
+    string line;
+    while(getline(stream, line))
+    {
+        tokens.push_back(line);
+    }
+    return tokens;
+}
+
+// 3 tokens non-vides :
+parse("pomme\npêche\npoire") == vector<string>{"pomme", "pêche", "poire"}));  // true
+
+// 3 tokens, dont un vide :
+
+// cas 1 = c'est le premier token qui est vide :
+parse("\npêche\npoire") == vector<string>{"", "pêche", "poire"}));  // true
+
+// cas 2 = c'est le second token qui est vide :
+parse("pomme\n\npoire") == vector<string>{"pomme", "", "poire"}));  // true
+
+// cas 3 = c'est le troisième token qui est vide :
+parse("pomme\npêche\n") == vector<string>{"pomme", "pêche", ""}));  // FALSE !
+----
+
+Dans le code ci-dessus, on parse un texte (ne se terminant *PAS* par `\n`) comportant 3 lignes, c'est à dire 3 tokens. Que se passe-t-il quand l'un des tokens est une string vide `""` ? C'est là que ça devient intéressant :
+
+* si le token vide est ailleurs qu'en dernière position, le parsing produit bien 3 tokens, dont un vide
+* si le token vide est en dernière position, le parsing ne produit que 2 tokens, et ignore le token vide
+
+Du coup, si on voulait décrire le comportement du parser, la phrase qu'on emploierait devrait *obligatoirement* comporter une exception, par exemple :
+
+____
+Le contenu d'un fichier est considéré comme une liste de tokens séparés par des sauts de lignes. Ceci reste valable même si un token est vide, *SAUF SI* ce token vide est situé en dernière position.
+____
+
+Ou alors :
+____
+Le contenu d'un fichier est considéré comme une liste de tokens se terminant tous par un saut de ligne. Le parser ajoute un token additionnel constitué du texte entre le dernier saut de ligne et la fin du fichier, *SAUF SI* ce token additionnel est vide.
+____
+
+Peu importe comment on tourne l'explication : utiliser `getline` de façon idiomatique (et ainsi être robuste aux fichiers sans saut de ligne final) s'accompagne systématiquement d'un comportement (un peu) incohérent.
+
+=== Que faut-il faire ?
+
+Fort de tout ça, j'implémente quoi, au final ?
+
+Même si le puriste en moi préfère un comportement clair ne nécessitant pas de règle exceptionnelle, le parser idiomatique est le meilleur choix, au moins pour la situation dans laquelle j'étais :
+
+* *moins bugprone* : dans ma situation, et même s'il devrait être considéré comme incomplet, je peux être amené à parser un fichier sans saut de ligne final. C'est alors assez facile d'introduire un bug en ne remarquant pas que le parser ignore crassement la fin du fichier.
+* *comportement plus intuitif* : c'est subjectif, mais l'absence de parsing du dernier token (décrit en tête de post) m'a surpris : lorsque le fichier ne se termine pas par un saut de ligne, je trouve le comportement du parser idiomatique plus intuitif.
+* *plus homogène* : j'ai testé quelques parsers standards (https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.py[python], https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.rb[ruby], libreoffice), ils suivent tous le comportement du parser idiomatique. Une autre façon de dire les choses est que le comportement du parser idiomatique surprendra moins _d'utilisateurs_.
+* *plus idiomatique* : c'est la façon usuelle de parser un fichier en C++ avec `getline` : le code du parser idiomatique surprendra moins de _développeurs_.
+
+== Conclusion = ce qu'il faut retenir
+
+1. un fichier texte correctement formatté doit se terminer par un saut de ligne final `\n`. À charge pour le développeur de choisir quoi faire face à un fichier incomplet.
+2. on devrait toujours avoir une bonne raison de déroger aux façons de faire idiomatiques...
+3. ...mais plutôt que de les respecter sans les comprendre, il est toujours intéressant de creuser et de savoir pourquoi elles sont idiomatiques
+4. l'état d'un `std::istream` et les _state flags_ qui vont avec peuvent être un chouïa tricky ; c'est pas la mer à boire non plus si on lit https://en.cppreference.com/w/cpp/io/ios_base/iostate[la doc] attentivement, mais c'est pas intuitif.
+5. en particulier, les deux codes suivants ne sont pas équivalents s'ils traitent un fichier texte sans saut de ligne final :
++
+[source,cpp]
+----
+while(getline(stream, line))        { /* process line */ }
+while(getline(stream, line).good()) { /* process line */ }
+----
+
+== Annexe n°1 = visualiser le saut de ligne final [[annexe1]]
+
+(<<back-from-annexe1,revenir au post>>) 
+
+Savoir si un fichier texte se termine ou non par un saut de ligne n'est pas aussi trivial qu'on pourrait le penser. Prenons les deux fichiers suivants :
+
+[source,bash]
+----
+echo -e -n "pouet"   > /tmp/incomplete
+echo -e -n "pouet\n" > /tmp/complete
+----
+
+=== vim
+
+De façon trompeuse, vim les affichera exactement pareil :-/
+
+Sous vim, pour savoir que le saut de ligne final est manquant, il faut interroger  l'option `endofline` :
+
+[source,bash]
+----
+:set endofline?
+# renvoie "endofline" pour /tmp/complete
+# renvoie "noendofline" pour /tmp/incomplete
+----
+
+Ça n'est pas forcément une mauvaise idée de mettre cette info dans la status-bar d'ailleurs...
+
+=== cat / tail
+
+`cat` et `tail` nous aident un peu plus : ils affichent un caractère spécial `%` colorié différemment lorsque le fichier est incomplet :
+
+[source,bash]
+----
+cat /tmp/complete
+pouet
+
+cat /tmp/incomplete
+pouet%   # notez le '%' final
+----
+
+=== od
+
+`od` est en quelque sorte un visualisateur du contenu brut d'un fichier : 
+
+[quote, 'https://man7.org/linux/man-pages/man1/od.1.html[man od]']
+____
+Write an unambiguous representation, octal bytes by default, of FILE to standard output.
+____
+
+Il permet (si nécessaire, couplé à `tail`) de visualiser la fin du fichier, pour voir s'il se termine par `\n` :
+
+[source,bash]
+----
+od -c /tmp/complete
+# 0000000   p   o   u   e   t  \n
+# 0000006
+
+od -c /tmp/incomplete
+# 0000000   p   o   u   e   t          # notez le \n absent
+# 0000005
+----
+
+=== création
+
+Dans la mesure où un fichier texte sans saut de ligne final est considéré comme incomplet, ça n'est pas surprenant qu'il ne soit pas trivial non plus de créer un tel fichier incomplet.
+
+On a vu plus haut qu'on pouvait utiliser `echo`. vim permet également de modifier le fichier en cours d'édition pour supprimer le `\n` terminal :
+
+[source,bash]
+----
+:set binary
+:set noeol
+:w
+----
+
+Par ailleurs, s'il ne s'agit que de supprimer le saut de ligne final, `hexedit` ou tout autre éditeur hexa fera également l'affaire.
+
+== Annexe n°2 = intérêt des sauts de lignes [[annexe2]] 
+
+(<<back-from-annexe2,revenir au post>>) 
+
+On peut se demander pourquoi une ligne ne se terminant pas par `\n` est considérée comme incomplète ? La raison principale est pratico-pratique : c'est plus simple comme ça.
+
+On va prendre trois exemples pour l'illustrer. Dans ces exemples, on suppose que *les fichiers ne se terminent pas par un saut de ligne*.
+
+=== code C++
+
+Prenons le header C++ suivant. Ici, le dernier caractère du fichier est le `e` de `commentaire` :
+
+.pouet.h
+[source,cpp]
+----
+struct Pouet {...};  // cette ligne se termine par un commentaire
+----
+
+S'il est inclus dans un fichier source :
+
+.pouet.cpp
+[source,cpp]
+----
+#include "pouet.h"
+int process(Pouet p) {...};
+----
+
+Historiquement, la ligne `include` était remplacée par le contenu de `pouet.h`. Or, celui-ci ne comportant pas de `\n` terminal, une fois que le préprocesseur a fait son travail, le fichier sera :
+
+.pouet.cpp (après preprocessing)
+[source,cpp]
+----
+struct Pouet {...};  // cette ligne se termine par un commentaireint process(Pouet p) {...};
+----
+
+Aïe, la définition de la fonction `process` se retrouve commentée !
+
+Bon, en vrai, l'absence de saut de ligne final ne fait ni chaud ni froid aux compilateurs modernes, mais historiquement ça a posé suffisamment de soucis pour que le http://port70.net/~nsz/c/c99/n1256.html#5.1.1.2[standard C requière explicitement] que les fichiers se terminent par un saut de ligne.
+
+=== concaténation de fichiers ou de commandes
+
+La concaténation de 3 fichiers ne comportant qu'une seule ligne ne donne pas trois lignes, mais une seule grande ligne :
+
+[source,bash]
+----
+echo -n -e "Luke is a jedi, brother of Leia" > file1
+echo -n -e "Leia is a princess, sister of Luke" > file2
+echo -n -e "Anakin is... well, it's complicated" > file3
+
+cat file1 file2 file3
+# Luke is a jedi, brother of LeiaLeia is a princess, sister of LukeAnakin is... well, it's complicated% 
+
+cat file1 file2 file3 | grep "^Leia"
+# ... rien n'est renvoyé, puisque la ligne résultant de la concaténation ne commence pas par "Leia"
+----
+
+Côté affichage, l'enchaînement de commande peut produire des résultats surprenants :
+
+[source,bash]
+----
+echo -n -e "Luke\nObi-wan\nYoda" > jedis
+echo -n -e "Anakin\nPalpatine\nDooku" > siths
+tail --lines=1 jedis ; tail --lines=1 siths
+# YodaDooku% 
+----
+
+=== ça rend le diff compliqué
+
+Les outils comparant des fichiers ligne par ligne voient leur métier rendu (un peu plus) compliqué par l'absence de saut de ligne final, puisqu'ils peuvent avoir à indiquer deux types de différences pour une même ligne :
+
+[source,bash]
+----
+echo -n -e "Luke\nAnakin\nYoda" > file1
+echo -n -e "Luke\nAnakin\nYoda\n" > file2
+diff file1 file2
+# 3c3
+# < Yoda
+# \ No newline at end of file
+# ---
+# > Yoda
+----
+
+== Annexe n°3 = pourquoi j'ai voulu utiliser `.good()` [[annexe3]]
+
+(<<back-from-annexe3,revenir au post>>) 
+
+
+Parmi les principes énoncés par le _zen of Python_, j'aime particulièrement le second :
+
+[quote, 'https://www.python.org/dev/peps/pep-0020/[zen of python]']
+____
+
+Explicit is better than implicit.
+____
+
+Je n'aime donc pas beaucoup :
+
+[source,cpp]
+----
+while(getline(stream, line)) { /* ... */ }
+----
+
+Je trouve que l'évaluation booléene du retour de `getline` n'est pas claire : en effet, sans aller consulter https://en.cppreference.com/w/cpp/string/basic_string/getline[la doc de getline], on pense naturellement que `getline` renvoie un booléen indiquant si oui ou non la lecture s'est bien passée.
+
+Comme ça ne coûte pas beaucoup plus cher à écrire, j'avais donc une petite préférence pour :
+
+[source,cpp]
+----
+while(getline(stream, line).good()) { /* ... */ }
+----
+
+Ça n'est toujours pas d'une clarté limpide, mais au moins on voit que `getline` ne renvoit pas un booléen, mais un objet qui dispose d'une fonction-membre `.good()` : le lien avec le comportement réel de `getline` (renvoyer `stream`) est plus facile à faire.
+
+== Annexe n°4 = quelle différence entre `getline(...)` et `getline(...).good()` ? [[annexe4]]
+
+(<<back-from-annexe4,revenir au post>>) 
+
+Expliquer cette différence de comportement nécessite de creuser un peu le fonctionnement des streams et de getline.
+
+=== state flags d'un stream
+
+Les `istream` héritent de https://en.cppreference.com/w/cpp/io/basic_ios[std::basic_ios], qui dispose de trois https://en.cppreference.com/w/cpp/io/ios_base/iostate[state flags] :
+
+* *eofbit* : lorsque `getline` a atteint la fin du stream.
+* *failbit* : lorsque la lecture a échoué.
+* *badbit* : lorsque le stream buffer a rencontré un problème.
+
+https://stdcxx.apache.org/doc/stdlibug/29-1.html#:~:text=Generally%2C%20you%20should%20keep%20in,to%20check%20for%20such%20errors%3F[Cette doc] donne des précisions intéressantes, et notamment :
+
+[quote]
+____
+Generally, you should keep in mind that badbit indicates an error situation that is likely to be unrecoverable, whereas failbit indicates a situation that might allow you to retry the failed operation. The flag eofbit simply indicates the end of the input sequence.
+____
+
+So far so good. La consultation des state flags d'un stream donné peut se faire de différentes façons :
+
+* https://en.cppreference.com/w/cpp/io/basic_ios/rdstate[rdstate] permet de récupérer https://en.cppreference.com/w/cpp/io/ios_base/iostate[une structure] décrivant tous les flags d'un coup
+* le stream lui-même dispose de 4 fonctions membres permettant de consulter l'état : https://en.cppreference.com/w/cpp/io/basic_ios/good[good], https://en.cppreference.com/w/cpp/io/basic_ios/eof[eof], https://en.cppreference.com/w/cpp/io/basic_ios/fail[fail], https://en.cppreference.com/w/cpp/io/basic_ios/bad[bad]
+* le stream surcharge https://en.cppreference.com/w/cpp/io/basic_ios/operator_bool[operator_bool] et https://en.cppreference.com/w/cpp/io/basic_ios/operator![operator!], dont les retours dépendent des trois state flags
+
+La table de vérité mappant les state flags à ces différentes façons de les consulter est rappelée en fin de chacune des pages de docs ci-dessus.
+
+Le problème : certes, si on prend quelque minutes pour lire la doc, le comportement des flags et des accesseurs est très bien documenté, et non-ambigü. Malheureusement, il n'est *pas intuitif* du tout, et viole allègrement le https://en.wikipedia.org/wiki/Principle_of_least_astonishment[principe de moindre surprise] :
+
+* `stream.bad()` n'est *PAS* équivalent à `!stream.good()`
+* `bool(stream)` n'est *PAS* équivalent à `stream.good()`, ni même à `!stream.bad()`, mais à `!stream.fail()`
+* `stream.bad()` et `stream.eof()` ont la même table de vérité que leur flag, mais ça n'est *PAS* le cas de `stream.fail()`
+
+=== que fait getline ?
+
+Le comportement de `getline` est https://en.cppreference.com/w/cpp/string/basic_string/getline[bien documenté] :
+
+* `getline(stream, line)` extrait des caractères de `stream` (et les place dans `line`) et s'arrête lorsqu'il rencontre `\n` ou la fin du stream
+* il sette les différents flags sur `stream` si besoin, et en particulier :
+** il settera `eofbit` s'il a atteint la fin du stream
+** il settera `failbit` s'il n'a placé aucun caractère dans `line` (par exemple parce que le stream était vide)
+* une fois son travail effectué, il retourne une référence sur `stream`
+
+Fort de ces préliminaires, on peut comprendre la différence entre : `while(getline(...).good())` et `while(getline(...))` :
+
+* dans les deux cas, comme `getline` retourne un stream, on consulte l'état du stream que getline a parsé
+* dans le premier cas, la boucle `while` porte sur `stream.good()`, qui n'est vrai que si *aucun* des trois state flags n'est setté
+* dans le second cas, la boucle `while` porte sur `bool(stream)` qui est équivalent à `!stream.fail()`, qui est vrai si `failbit` et `badbit` ne sont pas settés, peu importe l'état de `eofbit`
+
+En résumé, `while(getline(...))` passera dans le corps de la boucle même si `eofbit` est setté, alors que `while(getline(...).good())` sortira de la boucle dès que `eofbit` sera setté.
+
+=== getline pour parser un fichier
+
+Reprenons notre code de parsing non-idiomatique :
+
+[source,cpp]
+----
+vector<string> tokens;
+string line;
+while(getline(stream, line).good())
+{
+    tokens.push_back(line);
+}
+----
+
+==== Cas du fichier avec saut de ligne final
+
+Supposons que le contenu du fichier soit quelque chose comme `token1\ntoken2\n`. Notez que ce fichier est bien pourvu d'un saut de ligne `\n` final.
+
+* L'état initial du stream est : aucun des _state flags_ n'est setté.
+* premier passage par `while` :
+** getline commence lit le stream jusqu'à rencontrer le premier `\n`
+** Il copie la chaîne `token1` dans `line`, puis il renvoie le stream.
+** La lecture a bien réussi → le flag `failbit` n'est pas setté.
+** Le stream n'est pas épuisé → le flag `eofbit` n'est pas setté.
+** Aucun flag n'étant setté, `stream.good()` renvoie `true`, on passe donc dans le corps de la boucle, et on ajoute `token1` aux `tokens`.
+* second passage par `while` :
+** getline lit la suite du stream, et rencontre le second `\n`
+** tout se passe comme pour le premier tour de boucle.
+** Notamment, `getline` ne sette pas encore `eofbit` : comme il s'est arrêté au `\n`, il ne sait pas encore s'il reste ou non des caractères après ce `\n`.
+** on passe donc ici aussi dans le corps de la boucle et on ajoute `token2` aux `tokens`.
+* troisième passage par `while` :
+** getline lit la suite du stream, et cosntate qu'il ne reste plus de caractères à lire
+** il sette donc `eofbit`, et retourne immédiatement
+** de plus, comme il n'a pas placé de caractère dans `line`, il sette également `failbit`
+** `stream.good()` a donc deux bonnes raisons de retourner `false` -> on ne passe pas dans le corps de la boucle
+* le contenu final de `tokens` est `{"token1", "token2"}`
+
+Qu'est-ce qui change si on utilise le code idiomatique `while(getline(stream, line))` au lieu de `while(getline(stream, line).good())` ? *RIEN* : on a vu que le code idiomatique évaluait `!stream.fail()` au lieu de `stream.good()`. Or, pour chacun des 3 passages par `while` décrits ci-dessus, ces deux appels se comportent de façon identique.
+
+TL;DR : pour un fichier correctement pourvu d'un saut de ligne final, `while(getline(...))` et `while(getline(...).good())` sont équivalents.
+
+==== Cas du fichier sans saut de ligne final
+
+Supposons maintenant que le contenu du fichier soit quelque chose comme `token1\ntoken2`. Notez l'absence de saut de ligne `\n` final.
+
+* L'état initial du stream est : aucun des _state flags_ n'est setté.
+* premier passage par `while` :
+** getline commence lit le stream jusqu'à rencontrer le premier `\n`
+** Il copie la chaîne `token1` dans `line`, puis il renvoie le stream.
+** La lecture a bien réussi → le flag `failbit` n'est pas setté.
+** Le stream n'est pas épuisé → le flag `eofbit` n'est pas setté.
+** Aucun flag n'étant setté, `stream.good()` renvoie `true`, on passe donc dans le corps de la boucle, et on ajoute `token1` aux `tokens`.
+* second passage par `while` :
+** getline lit la suite du stream, rencontre les caractères `"token2"` (qu'il place dans `line`), puis rencontre la fin du stream.
+** getline ayant atteint la fin du stream, il sette `eofbit`
+** La lecture a bien réussi (on a placé `token2` dans `line`) → le flag `failbit` n'est pas setté.
+** La fin du stream ayant été atteinte, → getline sette le flag `eofbit`.
+
+À la différence du cas où le fichier est bien formatté, on se retrouve dans le cas où seul `eofbit` est setté. Et c'est là où les deux codes ont des comportements différents :
+
+* Avec `while(getline(stream, line))`, même si `eofbit` est setté, on passe dans le corps de la boucle :
+** `"token2"` est ajouté aux `tokens`
+** ce n'est qu'au tour de boucle suivant que `getline` settera `failbit` (vu qu'il ne reste plus de caractères à placer dans `line`), et qu'on sortira de la boucle.
+* Avec `getline(...).good()`, on sort de la boucle immédiatement :
+** par conséquent, le contenu de `line`, c'est à dire `"token2"` n'est *PAS* ajouté aux `tokens` !
+
+TL;DR : pour un fichier dépourvu de saut de ligne final, `while(getline(...))` et `while(getline(...).good())` se comportent différemment : le second ignorera le dernier token du fichier.
+
+== Annexe n°5 = liens utiles
+
+En creusant le sujet, je suis tombé sur quelques liens intéressants :
+
+* https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/[ce post] sur le parsing de fichiers, assez complet, qui s'intéresse au même sujet, et indique notamment comment gérer les erreurs. Il résume la question en deux règles à suivre :
++
+1. ne pas traiter une ligne parsée avant d'avoir vérifié si l'appel de `getline` s'est bien déroulé (c'est ce que font `while(getline(...))` et `while(getline(...).good())`
+2. si `failbit` ou `badbit` sont définis, considérer que le pasing s'est mal passé. Si `eofbit` est défini, la question se pose de savoir si on considère que ça s'est mal passé (`while(getline(...).good())`) ou pas (`while(getline(...))`).
++
+* https://unix.stackexchange.com/questions/18743/whats-the-point-in-adding-a-new-line-to-the-end-of-a-file[cette question sur stackexchange] a des réponses intéressantes sur le saut de ligne final et les conséquences de son absence :
+** _Utilities that are supposed to operate on text files may not cope well with files that don't end with a newline; historical Unix utilities might ignore the text after the last newline, for example. GNU utilities have a policy of behaving decently with non-text files, and so do most other modern utilities, but you may still encounter odd behavior with files that are missing a final newline_
+** le http://port70.net/~nsz/c/c99/n1256.html#5.1.1.2[standard C] oblige à terminer les fichiers par un saut de ligne : _A source file that is not empty shall end in a new-line character, which shall not be immediately preceded by a backslash character before_
+** _About the warning from C compilers, I guess they insist for a final newline for backward compatibility purposes. Very old compilers might not accept the last line if doesn't end with \n (or other system-dependent end-of-line char sequence)._
+* https://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline[cette autre question stackoverflow] donne quelques infos intéressantes : _There's at least one hard advantage to this guideline when working on a terminal emulator: All Unix tools expect this convention and work with it. For instance, when concatenating files with cat, a file terminated by newline will have a different effect than one without_
+* https://stackoverflow.com/a/729725[encore une réponse stackoverflow] sur le standard C
+* https://stackoverflow.com/questions/16222530/why-do-i-need-vim-in-binary-mode-for-noeol-to-work[une dernière question stackoverflow] pour la route, avec ceci : _The "newline" character or more accurately "end of line" character (<EOL>) means "whatever comes after this point must be considered to be on another line". With this interpretation — <EOL> is a line terminator — the last line of the file is effectively the last one with an <EOL>._
