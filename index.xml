@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Saut de ligne en fin de fichier</title>
+      <link>https://phidra.github.io/blog/2020-11-20-saut-de-ligne-final/</link>
+      <pubDate>Fri, 20 Nov 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-11-20-saut-de-ligne-final/</guid>
+      <description>De quoi va-t-on causer : Tout commence en parsant du CSV Faut-il un saut de ligne final ? Robust or not robust ? Conclusion = ce qu&amp;#8217;il faut retenir Annexe n°1 = visualiser le saut de ligne final Annexe n°2 = intérêt des sauts de lignes Annexe n°3 = pourquoi j&amp;#8217;ai voulu utiliser .good() Annexe n°4 = quelle différence entre getline(&amp;#8230;&amp;#8203;) et getline(&amp;#8230;&amp;#8203;).good() ? Annexe n°5 = liens utiles     Tout commence en parsant du CSV Récemment, j&amp;#8217;ai eu à parser un fichier CSV en C++.</description>
+    </item>
+    
+    <item>
       <title>Où linker ses librairies</title>
       <link>https://phidra.github.io/blog/2020-11-03-linker-options-order/</link>
       <pubDate>Tue, 03 Nov 2020 10:00:00 +0100</pubDate>
