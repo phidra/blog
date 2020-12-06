@@ -7,7 +7,7 @@ draft: false
 
 == Quoi
 
-Je suis Phidra, développeur depuis une douzaine d'années → ce blog contient des posts liés au développement, surtout en C++ (e.g. link:{{< ref "2020-02-15-make_shared.adoc" >}}[utilité de make_shared]) et en python (e.g. link:{{< ref "2020-03-17-packaging-python.adoc" >}}[le packaging python]) qui sont mes langages principaux, mais également des structures de données ou algorithmes (e.g. link:{{< ref "2020-02-28-shuffle.adoc" >}}[l'algorithme de Sattolo]), des outils (e.g. link:{{< ref "2020-02-20-man.adoc" >}}[les sections de man]), voire des sujets liés à la vie de développeur (e.g. link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[le projet Aristote]).
+Je suis Phidra, développeur depuis une douzaine d'années → ce blog contient des posts liés au développement, surtout en C++ (e.g. link:{{< ref "2020-02-15-make_shared.adoc" >}}[utilité de make_shared]) et en python (e.g. link:{{< ref "2020-03-17-packaging-python.adoc" >}}[le packaging python]) qui sont mes langages principaux, mais également des structures de données (e.g. link:{{< ref "2020-05-01-rtree.adoc" >}}[le rtree]) ou algorithmes (e.g. link:{{< ref "2020-02-28-shuffle.adoc" >}}[l'algorithme de Sattolo]), des outils (e.g. link:{{< ref "2020-02-20-man.adoc" >}}[les sections de man]), voire des sujets liés à la vie de développeur (e.g. link:{{< ref "2020-03-11-aristotle-project.adoc" >}}[le projet Aristote]).
 
 == Comment
 
