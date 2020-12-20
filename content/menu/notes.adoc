@@ -46,7 +46,29 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [VIDEO] https://www.youtube.com/watch?v=NH1Tta7purM[CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++”]
 
+=== Vue le 2020-12-??, publiée le 2017-10-08 sur https://cppcon.org/[Cppcon] = The C{plus}{plus}+ Conference
+
+* TL;DR = une revue du mindset à avoir + quelques techniques pour le high-frequency trading
+* https://isocpp.org/blog/tag/sg14[ISO SG14] = the GameDev & low latency ISO C++ working group
+* https://www.investopedia.com/terms/m/marketmaker.asp[Electronic market making] :
++
+[quote]
+____
+
+A market maker (MM) is a firm or individual who actively quotes two-sided markets in a security, providing bids and offers (known as asks) along with the market size of each. +
++
+For instance, a market maker in XYZ stock may provide a quote of $10.00-$10.05, 100x500. This means that they bid (they will buy) 100 shares for $10.00 and also offer (they will sell) 500 shares at $10.05. Other market participants may then buy (lift the offer) from the MM at $10.05 or sell to them (hit the bid) at $10.00. Market makers provide liquidity and depth to markets and profit from the difference in the bid-ask spread. 
+____
++
+* 07:00 avoir une petite stdev est plus important qu'améliorer la médiane
+* 10:00 hyperthreading = plutôt négatif car moins de cache dispo, donc plus de latence
+* 12:00 exemples de modifs de code qui améliorent la latence
+* 20:00 supprimer une branche (branchless)
+* 32:00 `inline` = ne sert qu'à dire "ne râle pas s'il y a plusieurs définitions de cette fonction". Pour réellement inliner, il faut plutôt utiliser les attributs non-standards de gcc/clang
+* 48:00 profiling (=regarder ce que fait le code) est différent de benchmarking (=regarder combien de temps met le code pour s‹exécuter). Une fois qu'on a amélioré le profiling, il faut toujours remesurer le benchmarking pour vérifier qu'on a bien amélioré le temps d'exécution.
+* 50:00 comment benchmarker des systèmes aussi précis qui s'exécutent sur qqs centaines de nanosecondes ? Avec un Switch externe.
 
 == [VIDEO] https://www.youtube.com/watch?v=w0sz5WbS5AM[KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019]
 
