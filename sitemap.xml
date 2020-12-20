@@ -3,6 +3,26 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://phidra.github.io/blog/menu/in2words/</loc>
+    <lastmod>2020-12-20T11:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://phidra.github.io/blog/menu/</loc>
+    <lastmod>2020-12-20T11:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://phidra.github.io/blog/</loc>
+    <lastmod>2020-12-20T11:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://phidra.github.io/blog/2020-12-05-pas-facile-de-rester-concis/</loc>
+    <lastmod>2020-12-05T10:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://phidra.github.io/blog/2020-11-20-saut-de-ligne-final/</loc>
     <lastmod>2020-11-20T10:00:00+01:00</lastmod>
   </url>
@@ -64,16 +84,6 @@
   
   <url>
     <loc>https://phidra.github.io/blog/menu/notes/</loc>
-    <lastmod>2020-01-01T12:00:00+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://phidra.github.io/blog/menu/</loc>
-    <lastmod>2020-01-01T12:00:00+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://phidra.github.io/blog/</loc>
     <lastmod>2020-01-01T12:00:00+01:00</lastmod>
   </url>
   

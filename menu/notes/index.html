@@ -14,7 +14,7 @@
     <meta name="description" content="blog tech C&#43;&#43; python dev" />
     
 
-    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.e5d131409cac231aa780bea0095dbf1d95c4563e65c24d2dfe3dd767c289c2de.css" />
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
 
     
 
@@ -40,6 +40,7 @@
         <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
         <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
         <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
         <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
       </nav>
 
@@ -58,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          72 min read
+          73 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -73,6 +74,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__video_a_href_https_www_youtube_com_watch_v_nh1tta7purm_cppcon_2017_carl_cook_when_a_microsecond_is_an_eternity_high_performance_trading_systems_in_c_a">[VIDEO] <a href="https://www.youtube.com/watch?v=NH1Tta7purM">CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++”</a></a></li>
 <li><a href="#__video_a_href_https_www_youtube_com_watch_v_w0sz5wbs5am_keynote_what_everyone_should_know_about_how_amazing_compilers_are_matt_godbolt_c_on_sea_2019_a">[VIDEO] <a href="https://www.youtube.com/watch?v=w0sz5WbS5AM">KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019</a></a></li>
 <li><a href="#__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></a></li>
 <li><a href="#__post_a_href_http_codefol_io_posts_urban_legend_of_the_10x_developer_the_urban_legend_of_the_10x_developer_a">[POST] <a href="http://codefol.io/posts/urban-legend-of-the-10x-developer/">The Urban Legend of the 10X Developer</a></a></li>
@@ -167,6 +169,59 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__video_a_href_https_www_youtube_com_watch_v_nh1tta7purm_cppcon_2017_carl_cook_when_a_microsecond_is_an_eternity_high_performance_trading_systems_in_c_a">[VIDEO] <a href="https://www.youtube.com/watch?v=NH1Tta7purM">CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++”</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2020_12_publiée_le_2017_10_08_sur_a_href_https_cppcon_org_cppcon_a_the_c_conference">Vue le 2020-12-??, publiée le 2017-10-08 sur <a href="https://cppcon.org/">Cppcon</a> = The C&#43;&#43;+ Conference</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>TL;DR = une revue du mindset à avoir + quelques techniques pour le high-frequency trading</p>
+</li>
+<li>
+<p><a href="https://isocpp.org/blog/tag/sg14">ISO SG14</a> = the GameDev &amp; low latency ISO C++ working group</p>
+</li>
+<li>
+<p><a href="https://www.investopedia.com/terms/m/marketmaker.asp">Electronic market making</a> :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>A market maker (MM) is a firm or individual who actively quotes two-sided markets in a security, providing bids and offers (known as asks) along with the market size of each.<br></p>
+</div>
+<div class="paragraph">
+<p>+
+For instance, a market maker in XYZ stock may provide a quote of $10.00-$10.05, 100x500. This means that they bid (they will buy) 100 shares for $10.00 and also offer (they will sell) 500 shares at $10.05. Other market participants may then buy (lift the offer) from the MM at $10.05 or sell to them (hit the bid) at $10.00. Market makers provide liquidity and depth to markets and profit from the difference in the bid-ask spread.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>07:00 avoir une petite stdev est plus important qu&#8217;améliorer la médiane</p>
+</li>
+<li>
+<p>10:00 hyperthreading = plutôt négatif car moins de cache dispo, donc plus de latence</p>
+</li>
+<li>
+<p>12:00 exemples de modifs de code qui améliorent la latence</p>
+</li>
+<li>
+<p>20:00 supprimer une branche (branchless)</p>
+</li>
+<li>
+<p>32:00 <code>inline</code> = ne sert qu&#8217;à dire "ne râle pas s&#8217;il y a plusieurs définitions de cette fonction". Pour réellement inliner, il faut plutôt utiliser les attributs non-standards de gcc/clang</p>
+</li>
+<li>
+<p>48:00 profiling (=regarder ce que fait le code) est différent de benchmarking (=regarder combien de temps met le code pour s‹exécuter). Une fois qu&#8217;on a amélioré le profiling, il faut toujours remesurer le benchmarking pour vérifier qu&#8217;on a bien amélioré le temps d&#8217;exécution.</p>
+</li>
+<li>
+<p>50:00 comment benchmarker des systèmes aussi précis qui s&#8217;exécutent sur qqs centaines de nanosecondes ? Avec un Switch externe.</p>
+</li>
+</ul>
 </div>
 </div>
 </div>

@@ -6,10 +6,31 @@
     <description>Recent content on Phidra&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-fr</language>
-    <lastBuildDate>Wed, 01 Jan 2020 12:00:00 +0100</lastBuildDate>
+    <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate>
     
 	<atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>En deux mots</title>
+      <link>https://phidra.github.io/blog/menu/in2words/</link>
+      <pubDate>Sun, 20 Dec 2020 11:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/menu/in2words/</guid>
+      <description>L&amp;#8217;objectif de cette page est de &#34;documenter&#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
+ Je mets des guillemets autour de &#34;documenter&#34;, car il s&amp;#8217;agit ici d&amp;#8217;être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
+ D&amp;#8217;autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l&amp;#8217;intérêt pour MOI, vu que c&amp;#8217;est les notions que j&amp;#8217;ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
+    </item>
+    
+    <item>
+      <title>Pas facile de rester concis</title>
+      <link>https://phidra.github.io/blog/2020-12-05-pas-facile-de-rester-concis/</link>
+      <pubDate>Sat, 05 Dec 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-12-05-pas-facile-de-rester-concis/</guid>
+      <description>De quoi va-t-on causer : De l&amp;#8217;idée au post Infos essentielles et infos secondaires Trois lecteurs Stragégies possibles And the winner is&amp;#8230;&amp;#8203;     De l&amp;#8217;idée au post Ça fait environ 10 mois que j&amp;#8217;ai publié le premier post de ce blog. D&amp;#8217;autres ont suivi, tous liés au développement logiciel ; le présent post sera le premier qui parlera d&amp;#8217;autre chose.
+ Même s&amp;#8217;il n&amp;#8217;est pas encore temps de faire un bilan ni de comparer mon expérience à ce que j&amp;#8217;en attendais, je veux réfléchir dès maintenant à ma façon de blogger, et notamment à une question précise, que je formule un peu plus bas.</description>
+    </item>
     
     <item>
       <title>Saut de ligne en fin de fichier</title>
@@ -148,7 +169,7 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [VIDEO] KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019 [POST] But I was helping the compiler! [POST] The Urban Legend of the 10X Developer [COURS] Programmation dynamique [VIDEO] Lecture 1: Algorithmic Thinking, Peak Finding [ARTICLE] I&amp;#8217;m not feeling the async pressure [ARTICLE] Backpressure explained — the resisted flow of data through software [ARTICLE] CRC vs hash functions [ARTICLE] How TCP Sockets Work [ARTICLE] The Tail at Scale [ARTICLE] Response Times: The 3 Important Limits [POST] Dismissing Python Garbage Collection at Instagram [GIST] Latency numbers every programmer should know [POST] What every developer should know about TCP [POST] Invariants and Preconditions [VIDEO] Systematic error handling in C++, aussi sur youtube [VIDEO] Understanding the Python GIL, voir aussi le post qui va avec [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19.</description>
+      <description>Liste des liens    Pourquoi cette page [VIDEO] CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++” [VIDEO] KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019 [POST] But I was helping the compiler! [POST] The Urban Legend of the 10X Developer [COURS] Programmation dynamique [VIDEO] Lecture 1: Algorithmic Thinking, Peak Finding [ARTICLE] I&amp;#8217;m not feeling the async pressure [ARTICLE] Backpressure explained — the resisted flow of data through software [ARTICLE] CRC vs hash functions [ARTICLE] How TCP Sockets Work [ARTICLE] The Tail at Scale [ARTICLE] Response Times: The 3 Important Limits [POST] Dismissing Python Garbage Collection at Instagram [GIST] Latency numbers every programmer should know [POST] What every developer should know about TCP [POST] Invariants and Preconditions [VIDEO] Systematic error handling in C++, aussi sur youtube [VIDEO] Understanding the Python GIL, voir aussi le post qui va avec [POST] A successful deployment model [POST] Systems design for Advanced Beginners [POST] Our journey to type checking 4 million lines of Python [VIDEO] 19.</description>
     </item>
     
     <item>

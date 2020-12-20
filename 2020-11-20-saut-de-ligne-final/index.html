@@ -14,7 +14,7 @@
     <meta name="description" content="blog tech C&#43;&#43; python dev" />
     
 
-    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.e5d131409cac231aa780bea0095dbf1d95c4563e65c24d2dfe3dd767c289c2de.css" />
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
 
     
 
@@ -40,6 +40,7 @@
         <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
         <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
         <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
         <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
       </nav>
 
@@ -58,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          18 min read
+          19 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -717,64 +718,118 @@ diff file1 file2
 <div class="paragraph">
 <p>Supposons que le contenu du fichier soit quelque chose comme <code>token1\ntoken2\n</code>. Notez que ce fichier est bien pourvu d&#8217;un saut de ligne <code>\n</code> final.</p>
 </div>
+<div class="paragraph">
+<p>À l&#8217;exception de la première ligne qui représente l&#8217;état initial (avant le premier appel à <code>getline</code>), chaque ligne représente l&#8217;état juste après le N-ième appel à <code>getline</code>, et juste avant l&#8217;évaluation de la condition par <code>while</code> :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"># call getline</th>
+<th class="tableblock halign-left valign-top"><code>tokens</code></th>
+<th class="tableblock halign-left valign-top"><code>line</code></th>
+<th class="tableblock halign-left valign-top"><code>eofbit</code></th>
+<th class="tableblock halign-left valign-top"><code>failbit</code></th>
+<th class="tableblock halign-left valign-top">action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 (initial)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token1"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1"}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token2"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1", "token2"}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>skip loop</strong></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Explication textuelle :</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>L&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
+<p>Ligne #0 : l&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
 </li>
 <li>
-<p>premier passage par <code>while</code> :</p>
+<p>Ligne #1 : après le premier appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline commence lit le stream jusqu&#8217;à rencontrer le premier <code>\n</code></p>
+<p>getline a lu le stream jusqu&#8217;à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
 </li>
 <li>
-<p>Il copie la chaîne <code>token1</code> dans <code>line</code>, puis il renvoie le stream.</p>
+<p>la lecture ayant réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
 </li>
 <li>
-<p>La lecture a bien réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
+<p>le stream n&#8217;étant pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
 </li>
 <li>
-<p>Le stream n&#8217;est pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
-</li>
-<li>
-<p>Aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on passe donc dans le corps de la boucle, et on ajoute <code>token1</code> aux <code>tokens</code>.</p>
+<p>aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s&#8217;apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>second passage par <code>while</code> :</p>
+<p>Ligne #2 : après le second appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline lit la suite du stream, et rencontre le second <code>\n</code></p>
+<p>getline a lu la suite du stream, et a rencontré le second <code>\n</code></p>
 </li>
 <li>
-<p>tout se passe comme pour le premier tour de boucle.</p>
+<p>tout se passe comme pour le premier tour de boucle, notamment, <code>getline</code> ne sette pas encore <code>eofbit</code> : comme il s&#8217;est arrêté au <code>\n</code>, il ne sait pas encore s&#8217;il reste ou non des caractères après ce <code>\n</code>.</p>
 </li>
 <li>
-<p>Notamment, <code>getline</code> ne sette pas encore <code>eofbit</code> : comme il s&#8217;est arrêté au <code>\n</code>, il ne sait pas encore s&#8217;il reste ou non des caractères après ce <code>\n</code>.</p>
-</li>
-<li>
-<p>on passe donc ici aussi dans le corps de la boucle et on ajoute <code>token2</code> aux <code>tokens</code>.</p>
+<p>on s&#8217;apprête donc ici aussi à passer dans le corps de la boucle (ce qui ajoutera <code>token2</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>troisième passage par <code>while</code> :</p>
+<p>Ligne #3 : après le troisième appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline lit la suite du stream, et cosntate qu&#8217;il ne reste plus de caractères à lire</p>
+<p>getline a lu la suite du stream, et a constaté qu&#8217;il ne reste plus de caractères à lire</p>
 </li>
 <li>
-<p>il sette donc <code>eofbit</code>, et retourne immédiatement</p>
+<p>il a donc setté <code>eofbit</code>, et a retourné immédiatement</p>
 </li>
 <li>
-<p>de plus, comme il n&#8217;a pas placé de caractère dans <code>line</code>, il sette également <code>failbit</code></p>
+<p>de plus, comme il n&#8217;a pas placé de caractère dans <code>line</code>, il a également setté <code>failbit</code></p>
 </li>
 <li>
 <p><code>stream.good()</code> a donc deux bonnes raisons de retourner <code>false</code> &#8594; on ne passe pas dans le corps de la boucle</p>
@@ -788,7 +843,7 @@ diff file1 file2
 </ul>
 </div>
 <div class="paragraph">
-<p>Qu&#8217;est-ce qui change si on utilise le code idiomatique <code>while(getline(stream, line))</code> au lieu de <code>while(getline(stream, line).good())</code> ? <strong>RIEN</strong> : on a vu que le code idiomatique évaluait <code>!stream.fail()</code> au lieu de <code>stream.good()</code>. Or, pour chacun des 3 passages par <code>while</code> décrits ci-dessus, ces deux appels se comportent de façon identique.</p>
+<p>Qu&#8217;est-ce qui change si on utilise le code idiomatique <code>while(getline(stream, line))</code> au lieu de <code>while(getline(stream, line).good())</code> ? <strong>RIEN</strong> : on a vu que le code idiomatique évaluait <code>!stream.fail()</code> au lieu de <code>stream.good()</code>. Or, pour chacune des 3 lignes ci-dessus, ces deux appels se comportent de façon identique.</p>
 </div>
 <div class="paragraph">
 <p>TL;DR : pour un fichier correctement pourvu d&#8217;un saut de ligne final, <code>while(getline(&#8230;&#8203;))</code> et <code>while(getline(&#8230;&#8203;).good())</code> sont équivalents.</p>
@@ -799,48 +854,94 @@ diff file1 file2
 <div class="paragraph">
 <p>Supposons maintenant que le contenu du fichier soit quelque chose comme <code>token1\ntoken2</code>. Notez l&#8217;absence de saut de ligne <code>\n</code> final.</p>
 </div>
+<div class="paragraph">
+<p>Refaisons notre tableau :</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col>
+<col>
+<col>
+<col>
+<col>
+<col>
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top"># call getline</th>
+<th class="tableblock halign-left valign-top"><code>tokens</code></th>
+<th class="tableblock halign-left valign-top"><code>line</code></th>
+<th class="tableblock halign-left valign-top"><code>eofbit</code></th>
+<th class="tableblock halign-left valign-top"><code>failbit</code></th>
+<th class="tableblock halign-left valign-top">action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 (initial)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token1"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1"}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token2"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>???</strong></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Explication textuelle :</p>
+</div>
 <div class="ulist">
 <ul>
 <li>
-<p>L&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
+<p>Ligne #0 : l&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
 </li>
 <li>
-<p>premier passage par <code>while</code> :</p>
+<p>Ligne #1 : après le premier appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline commence lit le stream jusqu&#8217;à rencontrer le premier <code>\n</code></p>
+<p>comme précédemment, getline a lu le stream jusqu&#8217;à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
 </li>
 <li>
-<p>Il copie la chaîne <code>token1</code> dans <code>line</code>, puis il renvoie le stream.</p>
+<p>la lecture ayant réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
 </li>
 <li>
-<p>La lecture a bien réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
+<p>le stream n&#8217;étant pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
 </li>
 <li>
-<p>Le stream n&#8217;est pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
-</li>
-<li>
-<p>Aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on passe donc dans le corps de la boucle, et on ajoute <code>token1</code> aux <code>tokens</code>.</p>
+<p>aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s&#8217;apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>second passage par <code>while</code> :</p>
+<p>Ligne #2 : après le second appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline lit la suite du stream, rencontre les caractères <code>"token2"</code> (qu&#8217;il place dans <code>line</code>), puis rencontre la fin du stream.</p>
+<p>getline a lu la suite du stream, a rencontré les caractères <code>"token2"</code> (qu&#8217;il a placé dans <code>line</code>), puis a rencontré la fin du stream.</p>
 </li>
 <li>
-<p>getline ayant atteint la fin du stream, il sette <code>eofbit</code></p>
+<p>la lecture a bien réussi (on a placé <code>token2</code> dans <code>line</code>) → le flag <code>failbit</code> n&#8217;est pas setté.</p>
 </li>
 <li>
-<p>La lecture a bien réussi (on a placé <code>token2</code> dans <code>line</code>) → le flag <code>failbit</code> n&#8217;est pas setté.</p>
-</li>
-<li>
-<p>La fin du stream ayant été atteinte, → getline sette le flag <code>eofbit</code>.</p>
+<p>la fin du stream ayant été atteinte, → le flag <code>eofbit</code> a été setté.</p>
 </li>
 </ul>
 </div>
