@@ -436,26 +436,66 @@ while(getline(stream, line).good())
 
 Supposons que le contenu du fichier soit quelque chose comme `token1\ntoken2\n`. Notez que ce fichier est bien pourvu d'un saut de ligne `\n` final.
 
-* L'état initial du stream est : aucun des _state flags_ n'est setté.
-* premier passage par `while` :
-** getline commence lit le stream jusqu'à rencontrer le premier `\n`
-** Il copie la chaîne `token1` dans `line`, puis il renvoie le stream.
-** La lecture a bien réussi → le flag `failbit` n'est pas setté.
-** Le stream n'est pas épuisé → le flag `eofbit` n'est pas setté.
-** Aucun flag n'étant setté, `stream.good()` renvoie `true`, on passe donc dans le corps de la boucle, et on ajoute `token1` aux `tokens`.
-* second passage par `while` :
-** getline lit la suite du stream, et rencontre le second `\n`
-** tout se passe comme pour le premier tour de boucle.
-** Notamment, `getline` ne sette pas encore `eofbit` : comme il s'est arrêté au `\n`, il ne sait pas encore s'il reste ou non des caractères après ce `\n`.
-** on passe donc ici aussi dans le corps de la boucle et on ajoute `token2` aux `tokens`.
-* troisième passage par `while` :
-** getline lit la suite du stream, et cosntate qu'il ne reste plus de caractères à lire
-** il sette donc `eofbit`, et retourne immédiatement
-** de plus, comme il n'a pas placé de caractère dans `line`, il sette également `failbit`
+À l'exception de la première ligne qui représente l'état initial (avant le premier appel à `getline`), chaque ligne représente l'état juste après le N-ième appel à `getline`, et juste avant l'évaluation de la condition par `while` :
+
+[%autowidth.stretch,cols=6*,options="header"]
+|===
+|# call getline
+|`tokens`
+|`line`
+|`eofbit`
+|`failbit`
+|action
+
+|0 (initial)
+|`{}`
+|`""`
+|`false`
+|`false`
+|*enter loop*
+
+|1
+|`{}`
+|`"token1"`
+|`false`
+|`false`
+|*enter loop*
+
+|2
+|`{"token1"}`
+|`"token2"`
+|`false`
+|`false`
+|*enter loop*
+
+|3
+|`{"token1", "token2"}`
+|`""`
+|`true`
+|`true`
+|*skip loop*
+|===
+
+Explication textuelle :
+
+* Ligne #0 : l'état initial du stream est : aucun des _state flags_ n'est setté.
+* Ligne #1 : après le premier appel à `getline` :
+** getline a lu le stream jusqu'à rencontrer le premier `\n`, et a copié la chaîne `token1` dans `line`
+** la lecture ayant réussi → le flag `failbit` n'est pas setté.
+** le stream n'étant pas épuisé → le flag `eofbit` n'est pas setté.
+** aucun flag n'étant setté, `stream.good()` renvoie `true`, on s'apprête à passer dans le corps de la boucle (ce qui ajoutera `token1` aux `tokens`).
+* Ligne #2 : après le second appel à `getline` :
+** getline a lu la suite du stream, et a rencontré le second `\n`
+** tout se passe comme pour le premier tour de boucle, notamment, `getline` ne sette pas encore `eofbit` : comme il s'est arrêté au `\n`, il ne sait pas encore s'il reste ou non des caractères après ce `\n`.
+** on s'apprête donc ici aussi à passer dans le corps de la boucle (ce qui ajoutera `token2` aux `tokens`).
+* Ligne #3 : après le troisième appel à `getline` :
+** getline a lu la suite du stream, et a constaté qu'il ne reste plus de caractères à lire
+** il a donc setté `eofbit`, et a retourné immédiatement
+** de plus, comme il n'a pas placé de caractère dans `line`, il a également setté `failbit`
 ** `stream.good()` a donc deux bonnes raisons de retourner `false` -> on ne passe pas dans le corps de la boucle
 * le contenu final de `tokens` est `{"token1", "token2"}`
 
-Qu'est-ce qui change si on utilise le code idiomatique `while(getline(stream, line))` au lieu de `while(getline(stream, line).good())` ? *RIEN* : on a vu que le code idiomatique évaluait `!stream.fail()` au lieu de `stream.good()`. Or, pour chacun des 3 passages par `while` décrits ci-dessus, ces deux appels se comportent de façon identique.
+Qu'est-ce qui change si on utilise le code idiomatique `while(getline(stream, line))` au lieu de `while(getline(stream, line).good())` ? *RIEN* : on a vu que le code idiomatique évaluait `!stream.fail()` au lieu de `stream.good()`. Or, pour chacune des 3 lignes ci-dessus, ces deux appels se comportent de façon identique.
 
 TL;DR : pour un fichier correctement pourvu d'un saut de ligne final, `while(getline(...))` et `while(getline(...).good())` sont équivalents.
 
@@ -463,18 +503,51 @@ TL;DR : pour un fichier correctement pourvu d'un saut de ligne final, `while(get
 
 Supposons maintenant que le contenu du fichier soit quelque chose comme `token1\ntoken2`. Notez l'absence de saut de ligne `\n` final.
 
-* L'état initial du stream est : aucun des _state flags_ n'est setté.
-* premier passage par `while` :
-** getline commence lit le stream jusqu'à rencontrer le premier `\n`
-** Il copie la chaîne `token1` dans `line`, puis il renvoie le stream.
-** La lecture a bien réussi → le flag `failbit` n'est pas setté.
-** Le stream n'est pas épuisé → le flag `eofbit` n'est pas setté.
-** Aucun flag n'étant setté, `stream.good()` renvoie `true`, on passe donc dans le corps de la boucle, et on ajoute `token1` aux `tokens`.
-* second passage par `while` :
-** getline lit la suite du stream, rencontre les caractères `"token2"` (qu'il place dans `line`), puis rencontre la fin du stream.
-** getline ayant atteint la fin du stream, il sette `eofbit`
-** La lecture a bien réussi (on a placé `token2` dans `line`) → le flag `failbit` n'est pas setté.
-** La fin du stream ayant été atteinte, → getline sette le flag `eofbit`.
+Refaisons notre tableau :
+
+[%autowidth.stretch,cols=6*,options="header"]
+|===
+|# call getline
+|`tokens`
+|`line`
+|`eofbit`
+|`failbit`
+|action
+
+|0 (initial)
+|`{}`
+|`""`
+|`false`
+|`false`
+|*enter loop*
+
+|1
+|`{}`
+|`"token1"`
+|`false`
+|`false`
+|*enter loop*
+
+|2
+|`{"token1"}`
+|`"token2"`
+|`true`
+|`false`
+|*???*
+|===
+
+Explication textuelle :
+
+* Ligne #0 : l'état initial du stream est : aucun des _state flags_ n'est setté.
+* Ligne #1 : après le premier appel à `getline` :
+** comme précédemment, getline a lu le stream jusqu'à rencontrer le premier `\n`, et a copié la chaîne `token1` dans `line`
+** la lecture ayant réussi → le flag `failbit` n'est pas setté.
+** le stream n'étant pas épuisé → le flag `eofbit` n'est pas setté.
+** aucun flag n'étant setté, `stream.good()` renvoie `true`, on s'apprête à passer dans le corps de la boucle (ce qui ajoutera `token1` aux `tokens`).
+* Ligne #2 : après le second appel à `getline` :
+** getline a lu la suite du stream, a rencontré les caractères `"token2"` (qu'il a placé dans `line`), puis a rencontré la fin du stream.
+** la lecture a bien réussi (on a placé `token2` dans `line`) → le flag `failbit` n'est pas setté.
+** la fin du stream ayant été atteinte, → le flag `eofbit` a été setté.
 
 À la différence du cas où le fichier est bien formatté, on se retrouve dans le cas où seul `eofbit` est setté. Et c'est là où les deux codes ont des comportements différents :
 

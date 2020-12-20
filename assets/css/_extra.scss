@@ -90,7 +90,7 @@ td > p { margin: 4px; }
     display: inline-block;
 }
 
-.linear-graph tr, td {
+.linear-graph tr, .linear-graph tr td {
     background-color: $lightest-color;
     color: $darkest-color;
 	border: 3px solid $darkest-color;
@@ -100,13 +100,13 @@ td > p { margin: 4px; }
     font-family: monospace;
 }
 
-.bg-green  { background-color: yellowgreen; }
-.bg-orange { background-color: orange; }
-.bg-darkorange { background-color: darkorange; }
-.bg-red    { background-color: brown; }
-.bg-grey   { background-color: grey; }
-.bg-lavender   { background-color: lavender; }
-.bg-royalblue   { background-color: royalblue; }
+.bg-green  { background-color: yellowgreen !important; }
+.bg-orange { background-color: orange !important; }
+.bg-darkorange { background-color: darkorange !important; }
+.bg-red    { background-color: brown !important; }
+.bg-grey   { background-color: grey !important; }
+.bg-lavender   { background-color: lavender !important; }
+.bg-royalblue   { background-color: royalblue !important; }
 
 
 // background blanc pour images SVG transparentes :
