@@ -12,4 +12,7 @@ Je mets des guillemets autour de "documenter", car il s'agit ici d'être concis 
 D'autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l'intérêt pour MOI, vu que c'est les notions que j'ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.
 
 * *Edge Computing* : les calculs sont faits, et les décisions sont prises directement sur le dispositif (données traitées au plus proche de leur source : IoT, sonde curiosity, etc.), par opposition aux cas où le dispositif déporte ses calculs+décision sur un serveur externe, centralisé (https://blog.octo.com/quest-ce-que-ledge-computing/[lien])
-
+* *Argument-Dependent Lookup* (ADL) : si `f` est une free-floating function, l'appel `f(a, b)` va être résolu par un compilo C++ :
+** en recherchant une fonction `f` qui accepte un `A` et un `B` dans le namespace courant
+** en recherchant une fonction `f` qui accepte un `A` et un `B` dans le namespace de `A`
+** en recherchant une fonction `f` qui accepte un `A` et un `B` dans le namespace de `B`
