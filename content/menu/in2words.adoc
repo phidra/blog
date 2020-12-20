@@ -1,0 +1,15 @@
+---
+title: "En deux mots"
+date: 2020-12-20T11:00:00+01:00
+draft: false
+---
+= En deux mots
+
+L'objectif de cette page est de "documenter" toutes les notions que je croise, liées de près ou de loin à mon métier.
+
+Je mets des guillemets autour de "documenter", car il s'agit ici d'être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
+
+D'autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l'intérêt pour MOI, vu que c'est les notions que j'ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.
+
+* *Edge Computing* : les calculs sont faits, et les décisions sont prises directement sur le dispositif (données traitées au plus proche de leur source : IoT, sonde curiosity, etc.), par opposition aux cas où le dispositif déporte ses calculs+décision sur un serveur externe, centralisé (https://blog.octo.com/quest-ce-que-ledge-computing/[lien])
+
