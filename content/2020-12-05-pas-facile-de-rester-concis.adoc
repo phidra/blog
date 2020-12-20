@@ -1,0 +1,240 @@
+---
+title: "Pas facile de rester concis"
+date: 2020-12-05T10:00:00+01:00
+draft: false
+---
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= Pas facile de rester concis
+
+toc::[]
+
+== De l'idée au post
+
+Ça fait environ 10 mois que j'ai publié link:{{< ref "2020-02-15-make_shared.adoc" >}}[le premier post de ce blog]. D'autres ont suivi, tous liés au développement logiciel ; le présent post sera le premier qui parlera d'autre chose.
+
+Même s'il n'est pas encore temps de faire un bilan ni de comparer mon expérience à link:{{< ref "menu/about.adoc" >}}[ce que j'en attendais], je veux réfléchir dès maintenant à ma façon de blogger, et notamment à une question précise, que je formule un peu plus bas.
+
+Dans 100% des cas jusqu'ici, le fait de blogger sur un sujet, même simple, m'a conduit à l'approfondir et mieux le comprendre.
+Ça va de points mineurs (comme l'existence de `man -k` en rédigeant link:{{< ref "2020-02-20-man.adoc" >}}[le post sur man]) à la découverte de pans entiers de connaissance dont j'ignorais l'existence (comme link:{{< ref "2020-05-01-rtree.adoc" >}}[la riche diversité des structures de données dérivées du b-tree]).
+
+J'adore ! Rien que pour cet effet, ça vaut la peine de créer son blog, quand bien même il ne serait lu par personne.
+
+== Infos essentielles et infos secondaires
+
+Mais du coup, en préparant mon prochain billet de blog, je construis une masse d'informations qui devient vite conséquente. Se pose alors la question du choix des infos que j'inclus au post, et de celles que je laisse de côté.
+
+Sur un sujet à blogger, il y a deux types d'informations : les infos essentielles, et les infos que j'appellerai "secondaires" dans ce qui suit. Prenons comme exemple concret link:{{< ref "2020-11-20-saut-de-ligne-final.adoc" >}}[mon dernier post] (vu que c'est sa rédaction qui m'a conduit à mener les présentes réflexions), il contient deux infos essentielles :
+
+* le fait qu'un fichier sans saut de ligne final est incomplet.
+* la bonne façon de parser un fichier pour être robuste aux fichiers incomplets.
+
+Et il contient d'autres infos secondaires :
+
+* comment visualiser le saut de ligne final d'un fichier ou son absence
+* pourquoi un fichier sans saut de ligne final est considéré comme incomplet
+* pourquoi j’ai implémenté le parser de telle façon
+* les explications détaillées sur le fonctionnement de getline et la différence entre les deux parsers
+
+Savoir ne présenter que les infos essentielles, c'est à mes yeux *l'une des qualités les plus importantes* pour être un bon pédagogue. Dit autrement, être bon pédagogue, c'est savoir tailler dans le vif pour diminuer la quantité d'infos présentées.
+
+J'aurais donc plutôt intérêt à ignorer les infos secondaires, et à ne mentionner que les infos essentielles...
+
+== Trois lecteurs
+
+...sauf que mon objectif en rédigeant ce blog, n'est pas seulement d'être un bon pédagogue, mais également de transmettre les infos secondaires.
+
+En effet, la masse d'informations secondaires que je construis en préparant un post me paraît être également utile pour des lecteurs. Pour reprendre l'exemple de mon dernier post, en plus des informations essentielles, un lecteur pourra être intéressé par l'annexe détaillant le fonctionnement des différents _state flags_ d'un stream, et leurs conséquences sur l'utilisation de `getline`.
+
+De plus, j'apprécie beaucoup la composante "exploration" liée à la construction du savoir : j'adore l'idée qu'en m'intéressant de plus près au parsing CSV, j'en viens à mieux comprendre la définition POSIX d'un fichier texte, ou le comportement de vim. En plus de présenter un sujet, j'aimerais donc faire toucher du doigt ses ramifications, et transmettre le plaisir que j'ai pris à les explorer...
+
+À tout ceci s'ajoute une raison moins altruiste: en tant que premier lecteur de mon blog (cf. link:{{< ref "menu/about.adoc" >}}[la présentation de ce blog]), je veux moi-même retrouver ces informations lorsque je consulte mon propre post.
+
+Je cherche donc à définir un seul contenu, mais qui s'adresse à 3 lecteurs différents :
+
+* lecteur n°1 = qui ne s'intéressera qu'aux infos essentielles,
+* lecteur n°2 = qui s'intéressera également aux infos secondaires, complémentaires,
+* lecteur n°3 = à moi-même, qui souhaitera retrouver les infos essentielles et secondaires dans le post.
+
+La question que je me pose est donc :
+
+[quote]
+____
+Lorsque je rédige un post, comment présenter les infos essentielles de façon pédagogique, sans avoir à exclure les infos secondaires ?
+____
+
+== Stragégies possibles
+
+Le problème étant posé, quelles stratégies puis-je mettre en oeuvre pour y faire face ?
+
+=== Stratégie verbeuse
+
+Inclure dans le corps du post toutes les infos secondaires, sans me restreindre.
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Toutes les infos secondaire sont transmises.
+
+| *Avantage*
+| Chaque info secondaire est positionnée là où elle est le plus pertinente.
+
+| *Inconvénient*
+| La longueur du post diverge, le post est plus difficile à lire.
+
+| *Inconvénient*
+| Notamment, il devient plus compliqué de retenir les points importants du post (dans l'exemple de mon précédent post, le sujet principal ne représente qu'environ 35% du post, et serait donc noyé dans la masse des informations secondaires).
+
+|=== 
+
+
+=== Stratégie concise
+
+N'inclure aucune info secondaire dans le post, qui se limite aux seules infos essentielles.
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Le post est court et centré sur l'essentiel : il est pédagogique et facile à lire.
+
+| *Inconvénient*
+| Le post ne transmet aucune précision, détail, ou info secondaire.
+
+|=== 
+
+=== Stratégie des notes perso
+
+N'inclure dans le post que les infos essentielles, et mettre les infos secondaires dans mes propres notes perso (non-publiées).
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Le post est court et centré sur l'essentiel : il est pédagogique et facile à lire.
+
+| *Inconvénient*
+| Le post ne transmet aucune précision, détail, ou info secondaire.
+
+| *Inconvénient*
+| De mon côté, même si je dispose des infos secondaires dans mes notes perso, elles ne sont pas reliées au post.
+
+|=== 
+
+=== Stratégie de la page complémentaire
+
+N'inclure dans le post que les infos essentielles, mais l'accompagner d'une page à part contenant les infos secondaires, voire les notes préparatoires.
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Le post est court et centré sur l'essentiel : il est pédagogique et facile à lire.
+
+| *Avantage*
+| Il reste possible à un lecteur intéressé d'accéder aux infos secondaires.
+
+| *Inconvénient*
+| Non-localité des informations, qui sont splittées sur deux pages différentes. +
+Le lecteur intéressé par toutes ou certaines infos secondaires est obligé de faire des allers-retours entre les deux pages.
+
+|=== 
+
+=== Stratégie du hachoir
+
+Découper le sujet en plusieurs posts.
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Chaque post reste relativement court et peut "se spécialiser" sur un sous-sujet, et donc intégrer directement dans son corps les infos secondaires.
+
+| *Inconvénient*
+| Le découpage peut être artificiel : je n'aime pas avoir à consulter inutilement plusieurs articles pour faire le tour d'un sujet simple. Symétriquement, je n'aime pas découper un sujet en plusieurs morceaux si ça n'est pas absolument nécessaire. +
+Dans l'exemple ci-dessus, je pense que l'option était viable (premier post sur le saut de ligne final, et second post sur le parsing de tels fichiers avec getline), mais je préfère la forme retenue au final.
+
+| *Inconvénient*
+| C'est pas forcément facile de se former une image mentale générale, une _big picture_ à partir d'une série de posts.
+
+| *Inconvénient*
+| On reporte le problème sur chacun des sous-posts : certaines infos secondaires sont secondaires même dans un sous-post, et rendre le sous-post pédagogique impliquerait de ne pas y présenter non plus les infos secondaires.
+
+|=== 
+
+=== Stratégie de l'accordéon
+
+Intégrer les infos secondaires au fil de l'eau dans le corps du post, mais sous forme de folding initialement repliés (stratégie mise en oeuvre pour link:{{< ref "2020-02-28-shuffle.adoc" >}}[le post sur l'algorithme de Sattolo]).
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Si on ne déplie aucun folding, le post reste concis, et centré sur l'essentiel.
+
+| *Avantage*
+| Les infos secondaires sont dans le corps du post, en même temps que les infos principales.
+
+| *Avantage*
+| L'utilisateur est maître du moment où il s'intéresse aux infos secondaires : immédiatement ou plus tard (voire jamais).
+
+| *Avantage*
+| Chaque info secondaire est positionnée là où elle est le plus pertinente.
+
+| *Inconvénient*
+| C'est pas critique, mais en terme d'expérience utilisateur, je trouve le principe du folding un peu lourd, ça casse le côté statique et stateless de la page : la recherche de termes est différente en fonction de l'état des foldings, recharger la page ne permet pas de retrouver l'état dans lequel on l'avait laissée, etc.
+
+| *Inconvénient*
+| C'est sans doute subjectif, mais quand je tombe sur un folding, j'ai du mal à continuer ma lecture en l'ignorant : j'ai plutôt envie de le lire tout de suite (ce qui tue l'objectif de concision recherché). Une autre façon de le dire : si je souhaite lire le post sans me préoccuper des infos secondaires, tout se passe comme si je devais "sauter" quelques passages par-ci par-là, ce qui ne m'est pas naturel.
+
+|=== 
+
+=== Stratégie des annexes
+
+Reléguer chaque info secondaire en annexe en fin de post (stratégie retenue pour link::{{< ref "2020-11-20-saut-de-ligne-final.adoc" >}}[mon dernier post]).
+
+[%autowidth.stretch,cols=2*] 
+|=== 
+
+| *Avantage*
+| Si on arrête la lecture à la conclusion (avant les annexes), le post reste concis, et centré sur l'essentiel.
+
+| *Avantage*
+| Les infos secondaires sont bien présentes dans la page en même temps que les infos principales.
+
+| *Avantage*
+| L'utilisateur est maître du moment où il s'intéresse aux infos secondaires : immédiatement ou plus tard (voire jamais).
+
+| *Avantage*
+| La page est statique et stateless
+
+| *Avantage*
+| Même si les infos secondaires sont présentes, le fait de les regrouper à la fin permet de les ignorer facilement en première lecture, sans devoir "sauter des passages".
+
+| *Inconvénient*
+| Si on souhaite lire le post en détail, on fait de fréquents allers-retours assez désagréables (c'est pour ça que j'essaye de les faciliter, mais ça n'est qu'un pis-aller)
+
+| *Inconvénient*
+| Soit les annexes sont invisibles dans le sommaire, soit elles polluent ledit sommaire (je choisis de les afficher, mais de les identifier clairement comme annexes)
+
+| *Inconvénient ?*
+| Les annexes peuvent être plus volumineuses que le post lui-même (est-ce vraiment un inconvénient ?)
+
+| *Inconvénient ?*
+| On peut ressentir une obligation à lire les annexes ? Curieusement, pas pour moi : j'ai moins de scrupules à arrêter ma lecture à la conlusion qu'à ignorer un folding en cours de lecture.
+
+|=== 
+
+
+== And the winner is...
+
+Même si la stratégie de l'accordéon est un solide concurrent, link:{{< ref "2020-11-20-saut-de-ligne-final.adoc" >}}[le dernier post] m'a fait choisir la stratégie des annexes. Elle n'est pas parfaite, mais elle me paraît être un bon compromis pour contenter les 3 types de lecteurs auxquels j'essaye de m'adresser.
+
+Notons justement que cette réflexion, et la stratégie que j'ai retenue sont *des conséquences directes* de mon choix de m'adresser à 3 types de lecteurs : si à l'avenir je choisis de ne m'adresser plus qu'au lecteur n°1, il est probable que je change de stratégie, et que je n'inclue aux posts que leur contenu essentiel, saupoudré éventuellement des liens vers les sources :
+
+* Le lecteur intéressé par des détails (lecteur n°2) [.line-through]#ira se faire cuire un oeuf# devra reconstruire cette connaissance lui-même à partir des sources.
+* Moi-même (lecteur n°3), je maintiendrais mes propres notes auxquelles me référer en cas de besoin, elles seront indépendantes des posts du blog.
+
+À noter également que si je traite d'un sujet qui se découpe naturellement en plusieurs "morceaux" indépendants, je ne m'interdis pas d'en faire une série de posts ; j'ai d'ailleurs en projet une série d'articles sur le calcul d'itinéraires qui suivra probablement ce format.
