@@ -46,6 +46,45 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+
+== [POST] https://blog.doist.com/decision-making-flat-organization/[No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization?]
+
+=== Lu le 2020-12-22, pas de date de publication dans l'article, mais probablement publié le 2019-05-?? d'après le code-source de la page, sur le https://blog.doist.com/[blog de doist.com], une boîte vendant des apps orientées productivité.
+
+
+* l'article est une discussion autour d'une https://tools.ietf.org/html/rfc7282[RFC de l'IETF] très intéressante exposant leur process de prise de décision. Les présentes notes annotent les deux ressources.
+* TL;DR :
+** les compromis sont pas toujours bons (tractations, capitulation, ...)
+** il y a deux types de désaccord : bloquant ou "je peux vivre avec", à traiter différemment (ça fait
+** c'est ok d'avancer avec une solution qui ne satisfait pas tout le monde, tant que l'insatisfaction est "j'aurais pas fait ça mais je peux vivre avec"
+** Coming to consensus by looking for objections,  (plutôt que de voter, p.ex.)
+** tracking open issues,  (pour savoir si oui ou non il y a consensus)
+** using hums as the start of discussions  (technique rigolote, mais n'a pas une valeur mirobolante à mes yeux)
+* quelques citations de l'article :
+** _“Not the best choice” versus fundamental flaws feedback_
+** _Once everyone can live with a given solution, you’ve reached rough consensus, even if there are outstanding objections._
+* Face à une proposition, il y a deux types de désaccods :
+** bloquant (e.g. il y a un défaut fatal dans le design)
+** "j'aurais pas fait comme ça mais je peux vivre avec"
+* c'est ok d'avancer avec une solution qui ne satisfait pas tout le monde, tant que l'insatisfaction est "j'aurais pas fait ça mais je peux vivre avec"
+* Les compromis ne sont pas toujours une bonne chose :
+** tractations = j'accepte tes remarques si tu acceptes les miennes
+** capitulation = j'abandonne la défense de mes idées par flemme ou fatigue
+* NdM : mon interprétation = deux types de "granularité", quand on recherche le consensus :
+** il faut ABSOLUMENT qu'on atteigne le degré maximal de qualité
+** il faut avancer, et le fait que la solution retenue n'est pas optimale n'est pas critique
+* quelques citations de la RFC :
+** _Any finding of rough consensus needs, at some level, to provide a reasoned explanation to the person(s) raising the issue of why their concern is not going to be accommodated._
+** _A good outcome is for the objector to understand the decision taken and accept the outcome, even though their particular issue is not being accommodated in the final product._
+** _we come to consensus by looking at the open issues and not counting heads (aka pas de vote)_
+** One hundred people for and five people against might not be rough consensus [...] If there is a minority of folks who have a valid technical objection, that objection must be dealt with before consensus can be declared. It's the existence of the unaddressed open issue, not the number of people, which is determinative in judging consensus.
+** _Coming to consensus is not the goal in itself.  Coming to consensus is what we do during our processes to arrive at the best solution.  In particular, "declaring" consensus is not an end goal.  Attempts to declare consensus at the end of a discussion just for the sake of being able to say that there is consensus often get us back into the voting mentality that we're trying to avoid._
+** Five people for and one hundred people against might still be rough consensus.
+* technique du humming = prendre la température de la pièce (par opposition au vote) ; sert surtout à choisir comment commencer la discussion :
+** _Sometimes, the hum will make it clear that choice "foo" has a significant amount more support than choice "bar", and it is therefore likely easier to start the discussion by saying, "OK, 'foo' seems to have quite a bit of support.  Let's have the people that think 'foo' is a bad idea come up and tell us why it is problematic." [...] All that the hum does is give the chair a starting point_
+** _The advantage of the hum (par rapport au vote) is that it makes it perfectly clear that the chair is simply figuring out the direction of the conversation._
+* Ce process n'est pas sans inconvénient : _When we decide that a discussion is too factious and opt to simply go with a majority, it creates more polarized arguments in the future_
+
 == [VIDEO] https://www.youtube.com/watch?v=NH1Tta7purM[CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++”]
 
 === Vue le 2020-12-??, publiée le 2017-10-08 sur https://cppcon.org/[Cppcon] = The C{plus}{plus}+ Conference
