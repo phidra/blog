@@ -47,6 +47,80 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [POST] https://mropert.github.io/2019/01/07/copy_swap_20_years/[Copy and Swap, 20 years later]
+
+=== Lu le 2020-12-23, publié le 2019-01-07, sur le https://mropert.github.io/about/[blog de Mathieu ROPERT], dev C++, notamment contributeur de conan package manager
+
+* *TL;DR* : une intéressante présentation de l'idiome Copy-and-Swap, et du fait que c'est un trade-off où on gagne la robustesse (et la simplicité) en perdant (un peu) de la performance.
+* Contexte = la Rule of Three (et plus tard Rule of Five, pour tenir compte de la move-semantic) implique :
+** constructeur = laisse l'objet dans un état utilisable
+** on peut copier proprement un objet
+** on peut le détruire, et la destruction cleane proprement les états
++
+[quote]
+____
+Copy/move constructors, copy/move assignment operators and destructors are the key part objects’ lifecycle. +
+If one is wrong, users will get dangling references, leaks, double deletes and other unsavoury things. +
+And of course they need to do that without leaking anything if an exception occurs.
+____
++
+** (NdM : la quote s'applique aux objets qui gèrent des ressources)
+** En pratique, on ne peut pas toujours suivre la Rule of Zero, et il faut parfois gérer explicitement les membres (e.g. si on implémente une classe de type string, il faut gérer le buffer accueillant la string) ; dans ce cas, il faut respecter la Rule Of Five.
++
+[quote]
+____
+Some operations like construction and assignment are quite similar so we would prefer to write one by calling the other (again reuse reduces the amount of code to review)
+____
++
+* L'idiome *Copy-and-Swap* :
+** _Write a destructor that deletes any owned resource._
+** _Write a copy constructor that duplicates any owned resource and takes ownership of it._
+** _Write a non-throwing swap() function that will exchange the contents of two containers by swapping the internal bits._
+** _Write the copy-assignment operator by making a temporary copy of the source object, then swap the copy with this._
++
+[source,cpp]
+----
+T& operator=(const T& rhs)
+{
+  T tmp(rhs);  // pas d'impact si exception ici
+  swap(tmp);  // non-throwing
+  return *this;
+}
+----
++
+* À quoi sert cet idiome ?
+** à s'assurer d'être robuste aux exceptions dans l'implémentation du copy-assignment operator :
++
+[quote]
+____
+Copy-assignment is usually the trickiest one to write since it must delete existing content, insert a copy of the source objects and survive if an exception is thrown somewhere in the process.
+____
++
+** L'intérêt : le swap ne peut pas throw + la construction a lieu dans un objet temporaire, détruit en fin de scope -> ce code, pourtant simple, est robuste aux exceptions.
+** (et l'idiome a un frère-jumeau pour le move-assignment operator)
+* keypoint de l'article : *l'idiome Copy-and-Swap est un TRADE-OFF* dans lequel on échange la robustesse+simplicité contre la performance !
+* Problème n°1 = la copy-construction va systématiquement faire une heap-allocation, alors qu'on n'en a pas forcément eu besoin :
+**  heap-allocation systématique, car la classe gère des ressources (sans quoi on n'aurait pas besoin de suivre la rule of five)
+** exemple : si la classe T est une classe gérant un array de `int` (un genre de vector<`int`>)
+** si elle contient actuellement 5 ints
+** si on essaye de lui copy-assigner un T contenant 5 autres `int`
+** alors en pratique, on n'a PAS besoin d'une allocation dynamique, vu qu'il suffit de remplacer les 5 ints précédents par les 5 nouveaux ints
+** or, avec le Copy-And-Swap, on va créer un objet temporaire (avec la heap-allocation qui va avec) quoi qu'il arrive.
+* Problème n°2 = on sur-utilise les ressources, puisqu'il faut stocker 3 fois les états de l'objet. Pour reprendre mon exemple avec le tableau de 5 ints, à un moment donné, on stocke en RAM :
+** les 5 ints du T rhs depuis lequel on copy-assign
+** les 5 ints que le T contient AVANT la copy-assignation
+** les 5 ints du T temporaire que l'on vient de construire
+** Alors qu'en pratique, seuls les deux premiers sont indispensables.
+* si on veut conserver la strong exception guarantee, ce trade-off est inévitable :
++
+[quote]
+____
+The reason is that to offer strong exception guarantee, there is no way around it. +
+There must be a temporary copy done first that we can simply delete if something goes wrong without touching the existing collection.
+____
++
+* L'article propose une implémentation alternative pour remédier à ces problèmes, mais d'une part elle est bien bien plus complexe, et d'autre part elle n'est pas générique (elle dépend du conteneur sous-jacent).
+
 == [POST] https://blog.doist.com/decision-making-flat-organization/[No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization?]
 
 === Lu le 2020-12-22, pas de date de publication dans l'article, mais probablement publié le 2019-05-?? d'après le code-source de la page, sur le https://blog.doist.com/[blog de doist.com], une boîte vendant des apps orientées productivité.
