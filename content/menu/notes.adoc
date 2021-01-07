@@ -45,6 +45,61 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [POST] https://google.github.io/eng-practices/review/reviewer/[How to do a code review]
+
+=== Lu le 2021-01-04, publié le 2020-??-??, sur https://google.github.io/eng-practices/[Google's Engineering Practices documentation]
+
+* *TL;DR* :
+** ce groupe de 6 pages contient les bonnes pratiques à suivre lorsqu'on fait de la revue de code, en tant que reviewer
+** il existe également https://google.github.io/eng-practices/review/developer/[l'équivalent en tant que reviewee], mais je ne l'ai pas encore lu
+** il n'y a que 6 courtes pages, très faciles à lire, et contenant des conseils très concrets -> ne pas hésiter à y revenir (d'ailleurs, je vais les mettre dans mes références)
+* https://google.github.io/eng-practices/review/reviewer/standard.html[The Standard of Code Review] = la page la plus intéressante, remplie de conseils concrets :
+** _The primary purpose of code review is to make sure that the overall code health of Google’s code base is improving over time._ (NdM : j'ai un objectif supplémentaire = m'améliorer/aider le reviewee à s'améliorer ; cf. la section _Mentoring_).
+** trade-off entre être très picky, mais ne jamais faire avancer le schmilblick, ou être trop lâche, et dégrader la qualité
+** _In general, reviewers should favor approving a CL once it is in a state where it definitely improves the overall code health of the system being worked on, even if the CL isn’t perfect._
+** _A key point here is that there is no such thing as “perfect” code—there is only better code. Reviewers should not require the author to polish every tiny piece of a CL before granting approval._
+** _A CL that, as a whole, improves the maintainability, readability, and understandability of the system shouldn’t be delayed for days or weeks because it isn’t “perfect.”_
+** _Reviewers should always feel free to leave comments expressing that something could be better, but if it’s not very important, prefix it with something like “Nit: “ to let the author know that it’s just a point of polish that they could choose to ignore._
+** Principles :
+*** _Technical facts and data overrule opinions and personal preferences._
+*** _On matters of style, the style guide is the absolute authority._
+*** _Aspects of software design are almost never a pure style issue or just a personal preference. They are based on underlying principles and should be weighed on those principles, not simply by personal opinion_
+** _Don’t let a CL [=ChangeList] sit around because the author and the reviewer can’t come to an agreement._
+* https://google.github.io/eng-practices/review/reviewer/looking-for.html[What to look for in a code review]
+** Design
+** Functionality
+** Complexity
+** Tests
+** Naming
+** Comments
+** Style
+** Consistency
+** Every Line : _Look at every line of code that you have been assigned to review. [...] If it’s too hard for you to read the code and this is slowing down the review, then you should let the developer know that and wait for them to clarify it before you try to review it._
+** Good Things : _If you see something nice in the CL, tell the developer, especially when they addressed one of your comments in a great way._
+** Le summary de la page donne de nouveau des conseils très concrets et très intéresssants.
+* https://google.github.io/eng-practices/review/reviewer/navigate.html[Navigating a CL in review]
+** Does the change make sense? Does it have a good description?
+** Look at the most important part of the change first. Is it well-designed overall?
+** Look at the rest of the CL in an appropriate sequence.
+** _If the CL is too large for you to figure out which parts are the major parts, ask the developer what you should look at first, or ask them to split up the CL into multiple CLs._
+** _If you see some major design problems with this part of the CL, you should send those comments immediately, even if you don’t have time to review the rest of the CL right now._
+* https://google.github.io/eng-practices/review/reviewer/speed.html[Speed of Code Reviews]
+** TL;DR : avoir un process de code-review trop lent est très impactant pour l'équipe.
+** _One business day is the maximum time it should take to respond to a code review request (i.e. first thing the next morning)._
+** On parle bien du temps entre le moment où un dev soumet une PR, et le moment où il obtient des retours (et non du temps entre le moment où la PR est soumise, et le moment où elle est mergée)
+** _It is important that reviewers spend enough time on review that they are certain their “LGTM” means “this code meets our standards.” However, individual responses should still ideally be fast._
+** _If somebody sends you a code review that is so large you’re not sure when you will be able to have time to review it, your typical response should be to ask the developer to split the CL into several smaller CLs that build on each other,_
+** note : le cas des urgences est un cas particulier, et https://google.github.io/eng-practices/review/emergencies.html#what[traité à part]
+* https://google.github.io/eng-practices/review/reviewer/comments.html[How to write code review comments]
+** Be kind.
+** Explain your reasoning.
+** Balance giving explicit directions with just pointing out problems and letting the developer decide.
+** Encourage developers to simplify code or add code comments instead of just explaining the complexity to you.
+** _Explanations written only in the code review tool are not helpful to future code readers._
+* https://google.github.io/eng-practices/review/reviewer/pushback.html[Handling pushback in code reviews]
+** TL;DR : échanger en bonne intelligence, ne pas retarder le cleanup.
+** une façon de lutter contre les râleries "ta revue est trop stricte", c'est de les faire *rapidement*
+
 
 
 == [POST] https://mropert.github.io/2019/01/07/copy_swap_20_years/[Copy and Swap, 20 years later]
