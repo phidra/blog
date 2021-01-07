@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          77 min read
+          84 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,8 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></a></li>
+<li><a href="#__post_a_href_https_mropert_github_io_2019_01_07_copy_swap_20_years_copy_and_swap_20_years_later_a">[POST] <a href="https://mropert.github.io/2019/01/07/copy_swap_20_years/">Copy and Swap, 20 years later</a></a></li>
 <li><a href="#__post_a_href_https_blog_doist_com_decision_making_flat_organization_no_kings_how_do_you_make_good_decisions_efficiently_in_a_flat_organization_a">[POST] <a href="https://blog.doist.com/decision-making-flat-organization/">No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization?</a></a></li>
 <li><a href="#__video_a_href_https_www_youtube_com_watch_v_nh1tta7purm_cppcon_2017_carl_cook_when_a_microsecond_is_an_eternity_high_performance_trading_systems_in_c_a">[VIDEO] <a href="https://www.youtube.com/watch?v=NH1Tta7purM">CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++”</a></a></li>
 <li><a href="#__video_a_href_https_www_youtube_com_watch_v_w0sz5wbs5am_keynote_what_everyone_should_know_about_how_amazing_compilers_are_matt_godbolt_c_on_sea_2019_a">[VIDEO] <a href="https://www.youtube.com/watch?v=w0sz5WbS5AM">KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019</a></a></li>
@@ -170,6 +172,366 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2021_01_04_publié_le_2020_sur_a_href_https_google_github_io_eng_practices_google_s_engineering_practices_documentation_a">Lu le 2021-01-04, publié le 2020-??-??, sur <a href="https://google.github.io/eng-practices/">Google&#8217;s Engineering Practices documentation</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>ce groupe de 6 pages contient les bonnes pratiques à suivre lorsqu&#8217;on fait de la revue de code, en tant que reviewer</p>
+</li>
+<li>
+<p>il existe également <a href="https://google.github.io/eng-practices/review/developer/">l&#8217;équivalent en tant que reviewee</a>, mais je ne l&#8217;ai pas encore lu</p>
+</li>
+<li>
+<p>il n&#8217;y a que 6 courtes pages, très faciles à lire, et contenant des conseils très concrets &#8594; ne pas hésiter à y revenir (d&#8217;ailleurs, je vais les mettre dans mes références)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/standard.html">The Standard of Code Review</a> = la page la plus intéressante, remplie de conseils concrets :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>The primary purpose of code review is to make sure that the overall code health of Google’s code base is improving over time.</em> (NdM : j&#8217;ai un objectif supplémentaire = m&#8217;améliorer/aider le reviewee à s&#8217;améliorer ; cf. la section <em>Mentoring</em>).</p>
+</li>
+<li>
+<p>trade-off entre être très picky, mais ne jamais faire avancer le schmilblick, ou être trop lâche, et dégrader la qualité</p>
+</li>
+<li>
+<p><em>In general, reviewers should favor approving a CL once it is in a state where it definitely improves the overall code health of the system being worked on, even if the CL isn’t perfect.</em></p>
+</li>
+<li>
+<p><em>A key point here is that there is no such thing as “perfect” code—there is only better code. Reviewers should not require the author to polish every tiny piece of a CL before granting approval.</em></p>
+</li>
+<li>
+<p><em>A CL that, as a whole, improves the maintainability, readability, and understandability of the system shouldn’t be delayed for days or weeks because it isn’t “perfect.”</em></p>
+</li>
+<li>
+<p><em>Reviewers should always feel free to leave comments expressing that something could be better, but if it’s not very important, prefix it with something like “Nit: “ to let the author know that it’s just a point of polish that they could choose to ignore.</em></p>
+</li>
+<li>
+<p>Principles :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Technical facts and data overrule opinions and personal preferences.</em></p>
+</li>
+<li>
+<p><em>On matters of style, the style guide is the absolute authority.</em></p>
+</li>
+<li>
+<p><em>Aspects of software design are almost never a pure style issue or just a personal preference. They are based on underlying principles and should be weighed on those principles, not simply by personal opinion</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><em>Don’t let a CL [=ChangeList] sit around because the author and the reviewer can’t come to an agreement.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/looking-for.html">What to look for in a code review</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Design</p>
+</li>
+<li>
+<p>Functionality</p>
+</li>
+<li>
+<p>Complexity</p>
+</li>
+<li>
+<p>Tests</p>
+</li>
+<li>
+<p>Naming</p>
+</li>
+<li>
+<p>Comments</p>
+</li>
+<li>
+<p>Style</p>
+</li>
+<li>
+<p>Consistency</p>
+</li>
+<li>
+<p>Every Line : <em>Look at every line of code that you have been assigned to review. [&#8230;&#8203;] If it’s too hard for you to read the code and this is slowing down the review, then you should let the developer know that and wait for them to clarify it before you try to review it.</em></p>
+</li>
+<li>
+<p>Good Things : <em>If you see something nice in the CL, tell the developer, especially when they addressed one of your comments in a great way.</em></p>
+</li>
+<li>
+<p>Le summary de la page donne de nouveau des conseils très concrets et très intéresssants.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/navigate.html">Navigating a CL in review</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Does the change make sense? Does it have a good description?</p>
+</li>
+<li>
+<p>Look at the most important part of the change first. Is it well-designed overall?</p>
+</li>
+<li>
+<p>Look at the rest of the CL in an appropriate sequence.</p>
+</li>
+<li>
+<p><em>If the CL is too large for you to figure out which parts are the major parts, ask the developer what you should look at first, or ask them to split up the CL into multiple CLs.</em></p>
+</li>
+<li>
+<p><em>If you see some major design problems with this part of the CL, you should send those comments immediately, even if you don’t have time to review the rest of the CL right now.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/speed.html">Speed of Code Reviews</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>TL;DR : avoir un process de code-review trop lent est très impactant pour l&#8217;équipe.</p>
+</li>
+<li>
+<p><em>One business day is the maximum time it should take to respond to a code review request (i.e. first thing the next morning).</em></p>
+</li>
+<li>
+<p>On parle bien du temps entre le moment où un dev soumet une PR, et le moment où il obtient des retours (et non du temps entre le moment où la PR est soumise, et le moment où elle est mergée)</p>
+</li>
+<li>
+<p><em>It is important that reviewers spend enough time on review that they are certain their “LGTM” means “this code meets our standards.” However, individual responses should still ideally be fast.</em></p>
+</li>
+<li>
+<p><em>If somebody sends you a code review that is so large you’re not sure when you will be able to have time to review it, your typical response should be to ask the developer to split the CL into several smaller CLs that build on each other,</em></p>
+</li>
+<li>
+<p>note : le cas des urgences est un cas particulier, et <a href="https://google.github.io/eng-practices/review/emergencies.html#what">traité à part</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/comments.html">How to write code review comments</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>Be kind.</p>
+</li>
+<li>
+<p>Explain your reasoning.</p>
+</li>
+<li>
+<p>Balance giving explicit directions with just pointing out problems and letting the developer decide.</p>
+</li>
+<li>
+<p>Encourage developers to simplify code or add code comments instead of just explaining the complexity to you.</p>
+</li>
+<li>
+<p><em>Explanations written only in the code review tool are not helpful to future code readers.</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><a href="https://google.github.io/eng-practices/review/reviewer/pushback.html">Handling pushback in code reviews</a></p>
+<div class="ulist">
+<ul>
+<li>
+<p>TL;DR : échanger en bonne intelligence, ne pas retarder le cleanup.</p>
+</li>
+<li>
+<p>une façon de lutter contre les râleries "ta revue est trop stricte", c&#8217;est de les faire <strong>rapidement</strong></p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__post_a_href_https_mropert_github_io_2019_01_07_copy_swap_20_years_copy_and_swap_20_years_later_a">[POST] <a href="https://mropert.github.io/2019/01/07/copy_swap_20_years/">Copy and Swap, 20 years later</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2020_12_23_publié_le_2019_01_07_sur_le_a_href_https_mropert_github_io_about_blog_de_mathieu_ropert_a_dev_c_notamment_contributeur_de_conan_package_manager">Lu le 2020-12-23, publié le 2019-01-07, sur le <a href="https://mropert.github.io/about/">blog de Mathieu ROPERT</a>, dev C++, notamment contributeur de conan package manager</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> : une intéressante présentation de l&#8217;idiome Copy-and-Swap, et du fait que c&#8217;est un trade-off où on gagne la robustesse (et la simplicité) en perdant (un peu) de la performance.</p>
+</li>
+<li>
+<p>Contexte = la Rule of Three (et plus tard Rule of Five, pour tenir compte de la move-semantic) implique :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>constructeur = laisse l&#8217;objet dans un état utilisable</p>
+</li>
+<li>
+<p>on peut copier proprement un objet</p>
+</li>
+<li>
+<p>on peut le détruire, et la destruction cleane proprement les états</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Copy/move constructors, copy/move assignment operators and destructors are the key part objects’ lifecycle.<br>
+If one is wrong, users will get dangling references, leaks, double deletes and other unsavoury things.<br>
+And of course they need to do that without leaking anything if an exception occurs.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>(NdM : la quote s&#8217;applique aux objets qui gèrent des ressources)</p>
+</li>
+<li>
+<p>En pratique, on ne peut pas toujours suivre la Rule of Zero, et il faut parfois gérer explicitement les membres (e.g. si on implémente une classe de type string, il faut gérer le buffer accueillant la string) ; dans ce cas, il faut respecter la Rule Of Five.</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Some operations like construction and assignment are quite similar so we would prefer to write one by calling the other (again reuse reduces the amount of code to review)</p>
+</div>
+</blockquote>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>L&#8217;idiome <strong>Copy-and-Swap</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><em>Write a destructor that deletes any owned resource.</em></p>
+</li>
+<li>
+<p><em>Write a copy constructor that duplicates any owned resource and takes ownership of it.</em></p>
+</li>
+<li>
+<p><em>Write a non-throwing swap() function that will exchange the contents of two containers by swapping the internal bits.</em></p>
+</li>
+<li>
+<p><em>Write the copy-assignment operator by making a temporary copy of the source object, then swap the copy with this.</em></p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">T</span><span style="color: #f92672">&amp;</span> <span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">rhs)</span>
+<span style="color: #f8f8f2">{</span>
+  <span style="color: #f8f8f2">T</span> <span style="color: #f8f8f2">tmp(rhs);</span>  <span style="color: #75715e">// pas d&#39;impact si exception ici</span>
+  <span style="color: #f8f8f2">swap(tmp);</span>  <span style="color: #75715e">// non-throwing</span>
+  <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>À quoi sert cet idiome ?</p>
+<div class="ulist">
+<ul>
+<li>
+<p>à s&#8217;assurer d&#8217;être robuste aux exceptions dans l&#8217;implémentation du copy-assignment operator :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Copy-assignment is usually the trickiest one to write since it must delete existing content, insert a copy of the source objects and survive if an exception is thrown somewhere in the process.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>L&#8217;intérêt : le swap ne peut pas throw + la construction a lieu dans un objet temporaire, détruit en fin de scope &#8594; ce code, pourtant simple, est robuste aux exceptions.</p>
+</li>
+<li>
+<p>(et l&#8217;idiome a un frère-jumeau pour le move-assignment operator)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>keypoint de l&#8217;article : <strong>l&#8217;idiome Copy-and-Swap est un TRADE-OFF</strong> dans lequel on échange la robustesse+simplicité contre la performance !</p>
+</li>
+<li>
+<p>Problème n°1 = la copy-construction va systématiquement faire une heap-allocation, alors qu&#8217;on n&#8217;en a pas forcément eu besoin :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>heap-allocation systématique, car la classe gère des ressources (sans quoi on n&#8217;aurait pas besoin de suivre la rule of five)</p>
+</li>
+<li>
+<p>exemple : si la classe T est une classe gérant un array de <code>int</code> (un genre de vector&lt;`int`&gt;)</p>
+</li>
+<li>
+<p>si elle contient actuellement 5 ints</p>
+</li>
+<li>
+<p>si on essaye de lui copy-assigner un T contenant 5 autres <code>int</code></p>
+</li>
+<li>
+<p>alors en pratique, on n&#8217;a PAS besoin d&#8217;une allocation dynamique, vu qu&#8217;il suffit de remplacer les 5 ints précédents par les 5 nouveaux ints</p>
+</li>
+<li>
+<p>or, avec le Copy-And-Swap, on va créer un objet temporaire (avec la heap-allocation qui va avec) quoi qu&#8217;il arrive.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Problème n°2 = on sur-utilise les ressources, puisqu&#8217;il faut stocker 3 fois les états de l&#8217;objet. Pour reprendre mon exemple avec le tableau de 5 ints, à un moment donné, on stocke en RAM :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>les 5 ints du T rhs depuis lequel on copy-assign</p>
+</li>
+<li>
+<p>les 5 ints que le T contient AVANT la copy-assignation</p>
+</li>
+<li>
+<p>les 5 ints du T temporaire que l&#8217;on vient de construire</p>
+</li>
+<li>
+<p>Alors qu&#8217;en pratique, seuls les deux premiers sont indispensables.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>si on veut conserver la strong exception guarantee, ce trade-off est inévitable :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The reason is that to offer strong exception guarantee, there is no way around it.<br>
+There must be a temporary copy done first that we can simply delete if something goes wrong without touching the existing collection.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>L&#8217;article propose une implémentation alternative pour remédier à ces problèmes, mais d&#8217;une part elle est bien bien plus complexe, et d&#8217;autre part elle n&#8217;est pas générique (elle dépend du conteneur sous-jacent).</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
