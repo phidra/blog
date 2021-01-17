@@ -51,7 +51,7 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 * *TL;DR* :
 ** ce groupe de 6 pages contient les bonnes pratiques à suivre lorsqu'on fait de la revue de code, en tant que reviewer
-** il existe également https://google.github.io/eng-practices/review/developer/[l'équivalent en tant que reviewee], mais je ne l'ai pas encore lu
+** il existe également https://google.github.io/eng-practices/review/developer/[l'équivalent en tant que reviewee]
 ** il n'y a que 6 courtes pages, très faciles à lire, et contenant des conseils très concrets -> ne pas hésiter à y revenir (d'ailleurs, je vais les mettre dans mes références)
 * https://google.github.io/eng-practices/review/reviewer/standard.html[The Standard of Code Review] = la page la plus intéressante, remplie de conseils concrets :
 ** _The primary purpose of code review is to make sure that the overall code health of Google’s code base is improving over time._ (NdM : j'ai un objectif supplémentaire = m'améliorer/aider le reviewee à s'améliorer ; cf. la section _Mentoring_).
