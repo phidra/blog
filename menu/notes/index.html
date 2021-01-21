@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          84 min read
+          89 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__post_a_href_http_unixsheikh_com_articles_the_terminal_the_console_and_the_shell_what_are_they_html_the_terminal_the_console_and_the_shell_what_are_they_a">[POST] <a href="http://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html">The terminal, the console and the shell - what are they?</a></a></li>
 <li><a href="#__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></a></li>
 <li><a href="#__post_a_href_https_mropert_github_io_2019_01_07_copy_swap_20_years_copy_and_swap_20_years_later_a">[POST] <a href="https://mropert.github.io/2019/01/07/copy_swap_20_years/">Copy and Swap, 20 years later</a></a></li>
 <li><a href="#__post_a_href_https_blog_doist_com_decision_making_flat_organization_no_kings_how_do_you_make_good_decisions_efficiently_in_a_flat_organization_a">[POST] <a href="https://blog.doist.com/decision-making-flat-organization/">No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization?</a></a></li>
@@ -177,6 +178,264 @@ Liste des liens
 </div>
 </div>
 <div class="sect1">
+<h2 id="__post_a_href_http_unixsheikh_com_articles_the_terminal_the_console_and_the_shell_what_are_they_html_the_terminal_the_console_and_the_shell_what_are_they_a">[POST] <a href="http://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html">The terminal, the console and the shell - what are they?</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2021_01_18_publié_le_2021_01_13_sur_a_href_http_unixsheikh_com_about_html_unixsheikh_a_un_dev_freelance_anonyme_a_href_https_github_com_unixsheikh_son_github_a">Lu le 2021-01-18, publié le 2021-01-13, sur <a href="http://unixsheikh.com/about.html">unixsheikh</a>, un dev freelance anonyme (<a href="https://github.com/unixsheikh">son github</a>).</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> : l&#8217;article donne beaucoup d&#8217;infos intéressantes sur terminal/console/shell :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>la console est "ce qui permet d&#8217;interagir avec l&#8217;ordinateur" (par analogie avec le meuble), c&#8217;est l&#8217;ensemble terminal+shell</p>
+</li>
+<li>
+<p>le terminal reçoit le signal du clavier, et en déduit une séquence de caractères ASCII à envoyer au shell</p>
+</li>
+<li>
+<p>le shell est un REPL autour du kernel, c&#8217;est un wrapper permettant d&#8217;interagir avec le kernel (y compris de lancer des programmes)</p>
+</li>
+<li>
+<p>le shell reçoit et interprète la séquence de caractère, en fonction du terminal qui l&#8217;a envoyé</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>par exemple, si l&#8217;appui sur la touche "Fin" provoque un affichage bizarre au lieu d&#8217;amener le curseur en fin de ligne c&#8217;est peut-être parce que l&#8217;envvar TERM est mal configurée</p>
+<div class="ulist">
+<ul>
+<li>
+<p>p.ex. l&#8217;envvar du shell a p.ex. la valeur VT100 alors qu&#8217;on utilise un terminal VT220</p>
+</li>
+<li>
+<p>et le terminal VT220 utilise TATA comme séquence de caractères identifiant "Fin", alors que VT100 utilise TOTO</p>
+</li>
+<li>
+<p>du coup, à l&#8217;appui sur "Fin", notre terminal VT220 envoie "TATA"</p>
+</li>
+<li>
+<p>le shell reçoit "TATA", et regarde si c&#8217;est une séquence spéciale pour le TERM qu&#8217;il utilise (VT100)</p>
+</li>
+<li>
+<p>ce n&#8217;est pas le cas (en effet, VT100 utilise "TOTO" pour "Fin"), du coup il considère que la séquence n&#8217;est pas spéciale, et l&#8217;affiche&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>attention, quand on parle de terminal, à ne pas confondre :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>terminal réel (sur les consoles physiques de l&#8217;époque, ou un teletype, ou encore un terminal hardware spécifique comme le VT100)</p>
+</li>
+<li>
+<p>terminal virtuel (sur l&#8217;ordinateur, p.ex. Ctrl+Alt+F1)</p>
+</li>
+<li>
+<p>terminal émulé (e.g. xterm, gnome-terminal, &#8230;&#8203;.)</p>
+</li>
+<li>
+<p>terminal multiplexé (e.g. tmux, gnu screen)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>terminal virtuel</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A virtual terminal or virtual console is a program that simulates a physical terminal.</p>
+</li>
+<li>
+<p>For example, both the Linux kernel and BSD kernels support virtual terminals - terminals that are logically separate, but which access the same physical keyboard and monitor.</p>
+</li>
+<li>
+<p>The virtual terminal gives the impression that several independent terminals are running concurrently.</p>
+</li>
+<li>
+<p>Each virtual terminal can be logged in with a different user and it can run its own shell and have its own font settings.</p>
+</li>
+<li>
+<p>Il faut comprendre ces phrases comme :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>le clavier/écran qu&#8217;on utilise ne constituent pas un unique terminal permettant de se relier à l&#8217;ordinateur</p>
+</li>
+<li>
+<p>en fait, tout se passe comme si le clavier/écran représentaient plusieurs terminaux indépendants (virtuels), permettant tous de se relier à un seul ordinateur</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>à chaque terminal virtuel est associé un /dev/ttyX</p>
+</li>
+<li>
+<p>(attention à ne pas confondre un terminal virtuel avec un terminal émulé)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>terminal émulé</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A terminal emulator is a computer program that emulates a physical terminal within some other display architecture, such as the X Window System.</p>
+</li>
+<li>
+<p>Un terminal parent permettant de se connecter à l&#8217;ordinateur (ici, le serveur X, mais ça pourrait être un terminal virtuel) va lancer un programme qui émule un terminal</p>
+</li>
+<li>
+<p>Ce programme va donc capturer les inputs clavier (et transmettre des caractères ASCII à un shell) et afficher les outputs du shell (ou de ses sous-programmes).</p>
+</li>
+<li>
+<p>À la base, ces terminaux émulent des machines physiques (e.g. VT100)</p>
+<div class="ulist">
+<ul>
+<li>
+<p>notamment, chaque émulateur de terminal peut envoyer des séquences ASCII différentes en fonction des touches enfoncées</p>
+</li>
+<li>
+<p>du coup, pour reprendre mon exemple de plus haut, quand on appuie sur "Fin", un émulateur qui émule VT100 enverra "TOTO", alors qu&#8217;un émulateur qui émule VT220 enverra "TATA"</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>The purpose of the terminal emulator is to allow access to the command line (NdM : to the shell, plutôt) while working in a graphical user interface, such as the X Window System.</p>
+</li>
+<li>
+<p>Since the shell is "expecting" to interface with a human through a terminal, and we don&#8217;t use a physical terminal while in a graphical environment, we need the terminal emulator.</p>
+</li>
+<li>
+<p>Ma compréhension est qu&#8217;un émulateur de terminal donné peut émuler plusieurs terminaux (dit autrement, il peut associer plusieurs séquences ASCII différentes à la touche "Fin")</p>
+</li>
+<li>
+<p>Il est important de comprendre qu&#8217;un émulateur de terminal est un programme GRAPHIQUE (car il émule la sortie vidéo du terminal, et donne accès à une console)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>l&#8217;envvar <code>TERM</code></strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The environment variable TERM tells applications the name of a terminal description to read from the terminfo database (see man terminfo).</p>
+</li>
+<li>
+<p>Each description consists of a number of named capabilities which tell applications what to send to control the terminal.</p>
+</li>
+<li>
+<p>For example, the cup capability contains the escape sequence used to move the cursor up.</p>
+</li>
+<li>
+<p>Ma compréhension : grâce à TERM, une application sait que si elle reçoit "TOTO", il faut qu&#8217;elle bouge le curseur en fin de ligne.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>ansi escape code</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The terminal interprets these ANSI sequences as commands, rather than text to display verbatim.</p>
+</li>
+<li>
+<p>An escape sequence is a combination of characters that has a meaning other than the literal characters contained therein.</p>
+</li>
+<li>
+<p>ANSI sequences were introduced in the 1970s to replace vendor-specific sequences</p>
+</li>
+<li>
+<p>Although hardware text terminals have become increasingly rare in the 21st century, the relevance of the ANSI standard persists</p>
+</li>
+<li>
+<p>because a great majority of terminal emulators and command consoles interpret at least a portion of the ANSI standard.</p>
+</li>
+<li>
+<p>[The VT100] was one of the first terminals to support ANSI escape codes for cursor control and other tasks, and added a number of extended codes for special features like controlling the status lights on the keyboard.</p>
+</li>
+<li>
+<p>This led to rapid uptake of the ANSI standard, becoming the de facto standard for terminal emulators.</p>
+</li>
+<li>
+<p>sur la <a href="https://en.wikipedia.org/wiki/ANSI_escape_code">page wikipedia</a> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>séquence ANSI = séquence d&#8217;octets particulière contrôlant le terminal (e.g. la couleur du curseur)</p>
+</li>
+<li>
+<p>the relevance of the ANSI standard persists because a great majority of terminal emulators and command consoles interpret at least a portion of the ANSI standard</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>shell</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>The operating system is the interface between the user and the hardware.</p>
+</li>
+<li>
+<p>A shell process is the program that prompts you for input, takes your commands, and runs them for you.</p>
+</li>
+<li>
+<p>It is a computer program that serves as a command-line interpreter. The shell implements a read-eval-print loop (REPL).</p>
+</li>
+<li>
+<p>The most generic sense of the term "shell" means any program that users employ to type commands.</p>
+</li>
+<li>
+<p>You enter commands at this input prompt and the shell acts as a "command interpreter".</p>
+</li>
+<li>
+<p>The shell takes each command and passes it to the operating system kernel to handle.</p>
+</li>
+<li>
+<p>The shell then parses the result of this action back to the terminal.</p>
+</li>
+<li>
+<p>The shell is both an interactive command language and a scripting language, and is used by the operating system to control the execution of the system using shell scripts.</p>
+</li>
+<li>
+<p>The shell exposes the operating system&#8217;s services to a human user or other programs.</p>
+</li>
+<li>
+<p>The shell knows nothing about displaying characters on the monitor or about handling input keystroke codes from the keyboard - that is up to the hardware and software that is implementing the terminal.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>C&#8217;est un keypoint important pour comprendre ce qu&#8217;est un terminal, et la différence entre terminal et shell.</p>
+</li>
+<li>
+<p>Derrière, console = terminal + shell</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -191,7 +450,7 @@ Liste des liens
 <p>ce groupe de 6 pages contient les bonnes pratiques à suivre lorsqu&#8217;on fait de la revue de code, en tant que reviewer</p>
 </li>
 <li>
-<p>il existe également <a href="https://google.github.io/eng-practices/review/developer/">l&#8217;équivalent en tant que reviewee</a>, mais je ne l&#8217;ai pas encore lu</p>
+<p>il existe également <a href="https://google.github.io/eng-practices/review/developer/">l&#8217;équivalent en tant que reviewee</a></p>
 </li>
 <li>
 <p>il n&#8217;y a que 6 courtes pages, très faciles à lire, et contenant des conseils très concrets &#8594; ne pas hésiter à y revenir (d&#8217;ailleurs, je vais les mettre dans mes références)</p>
