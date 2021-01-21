@@ -45,6 +45,77 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [POST] http://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html[The terminal, the console and the shell - what are they?]
+
+=== Lu le 2021-01-18, publié le 2021-01-13, sur http://unixsheikh.com/about.html[unixsheikh], un dev freelance anonyme (https://github.com/unixsheikh[son github]).
+
+* *TL;DR* : l'article donne beaucoup d'infos intéressantes sur terminal/console/shell :
+** la console est "ce qui permet d'interagir avec l'ordinateur" (par analogie avec le meuble), c'est l'ensemble terminal+shell
+** le terminal reçoit le signal du clavier, et en déduit une séquence de caractères ASCII à envoyer au shell
+** le shell est un REPL autour du kernel, c'est un wrapper permettant d'interagir avec le kernel (y compris de lancer des programmes)
+** le shell reçoit et interprète la séquence de caractère, en fonction du terminal qui l'a envoyé
+* par exemple, si l'appui sur la touche "Fin" provoque un affichage bizarre au lieu d'amener le curseur en fin de ligne c'est peut-être parce que l'envvar TERM est mal configurée
+** p.ex. l'envvar du shell a p.ex. la valeur VT100 alors qu'on utilise un terminal VT220
+** et le terminal VT220 utilise TATA comme séquence de caractères identifiant "Fin", alors que VT100 utilise TOTO
+** du coup, à l'appui sur "Fin", notre terminal VT220 envoie "TATA"
+** le shell reçoit "TATA", et regarde si c'est une séquence spéciale pour le TERM qu'il utilise (VT100)
+** ce n'est pas le cas (en effet, VT100 utilise "TOTO" pour "Fin"), du coup il considère que la séquence n'est pas spéciale, et l'affiche...
+* attention, quand on parle de terminal, à ne pas confondre :
+** terminal réel (sur les consoles physiques de l'époque, ou un teletype, ou encore un terminal hardware spécifique comme le VT100)
+** terminal virtuel (sur l'ordinateur, p.ex. Ctrl+Alt+F1)
+** terminal émulé (e.g. xterm, gnome-terminal, ....)
+** terminal multiplexé (e.g. tmux, gnu screen)
+* *terminal virtuel* :
+** A virtual terminal or virtual console is a program that simulates a physical terminal.
+** For example, both the Linux kernel and BSD kernels support virtual terminals - terminals that are logically separate, but which access the same physical keyboard and monitor.
+** The virtual terminal gives the impression that several independent terminals are running concurrently. 
+** Each virtual terminal can be logged in with a different user and it can run its own shell and have its own font settings.
+** Il faut comprendre ces phrases comme :
+*** le clavier/écran qu'on utilise ne constituent pas un unique terminal permettant de se relier à l'ordinateur
+*** en fait, tout se passe comme si le clavier/écran représentaient plusieurs terminaux indépendants (virtuels), permettant tous de se relier à un seul ordinateur
+** à chaque terminal virtuel est associé un /dev/ttyX
+** (attention à ne pas confondre un terminal virtuel avec un terminal émulé)
+* *terminal émulé* :
+** A terminal emulator is a computer program that emulates a physical terminal within some other display architecture, such as the X Window System.
+** Un terminal parent permettant de se connecter à l'ordinateur (ici, le serveur X, mais ça pourrait être un terminal virtuel) va lancer un programme qui émule un terminal
+** Ce programme va donc capturer les inputs clavier (et transmettre des caractères ASCII à un shell) et afficher les outputs du shell (ou de ses sous-programmes).
+** À la base, ces terminaux émulent des machines physiques (e.g. VT100)
+*** notamment, chaque émulateur de terminal peut envoyer des séquences ASCII différentes en fonction des touches enfoncées
+*** du coup, pour reprendre mon exemple de plus haut, quand on appuie sur "Fin", un émulateur qui émule VT100 enverra "TOTO", alors qu'un émulateur qui émule VT220 enverra "TATA"
+** The purpose of the terminal emulator is to allow access to the command line (NdM : to the shell, plutôt) while working in a graphical user interface, such as the X Window System.
+** Since the shell is "expecting" to interface with a human through a terminal, and we don't use a physical terminal while in a graphical environment, we need the terminal emulator.
+** Ma compréhension est qu'un émulateur de terminal donné peut émuler plusieurs terminaux (dit autrement, il peut associer plusieurs séquences ASCII différentes à la touche "Fin")
+** Il est important de comprendre qu'un émulateur de terminal est un programme GRAPHIQUE (car il émule la sortie vidéo du terminal, et donne accès à une console)
+* *l'envvar `TERM`* :
+** The environment variable TERM tells applications the name of a terminal description to read from the terminfo database (see man terminfo).
+** Each description consists of a number of named capabilities which tell applications what to send to control the terminal.
+** For example, the cup capability contains the escape sequence used to move the cursor up.
+** Ma compréhension : grâce à TERM, une application sait que si elle reçoit "TOTO", il faut qu'elle bouge le curseur en fin de ligne.
+* *ansi escape code* :
+** The terminal interprets these ANSI sequences as commands, rather than text to display verbatim.
+** An escape sequence is a combination of characters that has a meaning other than the literal characters contained therein.
+** ANSI sequences were introduced in the 1970s to replace vendor-specific sequences
+** Although hardware text terminals have become increasingly rare in the 21st century, the relevance of the ANSI standard persists
+** because a great majority of terminal emulators and command consoles interpret at least a portion of the ANSI standard.
+** [The VT100] was one of the first terminals to support ANSI escape codes for cursor control and other tasks, and added a number of extended codes for special features like controlling the status lights on the keyboard.
+** This led to rapid uptake of the ANSI standard, becoming the de facto standard for terminal emulators.
+** sur la https://en.wikipedia.org/wiki/ANSI_escape_code[page wikipedia] :
+*** séquence ANSI = séquence d'octets particulière contrôlant le terminal (e.g. la couleur du curseur)
+*** the relevance of the ANSI standard persists because a great majority of terminal emulators and command consoles interpret at least a portion of the ANSI standard
+* *shell* :
+** The operating system is the interface between the user and the hardware.
+** A shell process is the program that prompts you for input, takes your commands, and runs them for you.
+** It is a computer program that serves as a command-line interpreter. The shell implements a read-eval-print loop (REPL).
+** The most generic sense of the term "shell" means any program that users employ to type commands.
+** You enter commands at this input prompt and the shell acts as a "command interpreter".
+** The shell takes each command and passes it to the operating system kernel to handle.
+** The shell then parses the result of this action back to the terminal.
+** The shell is both an interactive command language and a scripting language, and is used by the operating system to control the execution of the system using shell scripts.
+** The shell exposes the operating system's services to a human user or other programs.
+** The shell knows nothing about displaying characters on the monitor or about handling input keystroke codes from the keyboard - that is up to the hardware and software that is implementing the terminal.
+*** C'est un keypoint important pour comprendre ce qu'est un terminal, et la différence entre terminal et shell.
+*** Derrière, console = terminal + shell
+
 == [POST] https://google.github.io/eng-practices/review/reviewer/[How to do a code review]
 
 === Lu le 2021-01-04, publié le 2020-??-??, sur https://google.github.io/eng-practices/[Google's Engineering Practices documentation]
