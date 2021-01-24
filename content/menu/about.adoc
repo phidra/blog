@@ -21,7 +21,7 @@ Si ce blog avait un fil rouge, ce serait la "vulgarisation tech" : j'essaye de r
 
 C'est mon premier blog, donc je vais peut-être taper à côté, mais voici ce que j'en attends :
 
-* *Mieux comprendre les sujets bloggés* : présenter les choses "à quelqu'un" et me mettre dans une posture d'expliquant, ça m'aide à identifier les points qui ne sont pas très clairs.
+* *Mieux comprendre les sujets bloggés* : présenter les choses "à quelqu'un" et me mettre dans une posture d'expliquant, ça m'aide à identifier les points qui ne sont pas très clairs : _there is no better way to learn something than to teach it_
 * *Faciliter ma mémorisation des contenus postés* : par rapport à de simples notes, voire juste à la lecture d'un article, il m'est plus facile de retenir les sujets sur lesquels j'ai rédigé un post.
 * *Obtenir des retours/corrections sur les contenus postés* : si un jour ce blog a des lecteurs, je compte sur ceux-ci pour me corriger lorsque j'aurais compris un sujet de travers. Par exemple https://web.archive.org/web/20140716225227/http://sametmax.com/closure-en-python-et-javascript/[le post initial sur les closures] de feu l'excellent blog de Sam & Max était faux, et c'est un commentaire laissé par un lecteur qui a permis aux auteurs de http://sametmax.com/closure-en-python-et-javascript/[corriger le post].
 ** Un aparté sur l'exactitude de ce que je poste : je blogge en présentant _MA compréhension des sujets abordés_, mais ça ne veut pas dire qu'elle est correcte ! Si vous avez bien lu ce qui précède, c'est même l'un des objectifs principaux du blog d'être corrigé si nécessaire.
