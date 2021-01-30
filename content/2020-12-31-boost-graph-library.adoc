@@ -1,7 +1,7 @@
 ---
 title: "Boost Graph Library tutorial"
 date: 2020-12-31T10:00:00+01:00
-draft: true
+draft: false
 ---
 :source-highlighter: pygments
 :pygments-css: style
@@ -41,7 +41,7 @@ Les pré-requis sont :
 * côté C{plus}{plus} : de savoir instancier un template, et de savoir que des types peuvent être contraints par des concepts
 * côté graphe, a minima de savoir ce qu'est un graphe (vertex et edge), et quel problème résoud l'algorithme de Dijkstra. Si besoin, la doc de la BGL comporte https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html[un très bon rappel synthétique de théorie des graphes].
 
-Pour les impatients, le code complet est ici. FIXME : donner le lien vers le code complet.
+Pour les impatients, le code complet est https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/dijkstra.cpp[ici].
 
 == Création de notre graphe
 
@@ -533,8 +533,6 @@ python3.6 -m pip install --user pipx
 pipx install conan
 ----
 
-Voici un lien vers le setup utilisé pour le code qui accompagne ce post. FIXME : donner un lien vers le code).
-
 Il y a plus de détails sur https://docs.conan.io/en/latest/[la doc de conan], mais en deux mots, il faut définir un `conanfile.txt` dans lequel on exprime ses dépendances et son générateur :
 
 [source]
@@ -546,7 +544,7 @@ boost/1.75.0
 cmake
 ----
 
-Derrière, dans le `CMakeLists.txt`, on peut utiliser directement les dépendances exprimées dans le conanfile. Voici le `CMakeLists.txt` utilisé :
+Derrière, dans le `CMakeLists.txt`, on peut utiliser directement les dépendances exprimées dans le conanfile. https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/CMakeLists.txt[Voici] le `CMakeLists.txt` utilisé :
 
 [source]
 ----
@@ -563,7 +561,7 @@ conan_basic_setup()
 add_executable(dijkstra-bin dijkstra.cpp)
 ----
 
-Pour faire bonne mesure, voici un lien vers le script utilisé pour builder le code (FIXME : donner un lien vers le script). En gros, on appelle `conan`, puis `cmake`, puis `make` :
+Pour faire bonne mesure, https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/build_and_run.sh[voici un lien vers le script] utilisé pour builder le code. En gros, on appelle `conan`, puis `cmake`, puis `make` :
 
 [source]
 ----
@@ -664,7 +662,7 @@ int weight = get(weight_property_map, AB);
 cout << "weight of edge AB = " << weight << endl;
 ----
 
-Le code complet utilisant "l'ancienne façon" de définir et manipuler les properties est accessibles ici : FIXME : mentionner le lien vers le code.
+Le code complet utilisant "l'ancienne façon" de définir et manipuler les properties est accessible https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/oldproperties.cpp[ici].
 
 == Annexe n°4 = property_map sur une propriété externe [[annexe4]]
 
