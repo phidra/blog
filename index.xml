@@ -12,6 +12,15 @@
     
     
     <item>
+      <title>Boost Graph Library tutorial</title>
+      <link>https://phidra.github.io/blog/2020-12-31-boost-graph-library/</link>
+      <pubDate>Thu, 31 Dec 2020 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2020-12-31-boost-graph-library/</guid>
+      <description>De quoi va-t-on causer : Introduction Création de notre graphe Remplissage du graphe Consultation/modification du graphe Les property_map Enfin, on exécute l&amp;#8217;algo ! Conclusion Annexe n°1 = à propos de la doc de la BGL Annexe n°2 = installation de la BGL Annexe n°3 = autre façon d&amp;#8217;utiliser les properties Annexe n°4 = property_map sur une propriété externe Annexe n°5 = prédécesseurs et récupération du plus court chemin Annexe n°6 = sujets laissés de côté     Introduction  C&amp;#8217;est subjectif, mais je trouve la doc de la Boost Graph Library (appelée BGL dans la suite de ce post) pas super bien foutue.</description>
+    </item>
+    
+    <item>
       <title>En deux mots</title>
       <link>https://phidra.github.io/blog/menu/in2words/</link>
       <pubDate>Sun, 20 Dec 2020 11:00:00 +0100</pubDate>
@@ -169,7 +178,7 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [POST] The terminal, the console and the shell - what are they? [POST] How to do a code review [POST] Copy and Swap, 20 years later [POST] No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization? [VIDEO] CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++” [VIDEO] KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019 [POST] But I was helping the compiler!</description>
+      <description>Liste des liens    Pourquoi cette page [PREZ] la notation hongroise [POST] The terminal, the console and the shell - what are they? [POST] How to do a code review [POST] Copy and Swap, 20 years later [POST] No Kings: How Do You Make Good Decisions Efficiently in a Flat Organization? [VIDEO] CppCon 2017: Carl Cook “When a Microsecond Is an Eternity: High Performance Trading Systems in C++” [VIDEO] KEYNOTE: What Everyone Should Know About How Amazing Compilers Are - Matt Godbolt C++ on Sea 2019 [POST] But I was helping the compiler!</description>
     </item>
     
     <item>

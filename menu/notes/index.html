@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          89 min read
+          90 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,7 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__prez_a_href_https_en_wikipedia_org_wiki_hungarian_notation_la_notation_hongroise_a">[PREZ] <a href="https://en.wikipedia.org/wiki/Hungarian_notation">la notation hongroise</a></a></li>
 <li><a href="#__post_a_href_http_unixsheikh_com_articles_the_terminal_the_console_and_the_shell_what_are_they_html_the_terminal_the_console_and_the_shell_what_are_they_a">[POST] <a href="http://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html">The terminal, the console and the shell - what are they?</a></a></li>
 <li><a href="#__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></a></li>
 <li><a href="#__post_a_href_https_mropert_github_io_2019_01_07_copy_swap_20_years_copy_and_swap_20_years_later_a">[POST] <a href="https://mropert.github.io/2019/01/07/copy_swap_20_years/">Copy and Swap, 20 years later</a></a></li>
@@ -173,6 +174,53 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__prez_a_href_https_en_wikipedia_org_wiki_hungarian_notation_la_notation_hongroise_a">[PREZ] <a href="https://en.wikipedia.org/wiki/Hungarian_notation">la notation hongroise</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_présentation_rapide_par_un_collègue_le_2021_01_21">Présentation rapide par un collègue le 2021-01-21.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> = préfixer ses noms de variables pour ajouter du renseignement (à ne pas confondre avec polish notation, mathématique).</p>
+</li>
+<li>
+<p>Apps Hungarian Notation = on ajoute de l&#8217;info sur ce que représente la variable = GOOD</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>rwPosition</code> : variable represents a row ("rw");</p>
+</li>
+<li>
+<p><code>usName</code> : variable represents an unsafe string ("us"), which needs to be "sanitized" before it is used (e.g. see code injection and cross-site scripting for examples of attacks that can be caused by using raw user input)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Systems Hungarian Notation = on ajoute de l&#8217;info sur le type de la variable = BAD</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>lAccountNum</code> : variable is a long integer ("l");</p>
+</li>
+<li>
+<p><code>strName</code> : Variable represents a string ("str") containing the name, but does not specify how that string is implemented.</p>
+</li>
+<li>
+<p>bad car fait doublon avec le type-system (d&#8217;où p.ex. possible désynchro entre le type préfixé et le type réel). Tire son origine d&#8217;une incompréhension de la notation hongroise par l&#8217;équipe système de Microsoft.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>intérêt mis en avant par Joël Spolsky (pour Apps uniquement) = le code qui est faux a l&#8217;air faux (e.g. <code>rAngle += 360;</code> )</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -1095,17 +1143,13 @@ For instance, a market maker in XYZ stock may provide a quote of $10.00-$10.05, 
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
-
-</div>
 </div>
 </div>
 <div class="sect1">
 <h2 id="__post_a_href_https_pankajraghav_com_2020_08_16_rvo_html_but_i_was_helping_the_compiler_a">[POST] <a href="https://pankajraghav.com/2020/08/16/RVO.html">But I was helping the compiler!</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em_2">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
+<h3 id="_lu_le_2020_08_28_publié_le_2020_08_16_sur_le_a_href_https_pankajraghav_com_blog_de_pankaj_sarathy_a_un_dev_c_python_embarqué_em_an_electrical_power_engineer_turned_software_developer_em">Lu le 2020-08-28, publié le 2020-08-16 sur le <a href="https://pankajraghav.com/">blog de Pankaj SARATHY</a>, un dev C++ / python / embarqué (<em>an electrical power engineer turned software developer</em>)</h3>
 <div class="ulist">
 <ul>
 <li>
