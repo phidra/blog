@@ -1,0 +1,952 @@
+---
+title: "Boost Graph Library tutorial"
+date: 2020-12-31T10:00:00+01:00
+draft: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+:imagesdir: ../2020-12-31-boost-graph-library-img
+= Boost Graph Library tutorial
+
+toc::[]
+
+== Introduction
+
+[[back-from-annexe1]] C'est subjectif, mais je trouve la doc de la *Boost Graph Library* (appelée *BGL* dans la suite de ce post) <<annexe1,pas super bien foutue>>.
+
+J'ai récemment joué un peu avec, mon objectif était simple : créer le graphe suivant, et calculer le plus court chemin entre `A` et `H` avec l'algorithme de Dijkstra :
+
+image::dijkstra.svg[role="text-center"]
+
+Les lettres sont les vertex du graphe, les nombres au dessus des edges sont leur poids ; par conséquent, le plus court chemin entre `A` et `H` est `ABEGH`, de poids total `5+3+5+3=16`.
+
+J'ai trouvé le https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp[code donné en exemple], un peu aride pour un débutant en BGL tel que moi, et la doc passe parfois trop vite sur certains concepts importants. Ce post est un guide détaillé permettant de :
+
+* définir un graphe
+* le remplir d'edges et de vertex (avec leurs propriétés)
+* manipuler le graphe et son contenu
+* exécuter un algo de la BGL dessus = Dijkstra
+* accéder aux résultats
+
+Et le plus important : vous aurez une introduction des concepts, principes et outils nécessaires pour comprendre comment on fait tout ça.
+
+Ça va sans dire mais ça va mieux en le disant, en tant que débutant dans l'utilisation de la librairie, ne prenez pas le contenu de ce post comme parole d'évangile : n'hésitez-pas à consulter la doc et faire vos propres expérimentations.
+
+Les pré-requis sont :
+
+* côté C{plus}{plus} : de savoir instancier un template, et de savoir que des types peuvent être contraints par des concepts
+* côté graphe, a minima de savoir ce qu'est un graphe (vertex et edge), et quel problème résoud l'algorithme de Dijkstra. Si besoin, la doc de la BGL comporte https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html[un très bon rappel synthétique de théorie des graphes].
+
+Pour les impatients, le code complet est ici. FIXME : donner le lien vers le code complet.
+
+== Création de notre graphe
+
+[[back-from-annexe2]] Une fois <<annexe2,la BGL installée>>, notre périple commence par définir notre structure de graphe. Le code va ressembler à ça :
+
+[source,cpp]
+----
+using Graph = adjacency_list<vecS, vecS, undirectedS, VertexProperty, EdgeProperty>;
+Graph mygraph;
+----
+
+En gros, on définit notre graphe en paramétrant un template ; voyons les paramètres un-à-un.
+
+
+=== Type de graphe
+
+Le template définit la façon de représenter le graphe ; ici, on utilise une https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[adjacency_list]. Pour simplifier le post, je ne parlerai pas https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html#sec:adjacency-list-representation[des autres représentations possibles], et comme `adjacency_list` a le bon goût d'être la https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html[mieux documentée] des structures, c'est un bon choix pour un premier contact. Notez que les listes d'adjacence ne sont pas propres à la BGL : elles sont https://fr.wikipedia.org/wiki/Liste_d%27adjacence[une façon courante] de représenter un graphe.
+
+Dans notre cas, ce template est paramétré par 5 arguments,  :
+
+* les deux `vecS` configurent les containers utilisés pour stocker les vertex et les edges, je ne rentre pas dans les détails, que vous trouverez https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type[ici].
+* `undirectedS` indique que notre graphe sera *non-orienté*. Dit autrement, si le graphe contient l'edge `AB`, il sera possible indifféremment de faire le trajet `A->B` et `B->A`
+* `VertexProperty` et `EdgeProperty` sont les structures définissant les propriétés associées aux vertex/edge du graphe, je les détaille quelques lignes plus bas.
+
+=== Properties des edges et vertex
+
+Définir un graphe contenant des edges et des vertex, c'est bien. Pouvoir leur attribuer des propriétés, c'est mieux. Pour cela, on définit des structures `VertexProperty` et `EdgeProperty`, qu'on passe comme paramètre template de notre `adjacency_list`.
+
+Pour ce post, nos vertex disposeront d'un nom (p.ex. `"A"`), et de coordonnées géographiques (`latitude` + `longitude`). Chaque edge représente une route entre deux vertex, il disposera d'un nom (`roadname`), et d'un poids représentant la longueur du chemin entre les noeuds (`weight`) :
+
+[source,cpp]
+----
+struct VertexProperty {
+    string name;
+    double latitude;
+    double longitude;
+};
+
+struct EdgeProperty {
+    int weight;
+    string roadname;
+};
+----
+
+Certaines de ces propriétés ne sont pas indispensables, mais le post est plus pédagogqiue avec plusieurs propriétés.
+
+[[back-from-annexe3]] À noter : définies de cette façon, les properties des vertex/edges sont appelées https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html[bundled properties] dans la doc de la BGL ; https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties[une autre façon] d'attribuer des propriétés aux vertex/edges existe, j'en touche un mot en <<annexe3,en annexe>>, car la façon de les utiliser diffère, et vous pouvez tomber sur du code les utilisant.
+
+=== Au final
+
+Au final, notre code permettant d'instancier un graphe vide est :
+
+[source,cpp]
+----
+struct VertexProperty {
+    string name;
+    double latitude;
+    double longitude;
+};
+
+struct EdgeProperty {
+    int weight;
+    string roadname;
+};
+
+using Graph = adjacency_list<vecS, vecS, undirectedS, VertexProperty, EdgeProperty>;
+Graph mygraph;
+----
+
+== Remplissage du graphe
+
+Il va maintenant falloir remplir ce graphe vide avec les vertex et edges souhaités. Ça va ressembler à ça :
+
+[source,cpp]
+----
+VertexDescriptor B = add_vertex({"B", 125002}, mygraph);
+VertexDescriptor C = add_vertex({"C", 125003}, mygraph);
+
+add_edge(B, C, {8, "Road to Eldorado"}, mygraph);
+----
+
+=== Vertex et Edge descriptors
+
+Les structures permettant de manipuler les edges/vertex sont appelées *descriptor* dans la BGL : `vertex_descriptor` et `edge_descriptor`. Ce sont des https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_traits.html[types associés à notre graphe], et je trouve plus simple de commencer par en faire des typedef :
+
+
+[source,cpp]
+----
+using VertexDescriptor = graph_traits<Graph>::vertex_descriptor;
+using EdgeDescriptor = graph_traits<Graph>::edge_descriptor;
+----
+
+=== Ajout de vertex et d'edges
+
+Les opérations applicables aux graphe semblent être des free-floating functions, dont le dernier paramètre est le graphe ; j'ai trouvé ça un peu déroutant. C'est en tout cas vrai pour `add_vertex`, qui permet d'ajouter un vertex au graphe :
+
+[source,cpp]
+----
+VertexDescriptor A = add_vertex({"A", 48.8472743, 2.3385463}, mygraph);
+VertexDescriptor B = add_vertex({"B", 48.8538388, 2.2667097}, mygraph);
+VertexDescriptor C = add_vertex({"C", 48.8822442, 2.3355303}, mygraph);
+VertexDescriptor D = add_vertex({"D", 48.8784585, 2.3682707}, mygraph);
+VertexDescriptor E = add_vertex({"E", 48.8783875, 2.2781327}, mygraph);
+VertexDescriptor F = add_vertex({"F", 48.8751455, 2.3496791}, mygraph);
+VertexDescriptor G = add_vertex({"G", 48.8695761, 2.3778204}, mygraph);
+VertexDescriptor H = add_vertex({"HHHHH", 999, 888}, mygraph);  // wrong properties !
+----
+
+`add_vertex` attend comme premier paramètre un `VertexProperty` décrivant les propriétés du vertex (ici, construit à la volée), et notre graphe `mygraph` comme second paramètre.
+
+Petit aparté : dans la BGL, les opérations applicables à un graphe donné sont définies par https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html[tout un tas de concepts] contraignant celui-ci. Les fonctions applicable à une `adjacency_list` sont indiquées https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[la doc] (paragraphe _Non-Member Functions_). L'ensemble des fonctions existantes, assorties des concepts qu'elles nécessitent est dans https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html[la doc des concepts]. Par exemple, pour pouvoir utiliser `add_vertex` sur notre graphe, il doit respecter le concept https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/MutablePropertyGraph.html[MutablePropertyGraph].
+
+Similairement aux vertex, on peut créer les edges de notre graphe, assortis de leurs propriétés, notamment leur poids :
+
+[source,cpp]
+----
+add_edge(A, B, {5, "Boulevard Saint-Michel"}, mygraph);
+add_edge(A, C, {10, "Avenue Mozart"}, mygraph);
+add_edge(A, D, {1, "Place Pigalle"}, mygraph);
+add_edge(B, C, {8, "Boulevard de la Vilette"}, mygraph);
+add_edge(B, E, {3, "Avenue de Neuilly"}, mygraph);
+add_edge(C, F, {5, "Rue de Paradis"}, mygraph);
+add_edge(D, E, {9, "Boulevard de Belleville"}, mygraph);
+add_edge(E, G, {5, "Rue Lecourbe"}, mygraph);
+add_edge(F, H, {2, "Avenue des Champs-Élysées"}, mygraph);
+add_edge(G, H, {3333, "Rue de la Paiiiiix"}, mygraph);  // wrong properties !
+----
+
+Ici, `add_edge` insère un edge entre deux vertex (qu'on manipule via les `VertexDescriptor` renvoyés par `add_vertex`), et lui associe un `EdgeProperty`, construit à la volée également. Comme précédemment, `add_edge` est une free-floating function qui prend `mygraph` comme dernier paramètre.
+
+== Consultation/modification du graphe
+
+À ce stade, notre graphe est construit, et il contient (à quelques erreurs près) les edges et vertex modélisant le graphe illustré en introduction...
+
+=== Accès aux vertex / edges
+
+Comme précédemment, c'est via des free-floating functions qu'on peut accéder au contenu du graphe :
+
+* sur l'ensemble du graphe :
++
+[source,cpp]
+----
+cout << "This graph has " << num_vertices(mygraph) << " vertices" << endl;
+cout << "This graph has " << num_edges(mygraph) << " edges" << endl;
+
+// itérer sur tous les vertices :
+using VertexIterator = graph_traits<Graph>::vertex_iterator;
+VertexIterator v, v_end;
+for (tie(v, v_end) = vertices(mygraph); v != v_end; ++v)
+{
+    VertexDescriptor mysupervertex = *v;
+    // do something with mysupervertex...
+}
+
+// itérer sur tous les edges :
+using EdgeIterator = graph_traits<Graph>::edge_iterator;
+EdgeIterator e, e_end;
+for (tie(e, e_end) = edges(mygraph); e != e_end; ++e)
+{
+    EdgeDescriptor mysuperedge = *e;
+    // do something with mysuperedge...
+}
+----
++
+* sur un vertex donné :
++
+[source,cpp]
+----
+cout << "Vertex A has " << out_degree(A, mygraph) << " out-edges" << endl;
+
+// itérer sur les edges incidents à un noeud donné :
+using OutEdgeIterator = graph_traits<Graph>::out_edge_iterator;
+OutEdgeIterator o, o_end;
+for (tie(o, o_end) = out_edges(E, mygraph); o != o_end; ++o)
+{
+    display_edge(*o);
+}
+cout << endl;
+----
++
+* sur un edge donné :
++
+[source,cpp]
+----
+// retrouver un edge à partir de ses noeuds :
+EdgeDescriptor GH = edge(G, H, mygraph).first;
+
+// accéder aux noeuds d'un edge donné :
+VertexDescriptor node_from = source(GH, mygraph);
+VertexDescriptor node_to = target(GH, mygraph);
+assert(node_from == G && node_to == H);
+----
+
+Note : une opération importante serait de pouvoir retrouver un vertex (resp. edge) à partir d'une de ses propriétés. Par exemple, être capable de faire :
+
+[source,cpp]
+----
+VertexDescriptor A = get_from_property("A", &VertexProperty::name, mygraph);
+----
+
+La doc ne mentionne rien à ce sujet, mais on trouve https://stackoverflow.com/questions/2244580/find-boost-bgl-vertex-by-a-key/2248090#2248090[quelques références] à un `labeled_graph` non-documenté, mais https://www.boost.org/doc/libs/1_75_0/boost/graph/labeled_graph.hpp[qui existe] dans la BGL, et qui semble permettre cet usage.
+
+De mon côté, comme je n'ai pas encore eu le temps de tester, je me suis limité à créer et maintenir un dictionnaire externe au graphe associant une propriété à son VertexDescriptor, mais c'est pas fi-fou, notamment car les `VertexDescriptor` peuvent être invalidés.
+
+=== Accès aux properties des vertex / edges
+
+Étant donné un vertex (resp. edge) donné, ou plus exactement, un *VertexDescriptor* donné, on accède à ses properties via l' `operator[]` du graphe :
+
+[source,cpp]
+----
+string name_of_A = mygraph[A].name;
+assert(name_of_A == "A");
+
+double lat = mygraph[A].latitude;
+double lon = mygraph[A].longitude;
+cout << "vertex " << name_of_A << " has coordinates (" << lat << ";" << lon << ")\n";
+};
+----
+
+De même pour un *EdgeDescriptor* donné :
+
+[source,cpp]
+----
+string roadname_of_GH = mygraph[GH].roadname;
+assert(roadname_of_GH == "Rue de la Paiiiiix");
+assert(mygraph[GH].weight == 3333);
+----
+
+Ce même `operator[]` permet également de muter les properties des vertex/edge, ce qu'on va utiliser pour corriger les petites erreurs introduites plus haut :
+
+[source,cpp]
+----
+mygraph[H].name = "H";
+mygraph[H].latitude = 48.8404808;
+mygraph[H].longitude = 2.2935483;
+
+mygraph[GH].roadname = "Rue de la Paix";
+// on corrigera le weight de GH un peu plus bas
+----
+
+== Les property_map
+
+À ce stade, on est *presque* prêts à appliquer https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra[l'algorithme de Dijkstra] pour rechercher un plus court chemin.
+
+Presque.
+
+Il faut d'abord parler un chouïa des *property_map*.
+
+=== C'est quoi ?
+
+On va la faire courte : les property_map sont une abstraction de la BGL pour représenter une structure de type https://fr.wikipedia.org/wiki/Tableau_associatif[dictionnaire], c'est à dire permettant d'associer une clé à une valeur.
+
+Dans la BGL, elles sont utilisées pour associer un vertex (resp. edge) à l'une de ses propriétés, via une fonction `get`. Par exemple, la property-map suivante associe un edge — plus précisément un EdgeDescriptor — à son `weight` :
+
+[source,cpp]
+----
+auto weight_property_map = get(&EdgeProperty::weight, mygraph);
+
+// Tout se passe comme si la property_map était un dictionnaire avec ce contenu :
+// AB -> 5
+// AC -> 10
+// AD -> 1
+// BC -> 8
+// BE -> 3
+// CF -> 5
+// DE -> 9
+// EG -> 5
+// FH -> 2
+// GH -> 3333
+----
+
+On peut lire la valeur associée à une clé du dictionnaire avec `get` (d'un usage différent du `get` ci-dessus...) :
+
+[source,cpp]
+----
+int weight_of_GH = get(weight_property_map, GH);
+assert(weight_of_GH == 3333);
+----
+
+Et ça marche aussi en écriture, grâce à `put` ; on va en profiter pour corriger le poids de l'edge `GH` à une valeur plus raisonnable de `3` :
+
+[source,cpp]
+----
+put(weight_property_map, GH, 3);
+assert(mygraph[GH].weight == 3);
+----
+
+=== Ça sert à quoi ?
+
+Après tout, on avait déjà une interface tout à fait valable pour accéder au properties d'un vertex/edge, pourquoi diable aller s'embêter avec des property_maps ?
+
+Parce que les property_maps sont utilisées à peu près partout dans les algos de la BGL pour manipuler les propriétés des edges/vertex.
+
+Un exemple concret ? L'algorithme de Dijkstra calcule le plus court chemin entre deux noeuds, et a besoin du poids des edges. La façon canonique de passer les poids des edges à la fonction `dijkstra_shortest_paths` est de *lui passer une property_map* dont les clés sont les edges, et les valeurs sont leur poids.
+
+=== Propriété interne vs. propriété externe
+
+Les property_maps ne servent pas qu'à manipuler les `VertexProperty` et `EdgeProperty` qu'on a définis plus haut, mais également d'autres propriétés. En effet, on peut attribuer à un vertex/edge deux types de propriété : *interne* et *externe* :
+
+*Propriété interne* : pour faire simple, une propriété interne d'un vertex est une propriété qui le caractérise, indissociable du vertex ; sans elle, le vertex n'a pas d'intérêt. Dit autrement, le cycle de vie de la propriété doit être confondu avec celui du vertex : un vertex construit doit disposer de cette propriété, celle-ci doit exister tant que le vertex existe, et ne pas lui survivre. Les properties définies dans plus haut dans `VertexProperty` ou `EdgeProperty` sont des propriétés internes.
+
+*Propriété externe* : à l'inverse, les propriétés externes peuvent être rattachées à un vertex/edge _de façon transitoire_ : elles ont leur propre cycle de vie, un graphe reste valide même si ses vertex sont dépourvus de ces propriétés externes.
+
+Un exemple concret ? Durant son exécution, l'algorithme de Dijkstra https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra#Mise_%C3%A0_jour_des_distances[maintient un tableau] associant un `tentative_distance` à chaque vertex, qui est la longueur du meilleur itinéraire (trouvé jusqu'ici) permettant de le rejoindre. Cette notion de `tentative_distance` n'a pas de sens en dehors du contexte de l'exécution de Dijkstra : en dehors de ce contexte, des vertex dépourvus de `tentative_distance` sont tout à fait valides.
+
+Le cycle de vie de la propriété `tentative_distance` associée à chaque vertex est donc lié à l'exécution de l'algorithme plutôt qu'au graphe lui-même : la property_map qui les stocke doit être créée au moment de l'algo, et pourra être supprimée dès qu'on n'aura plus besoin des résultats calculés par celui-ci.
+
+Le code suivant montre un exemple de création d'une property_map sur des propriétés externes :
+
+[source,cpp]
+----
+// La propriété "tentative_distance" de chaque vertex est stockée dans ce vector.
+// Ce vector a son propre cycle de vie, indépendant du graphe.
+std::vector<int> tentative_distances(num_vertices(mygraph));
+
+auto vertex_index_pmap = get(vertex_index, mygraph);
+
+// La property_map créée fournit une interface de type dictionnaire sur les tentative_distance.
+auto distances_pmap = make_iterator_property_map(
+    tentative_distances.begin(),
+    vertex_index_pmap
+);
+
+// À ce stade, 'distances_pmap' permet d'associer un VertexDescriptor à sa tentative_distance.
+// Elle est régulièrement modifiée au fur et à mesure de l'avancement de l'algo.
+// Si on prend un cliché en cours d'exécution, il pourra ressembler à :
+// A -> 0
+// B -> 5
+// C -> 10
+// D -> +∞
+// E -> +∞
+// F -> +∞
+// G -> +∞
+// H -> +∞
+----
+
+[[back-from-annexe4]] Je donne un peu plus d'explications — notamment sur ce `vertex_index` — <<annexe4,en annexe>>.
+
+== Enfin, on exécute l'algo !
+
+On est enfin prêt à utiliser l'algorithme de Dijkstra.
+
+=== L'algorithme de Dijkstra dans la BGL
+
+Dans sa version de base, l'algorithme de Dijkstra ne calcule pas le plus court chemin entre `A` et `H`, mais entre `A` et *chaque vertex du graphe*, y compris `H`, qui est le vertex qui nous intéresse ici. Internet regorge de ressources documentant https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra[l'algorithme de Dijkstra], je vous invite à les consulter si vous souhaitez plus de détails.
+
+Pour fonctionner, l'algo a besoin du graphe, des poids de ses edges (propriété interne associée aux vertex du graphe) ; il maintient pour chaque vertex deux propriétés temporaires (qu'on va donc stocker de façon externe au graphe) : la `tentative_distance`, et le `predecessor`. Ces propriétés sont modifiées au cours de l'algorithme, et lorsque l'algo retourne, elles jouent le rôle de "résultat" produit en sortie.
+
+[[back-from-annexe5]] J'ai mentionné brièvement la `tentative_distance` plus haut, et je relègue une brève explication sur les prédécesseurs et leur utilisation <<annexe5,en annexe>>.
+
+Au total, on va donc passer à l'algorithme trois property_map :
+
+* le `weight` de chaque edge (propriété *interne*)
+* la `tentative_distance` de chaque vertex (propriété *externe*)
+* le `predecessor` de chaque vertex (propriété *externe*)
+
+Le code préparant ces property_map est :
+
+[source,cpp]
+----
+auto weight_property_map = get(&EdgeProperty::weight, mygraph);
+
+auto vertex_index_pmap = get(vertex_index, mygraph);
+
+std::vector<VertexDescriptor> predecessors(num_vertices(mygraph));
+auto predecessors_pmap = make_iterator_property_map(predecessors.begin(), vertex_index_pmap);
+
+std::vector<int> tentative_distances(num_vertices(mygraph));
+auto tentative_distances_pmap = make_iterator_property_map(tentative_distances.begin(), vertex_index_pmap);
+----
+
+=== Invocation de l'algo
+
+Ayé ! On peut appeler l'algo :
+
+[source,cpp]
+----
+auto SOURCE = A;
+
+dijkstra_shortest_paths(
+    mygraph,
+    SOURCE,
+    weight_map(weight_property_map).
+    predecessor_map(predecessors_pmap).
+    distance_map(tentative_distances_pmap)
+);
+----
+
+La https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html[doc de l'algo] renseigne sur la signification de chaque paramètre :
+
+* `mygraph` : self-explanatory, c'est sur notre graphe crafté avec amour que l'algo travaille
+* `SOURCE` : le vertex à partir duquel tous les plus courts chemins sont calculés
+* `weight_property_map` : la property_map contenant le poids de chaque edge
+* `predecessors_map` : la property_map contenant le parent de chaque vertex sur le plus court chemin depuis la source, cf. <<annexe5,l'annexe dédiée au sujet>>.
+* `tentative_distances_map` : la property_map contenant la `tentative_distance` de chaque vertex
+
+=== Named-parameters
+
+Vous noterez que les property_map sont passées d'une façon un peu particulière, en chaînant 3 appels de fonction :
+
+[source,cpp]
+----
+// je parle de ça :
+weight_map(weight_property_map).predecessor_map(predecessors_pmap).distance_map(tentative_distances_pmap)
+----
+
+Long story short, c'est une astuce de la BGL pour pallier le fait que le C++ ne dispose pas de paramètres nommés.
+
+C'est https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bgl_named_params.html[documenté ici], ça simplifie le passage des paramètres, puisqu'on peut les passer sans se soucier de leur ordre et en utilisant facilement leurs valeurs par défaut.
+
+=== Utilisation des résultats
+
+Une fois l'exécution de l'algo terminée, les deux property_map externes contiennent les résultats.
+
+Ainsi, `tentative_distances_pmap` associe à chaque vertex le poids total du plus court chemin permettant de le rejoindre depuis la `SOURCE` :
+
+[source,cpp]
+----
+cout << "Le plus court chemin de " << nameof(SOURCE) << " vers " << nameof(H) << " a pour poids total : \n";
+cout << get(tentative_distances_pmap, H) << endl;
+// affichera 16 = 5+3+5+3, ce qui est bien le poids attendu
+----
+
+La récupération des détails du plus court chemin est un chouille moins immédiate : la property_map `predecessors_pmap` associe chaque vertex `V` à son *parent* dans le plus court chemin reliant `A` à `V`. Ainsi, le code suivant affiche l'avant-dernier vertex sur le plus court chemin entre `A` et `H` (qui est `G`) :
+
+[source,cpp]
+----
+auto parent_of_H = get(predecessors_pmap, H);
+cout << nameof(parent_of_H) << endl;
+// affichera "G"
+----
+
+[[back-from-annexe5]] De proche en proche, on peut ainsi reconstruire à rebours l'ensemble du plus court chemin entre `A` et `H`, le code est <<annexe5,en annexe>>.
+
+== Conclusion
+
+[[back-from-annexe6]] J'espère que le https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp[code donné en exemple] par la doc de la BGL pour l'algorithme de Dijkstra est maintenant compréhensible.
+
+J'insiste : je n'ai fait que jouer avec la librairie, je suis donc loin de la maîtriser, soyez critiques vis-à-vis de ce que vous venez de lire. Je liste <<annexe6,en annexe>> quelques sujets laissés de côté, et il y en a bien d'autres dont je n'ai même pas connaissance.
+
+Pour finir, même si je critique la doc de la librairie, je trouve le https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html[quick-tour] très instructif, et je vous invite à commencer par là ; quelque part, ce post était une façon parmi d'autres de me l'approprier.
+
+== Annexe n°1 = à propos de la doc de la BGL [[annexe1]]
+
+(<<back-from-annexe1,revenir au post>>) 
+
+Je trouve la doc de la BGL pas très ergonomique. C'est pas toujours de sa faute, c'est loin d'être critique, et c'est même sans doute un point de vue d'enfant-gâté-par-les-excellentes-docs de la plupart des librairies qui atteignent un certain degré de popularité. Mais quand même...
+
+Déjà, la navigation au sein de la doc n'est pas facile. Ok ok, c'est pas gravissime, mais c'est quand même pas la mort d'avoir un lien vers le sommaire dans le header de chaque page ? Sommaire qui non seulement n'est pas sur https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/[la page d'accueil] — à la limite, pourquoi pas... — mais dont https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/table_of_contents.html[le lien] est complètement paumé au beau milieu de celle-ci...
+
+Derrière, c'est une préférence personnelle, mais j'aime que les pages volumineuses disposent d'une table des matières cliquable : d'une part ça permet de référencer certaines sections (par exemple dans des notes), et d'autre part ça aide à comprendre comment se structure la page. La doc de la BGL est au mieux inégale sur ce pint : https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[la doc de référence d'adjacency_list] ou https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html[le quick-tour] n'en ont pas, mais https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html[une autre doc sur adjacency_list], pourtant moins touffue, en a une.
+
+En plus, les pages de la doc sont assez mal indexées par Google : n'hésitez-pas à abuser de la feature permettant de restreindre la recherche au sous-domaine de la doc, en préfixant la recherche par `site:` :
+
+[source]
+----
+adjacency_list site:www.boost.org/doc/libs/1_75_0/libs/graph/doc/
+----
+
+Bref, rien de bloquant, mais ce manque de fluidité, associé à l'organisation du contenu, obscur quand on découvre la librairie, rend la doc pas très beginner-friendly à mes yeux.
+
+Côté contenu, la doc est parfois imprécise, inhomogène, ou ment par omission. Par exemple, sur https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html[la page résumant les graph-concepts], la fonction `edge` est mentionnée pour le concept https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/AdjacencyMatrix.html[AdjacencyMatrix]. Il ne contraint pas https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[adjacency_list], pourtant, on peut bien utiliser `edge` sur l'adjacency_list, ce qui apparaît sur sa doc de référence. La fonction `vertex` n'est pas mentionnée du tout sur la page des concepts, mais est disponible pour adjacency_list. De même, https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/IncidenceGraph.html[IncidenceGraph] ne fait pas partie des modèles d'adjacency_list, pourtant on peut appliquer ses free-floating functions à une adjacency_list.
+
+Un autre exemple : la doc https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/metric_tsp_approx.html[de metric_tsp_approx], la fonction permettant de "résoudre" le https://fr.wikipedia.org/wiki/Probl%C3%A8me_du_voyageur_de_commerce[problème du voyageur de commerce] indique avoir besoin d'un `OutputIterator`, qui a l'air d'être documenté nulle part.
+
+Un dernier exemple pour la route : la liste des `PropertyTag` prédéfinis https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html[dans la doc de PropertyTag] est différente de https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties[celle de la doc sur adjacency_list], qui est elle-même différente de celle https://www.boost.org/doc/libs/1_75_0/boost/graph/properties.hpp[du code-source] (ou https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79[du code-source github]).
+
+À titre perso, ça me met dans une disposition d'esprit de _doute_ vis-à-vis de la doc : j'ai le sentiment que je ne peux pas lui faire aveuglément confiance. Et c'est d'autant plus embêtant que le code-source n'est pas des plus simples à lire.
+
+L'excellent atout de la doc, qui rattrape tous ces défauts, c'est la présence d'exemples illustratifs. On dirait que la plupart des algos en disposent, et c'est justement https://www.boost.org/doc/libs/1_75_0/libs/graph/test/metric_tsp_approx.cpp[le code démontrant l'utilisation de metric_tsp_approx] qui m'a aidé à savoir ce que représentait cet `OutputIterator` mentionné plus haut. Un autre bon point pour la doc, c'est https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html[le quick-tour], qui fait bien le café.
+
+Enfin, je préfère conclure cette annexe critique positivement : vus https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/history.html[le peu de contributeurs à la librairie] (ou à boost d'une façon générale), mon avis se rapproche tout de même plus de _"woah, c'est quand même génial de disposer d'une librairie d'une telle qualité"_ que par _"la librairie est inutilisable car sa doc c'est de la merde en boîte"_.
+
+== Annexe n°2 = installation de la BGL [[annexe2]]
+
+(<<back-from-annexe2,revenir au post>>) 
+
+En fonction de votre distribution Linux (je ne parlerai pas pour Windows ou Mac, dont je n'ai presqu'aucune connaissance), la version de boost packagée dans les repos du système pourra être https://www.boost.org/users/history/[un peu ancienne] :
+
+* Debian 10 Buster = `1.67` qui date d'avril 2018
+* Ubuntu 18.04 (l'avant-dernière LTS) = `1.62` et `1.65`, qui datent respectivement de septembre 2016 et août 2017
+* Ubuntu 20.04 (l'actuelle LTS) = `1.67` et `1.71`, cette dernière datant d'août 2019
+
+Pour disposer d'une version récente (`1.75`, la dernière en date), et surtout pour ne pas dépendre d'une installation system-wide, j'utilise https://docs.conan.io/en/latest/[conan], un package-manager C++... que j'installe https://pipxproject.github.io/pipx/[avec pipx]... que j'installe https://packaging.python.org/key_projects/#pip[avec pip]... Je sais, je sais (>_<').
+
+[source,bash]
+----
+python3.6 -m pip install --user pipx
+pipx install conan
+----
+
+Voici un lien vers le setup utilisé pour le code qui accompagne ce post. FIXME : donner un lien vers le code).
+
+Il y a plus de détails sur https://docs.conan.io/en/latest/[la doc de conan], mais en deux mots, il faut définir un `conanfile.txt` dans lequel on exprime ses dépendances et son générateur :
+
+[source]
+----
+[requires]
+boost/1.75.0
+
+[generators]
+cmake
+----
+
+Derrière, dans le `CMakeLists.txt`, on peut utiliser directement les dépendances exprimées dans le conanfile. Voici le `CMakeLists.txt` utilisé :
+
+[source]
+----
+cmake_minimum_required(VERSION 3.0)
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror")
+
+project(bgl-tuto)
+set(CMAKE_BUILD_TYPE Release)
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+add_executable(dijkstra-bin dijkstra.cpp)
+----
+
+Pour faire bonne mesure, voici un lien vers le script utilisé pour builder le code (FIXME : donner un lien vers le script). En gros, on appelle `conan`, puis `cmake`, puis `make` :
+
+[source]
+----
+conan install --install-folder="_build" .
+cmake -B"_build" -H"."
+make -j -C "_build"
+----
+
+== Annexe n°3 = autre façon d'utiliser les properties [[annexe3]]
+
+(<<back-from-annexe3,revenir au post>>) 
+
+Les https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html[bundled properties] décrites plus haut dans le post sont la façon "moderne" d'attribuer des properties aux vertex/edge du graphe.
+
+Mais il existe une autre façon, utilisée dans https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties[la doc de la BGL], et dans d'autres tutos sur internet.
+Je la trouve moins pratique, mais je préfère la présenter tout de même, car vous risquez de tomber dessus.
+
+=== Définition du graphe
+
+Avec cette autre définition des properties, les `VertexProperty` et `EdgeProperty` sont définies en utilisant https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/property.html[la classe `property`], et en lui précisant 1. le tag identifiant la property et 2. le type de la property :
+
+[source, cpp]
+----
+using VertexProperty = property<vertex_name_t, std::string>;
+----
+
+Ici, `vertex_name_t` est un https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html[PropertyTag] prédéfini dans la librairie. Il en existe plusieurs, et malheureusement, les différentes pages de la doc (e.g. https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties[ici]) sont inhomogènes sur leur liste. En cas de besoin, il reste possible d'aller https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79[consulter le code-source] pour connaître la liste exacte.
+
+Bien sûr, on peut aussi définir ses propres tags custom. Par ailleurs, si on veut définir plus d'une property, le troisième paramètre template permet de chaîner les properties suivantes. Illustrons ces deux points en définissant les `EdgeProperty` :
+
+[source, cpp]
+----
+struct edge_walk_allowed_t { using kind = edge_property_tag; };
+//                           ^
+// c'est comme ceci qu'on définit un PropertyTag custom :
+
+using EdgeProperty = property<edge_weight_t, int, property<edge_walk_allowed_t, bool> >;
+//                                                ^
+//                     on chaîne les properties en les ajoutant en 3ième paramètre
+----
+
+Ci-dessus, chaque edge sera associé à deux properties : un `weight` de type `int`, et un `walk_allowed` de type `bool` (qui utilise un tag custom).
+
+Derrière, la définition du graphe ne change pas : on passe `VertexProperty` et `EdgeProperty` en paramètre du template `adjacency_list` :
+
+[source, cpp]
+----
+using Graph = adjacency_list<vecS, vecS, bidirectionalS, VertexProperty, EdgeProperty>;
+----
+
+=== Création et remplissage du graphe
+
+Une fois le graphe défini, sa construction et l'ajout de vertex et d'edges n'est pas différente des _bundled-properties_ : les `VertexProperty`/`EdgeProperty` sont construits comme avant, explicitement, ou via une initializer-list.
+
+[source, cpp]
+----
+Graph mygraph;
+
+VertexDescriptor A = add_vertex(VertexProperty("A"), mygraph);  // explicite
+VertexDescriptor B = add_vertex({"B"}, mygraph);  // initializer-list
+VertexDescriptor C = add_vertex({"C"}, mygraph);
+
+add_edge(A, B, EdgeProperty(76, true), mygraph);
+add_edge(A, C, {2534, false}, mygraph);
+add_edge(B, C, {8500, true}, mygraph);
+----
+
+=== Lecture / Écriture de propriétés
+
+La lecture/écriture de ces propriétés old-school est un peu différente des _bundled properties_. On utilise les fonctions `get` et `put` en leur passant le `PropertyTag` de la propriété souhaitée, c'est documenté https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyGraph.html[ici] :
+
+[source, cpp]
+----
+// Lecture du 'name' d'un vertex :
+string name = get(vertex_name_t{}, mygraph, A);
+cout << "This vertex has the name : " << name << endl;
+
+// Ça marche pareil pour les properties custom :
+bool edge_walk_allowed = get(edge_walk_allowed_t{}, mygraph, AB);
+cout << "Walk is " << (edge_walk_allowed ? "ALLOWED" : "FORBIDDEN") << " for pedestrians." << endl;
+
+// Ça fonctionne en écriture aussi, via 'put' :
+put(edge_weight_t{}, mygraph, AB, 99999);
+----
+
+=== Récupération d'une property_map
+
+Récupérer une property_map associant un edge (ou un vertex) à une propriété se fait différemment des _bundled properties_, ici aussi en passant une instance de `PropertyTag` à `get` :
+
+[source, cpp]
+----
+// récupération d'une property-map grâce à 'get' + PropertyTag :
+auto weight_property_map = get(edge_weight_t{}, mygraph);
+
+// en revanche, une fois récupérée, son utilisation n'est pas différente :
+EdgeDescriptor AB = edge(A, B, mygraph).first;
+int weight = get(weight_property_map, AB);
+cout << "weight of edge AB = " << weight << endl;
+----
+
+Le code complet utilisant "l'ancienne façon" de définir et manipuler les properties est accessibles ici : FIXME : mentionner le lien vers le code.
+
+== Annexe n°4 = property_map sur une propriété externe [[annexe4]]
+
+(<<back-from-annexe4,revenir au post>>) 
+
+Une property_map, c'est une interface de type "dictionnaire" sur quelque chose.
+La doc est https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/property_map.html[ici], et comme pour la BGL, https://www.boost.org/doc/libs/1_75_0/libs/property_map/example/[les exemples] sont une aide précieuse pour comprendre le principe.
+
+=== Un dictionnaire sur un dictionnaire ?
+
+Le setup le plus intuitif — mais pas le plus utile — c'est de construire une property_map sur une `std::map` :
+
+[source, cpp]
+----
+// On commence avec une map classique :
+map<string, string> name2address;
+name2address.insert({"Fred", "The Burrow, England"});
+name2address.insert({"George", "The Burrow, England"});
+
+// Construction d'une property_map, en utilisant la map classique comme storage :
+boost::associative_property_map< map<string, string> > address_pmap(name2address);
+----
+
+À partir de maintenant, la `property_map` présente une interface de type dictionnaire sur son storage. Ok ok, comme le storage de notre exemple est une `std::map`, ça n'a pas beaucoup d'intérêt, mais promis ça devient mieux après.
+On peut donc utiliser notre dictionnaire, avec les free-floating functions `get` et `put`, ou son `operator[]` :
+
+[source, cpp]
+----
+// lecture :
+string fred_old_address = get(address_pmap, "Fred");
+cout << "Until now, Fred lived in : " << fred_old_address << endl;
+
+// écriture :
+put(address_pmap, "Fred", "Somewhere else...");
+cout << "But from now on, Fred lives : " << name2address["Fred"] << endl;
+
+// référence + operator[] :
+string& george_address = address_pmap["George"];
+george_address = "Alone";
+cout << "And George is now : " << name2address["George"] << endl;
+----
+
+Je n'ai pas l'impression qu'il soit possible d'itérer sur les éléments d'une property-map (car le storage n'est pas nécessairement itérable ?), ni de savoir si une clé est valide ou non. En même temps, c'est pas le but.
+
+=== property_map sur une propriété interne du graphe
+
+Un exemple déjà plus utile est donnée dans le post : la construction d'une property_map sur les propriétés d'un vertex (ou edge) d'un graphe.
+
+Les propriétés internes du graphe ont leur cycle de vie confondus avec le graphe (en quelque sorte, leur storage *est* le graphe), et construire une property_map dessus permet d'accéder à un dictionnaire associant un `VertexDescriptor` à un `VertexProperty`.
+
+Le principe est illustré dans le post, mais histoire de varier les plaisirs, voici un exemple différent :
+
+[source, cpp]
+----
+auto latitude_property_map = get(&VertexProperty::latitude, mygraph);
+cout << "latitude of D = " << get(latitude_property_map, D) << endl;
+
+// comme pour toutes les property_map, put / operator[] sont aussi dispos
+----
+
+=== property_map sur une propriété externe du graphe
+
+On en arrive à ce que je voulais détailler dans cette annexe : construire une property_map sur des propriétés *externes* du graphe, stockées dans un `std::vector`.
+
+Les propriétés externes du graphe sont des propriétés associées aux Vertex/Edge du graphe, mais détachées du graphe.
+Dit autrement, le cycle de vie de la propriété externe est différent du cycle de vie du graphe. On a vu plus haut un cas l'intérêt que ça pouvait présenter :  pour associer un `predecessor` à chaque Vertex "juste" le temps de l'exécution du Dijkstra.
+
+On peut créer une property_map qui utilise un `std::vector` comme storage. Mais il y a un hic : comme la property_map associe une clé à une valeur, à moins que le type de la clé soit un entier (pour être utilisé comme index du vector), ça ne va pas nous suffire.
+
+Par exemple, supposons qu'on veuille une property_map dont la clé est un nom de personne (`string`), et la valeur son âge (`int`) :
+
+[source, cpp]
+----
+// le storage :
+vector<int> ages = {22, 22, 45, 58};
+
+// sera détaillé plus tard = comment construire la proprety_map :
+auto vector_property_map = build_my_property_map(ages);
+
+// à partir de là, on souhaite récupérer les âges à partir d'une clé de type string :
+cout << "Âge de Luke   = " << get(vector_property_map, "luke") << endl;
+cout << "Âge de Anakin = " << get(vector_property_map, "anakin") << endl;
+----
+
+Et on voit le hic mentionné plus haut : en l'état, ce code n'est pas capable d'associer une `std::string` aux valeurs contenues dans le storage-vector.
+
+Aussi, pour les property_map utilisant des `std::vector` (ou tout autre iterable) comme storage, il faut une étape supplémentaire associant une clé à une position dans le vector.
+Boost https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/iterator_property_map.html[appelle ceci] une `OffsetMap` :
+
+
+[quote,'https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/iterator_property_map.html[doc de iterator_property_map]']
+____
+The OffsetMap type is responsible for converting key objects to integers that can be used as offsets with the random access iterator. 
+____
+
+Grosso-modo, le fonctionnement est le suivant :
+
+[source]
+----
+       (OffsetMap)              (storage vector)
+clé ----------------> offset ---------------------> valeur
+----
+
+On peut donc compléter le code précédent, en créant une `OffsetMap` — qui doit également être une property_map, ce qui alourdit un peu le code :
+
+[source, cpp]
+----
+// le storage :
+vector<int> ages = {22, 22, 45, 58};
+
+// construction de l'OffsetMap :
+map<string, size_t> offsets;
+offsets["luke"] = 0;
+offsets["leia"] = 1;  // dans le storage-vector, l'âge de "leia" est à l'index 1
+offsets["anakin"] = 2;
+offsets["obi-wan"] = 3;
+// malheureusement, on ne peut pas utiliser directement offsets
+// en effet, OffsetMap doit être une property_map, qu'il faut donc construire :
+associative_property_map< map<string, size_t> > offsets_pmap(offsets);
+
+// construction de la property_map sur mon vector, en utilisant l'OffsetMap :
+auto vector_pmap = make_iterator_property_map(ages.begin(), offsets_pmap);
+
+// à partir de là, on souhaite récupérer les âges à partir d'une clé de type string :
+cout << "Âge de Luke   = " << get(vector_property_map, "luke") << endl;
+cout << "Âge de Anakin = " << get(vector_property_map, "anakin") << endl;
+----
+
+Pas très efficace me direz-vous, vu qu'en plus du vector, on est obligés de définir un dictionnaire associant une clé à un offset (et en dériver une property_map par dessus le marché !) ?
+
+En fait, dans le cadre de la BGL, c'est un peu différent, puisque le dictionnaire associant une clé (un `VertexDescriptor` ou un `EdgeDescriptor`) à un offset *existe déjà* !
+
+En effet, les `adjacency_list` utilisant `vecS` pour stocker leurs vertex ont une propriété interne implicitement associée aux vertex : leur index dans le vector stockant les vertex.
+Et comme toute propriété interne, on peut récupérer une property_map qui pointe dessus.
+
+C'est documenté dans une petite ligne perdue quelque part au milieu https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[de cette page], mais c'est en revanche bien illustré (à condition de comprendre le principe, d'où ce billet de blog) dans https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp[le code donné en exemple pour illustrer le dijkstra].
+
+Du coup, on a maintenant tout ce qu'il faut pour comprendre en détail le code du billet, qui crée une property_map stockant des propriétés externes au graphe (le `predecessor` de chaque vertex), en les stockant dans un `std::vector` :
+
+[source,cpp]
+----
+// Récupération de l'OffsetMap associant un VertexDescriptor à un index dans un vector :
+auto vertex_index_pmap = get(vertex_index, mygraph);
+
+// Création du vector qui stockera la propriété externe de chaque vertex :
+std::vector<VertexDescriptor> predecessors(num_vertices(mygraph));
+
+// Création de la property_map sur le vector qui contient les propriétés externes :
+auto predecessors_pmap = make_iterator_property_map(predecessors.begin(), vertex_index_pmap);
+----
+
+== Annexe n°5 = prédécesseurs et récupération du plus court chemin [[annexe5]]
+
+(<<back-from-annexe5,revenir au post>>) 
+
+On a vu plus haut que Dijkstra nécessitait une property_map sur une propriété externe associée aux vertex : *leur prédécesseur*. Cette annexe détaille ce dont il s'agit, et comment les utiliser.
+
+[source,cpp]
+----
+dijkstra_shortest_paths(
+    mygraph,
+    SOURCE,
+    weight_map(weight_property_map).
+    predecessor_map(predecessors_pmap).  // c'est ça qui nous intéresse
+    distance_map(tentative_distances_pmap)
+);
+
+auto parent_of_H = get(predecessors_pmap, H);
+cout << nameof(parent_of_H) << endl;
+// affichera "G"
+----
+
+L'algorithme de Dijkstra de la BGL calcule le plus court chemin entre la SOURCE, et *tous* les vertex du graphe.
+
+Par exemple, une fois l'algo exécuté, la `tentative_distances_pmap` (qui n'est alors plus vraiment `tentative` mais plutôt *définitive*) associe à chaque vertex `V` du graphe le poids du plus court chemin `SOURCE -> V` :
+
+[source]
+----
+A -> 0   # A étant la SOURCE, le trajet est instantané
+B -> 5   # le plus court chemin entre A et B a pour poids 5
+C -> 10  # le plus court chemin entre A et C a pour poids 10
+D -> 1   # etc.
+E -> 8
+F -> 15
+G -> 13
+H -> 16
+----
+
+La property_map des predécesseurs, `predecessors_pmap`, permet de récupérer non pas le *poids* du plus court chemin, mais le *trajet* à suivre, i.e. l'enchaînement de vertex permettant d'aller de `SOURCE` à `V` en suivant le plus court chemin.
+
+On pourrait imaginer qu'elle stocke la liste de vertex, comme ceci :
+
+[source]
+----
+A -> [A]
+B -> [A,B]
+C -> [A,C]
+D -> [A,D]
+E -> [A,B,E]
+F -> [A,C,F]
+G -> [A,B,E,G]
+H -> [A,B,E,G,H]
+----
+
+Mais en réalité, c'est plus alambiqué (et plus efficace) : elle associe à chaque vertex le "node d'avant" sur le chemin reliant la source au vertex, c'est à dire l'avant-dernier node du plus court chemin :
+
+[source]
+----
+A -> A
+B -> A
+C -> A
+D -> A
+E -> B
+F -> C
+G -> E
+H -> G
+----
+
+Par exemple, le plus court chemin entre `A` et `H` est `ABEGH`. La `predecessors_pmap` associe à `H` le prédécesseur `G`, puis à `G` le prédécesseur `E`, etc. jusqu'à `A`.
+
+Vous pouvez vous convaincre par l'absurde que ça fonctionne, car si `ABEGH` est le plus court chemin reliant `A` à `H`, alors `ABEG` est le plus court chemin reliant `A` à `G`. En effet, s'il existait un chemin `A...G` ENCORE plus court, le plus court chemin reliant `A` à `H` ne serait pas `ABEGH`, mais serait plutôt `A...GH`.
+
+En utilisant cette property_map, on peut reconstituer à rebours l'enchaînement des vertex constituant le plus court chemin complet entre `A` et `H`. Voici un exemple de code pour faire ça :
+
+[source,cpp]
+----
+vector<VertexDescriptor> shortest_path = {TARGET};
+VertexDescriptor current_predecessor = TARGET;
+auto next_predecessor = get(predecessors_pmap, current_predecessor);
+
+while (next_predecessor != current_predecessor)
+{
+    shortest_path.push_back(next_predecessor);
+    current_predecessor = next_predecessor;
+    next_predecessor = get(predecessors_pmap, current_predecessor);
+}
+
+// affichage du shortest path :
+for (auto v = shortest_path.rbegin(); v != shortest_path.rend(); ++v) {
+    cout << nameof(*v);
+}
+----
+
+https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html[La doc de l'algo] précise que lorsqu'un vertex est son propre prédecesseur, c'est que ledit vertex est soit la source de l'algo, soit un vertex injoignable depuis la source. Pour des graphes non-orientés comme le nôtre, ça ne peut arriver que si le graphe n'est pas connexe.
+
+== Annexe n°6 = sujets laissés de côté [[annexe6]]
+
+(<<back-from-annexe6,revenir au post>>) 
+
+Il y a une foule de sujets qui n'ont pas été abordés dans ce tuto ; la présente annexe en liste quelques-uns, sans ordre particulier. Gardez à l'esprit que ce sont les sujets dont moi — débutant en BGL — j'ai connaissance, mais il y en a probablement beaucoup, *beaucoup* plus que je ne connais même pas : _je ne sais même pas ce que je ne sais pas_.
+
+=== Type de graphe
+
+* les graphes utilisant autre choses que `vecS` comme storage :
+** c'est https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type[documenté ici] : _The adjacency_list is like a swiss-army knife in that it can be configured in many ways._
+** le lien avec les possibilités offertes par le graphe, notamment les multigraphes (= les graphes autorisant plusieurs edges différents en parallèle, reliant la même paire de vertex)
+** l'impact du choix des structures de stocakge des vertex/edges (opérations autorisées/interdites, time-complexity, space-complexity)
+* un cran plus haut, les autres représentations que `adjacency_list`, notamment https://en.wikipedia.org/wiki/Sparse_matrix#Compressed_sparse_row_(CSR,_CRS_or_Yale_format)[CSR], qui est https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/compressed_sparse_row.html[documenté ici], et que je connaissais plutôt sous le nom de `AdjacencyArray`
+* ce que retourne `add_edge`, qui a été crassement ignoré dans le billet (notamment le lien avec les multigraphes)
+* le fait qu'il y a une différence entre les graphes `bidirectionalS` et les graphes `undirectedS` :
+** citation https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[de cette page] : _The Directed template parameter controls whether the graph is directed, undirected, or directed with access to both the in-edges and out-edges (which we call bidirectional)._
+** citation https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type[de cette page] _The bidirectionalS selector specifies that the graph will provide the in_edges() function as well as the out_edges() function. This imposes twice as much space overhead per edge, which is why in_edges() is optional._
+
+=== Vertex inexistants
+
+* Que se passe-t-il en cas d'ajout d'edge qui utilise des vertex encore non-existants : sont-il ajoutés au graphe ? est-ce un undefined-behaviour ?
+* La doc de `add_edge` dans la section "Structure Modification" de https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[cette page] éclaire partiellement : _If the VertexList selector is vecS, and if either vertex descriptor u or v (which are integers) has a value greater than the current number of vertices in the graph, the graph is enlarged so that the number of vertices is std::max(u,v) + 1._
+* Par ailleurs, `adjacency_list` dispose d'un constructeur où on ne passe QUE la liste des edges (utilisé dans https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp[l'exemple Dijkstra]).
+* Les deux cumulés, il se peut que si le storage des Vertex est `vecS`, les vertex non-initialisés se comportent comme les vertex qui n'ont pas d'edges (?)
+
+=== Suppression des vertex
+
+* Que se passe-t-il si je supprime un vertex : que deviennent les edges qui l'utilisaient ? que devient son emplacement dans le vector, est-ce qu'il a un "trou" ?
+* Il y a un paragraphe spécifique sur l'invalidation des itérateurs dans https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html[la doc d'adjacency_list], section "Iterator and Descriptor Stability/Invalidation".
+* ça a l'air de dépendre du type de storage :
+** _The reason this is a problem is that we are invoking remove_vertex(), which when used with an adjacency_list where VertexList=vecS, invalidates all iterators and descriptors for the graph_
+** _If we use a different kind of adjacency_list, where VertexList=listS, then the iterators are not invalidated by calling remove_vertex unless the iterator is pointing to the actual vertex that was removed_
+
+=== Divers
+
+* On peut également attribuer des properties au graphe : l'exemple donné dans https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L93[le code-source de la BGL] est son nom
+* Je n'ai pas regardé de près, mais la librairie semble particulièrement extensible, via https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/visitor_concepts.html[des visitors].
+* Le https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html[quick-tour] démontre l'interopérabilité avec la STL
+* Par défaut, les edges intéressants sont les _out-edges_ (dans l'adjacency_list, pour un vertex donné, on stocke ses _out-edges_ uniquement)
+* Dans le billet, on a construit le graphe vide, puis on l'a rempli après coup. Il existe d'autres constructeurs permettant de définir les edges à la construction, ils sont probablement plus efficaces (confirmé dans le https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html[quick-tour] : _Instead of calling the add_edge() function for each edge, we could use the edge iterator constructor of the graph. This is typically more efficient than using add_edge()_), mais je trouve le billet plus clair en ayant séparé la construction et le remplissage.
