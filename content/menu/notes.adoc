@@ -355,8 +355,6 @@ ____
 ** attention à l'aliasing (si le compilo n'est pas capable de prouver l'absence d'aliasing, il ne pourra pas optimiser)
 ** attention à la visibilité des fonctions (il faut que le compilo puisse inspecter pour optimiser)
 
-=== Lu le 2020-08-28, publié le 2020-08-16 sur le https://pankajraghav.com/[blog de Pankaj SARATHY], un dev C++ / python / embarqué (_an electrical power engineer turned software developer_)
-
 
 == [POST] https://pankajraghav.com/2020/08/16/RVO.html[But I was helping the compiler!]
 
