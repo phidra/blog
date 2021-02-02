@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          33 min read
+          32 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -746,19 +746,16 @@
 <p>Côté contenu, la doc est parfois imprécise, inhomogène, ou ment par omission. Par exemple, sur <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">la page résumant les graph-concepts</a>, la fonction <code>edge</code> est mentionnée pour le concept <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/AdjacencyMatrix.html">AdjacencyMatrix</a>. Il ne contraint pas <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">adjacency_list</a>, pourtant, on peut bien utiliser <code>edge</code> sur l&#8217;adjacency_list, ce qui apparaît sur sa doc de référence. La fonction <code>vertex</code> n&#8217;est pas mentionnée du tout sur la page des concepts, mais est disponible pour adjacency_list. De même, <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/IncidenceGraph.html">IncidenceGraph</a> ne fait pas partie des modèles d&#8217;adjacency_list, pourtant on peut appliquer ses free-floating functions à une adjacency_list.</p>
 </div>
 <div class="paragraph">
-<p>Un autre exemple : la doc <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/metric_tsp_approx.html">de metric_tsp_approx</a>, la fonction permettant de "résoudre" le <a href="https://fr.wikipedia.org/wiki/Probl%C3%A8me_du_voyageur_de_commerce">problème du voyageur de commerce</a> indique avoir besoin d&#8217;un <code>OutputIterator</code>, qui a l&#8217;air d&#8217;être documenté nulle part.</p>
-</div>
-<div class="paragraph">
-<p>Un dernier exemple pour la route : la liste des <code>PropertyTag</code> prédéfinis <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html">dans la doc de PropertyTag</a> est différente de <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">celle de la doc sur adjacency_list</a>, qui est elle-même différente de celle <a href="https://www.boost.org/doc/libs/1_75_0/boost/graph/properties.hpp">du code-source</a> (ou <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79">du code-source github</a>).</p>
+<p>Un autre exemple : la liste des <code>PropertyTag</code> prédéfinis <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html">dans la doc de PropertyTag</a> est différente de <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">celle de la doc sur adjacency_list</a>, qui est elle-même différente de celle <a href="https://www.boost.org/doc/libs/1_75_0/boost/graph/properties.hpp">du code-source</a> (ou <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79">du code-source github</a>).</p>
 </div>
 <div class="paragraph">
 <p>À titre perso, ça me met dans une disposition d&#8217;esprit de <em>doute</em> vis-à-vis de la doc : j&#8217;ai le sentiment que je ne peux pas lui faire aveuglément confiance. Et c&#8217;est d&#8217;autant plus embêtant que le code-source n&#8217;est pas des plus simples à lire.</p>
 </div>
 <div class="paragraph">
-<p>L&#8217;excellent atout de la doc, qui rattrape tous ces défauts, c&#8217;est la présence d&#8217;exemples illustratifs. On dirait que la plupart des algos en disposent, et c&#8217;est justement <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/test/metric_tsp_approx.cpp">le code démontrant l&#8217;utilisation de metric_tsp_approx</a> qui m&#8217;a aidé à savoir ce que représentait cet <code>OutputIterator</code> mentionné plus haut. Un autre bon point pour la doc, c&#8217;est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a>, qui fait bien le café.</p>
+<p>L&#8217;excellent atout de la doc, qui rattrape tous ces défauts, c&#8217;est la présence d&#8217;exemples illustratifs. On dirait que la plupart des algos en disposent. Un autre bon point pour la doc, c&#8217;est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a>, qui fait bien le café.</p>
 </div>
 <div class="paragraph">
-<p>Enfin, je préfère conclure cette annexe critique positivement : vus <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/history.html">le peu de contributeurs à la librairie</a> (ou à boost d&#8217;une façon générale), mon avis se rapproche tout de même plus de <em>"woah, c&#8217;est quand même génial de disposer d&#8217;une librairie d&#8217;une telle qualité"</em> que par <em>"la librairie est inutilisable car sa doc c&#8217;est de la merde en boîte"</em>.</p>
+<p>Enfin, je préfère conclure cette annexe critique positivement : vus <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/history.html">le peu de contributeurs à la librairie</a> (ou à boost d&#8217;une façon générale), mon avis est plus proche de <em>"woah, c&#8217;est quand même génial de disposer d&#8217;une librairie d&#8217;une telle qualité"</em> que de <em>"la librairie est inutilisable à cause de sa doc"</em>.</p>
 </div>
 </div>
 </div>
