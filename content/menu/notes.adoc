@@ -45,6 +45,186 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+
+== [POST] https://akrzemi1.wordpress.com/2013/11/18/type-erasure-part-i/[Type erasure — Part I]
+
+=== Lu le 2021-02-02, publié le 2013-11-18, sur https://akrzemi1.wordpress.com/[le blog d'Andrzej Krzemieński], un dev C++ polonais qui a l'air bien calé
+
+* *TL;DR* = excellent article expliquant les différentes façons d'erase les types
+** type-erased = "interface" = on est générique vis-à-vis du type réel sur lequel on travaille
+** le fil rouge de l'article est la recherche dans un conteneur trié via un binary search
+** pas de type-erasure, templatization -> le plus rapide, mais on a les inconénients des templates
+** void* type-erasure = pas terrible car pas type-safe + ne fonctionne qu'avec des arrays
+** OO-based type-erasure = pas terrible car nombreux problèmes (notamment, force d'hériter d'un type)
+** template-based type-erasure = pas parfait, mais mieux que le reste, notamment : type-safe + templatization uniquement sur le type de l'objet lui-même
+** l'article se poursuit avec deux autres articles : https://akrzemi1.wordpress.com/2013/12/06/type-erasure-part-ii/[part II], https://akrzemi1.wordpress.com/2013/12/11/type-erasure-part-iii/[part III]
+* dispatch statique (pas de type-erasure ici) :
+** Le compilateur choisit statiquement la bonne spécialisation de cout en fonction du type de `s` ou `i`.
++
+[source,cpp]
+----
+void print (string s, int i)
+{
+    cout << s;
+    cout << i;
+}
+----
++
+** Ici, le type (non-erased) contient donc des informations utiles au compilateur.
+** `cout::operator<<` est polymorphic, car il se comporte différemment lorsqu'appelé avec des variables différentes.
+** Point important : il n'y a PAS de runtime-dispatch : c'est bien au compile-time que le dispatch a lieu -> pas d'overhead au runtime.
+* être générique avec les templates :exemple de l'article = algo de type binar-search en C 
+** en C : bsearch, utilisant une fonction de comparaison, qui accepte des void*
+** en C++ : std::equal_range
++
+[source,cpp]
+----
+int c_bigger (const void * a, const void * b)
+{
+    return *(int*)b - *(int*)a;
+}
+----
++
+** l'équivalent en C++ utilise une lambda comme fonction, et est plus rapide qu'en C
+** en C, le compilo n'est pas aware du type de la fonction de comparaison, et du fait qu'elle travaille sur deux int -> pas d'optimisation possible, on déréférencera au runtime le pointeur de fonction
+** du coup, ici, l'utilisation de template permet d'aller plus vite au runtime
+** TL;DR : on fait un trade-off : utiliser les templates (fast-runtime, slow build) ou ne pas les utiliser (le contraire)
+* inconvénient des templates :
+** binaire plus gros (vu qu'on a une instanciation par "spécialisation")
+** compile-time slow down
+** le body de la fonction doit être visible (dans le header), et on doit donc exposer toutes les dépendances (les headers dont notre template a besoin) -> compile-time encore plus lent
+** messages d'erreur des template-instanciation souvent illisibles
+* avantage des templates :
+** programmes plus rapides que leurs équivalents non-templates
+** type-safety par rapport aux équivalents non-templates
+* **`void*` type-erasure :**
+** exemple = le bsearch de C : au runtime, on a une indirection pour utiliser un pointeur de fonction
+** note : cf. "man bsearch" la signature de bsearch attend un pointeur de fonction qui a cette signature : 
++
+[source,cpp]
+----
+int (*compar)(const void *, const void *)
+----
++
+** le code de la fonction de comparaison va caster les void* en int pour pouvoir les comparer (`c_bigger` plus haut)
+** citation : _bsearch is in fact an example of basic type erasure. It is one function, with one interface that works for arrays of any element type._
+** TL;DR : en C, void* permet d'être générique sur le type des éléments qu'on passe à une fonction
+** utiliser void* permet d'overloader `bsearch` au runtime, qui marche dorénavant avec TOUT type de tableau
+** problèmes :
+*** problème : on ne peut rien faire d'un void* :
+**** soit on le passe à une autre fonction qui en fait qqch (exemple avec c_bigger, une autre fonction caste en int)
+**** soit on passe d'autres arguments codant l'information qui aurait été apportée par le type (exemple avec bsearch : on passe un argument `size` de type `size_t` pour savoir comment incrémenter les itérateurs)
+*** non-type safe : on peut tout à fait passer une fonction de comparaison qui compare des entiers à un bsearch appliqué à un tableau de string (et ça va sans doute UB)
+*** le compilo ne détecte rien, car les deux fonctions de comparaison ont même signature (utilisant des void*)
+*** autre limitation = bsearch ne fonctionne qu'avec des arrays (et ne saura pas par exemple travailler avec un std::set)
+* *OO-based type-erasure* :
+** tous les objets héritent d'un même classe, toutes les classes filles implémentent un opérateur de comparaison avec un autre Object* (qui throw lorsque l'Object auquel on compare n'est pas du bon type)
++
+[source,cpp]
+----
+int i_bigger (const Object* a, const Object* b)
+{
+  auto ia = dynamic_cast<MyInteger const*>(a);
+  auto ib = dynamic_cast<MyInteger const*>(b);
+ 
+  if (ia == nullptr || ib == nullptr) {
+    throw SomeException{};
+  }
+ 
+  return ib->getInt() - ia->getInt();
+}
+ 
+Object* OO_search (Object** base, 
+                   size_t size,
+                   int (*comp)(const Object*, const Object*)
+----
++
+** on a UN PEU amélioré la situation : au lieu d'un UB, on a une exception au runtime lorsqu'on compare des objets non-comparables
+** beaucoup de problèmes :
+*** on est obligés d'hériter d'Object (ce qui n'est par exemple pas possible pour les int)
+*** conséquence pas cool = c'est au CLIENT de notre code d'adapter ses types pour les faire hériter de Object
+*** en plus d'être chiant, n'est pas toujours possible (notamment, si on veut pouvoir appliquer 3 algos différents, il faut hériter de ns1::Object, ns2::Object, et ns3::Object)
+*** accessoirement prend plus de place au runtime (il faut de la place pour la vtable)
+*** comme on ne connaît pas les types réels des objets, on ne peut plus stocker des objets hétérogènes dans un container
+*** le fait d'avoir une exception au lieu d'un UB est pas fi-fou : on préfèrerait une erreur du compilateur
+*** le fait d'hériter d'Object ne sert qu'à une pauvre chose : pour passer un Object* et tester le type réel avec dynamic_cast
+*** tout comme void* / bsearch, notre fonction ne marche qu'avec des arrays
+* *value-semantic type erasure* :
+** pour être type-safe, on n'aura pas le choix, faut rester sur des templates...
+** on utilise std::function pour abstraire le type de la fonction de comparaison (qui peut être n'importe quoi, tant qu'on peut lui appliquer f(int, int)) :
++
+[source,cpp]
+----
+std::function<bool(int,int)> predicate;
+----
++
+** alias template :
++
+[source,cpp]
+----
+template <typename T>
+using AnyBinaryPredicate = std::function<bool(T const&, T const&)>;
+----
++
+** citation :
++
+[quote]
+____
+With std::function we : +
+    (1) erase the type of the underlying function/function-like object, +
+    (2) preserve the interface (operator()), +
+    (3) we are able to pass it by value, +
+    (4) we require of the erased types no declaration of conformance to an interface (no inheritance).
+____
++
+** de la même façon qu'on a fait une "interface template" pour représenter des fonctions, on va faire une "interface template" pour représenter des itérateurs sur un type T.
+** On utilise une lib "any_iterator", le code est très illustratif :
++
+[source,cpp]
+----
+std::vector<int> vec {1, 2, 3};
+std::list<int> list {2, 4, 6};
+
+AnyForwardIter<int> it { vec.begin() }; // initialize
+it = list.begin();                      // rebind
+----
++
+** on peut aussi utiliser un type-erased range :
+** boost::any_range, le code est très illustratif :
++
+[source,cpp]
+----
+std::vector<int> vec {9, 8, 5, 4, 2, 1, 1, 0};
+std::set<int> set {1, 2, 3, 5, 7, 9};
+
+AnyForwardRange<int> rng = vec; // initialize interface
+std::distance (boost::begin(rng), boost::end(rng));
+
+rng = set;                      // rebind interface
+std::distance (boost::begin(rng), boost::end(rng));
+----
++
+** note : ça a l'air important : les interface typed-erased ci-dessus préservent la "value-semantic" = ce qui nous intéresse, c'est pas les objets eux-mêmes, c'est leur contenu
+** grâce à range et std::function, on a un algo qui n'est plus que templaté sur T (alors que pour une version template-pure, il était également templaté sur le type du conteneur (via l'iterator) et le type du prédicat) :
+** _Thus, we have two value-semantic type-erased interfaces: AnyForwardRange<T> and AnyBinaryPredicate<T>. Using them we can define our (partially) type-erased searching function:_
++
+[source,cpp]
+----
+template <typename T>
+AnyForwardRange<T> Search (AnyForwardRange<T> rng, T const& v,
+                           AnyBinaryPredicate<T> pred)
+{
+  auto ans = std::equal_range (rng.begin(), rng.end(), v, pred);
+  return {ans.first, ans.second};
+}
+----
++
+** défauts :
+*** on est obligé de préciser explicitement le paramètre template
+*** moins performant au run-time qu'une version template pure
+
+
+
 == [PREZ] https://en.wikipedia.org/wiki/Hungarian_notation[la notation hongroise]
 
 === Présentation rapide par un collègue le 2021-01-21.
