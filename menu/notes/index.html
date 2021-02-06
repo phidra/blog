@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          90 min read
+          101 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,8 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__video_a_href_https_www_youtube_com_watch_v_7rotdjllxjq_what_is_an_abi_and_why_is_breaking_it_bad_marshall_clow_cppcon_2020_a">[VIDEO] <a href="https://www.youtube.com/watch?v=7RoTDjLLXJQ">What is an ABI, and Why is Breaking it Bad ? — Marshall Clow — CppCon 2020</a></a></li>
+<li><a href="#__post_a_href_https_akrzemi1_wordpress_com_2013_11_18_type_erasure_part_i_type_erasure_part_i_a">[POST] <a href="https://akrzemi1.wordpress.com/2013/11/18/type-erasure-part-i/">Type erasure — Part I</a></a></li>
 <li><a href="#__prez_a_href_https_en_wikipedia_org_wiki_hungarian_notation_la_notation_hongroise_a">[PREZ] <a href="https://en.wikipedia.org/wiki/Hungarian_notation">la notation hongroise</a></a></li>
 <li><a href="#__post_a_href_http_unixsheikh_com_articles_the_terminal_the_console_and_the_shell_what_are_they_html_the_terminal_the_console_and_the_shell_what_are_they_a">[POST] <a href="http://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html">The terminal, the console and the shell - what are they?</a></a></li>
 <li><a href="#__post_a_href_https_google_github_io_eng_practices_review_reviewer_how_to_do_a_code_review_a">[POST] <a href="https://google.github.io/eng-practices/review/reviewer/">How to do a code review</a></a></li>
@@ -174,6 +176,476 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__video_a_href_https_www_youtube_com_watch_v_7rotdjllxjq_what_is_an_abi_and_why_is_breaking_it_bad_marshall_clow_cppcon_2020_a">[VIDEO] <a href="https://www.youtube.com/watch?v=7RoTDjLLXJQ">What is an ABI, and Why is Breaking it Bad ? — Marshall Clow — CppCon 2020</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2021_02_05_publiée_le_2021_02_03_sur_a_href_https_www_youtube_com_channel_ucmlgfpww_rudwx_jblcukxg_la_chaîne_de_la_cppcon_a_par_a_href_https_github_com_mclow_marshall_clow_a_notamment_auteur_de_boost_algorithm_lead_dev_d_libc_et_chairman_of_the_library_working_group_of_the_c_standard_committee">Vue le 2021-02-05, publiée le 2021-02-03 sur <a href="https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg">la chaîne de la CppCon</a>, par <a href="https://github.com/mclow">Marshall CLOW</a>, notamment auteur de Boost.Algorithm, lead-dev d libc, et chairman of the Library working group of the C standard committee.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> = une vidéo intéressante sur les conséquences d&#8217;un changement d&#8217;ABI non-rétrocompatible.</p>
+</li>
+<li>
+<p>03:00 Apparemment, ABI est définie par platform, et non par c++ standard</p>
+</li>
+<li>
+<p>04:15 ABI break = specific break of ODR</p>
+</li>
+<li>
+<p>If we had no shared compilation, there would be no ABI breaks.</p>
+</li>
+<li>
+<p>08:00 fragile base classe problème , si on modifie la classe de base, il faut recompiler les classes filles.</p>
+</li>
+<li>
+<p>09:00 c++ ne connait pas les noms des membres, juste leurs offsets</p>
+</li>
+<li>
+<p>11:00 vtable = array de pointeurs de fonctions. Taille de l&#8217;array est le nombre de fonctions virtuelles. L&#8217;ordre des fonctions dans l&#8217;array dépend du compilateur.</p>
+</li>
+<li>
+<p>14:00 vouloir ne pas casser l&#8217;ABI de iostream a empêché d&#8217;ajouter des short floats (floats de 16 bits) dans c++ 20. En effet, il aurait fallu ajouter de nouvelles fonctions virtuelles à iostream.</p>
+</li>
+<li>
+<p>15:40 quand clang a été fait, l&#8217;un des objectifs était de produire des object files compatibles avec GCC. (Du coup, ils étaient obligés d&#8217;utiliser le même ordre de fonctions virtuelles dans la vtable que GCC)</p>
+</li>
+<li>
+<p>18:00 wow, un obscur changement, (possiblement sans même modification du code assembleur généré) casse l&#8217;ABI ! En gros, remplacer un custom copy-constructor par <code>=default</code> rend possiblement les classes-filles copy-constructible, ce qui autorise certaines plate-formes à passer ses paramètres par registres plutôt que sur la stack, ce qui est un changement d&#8217;ABI.</p>
+</li>
+<li>
+<p>26:00 don&#8217;t have stale binaries = don&#8217;t have binaries older than things they use.</p>
+</li>
+<li>
+<p>28:30 quelques explications sur le changement d&#8217;ABI des strings en c++11. Dix ans après, ça pose encore problème.</p>
+</li>
+<li>
+<p>30:30 exemple de conséquence de ce changement d&#8217;ABI, si l&#8217;os a été compilé par GCC 4.3 ( donc avec l&#8217;ancienne ABI des strings, pre-c++11), et qu&#8217;on utilise dessus un binaire compilé avec gcc9 (éventuellement compilé soi-même, mais c&#8217;est pas obligatoire), donc utilisant la nouvelle ABI, ça va crasher, car le layout attendu par le code qu&#8217;il vient de compiler n&#8217;est pas celui de la shared lib de l&#8217;OS, qu&#8217;il utilise.</p>
+</li>
+<li>
+<p>34:30 les ABI breaks, c&#8217;est un problème des implémentations du langage c++ (plutôt que du langage lui-même)</p>
+</li>
+<li>
+<p>35:30 discussion par un working-group de "quand peut-on changer une ABI ?"</p>
+</li>
+<li>
+<p>38:15 pour s&#8217;autoriser un ABI break, tout en évitant à un dev d&#8217;utiliser une lib non compatible sans s&#8217;en rendre compte (donc être capable de <strong>détecter</strong> l&#8217;utilisation d&#8217;une ABI non-compatible), une proposition pour c++26 est de changer le mangling scheme. Ainsi, on ne pourra même plus linker son object file fraîchement compilé avec un object file plus vieux utilisant l&#8217;ancienne ABI (comme une lib système)</p>
+</li>
+<li>
+<p>40:00 autre possibilité pour s&#8217;autoriser des changements d&#8217;ABI : les binaires (ex, les libs systèmes) embarquent les DEUX versions du code assembleur, l&#8217;une utilisant l&#8217;ancienne ABI, l&#8217;autre utilisant la nouvelle.</p>
+</li>
+<li>
+<p>41:00 ça n&#8217;est que quand on exécute un programme que l&#8217;ensemble du système qui va tourner est complet (donc c&#8217;est seulement à ce moment tardif qu&#8217;on sait si les ABIS seront compatibles ou non). Du coup, les binaires ne sont pas vérifiables statiquement pour savoir si oui ou non ils utilisent des ABI compatibles.</p>
+</li>
+<li>
+<p>43:00 explication sur pourquoi même au linktime, on ne peut pas vérifier si les binaires sont compatibles. (TLDR : parce qu&#8217;au runtime, la dépendance à la lib sera peut-être résolue avec une AUTRE version de la lib que celle utilisée au linktime, du coup vérifier au linktime n&#8217;est pas suffisant).</p>
+</li>
+<li>
+<p>46:00 les conséquences d&#8217;un ABI break</p>
+</li>
+<li>
+<p>47:30 exemple concret avec Photoshop et ses plugins : ABI break d&#8217;une lib partagée suite à un upgrade d&#8217;os. Photoshop fait bien le boulot et propose une nouvelle version  compatible avec cette nouvelle ABI. Mais pas nécessairement les 40 développeurs des 40 plugins que j&#8217;utilisais ! Du coup, pour retrouver un système stable, je rétropédale et downgrade mon os : je ne pourrai upgrader que quand tous les plugins proposeront une nouvelle version compatible du plugin, avec la nouvelle ABI.</p>
+</li>
+<li>
+<p>51:00 note que le problème de compatibilité d&#8217;ABI ne se pose QUE si on veut faire évoluer une lib (ou plus généralement, un binaire) <strong>existant</strong>. Notamment, si on se contente d&#8217;AJOUTER des nouvelles choses sans jamais modifier ce qui existe, on est tranquilles. Exemple concret = plutôt que de faire évoluer une structure Hashmap (en cassant son ABI au passage), si on se contente d&#8217;AJOUTER une nouvelle structure BetterHashmap, on n&#8217;aura pas de soucis d&#8217;ABI. Mais bon, c&#8217;est pas toujours faisable ou pratique. Apparemment, java fait beaucoup ça.</p>
+</li>
+<li>
+<p>52:30 pas directement lié à ABI, mais intéressant tout de même : on peut utiliser des options d&#8217;optimisation différentes pour différentes parties du code (i.e. différents fichiers objets) : certains fichiers objets sont compilés avec des options pour optimiser pour réduire la taille, et d&#8217;autres fichiers objets sont compilés avec des options pour optimiser la vitesse d&#8217;exécution.</p>
+</li>
+<li>
+<p>56:00 grosso modo, la version d&#8217;ABI de la lib standard de ton système définit l&#8217;ABI que tu vas utiliser avec ton système. (En gros, t&#8217;as pas trop le choix). C&#8217;est la raison pour laquelle j&#8217;ai dû préfixer par LD_LIBRARY_PATH pour utiliser un compilo plus récent que celui de mon système.</p>
+</li>
+<li>
+<p>58:00 <strong>symbol versioning</strong> semble être un moyen de contourner les problèmes de compatibilité. Ndm : car on retombe dans le "ajouter plutôt que faire évoluer". C&#8217;est pas hyper clair pour moi comment l&#8217;utilisateur de la lib qui a versionné ses symboles pourra "choisir" le symbole&#8230;&#8203; Hum en fait si : il choisit soit via le header de la lib (si les deux fonctions ont des noms différents, mais bon, c&#8217;est plus vraiment du symbol-versioning), soit au linktime, selon la version de la lib avec laquelle il linke son binaire (si la fonction garde le même nom - l&#8217;aPi ne change pas - mais est manglée en un symbole différent, versionné)</p>
+</li>
+<li>
+<p>Apparemment, c&#8217;est déjà le cas pour la stdlib de c++ : les noms manglés sont préfixés par <em>_1</em>, où le 1 correspond à du symbol versioning. EDIT : je vérifie qu&#8217;il y a bien des versions d&#8217;ABI dans les noms manglés (environ 25%, on dirait) :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="bash">nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __cxx
+<span style="color: #75715e"># [...]</span>
+<span style="color: #75715e"># 00121f10 W _ZTv0_n12_NSt7__cxx1118basic_stringstreamIwSt11char_traitsIwESaIwEED1Ev</span>
+<span style="color: #75715e"># 00121bf0 W _ZTv0_n12_NSt7__cxx1119basic_istringstreamIcSt11char_traitsIcESaIcEED0Ev</span>
+<span style="color: #75715e"># [...]</span>
+
+nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>wc -l
+<span style="color: #75715e"># 5983</span>
+
+nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __cxx<span style="color: #f8f8f2">|</span>wc -l
+<span style="color: #75715e"># 1488</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>01:00:30 même si le comité c++ s&#8217;y intéresse, ces questions de compatibilité d&#8217;ABI, c&#8217;est plutôt le problème de ceux qui font les libs standard (donc les fabricants de compilateurs).</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__post_a_href_https_akrzemi1_wordpress_com_2013_11_18_type_erasure_part_i_type_erasure_part_i_a">[POST] <a href="https://akrzemi1.wordpress.com/2013/11/18/type-erasure-part-i/">Type erasure — Part I</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2021_02_02_publié_le_2013_11_18_sur_a_href_https_akrzemi1_wordpress_com_le_blog_d_andrzej_krzemieński_a_un_dev_c_polonais_qui_a_l_air_bien_calé">Lu le 2021-02-02, publié le 2013-11-18, sur <a href="https://akrzemi1.wordpress.com/">le blog d&#8217;Andrzej Krzemieński</a>, un dev C++ polonais qui a l&#8217;air bien calé</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> = excellent article expliquant les différentes façons d&#8217;erase les types</p>
+<div class="ulist">
+<ul>
+<li>
+<p>type-erased = "interface" = on est générique vis-à-vis du type réel sur lequel on travaille</p>
+</li>
+<li>
+<p>le fil rouge de l&#8217;article est la recherche dans un conteneur trié via un binary search</p>
+</li>
+<li>
+<p>pas de type-erasure, templatization &#8594; le plus rapide, mais on a les inconénients des templates</p>
+</li>
+<li>
+<p>void* type-erasure = pas terrible car pas type-safe + ne fonctionne qu&#8217;avec des arrays</p>
+</li>
+<li>
+<p>OO-based type-erasure = pas terrible car nombreux problèmes (notamment, force d&#8217;hériter d&#8217;un type)</p>
+</li>
+<li>
+<p>template-based type-erasure = pas parfait, mais mieux que le reste, notamment : type-safe + templatization uniquement sur le type de l&#8217;objet lui-même</p>
+</li>
+<li>
+<p>l&#8217;article se poursuit avec deux autres articles : <a href="https://akrzemi1.wordpress.com/2013/12/06/type-erasure-part-ii/">part II</a>, <a href="https://akrzemi1.wordpress.com/2013/12/11/type-erasure-part-iii/">part III</a></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>dispatch statique (pas de type-erasure ici) :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Le compilateur choisit statiquement la bonne spécialisation de cout en fonction du type de <code>s</code> ou <code>i</code>.</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">print</span> <span style="color: #f8f8f2">(string</span> <span style="color: #f8f8f2">s,</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">s;</span>
+    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">i;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>Ici, le type (non-erased) contient donc des informations utiles au compilateur.</p>
+</li>
+<li>
+<p><code>cout::operator&lt;&lt;</code> est polymorphic, car il se comporte différemment lorsqu&#8217;appelé avec des variables différentes.</p>
+</li>
+<li>
+<p>Point important : il n&#8217;y a PAS de runtime-dispatch : c&#8217;est bien au compile-time que le dispatch a lieu &#8594; pas d&#8217;overhead au runtime.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>être générique avec les templates :exemple de l&#8217;article = algo de type binar-search en C</p>
+<div class="ulist">
+<ul>
+<li>
+<p>en C : bsearch, utilisant une fonction de comparaison, qui accepte des void*</p>
+</li>
+<li>
+<p>en C++ : std::equal_range</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">c_bigger</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span> <span style="color: #f8f8f2">a,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span> <span style="color: #f8f8f2">b)</span>
+<span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)b</span> <span style="color: #f92672">-</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)a;</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>l&#8217;équivalent en C++ utilise une lambda comme fonction, et est plus rapide qu&#8217;en C</p>
+</li>
+<li>
+<p>en C, le compilo n&#8217;est pas aware du type de la fonction de comparaison, et du fait qu&#8217;elle travaille sur deux int &#8594; pas d&#8217;optimisation possible, on déréférencera au runtime le pointeur de fonction</p>
+</li>
+<li>
+<p>du coup, ici, l&#8217;utilisation de template permet d&#8217;aller plus vite au runtime</p>
+</li>
+<li>
+<p>TL;DR : on fait un trade-off : utiliser les templates (fast-runtime, slow build) ou ne pas les utiliser (le contraire)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>inconvénient des templates :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>binaire plus gros (vu qu&#8217;on a une instanciation par "spécialisation")</p>
+</li>
+<li>
+<p>compile-time slow down</p>
+</li>
+<li>
+<p>le body de la fonction doit être visible (dans le header), et on doit donc exposer toutes les dépendances (les headers dont notre template a besoin) &#8594; compile-time encore plus lent</p>
+</li>
+<li>
+<p>messages d&#8217;erreur des template-instanciation souvent illisibles</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>avantage des templates :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>programmes plus rapides que leurs équivalents non-templates</p>
+</li>
+<li>
+<p>type-safety par rapport aux équivalents non-templates</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong><code>void*</code> type-erasure :</strong></p>
+<div class="ulist">
+<ul>
+<li>
+<p>exemple = le bsearch de C : au runtime, on a une indirection pour utiliser un pointeur de fonction</p>
+</li>
+<li>
+<p>note : cf. "man bsearch" la signature de bsearch attend un pointeur de fonction qui a cette signature :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">compar)(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>le code de la fonction de comparaison va caster les void* en int pour pouvoir les comparer (<code>c_bigger</code> plus haut)</p>
+</li>
+<li>
+<p>citation : <em>bsearch is in fact an example of basic type erasure. It is one function, with one interface that works for arrays of any element type.</em></p>
+</li>
+<li>
+<p>TL;DR : en C, void* permet d&#8217;être générique sur le type des éléments qu&#8217;on passe à une fonction</p>
+</li>
+<li>
+<p>utiliser void* permet d&#8217;overloader <code>bsearch</code> au runtime, qui marche dorénavant avec TOUT type de tableau</p>
+</li>
+<li>
+<p>problèmes :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>problème : on ne peut rien faire d&#8217;un void* :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>soit on le passe à une autre fonction qui en fait qqch (exemple avec c_bigger, une autre fonction caste en int)</p>
+</li>
+<li>
+<p>soit on passe d&#8217;autres arguments codant l&#8217;information qui aurait été apportée par le type (exemple avec bsearch : on passe un argument <code>size</code> de type <code>size_t</code> pour savoir comment incrémenter les itérateurs)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>non-type safe : on peut tout à fait passer une fonction de comparaison qui compare des entiers à un bsearch appliqué à un tableau de string (et ça va sans doute UB)</p>
+</li>
+<li>
+<p>le compilo ne détecte rien, car les deux fonctions de comparaison ont même signature (utilisant des void*)</p>
+</li>
+<li>
+<p>autre limitation = bsearch ne fonctionne qu&#8217;avec des arrays (et ne saura pas par exemple travailler avec un std::set)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>OO-based type-erasure</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>tous les objets héritent d&#8217;un même classe, toutes les classes filles implémentent un opérateur de comparaison avec un autre Object* (qui throw lorsque l&#8217;Object auquel on compare n&#8217;est pas du bon type)</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">i_bigger</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">a,</span> <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">b)</span>
+<span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ia</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(a);</span>
+  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ib</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(b);</span>
+
+  <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(ia</span> <span style="color: #f92672">==</span> <span style="color: #66d9ef">nullptr</span> <span style="color: #f92672">||</span> <span style="color: #f8f8f2">ib</span> <span style="color: #f92672">==</span> <span style="color: #66d9ef">nullptr</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #66d9ef">throw</span> <span style="color: #f8f8f2">SomeException{};</span>
+  <span style="color: #f8f8f2">}</span>
+
+  <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">ib</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt()</span> <span style="color: #f92672">-</span> <span style="color: #f8f8f2">ia</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt();</span>
+<span style="color: #f8f8f2">}</span>
+
+<span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">OO_search</span> <span style="color: #f8f8f2">(Object</span><span style="color: #f92672">**</span> <span style="color: #f8f8f2">base,</span>
+                   <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">size,</span>
+                   <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">comp)(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>on a UN PEU amélioré la situation : au lieu d&#8217;un UB, on a une exception au runtime lorsqu&#8217;on compare des objets non-comparables</p>
+</li>
+<li>
+<p>beaucoup de problèmes :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>on est obligés d&#8217;hériter d&#8217;Object (ce qui n&#8217;est par exemple pas possible pour les int)</p>
+</li>
+<li>
+<p>conséquence pas cool = c&#8217;est au CLIENT de notre code d&#8217;adapter ses types pour les faire hériter de Object</p>
+</li>
+<li>
+<p>en plus d&#8217;être chiant, n&#8217;est pas toujours possible (notamment, si on veut pouvoir appliquer 3 algos différents, il faut hériter de ns1::Object, ns2::Object, et ns3::Object)</p>
+</li>
+<li>
+<p>accessoirement prend plus de place au runtime (il faut de la place pour la vtable)</p>
+</li>
+<li>
+<p>comme on ne connaît pas les types réels des objets, on ne peut plus stocker des objets hétérogènes dans un container</p>
+</li>
+<li>
+<p>le fait d&#8217;avoir une exception au lieu d&#8217;un UB est pas fi-fou : on préfèrerait une erreur du compilateur</p>
+</li>
+<li>
+<p>le fait d&#8217;hériter d&#8217;Object ne sert qu&#8217;à une pauvre chose : pour passer un Object* et tester le type réel avec dynamic_cast</p>
+</li>
+<li>
+<p>tout comme void* / bsearch, notre fonction ne marche qu&#8217;avec des arrays</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>value-semantic type erasure</strong> :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>pour être type-safe, on n&#8217;aura pas le choix, faut rester sur des templates&#8230;&#8203;</p>
+</li>
+<li>
+<p>on utilise std::function pour abstraire le type de la fonction de comparaison (qui peut être n&#8217;importe quoi, tant qu&#8217;on peut lui appliquer f(int, int)) :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">predicate;</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>alias template :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span>
+<span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">AnyBinaryPredicate</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>citation :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>With std::function we :<br>
+    (1) erase the type of the underlying function/function-like object,<br>
+    (2) preserve the interface (operator()),<br>
+    (3) we are able to pass it by value,<br>
+    (4) we require of the erased types no declaration of conformance to an interface (no inheritance).</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>de la même façon qu&#8217;on a fait une "interface template" pour représenter des fonctions, on va faire une "interface template" pour représenter des itérateurs sur un type T.</p>
+</li>
+<li>
+<p>On utilise une lib "any_iterator", le code est très illustratif :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">vec</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">};</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">list</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">list</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">6</span><span style="color: #f8f8f2">};</span>
+
+<span style="color: #f8f8f2">AnyForwardIter</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">it</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">vec.begin()</span> <span style="color: #f8f8f2">};</span> <span style="color: #75715e">// initialize</span>
+<span style="color: #f8f8f2">it</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">list.begin();</span>                      <span style="color: #75715e">// rebind</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>on peut aussi utiliser un type-erased range :</p>
+</li>
+<li>
+<p>boost::any_range, le code est très illustratif :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">vec</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">};</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">set</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">set</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">7</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">9</span><span style="color: #f8f8f2">};</span>
+
+<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">rng</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">vec;</span> <span style="color: #75715e">// initialize interface</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance</span> <span style="color: #f8f8f2">(boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng),</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span>
+
+<span style="color: #f8f8f2">rng</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">set;</span>                      <span style="color: #75715e">// rebind interface</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance</span> <span style="color: #f8f8f2">(boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng),</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>note : ça a l&#8217;air important : les interface typed-erased ci-dessus préservent la "value-semantic" = ce qui nous intéresse, c&#8217;est pas les objets eux-mêmes, c&#8217;est leur contenu</p>
+</li>
+<li>
+<p>grâce à range et std::function, on a un algo qui n&#8217;est plus que templaté sur T (alors que pour une version template-pure, il était également templaté sur le type du conteneur (via l&#8217;iterator) et le type du prédicat) :</p>
+</li>
+<li>
+<p><em>Thus, we have two value-semantic type-erased interfaces: AnyForwardRange&lt;T&gt; and AnyBinaryPredicate&lt;T&gt;. Using them we can define our (partially) type-erased searching function:</em></p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span>
+<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">Search</span> <span style="color: #f8f8f2">(AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">rng,</span> <span style="color: #f8f8f2">T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">v,</span>
+                           <span style="color: #f8f8f2">AnyBinaryPredicate</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">pred)</span>
+<span style="color: #f8f8f2">{</span>
+  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ans</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">equal_range</span> <span style="color: #f8f8f2">(rng.begin(),</span> <span style="color: #f8f8f2">rng.end(),</span> <span style="color: #f8f8f2">v,</span> <span style="color: #f8f8f2">pred);</span>
+  <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">{ans.first,</span> <span style="color: #f8f8f2">ans.second};</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>défauts :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>on est obligé de préciser explicitement le paramètre template</p>
+</li>
+<li>
+<p>moins performant au run-time qu&#8217;une version template pure</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
