@@ -46,6 +46,56 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+
+== [VIDEO] https://www.youtube.com/watch?v=7RoTDjLLXJQ[What is an ABI, and Why is Breaking it Bad ? — Marshall Clow — CppCon 2020]
+
+
+=== Vue le 2021-02-05, publiée le 2021-02-03 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par https://github.com/mclow[Marshall CLOW], notamment auteur de Boost.Algorithm, lead-dev d libc++, et chairman of the Library working group of the C++ standard committee.
+
+* *TL;DR* = une vidéo intéressante sur les conséquences d'un changement d'ABI non-rétrocompatible.
+* 03:00 Apparemment, ABI est définie par platform, et non par c++ standard
+* 04:15 ABI break = specific break of ODR
+* If we had no shared compilation, there would be no ABI breaks.
+* 08:00 fragile base classe problème , si on modifie la classe de base, il faut recompiler les classes filles.
+* 09:00 c++ ne connait pas les noms des membres, juste leurs offsets
+* 11:00 vtable = array de pointeurs de fonctions. Taille de l'array est le nombre de fonctions virtuelles. L'ordre des fonctions dans l'array dépend du compilateur.
+* 14:00 vouloir ne pas casser l'ABI de iostream a empêché d'ajouter des short floats (floats de 16 bits) dans c++ 20. En effet, il aurait fallu ajouter de nouvelles fonctions virtuelles à iostream.
+* 15:40 quand clang a été fait, l'un des objectifs était de produire des object files compatibles avec GCC. (Du coup, ils étaient obligés d'utiliser le même ordre de fonctions virtuelles dans la vtable que GCC)
+* 18:00 wow, un obscur changement, (possiblement sans même modification du code assembleur généré) casse l'ABI ! En gros, remplacer un custom copy-constructor par `=default` rend possiblement les classes-filles copy-constructible, ce qui autorise certaines plate-formes à passer ses paramètres par registres plutôt que sur la stack, ce qui est un changement d'ABI.
+* 26:00 don't have stale binaries = don't have binaries older than things they use.
+* 28:30 quelques explications sur le changement d'ABI des strings en c++11. Dix ans après, ça pose encore problème.
+* 30:30 exemple de conséquence de ce changement d'ABI, si l'os a été compilé par GCC 4.3 ( donc avec l'ancienne ABI des strings, pre-c++11), et qu'on utilise dessus un binaire compilé avec gcc9 (éventuellement compilé soi-même, mais c'est pas obligatoire), donc utilisant la nouvelle ABI, ça va crasher, car le layout attendu par le code qu'il vient de compiler n'est pas celui de la shared lib de l'OS, qu'il utilise.
+* 34:30 les ABI breaks, c'est un problème des implémentations du langage c++ (plutôt que du langage lui-même)
+* 35:30 discussion par un working-group de "quand peut-on changer une ABI ?"
+* 38:15 pour s'autoriser un ABI break, tout en évitant à un dev d'utiliser une lib non compatible sans s'en rendre compte (donc être capable de *détecter* l'utilisation d'une ABI non-compatible), une proposition pour c++26 est de changer le mangling scheme. Ainsi, on ne pourra même plus linker son object file fraîchement compilé avec un object file plus vieux utilisant l'ancienne ABI (comme une lib système)
+* 40:00 autre possibilité pour s'autoriser des changements d'ABI : les binaires (ex, les libs systèmes) embarquent les DEUX versions du code assembleur, l'une utilisant l'ancienne ABI, l'autre utilisant la nouvelle.
+* 41:00 ça n'est que quand on exécute un programme que l'ensemble du système qui va tourner est complet (donc c'est seulement à ce moment tardif qu'on sait si les ABIS seront compatibles ou non). Du coup, les binaires ne sont pas vérifiables statiquement pour savoir si oui ou non ils utilisent des ABI compatibles.
+* 43:00 explication sur pourquoi même au linktime, on ne peut pas vérifier si les binaires sont compatibles. (TLDR : parce qu'au runtime, la dépendance à la lib sera peut-être résolue avec une AUTRE version de la lib que celle utilisée au linktime, du coup vérifier au linktime n'est pas suffisant).
+* 46:00 les conséquences d'un ABI break
+* 47:30 exemple concret avec Photoshop et ses plugins : ABI break d'une lib partagée suite à un upgrade d'os. Photoshop fait bien le boulot et propose une nouvelle version  compatible avec cette nouvelle ABI. Mais pas nécessairement les 40 développeurs des 40 plugins que j'utilisais ! Du coup, pour retrouver un système stable, je rétropédale et downgrade mon os : je ne pourrai upgrader que quand tous les plugins proposeront une nouvelle version compatible du plugin, avec la nouvelle ABI.
+* 51:00 note que le problème de compatibilité d'ABI ne se pose QUE si on veut faire évoluer une lib (ou plus généralement, un binaire) *existant*. Notamment, si on se contente d'AJOUTER des nouvelles choses sans jamais modifier ce qui existe, on est tranquilles. Exemple concret = plutôt que de faire évoluer une structure Hashmap (en cassant son ABI au passage), si on se contente d'AJOUTER une nouvelle structure BetterHashmap, on n'aura pas de soucis d'ABI. Mais bon, c'est pas toujours faisable ou pratique. Apparemment, java fait beaucoup ça.
+* 52:30 pas directement lié à ABI, mais intéressant tout de même : on peut utiliser des options d'optimisation différentes pour différentes parties du code (i.e. différents fichiers objets) : certains fichiers objets sont compilés avec des options pour optimiser pour réduire la taille, et d'autres fichiers objets sont compilés avec des options pour optimiser la vitesse d'exécution. 
+* 56:00 grosso modo, la version d'ABI de la lib standard de ton système définit l'ABI que tu vas utiliser avec ton système. (En gros, t'as pas trop le choix). C'est la raison pour laquelle j'ai dû préfixer par LD_LIBRARY_PATH pour utiliser un compilo plus récent que celui de mon système.
+* 58:00 *symbol versioning* semble être un moyen de contourner les problèmes de compatibilité. Ndm : car on retombe dans le "ajouter plutôt que faire évoluer". C'est pas hyper clair pour moi comment l'utilisateur de la lib qui a versionné ses symboles pourra "choisir" le symbole... Hum en fait si : il choisit soit via le header de la lib (si les deux fonctions ont des noms différents, mais bon, c'est plus vraiment du symbol-versioning), soit au linktime, selon la version de la lib avec laquelle il linke son binaire (si la fonction garde le même nom - l'aPi ne change pas - mais est manglée en un symbole différent, versionné)
+* Apparemment, c'est déjà le cas pour la stdlib de c++ : les noms manglés sont préfixés par __1_, où le 1 correspond à du symbol versioning. EDIT : je vérifie qu'il y a bien des versions d'ABI dans les noms manglés (environ 25%, on dirait) :
++
+[source,bash]
+----
+nm -D /usr/lib32/libstdc++.so.6.0.28|grep __cxx
+# [...]
+# 00121f10 W _ZTv0_n12_NSt7__cxx1118basic_stringstreamIwSt11char_traitsIwESaIwEED1Ev
+# 00121bf0 W _ZTv0_n12_NSt7__cxx1119basic_istringstreamIcSt11char_traitsIcESaIcEED0Ev
+# [...]
+
+nm -D /usr/lib32/libstdc++.so.6.0.28|wc -l     
+# 5983
+
+nm -D /usr/lib32/libstdc++.so.6.0.28|grep __cxx|wc -l
+# 1488
+----
++
+* 01:00:30 même si le comité c++ s'y intéresse, ces questions de compatibilité d'ABI, c'est plutôt le problème de ceux qui font les libs standard (donc les fabricants de compilateurs).
+
 == [POST] https://akrzemi1.wordpress.com/2013/11/18/type-erasure-part-i/[Type erasure — Part I]
 
 === Lu le 2021-02-02, publié le 2013-11-18, sur https://akrzemi1.wordpress.com/[le blog d'Andrzej Krzemieński], un dev C++ polonais qui a l'air bien calé
