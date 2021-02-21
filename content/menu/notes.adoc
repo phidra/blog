@@ -45,10 +45,175 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [ARTICLE] link:https://h-deb.clg.qc.ca/Sujets/Divers\--cplusplus/Sainte-Trinite.html[Comprendre la Sainte-Trinité]
+
+=== Lue le 2021-02-07, rédigée le ????-??-?? sur https://h-deb.clg.qc.ca/[le site de Patrice ROY], professeur Montréalais, qui en plus d'être *très* pédagogique, de faire partie du http://www.open-std.org/jtc1/sc22/wg21/[Working Group normalisant le C++], est super gentil :-)
+
+* Synthèse :
+** "sainte-trinité" = règle de 3, de 5 ou de zéro selon les versions
+** TL;DR : soit tu ne définis aucune des 5 fonctions suivantes toi-même, soit tu les définis tous :
+*** copy-constructor
+*** copy-assignment operator
+*** move-constructor
+*** move-assignment operator
+*** delete
+** attention : il y a des règles particulières indiquant si le compilo définira ou non lui-même ces fonctions
+** Plutôt qu'une règle absolue, c'est une bonne pratique, qui invite à double-checker lorsqu'on est amenés à ne pas la suivre.
+** le cas où il faut les définir soi-même est le cas où la classe est responsable d'une ressource (et dans ce cas, mieux vaut que ce soit sa *seule* responsabilité)
+** règle étendue = 3½ / 5½ : ajoute la fonction `swap` aux 5 fonctions ci-dessus
+** par ailleurs, l'article porte un regard intéressant sur les langages qui poussent la value-semantic, et ceux qui poussent la reference-semantic
+* NdM : l'état de mes connaissances avant de lire l'article :
+** soit tu implémentes les 3(5) opérateurs, soit tu n'en implémentes aucun
+** tu implémentes les 3(5) :
+*** si tu as besoin d'implémenter l'un des trois, tu as sans doute besoin d'implémenter les deux autres
+*** et c'est parce que la classe "gère une ressource externe"
+*** exemple = dans son constructeur, une classe alloue un int (et le stocke dans un int*)
+*** dans ce cas, on veut définir un destructeur particulier qui delete l'int*
+*** la règle de 3 dit alors qu'il faut définir ce qu'on veut faire quand on recopie une autre instance (copy-constructor ou copy-assignment)
+*** en effet, si on se contente de copier l'int*, la destruction des deux instances va delete deux fois le pointeur
+*** plus probablement, on veut delete notre int actuel et en allouer un autre (ou encore garder notre int, et copier la valeur)
+** si tu n'en implémentes aucun :
+*** notre classe a une plutôt un comportement "normal" vis-à-vis de ses membres
+*** ils peuvent utiliser la copie-construction par défaut / destruction par défaut
+*** du coup, MIEUX VAUT utiliser les default versions de ces opérateurs (et donc n'en définir aucun, cf. la règle de 3)
+* Définir ce qu'est un objet en POO :
+** accès à un objet
+** ça veut dire quoi construire l'objet
+** ça veut dire quoi finaliser l'objet (aka destruction)
+** ça veut dire quoi dupliquer l'objet
+* Plutôt qu'une règle absolue, c'est une bonne pratique, qui invite à double-checker lorsqu'on est amenés à ne pas la suivre.
+* Recommandation = expliciter son intention (au besoin, avec `=default` ou `=delete`)
+* Valeurs par défauts des 3 opérations :
+** construction par copie = appeler le constructeur de copie de chacun des attributs
+** affectation = appeler l'affectation de chacun des attributs
+** destruction = appeler le destructeur de chacun des attributs
+* Rôle des 3 opérations :
+** constructeur = mettre en place les invariants de l'objet construit
+** opérations de copie = maintenir ces invariants (parmi d'autres rôles)
+** destructeur = assurer la saine libération des ressources dont est responsable l'objet
+* Sainte trinité d'un objet correcte si tous ses membres ont une sainte-trinité correcte et une opération de copie correctement définie.
+* La sainte-trinité est à définir si un objet prend la responsabilité d'une ressource :
+** allocation dynamique de mémoire
+** ouverture d'un stream (NdM ou d'un fichier)
+** prise en charge d'un mutex ou autre mécanisme de synchronisation
+** (NdM : database connection, ...)
+** NdM : à mes yeux, cette guideline est la plus importante qui va avec la règle de 5 : _si un objet prend la responsabilité d'une ressource, il faut définir les 5 opérations_
+* Note importante : ce n'est pas parce qu'un objet contient des membres pointeurs (ou même un conteneur de pointeurs) qu'elle doit se préoccuper de la sainte-trinité !
+** en effet : si l'objet n'est pas RESPONSABLE des objets pointés (dans le sens où il doit penser à les détruire), il n'est pas oblité de définir les 3 opérations de la sainte-trinité
+* Au sujet du lien entre la sainte-trinité et l'opposition entre value/reference-semantic :
+** NdM : l'opposition reference-semantic vs. value-semantic semble être regroupée sous le terme "sémantique d'accès".
+** java/C# = reference-semantic :
+*** objets créés dynamiquement (heap-allocated)
+*** on n'y accède que par référence (on n'a jamais accès à l'objet lui-même)
+*** garbage-collecté (donc la finalisation n'est pas déterministe)
+** C++ = value-semantic :
+*** objets typiquement (mais pas exclusivement) stack-allocated
+*** finalisation déterministe 
+** L'article explique qu'avoir une sémantique de valeur implique qu'il est plus important de savoir ce que représente une copie d'objet :
+*** possiblement, car il y a bien plus de copie que dans un langage ayant une sémantique de référence, notamment car il y en aura plein lors des appels de fonction ?
+*** EDIT : exprimé dans l'autre sens, dans un langage avec une sémantique de référence comme python, les objets sont rarement copiés, et la sainte trinité moins importante
+** De même l'implication avec le fait qu'il est plus important (qu'avec une reference-semantic) de bien savoir ce qu'est un destructeur n'est pas claire...
+*** possiblement car on va vouloir faire plus de choses avec le destructeur, vu que celui-ci est un outil plus utile ?
+*** possiblement aussi, car comme on copie souvent les objets, on les copie dans des contextes temporaires (comme un appel de fonction), et que du coup, les objets sont détruits souvents
+** EDIT : il clarifie ailleurs :
++
+[quote]
+____
+Dans un langage où l'usage est de manipuler des objets directement, offrir un support automatique de la Sainte-Trinité va de pair avec des principes de base de saine programmation.
+Évidemment, dans un langage où l'accent est mis sur l'allocation dynamique de ressources, le partage d'objets et l'accès indirect, les pratiques sont différentes.
+En C# et en Java, mieux vaut penser immuabilité (pour réduire les conséquences néfastes du partage implicite des objets) que d'insister sur la copie des objets, puisque cette dernière opération y est moins naturelle, moins idiomatique.
+____
++
+** EDIT 2 : et il détaille encore plus dans le chapitre "Risques du partage" :
++
+[quote]
+____
+Puisque tous les objets en C# et en Java sont alloués dynamiquement, et puisque la copie dans ces langages est d'abord et avant tout une copie de référence, donc une sémantique de partage du référé il est très important de développer avec ces langages l'habitude de concevoir des objets immuables. +
+Par immuable, on entend une classe dont les instances ne peuvent être modifiées une fois construite (pas de mutateurs ou de services semblables). Sans surprise, la plupart des classes importantes de langages comme C# et Java sont immuables (String en Java et string en C# en sont de bons exemples). Pour comprendre les enjeux, voir ce texte https://h-deb.clg.qc.ca/Sujets/Divers\--cplusplus/Importance-constantes.html#immuabilite +
+Partager un objet qui n'est pas immuable est dangereux en situation de multiprogrammation, et prête à risque même en situation de monoprogrammation, brisant le principe de moindre surprise. Il est difficile de savoir quand il est le plus opportun de dupliquer un objet mutable (par clonage ou par copie) pour éviter les bris d'encapsulation; les objets faisant partie d'une interface dans ces langages devraient conséquemment tous être immuables.
+____
++
+** EDIT 3 : https://en.cppreference.com/w/cpp/language/rule_of_three[cette autre ressource] listée en bas de page donne des billes :
++
+[quote]
+____
+Because C++ copies and copy-assigns objects of user-defined types in various situations (passing/returning by value, manipulating a container, etc), these special member functions will be called, if accessible, and if they are not user-defined, they are implicitly-defined by the compiler.
+____
++
+*** Donc en gros, le lien avec la sémantique de référence, c'est qu'en C++, on a plus tendance à modifier les objets que par exemple en java, où les objets sont plus souvent immutables.
+* Le code d'exemple suivant est intéressant, notamment l'utilisation du copy-and-swap idiom pour implémenter l'opérateur d'affectation :
++
+[source,cpp]
+----
+class TiTableau {
+public:
+   using size_type = std::size_t;
+private:
+   size_type nelems{};
+   int *elems;
+public:
+   TiTableau(size_type n) : elems{ new int[n] } {
+      fill(elems, elems+size(), 0);
+   }
+   TiTableau(const TiTableau &autre) : nelems{ autre.size() }, elems{ new int[autre.size()] } {
+      copy(autre.elems, autre.elems+size(), elems);
+   }
+   void swap(TiTableau &autre) {
+      using std::swap;
+      swap(elems, autre.elems);
+      swap(nelems, autre.nelems);
+   }
+   TiTableau& operator=(const TiTableau &autre) {
+      TiTableau{ autre }.swap(*this);
+      return *this;
+   }
+   ~TiTableau() {
+      delete [] elems;
+   }
+};
+----
++
+* L'opérateur swap est si important qu'on appelle parfois plutôt la règle de 5½.
+* NdM : un autre exemple de cas où il a fallu se poser la question = unique_ptr.
+** comme la classe est responsable d'une ressource, il faut savoir quoi faire à la copy-construction, ou à la copy-affectation
+** en l'occurence, unique_ptr n'est pas copiable ou assignable par copie : deux instances de unique_ptr ne peuvent pas gérer le même objet.
+** (mais il peut transférer la responsabilité de l'objet qu'il gère via des move-operations)
+* Autre phrase intéressante :
++
+[quote]
+____
+Là où shared_ptr définit une sémantique de partage (copier un shared_ptr signifie partager son pointé), unique_ptr définit une responsabilité exclusive sur le pointé.
+Le contenu pointé par un unique_ptr peut être transféré d'un unique_ptr à un autre, mais un unique_ptr ne se copie pas.
+Pour cette raison, unique_ptr est plus sécuritaire en situation de multiprogrammation, et est aussi plus léger en mémoire.
+En C++, donc, c'est unique_ptr si possible, et shared_ptr si nécessaire.
+____
++
+* Il y a quelques lignes sur la comparaison à java et C#, l'intérêt des GC, et le fait que la structure C++ qui se rapproche le plus d'une création d'objet en java/C# est `auto x = shared_ptr<X>(new X);`
+* Génération automatiques par le compilo :
+** les 5 opérations de la règle des 5 sont générées automatiquement par le compilateur, sauf si l'utilisateur en a défini au moins une lui-même
+** si l'utilisateur empêche le compilo de définir les autres opérations parmi les 5, elles sont considérées comme =delete
+** règle de zéro : pour une classe qui n'est pas explicitement responsable de ressources, mieux vaut ne coder aucune des opérations de la règle de cinq
+* Les liens de la page sont une mine d'or :
+** https://en.cppreference.com/w/cpp/language/rule_of_three
++
+[quote]
+____
+Rule of five : Because the presence of a user-defined destructor, copy-constructor, or copy-assignment operator prevents implicit definition of the move constructor and the move assignment operator, any class for which move semantics are desirable, has to declare all five special member functions:  +
+Unlike Rule of Three, failing to provide move constructor and move assignment is usually not an error, but a missed optimization opportunity. +
+Rule of zero : Classes that have custom destructors, copy/move constructors or copy/move assignment operators should deal exclusively with ownership (which follows from the Single Responsibility Principle). +
+Other classes should not have custom destructors, copy/move constructors or copy/move assignment operators.
+____
++
+** https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Rc-zero
++
+[quote]
+____
+If you can avoid defining default operations, do +
+If you define or =delete any copy, move, or destructor function, define or =delete them all
+____
 
 
 == [VIDEO] https://www.youtube.com/watch?v=7RoTDjLLXJQ[What is an ABI, and Why is Breaking it Bad ? — Marshall Clow — CppCon 2020]
-
 
 === Vue le 2021-02-05, publiée le 2021-02-03 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par https://github.com/mclow[Marshall CLOW], notamment auteur de Boost.Algorithm, lead-dev d libc++, et chairman of the Library working group of the C++ standard committee.
 
