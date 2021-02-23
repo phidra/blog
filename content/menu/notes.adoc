@@ -45,6 +45,20 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [ARTICLE] https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e[Illusions de l'informatique distribuée]
+
+=== Lu (c'est un bien grand mot) le 2021-02-23, rédigée le ????-??-?? sur https://fr.wikipedia.org/
+
+* Les illusions en question :
+** Le réseau est fiable.
+** Le temps de latence est nul.
+** La bande passante est infinie.
+** Le réseau est sûr.
+** La topologie du réseau ne change pas.
+** Il y a un et un seul administrateur réseau.
+** Le coût de transport est nul.
+** Le réseau est homogène.
+
 == [ARTICLE] link:https://h-deb.clg.qc.ca/Sujets/Divers\--cplusplus/Sainte-Trinite.html[Comprendre la Sainte-Trinité]
 
 === Lue le 2021-02-07, rédigée le ????-??-?? sur https://h-deb.clg.qc.ca/[le site de Patrice ROY], professeur Montréalais, qui en plus d'être *très* pédagogique, de faire partie du http://www.open-std.org/jtc1/sc22/wg21/[Working Group normalisant le C++], est super gentil :-)
