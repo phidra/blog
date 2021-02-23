@@ -45,6 +45,38 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 
 
 
+== [VIDEO] https://www.youtube.com/watch?v=ZQFzMfHIxng[CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”]
+
+=== Vue le 2021-02-23, publiée le 2017-10-10 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par https://www.oreilly.com/pub/au/7031[Fedor PIKUS], ancien dev Google, actuellement chez Mentor.
+
+* 04:30 définition d'un atomic = les autres threads ne voient pas d'état intermédiaire.
+** C'est un concept plus général que les atomic du C++ : c'est le A de Acid, par exemple (alors même qu'une transaction peut concerner des milliers d'istructions)
+* 10:45 tous les types trivialement copiables (i.e. copiables avec memcpy, continuons chunk of memory, no virtual fonctions, noexcept constructor) peuvent être atomiques.
+* 11:00 donne les opérations utilisables avec les atomic.
+* 13:00 certaines opérations compilent mais ne sont pas atomiques !
+* 15:40 opérations applicables aux atomic : load, store, exchange, compare_and_swap
+* 16:10 je commence à mieux comprendre compare exchange, qui semble être conçu pour être utilisé dans une boucle pour "setter" l'atomic de façon conditionnelle, s'il a bien la valeur attendue.
+* 17:40 confirme et détaille cette vision
+* 19:00 fetch_add (et ses cousins)
+* 21:30 attention quand on mesure les perfs des atomic : elles sont 1. hardware dependent, et 2. compiler-dependent
+* 27:00 atomic n'est pas nécessairement lockfree, et ça dépend de la plateforme, et n'est connu qu'au runtime (pour des contraintes d'alignement). On dispose tout de même de is_always_lock_free au compile-time.
+* 30:30 c'est toute la cacheline qui est synchronisée
+* 33:00 différence entre compare exchange weak et strong = le weak peut renvoyer false même si la condition est en fait remplie (spurious failure)
+* 39:00 l'archétype d'une atomic data structure : une variable atomic contient un index/pointeur sur une zone mémoire non-atomic
+* 42:00 par conséquent, les memory barriers vont avec les atomic, pour garantir que la zone mémoire à laquelle on accède via l'atomic est bien dans l'état souhaité.
+** Sans memory barriers, chaque cpu (donc chaque thread) voit un état indépendant de la mémoire. La MB permet de synchroniser les cachelines des cpus.
+* 43:30 memory barriers et memory order sont corrélés
+** Relaxed = pas de garantie sur l'ordre des instructions mémoire
+** Acquire = aucune opération ne peut être déplacée avant la barrière
+** Release = le contraire : aucune opération ne peut être déplacée APRÈS la barrière (valable même pour tout le code, y compris pour les variables non-atomiques !)
+** Utilisées conjointement sur la même atomic, release store dans un thread1 + acquire load dans un thread2 permet de synchroniser des threads, y compris sur des lectures / écritures de variables non atomic
+** Il y a deux autres memory order.
+** Si on ne précise pas l'ordre, le défaut est d'utiliser le plus fort : plus safe, mais moins efficace
+* 50:30 les perfs des différentes barriers dépendent de la plateforme
+* 57:30 : pour vraiment gagner des perfs avec les atomics, il faut utiliser les memory barriers
+* 58:00 quand faut il utiliser le lockfree ? Grosso modo quand on ne peut pas utiliser de locks, ou que c'est pas pratique de locker.
+* 01:03:00 IMPORTANT = Dans quels cas utiliser les memory order ? le cas où les memory order sont importantes sont les cas où l'atomic est utilisé pour synchroniser d'autres variables (e.g. pour synchroniser l'accès à un tableau). Si ça n'est pas le cas (e.g. car on ne s'intéresse qu'à la valeur en soi de l'atomic), alors on peut utiliser memory_order_relax.
+
 == [ARTICLE] https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e[Illusions de l'informatique distribuée]
 
 === Lu (c'est un bien grand mot) le 2021-02-23, rédigée le ????-??-?? sur https://fr.wikipedia.org/
