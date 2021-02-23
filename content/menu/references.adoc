@@ -40,3 +40,4 @@ Référence = ressource à laquelle je peux me référer régulièrement :
 * https://abseil.io/tips/[C++ Tips of the Week] (abseil)
 * https://quuxplusone.github.io/blog/2019/08/02/the-tough-guide-to-cpp-acronyms/[glossaire C++]
 * Les bonnes pratiques de Google sur la code-review : https://google.github.io/eng-practices/review/reviewer/[côté reviewer], et https://google.github.io/eng-practices/review/developer/[côté reviewee]
+* Le https://www.scrumguides.org/scrum-guide.html[scrum guide]
