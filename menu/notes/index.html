@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          101 min read
+          115 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,10 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__video_a_href_https_www_youtube_com_watch_v_zqfzmfhixng_cppcon_2017_fedor_pikus_c_atomics_from_basic_to_advanced_what_do_they_really_do_a">[VIDEO] <a href="https://www.youtube.com/watch?v=ZQFzMfHIxng">CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”</a></a></li>
+<li><a href="#__video_cppcon_2014_herb_sutter_lock_free_programming_or_juggling_razor_blades_a_href_https_www_youtube_com_watch_v_c1go9ab9nbs_part_1_a_et_a_href_https_www_youtube_com_watch_v_cmxkpchocvw_part_2_a">[VIDEO] CppCon 2014: Herb Sutter "Lock-Free Programming (or, Juggling Razor Blades)" <a href="https://www.youtube.com/watch?v=c1gO9aB9nbs">part 1</a> et <a href="https://www.youtube.com/watch?v=CmxkPChOcvw">part 2</a></a></li>
+<li><a href="#__article_a_href_https_fr_wikipedia_org_wiki_illusions_de_l_27informatique_distribu_c3_a9e_illusions_de_l_informatique_distribuée_a">[ARTICLE] <a href="https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e">Illusions de l&#8217;informatique distribuée</a></a></li>
+<li><a href="#__article_a_href_https_h_deb_clg_qc_ca_sujets_divers_cplusplus_sainte_trinite_html_comprendre_la_sainte_trinité_a">[ARTICLE] <a href="https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/Sainte-Trinite.html">Comprendre la Sainte-Trinité</a></a></li>
 <li><a href="#__video_a_href_https_www_youtube_com_watch_v_7rotdjllxjq_what_is_an_abi_and_why_is_breaking_it_bad_marshall_clow_cppcon_2020_a">[VIDEO] <a href="https://www.youtube.com/watch?v=7RoTDjLLXJQ">What is an ABI, and Why is Breaking it Bad ? — Marshall Clow — CppCon 2020</a></a></li>
 <li><a href="#__post_a_href_https_akrzemi1_wordpress_com_2013_11_18_type_erasure_part_i_type_erasure_part_i_a">[POST] <a href="https://akrzemi1.wordpress.com/2013/11/18/type-erasure-part-i/">Type erasure — Part I</a></a></li>
 <li><a href="#__prez_a_href_https_en_wikipedia_org_wiki_hungarian_notation_la_notation_hongroise_a">[PREZ] <a href="https://en.wikipedia.org/wiki/Hungarian_notation">la notation hongroise</a></a></li>
@@ -176,6 +180,709 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__video_a_href_https_www_youtube_com_watch_v_zqfzmfhixng_cppcon_2017_fedor_pikus_c_atomics_from_basic_to_advanced_what_do_they_really_do_a">[VIDEO] <a href="https://www.youtube.com/watch?v=ZQFzMfHIxng">CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2021_02_23_publiée_le_2017_10_10_sur_a_href_https_www_youtube_com_channel_ucmlgfpww_rudwx_jblcukxg_la_chaîne_de_la_cppcon_a_par_a_href_https_www_oreilly_com_pub_au_7031_fedor_pikus_a_ancien_dev_google_actuellement_chez_mentor">Vue le 2021-02-23, publiée le 2017-10-10 sur <a href="https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg">la chaîne de la CppCon</a>, par <a href="https://www.oreilly.com/pub/au/7031">Fedor PIKUS</a>, ancien dev Google, actuellement chez Mentor.</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>04:30 définition d&#8217;un atomic = les autres threads ne voient pas d&#8217;état intermédiaire.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>C&#8217;est un concept plus général que les atomic du C++ : c&#8217;est le A de Acid, par exemple (alors même qu&#8217;une transaction peut concerner des milliers d&#8217;istructions)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>10:45 tous les types trivialement copiables (i.e. copiables avec memcpy, continuons chunk of memory, no virtual fonctions, noexcept constructor) peuvent être atomiques.</p>
+</li>
+<li>
+<p>11:00 donne les opérations utilisables avec les atomic.</p>
+</li>
+<li>
+<p>13:00 certaines opérations compilent mais ne sont pas atomiques !</p>
+</li>
+<li>
+<p>15:40 opérations applicables aux atomic : load, store, exchange, compare_and_swap</p>
+</li>
+<li>
+<p>16:10 je commence à mieux comprendre compare exchange, qui semble être conçu pour être utilisé dans une boucle pour "setter" l&#8217;atomic de façon conditionnelle, s&#8217;il a bien la valeur attendue.</p>
+</li>
+<li>
+<p>17:40 confirme et détaille cette vision</p>
+</li>
+<li>
+<p>19:00 fetch_add (et ses cousins)</p>
+</li>
+<li>
+<p>21:30 attention quand on mesure les perfs des atomic : elles sont 1. hardware dependent, et 2. compiler-dependent</p>
+</li>
+<li>
+<p>27:00 atomic n&#8217;est pas nécessairement lockfree, et ça dépend de la plateforme, et n&#8217;est connu qu&#8217;au runtime (pour des contraintes d&#8217;alignement). On dispose tout de même de is_always_lock_free au compile-time.</p>
+</li>
+<li>
+<p>30:30 c&#8217;est toute la cacheline qui est synchronisée</p>
+</li>
+<li>
+<p>33:00 différence entre compare exchange weak et strong = le weak peut renvoyer false même si la condition est en fait remplie (spurious failure)</p>
+</li>
+<li>
+<p>39:00 l&#8217;archétype d&#8217;une atomic data structure : une variable atomic contient un index/pointeur sur une zone mémoire non-atomic</p>
+</li>
+<li>
+<p>42:00 par conséquent, les memory barriers vont avec les atomic, pour garantir que la zone mémoire à laquelle on accède via l&#8217;atomic est bien dans l&#8217;état souhaité.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Sans memory barriers, chaque cpu (donc chaque thread) voit un état indépendant de la mémoire. La MB permet de synchroniser les cachelines des cpus.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>43:30 memory barriers et memory order sont corrélés</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Relaxed = pas de garantie sur l&#8217;ordre des instructions mémoire</p>
+</li>
+<li>
+<p>Acquire = aucune opération ne peut être déplacée avant la barrière</p>
+</li>
+<li>
+<p>Release = le contraire : aucune opération ne peut être déplacée APRÈS la barrière (valable même pour tout le code, y compris pour les variables non-atomiques !)</p>
+</li>
+<li>
+<p>Utilisées conjointement sur la même atomic, release store dans un thread1 + acquire load dans un thread2 permet de synchroniser des threads, y compris sur des lectures / écritures de variables non atomic</p>
+</li>
+<li>
+<p>Il y a deux autres memory order.</p>
+</li>
+<li>
+<p>Si on ne précise pas l&#8217;ordre, le défaut est d&#8217;utiliser le plus fort : plus safe, mais moins efficace</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>50:30 les perfs des différentes barriers dépendent de la plateforme</p>
+</li>
+<li>
+<p>57:30 : pour vraiment gagner des perfs avec les atomics, il faut utiliser les memory barriers</p>
+</li>
+<li>
+<p>58:00 quand faut il utiliser le lockfree ? Grosso modo quand on ne peut pas utiliser de locks, ou que c&#8217;est pas pratique de locker.</p>
+</li>
+<li>
+<p>01:03:00 IMPORTANT = Dans quels cas utiliser les memory order ? le cas où les memory order sont importantes sont les cas où l&#8217;atomic est utilisé pour synchroniser d&#8217;autres variables (e.g. pour synchroniser l&#8217;accès à un tableau). Si ça n&#8217;est pas le cas (e.g. car on ne s&#8217;intéresse qu&#8217;à la valeur en soi de l&#8217;atomic), alors on peut utiliser memory_order_relax.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__video_cppcon_2014_herb_sutter_lock_free_programming_or_juggling_razor_blades_a_href_https_www_youtube_com_watch_v_c1go9ab9nbs_part_1_a_et_a_href_https_www_youtube_com_watch_v_cmxkpchocvw_part_2_a">[VIDEO] CppCon 2014: Herb Sutter "Lock-Free Programming (or, Juggling Razor Blades)" <a href="https://www.youtube.com/watch?v=c1gO9aB9nbs">part 1</a> et <a href="https://www.youtube.com/watch?v=CmxkPChOcvw">part 2</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2021_02_publiée_le_2014_10_16_sur_a_href_https_www_youtube_com_channel_ucmlgfpww_rudwx_jblcukxg_la_chaîne_de_la_cppcon_a_par_herb_sutter">Vue le 2021-02-??, publiée le 2014-10-16 sur <a href="https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg">la chaîne de la CppCon</a>, par Herb SUTTER</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> : un bon talk sur l&#8217;utilisation des atomic pour lock-free programming.</p>
+</li>
+<li>
+<p>Notes vrac sur le premier talk :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>03:00 with locks, either simplicity or scalability</p>
+</li>
+<li>
+<p>03:30 mesurer avant (pour vérifier qu&#8217;on adresse bien le bon problème), et après (pour vérifier qu&#8217;on a bien avancé dans la bonne direction)</p>
+</li>
+<li>
+<p>05:00 useful to see locks as trafic lights</p>
+</li>
+<li>
+<p>06:00 analogie intéressante avec échangeur d&#8217;autoroute</p>
+</li>
+<li>
+<p>07:30 lockfree = transactional thinking + atomic</p>
+</li>
+<li>
+<p>17:00 wait-free vs lock-free vs obstruction-free</p>
+</li>
+<li>
+<p>18:30 double check locking (pour ne pas avoir à prendre le lock pour rien) utile pour initialiser un singleton, mais l&#8217;atomic reste indispensable</p>
+</li>
+<li>
+<p>22:00 les atomics ont des memory-barriers implicites (donc ne sont pas réordonnées).</p>
+</li>
+<li>
+<p>24:40 atomic store peut avoir un fort overhead, mais pas atomic load.</p>
+</li>
+<li>
+<p>27:00 call_once pour initialiser un truc une seule fois</p>
+</li>
+<li>
+<p>36:30 les invariants doivent être vrais aux frontières des sections critiques</p>
+</li>
+<li>
+<p>38:00 locking + lockfree</p>
+</li>
+<li>
+<p>45:00 et autour : ce qui est important pour le lockfree, c&#8217;est de comprendre comment les différents threads travaillent avec l&#8217;atomic</p>
+</li>
+<li>
+<p>55:00 (environ) : la question de savoir si travaille le plus vite (donc qui sera sous-utilisé) entre le producer et les consumers est importante pour choisir comment implémenter l&#8217;algo lockfree.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Notes vrac sur le deuxième talk :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>~13:00 ABA problème : on a un pointeur sur un T*, mais la même adresse pointe successivement vers deux objets différents (le premier a été détruit, et son adresse a été réutilisée pour créer le second)</p>
+</li>
+<li>
+<p>~26:00 utilisation de référence counting (shared ptr) pour être robuste à la concurrency.</p>
+</li>
+<li>
+<p>28:30 linearizability = même si deux opérations overlappent, tout se passe comme si elles avaient plutôt été successives car protégées par mutex.</p>
+</li>
+<li>
+<p>Ndm : compare_exchange permet le pattern suivant, permettant de remplacer p par p&#8594;next, y compris en cas d&#8217;utilisation concurrente, tout en évitant les problèmes de TOCTOU :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">p</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">head.load();</span>
+<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(p</span> <span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">head.compare_exchange_weak(p,</span> <span style="color: #f8f8f2">p</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">next))</span> <span style="color: #f8f8f2">{}</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>L&#8217;idée est que s&#8217;il n&#8217;y a pas d&#8217;accès concurrent, on fera l&#8217;échange directement. Mais si p a changé depuis qu&#8217;on l&#8217;a lu (ou plutôt load), alors on recommence avec la NOUVELLE valeur de p (car en cas d&#8217;échec, compare_exchange fait un load de la NOUVELLE valeur de p)</p>
+</li>
+<li>
+<p>51:00 :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Throughput = total work (ici, nombre d&#8217;objets) qui peuvent passer par la queue.</p>
+</li>
+<li>
+<p>Scalability = la capacité à accomplir plus de travail si on a plus de cores disponibles</p>
+</li>
+<li>
+<p>Contention = how much threads interfere with each other by fighting for resources.</p>
+</li>
+<li>
+<p>Oversubscription = quand il y a plus de threads (cou bound) que de cores pour les faire progresser.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>La façon de mesurer les perfs dans un contexte concurrent (sur les 20 dernières minutes) est très intéressante. (À 01:07:15, il y a un autre graphique intéressant)</p>
+</li>
+<li>
+<p>Plus généralement, c&#8217;est un rex concret d&#8217;optimisation multithread super (et guidé par des mesures!)</p>
+</li>
+<li>
+<p>56:30 pour améliorer les perfs, un point intéressant : je peux dégrader les perfs d&#8217;un thread (e.g. en faisant plus de heap allocation) si ça permet plus de parallelisation (e.g. en ayant moins de code dans une section critique).</p>
+</li>
+<li>
+<p>01:06:00 alignas pour éviter le false sharing</p>
+</li>
+<li>
+<p>01:09:40 si on dépasse la "subscription boundary" (i.e. si on commence à avoir plus de threads que de cores), il y a une brutale discontinuité dans les perfs</p>
+</li>
+<li>
+<p>01:10:00 to improve scalability, minimize contention</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__article_a_href_https_fr_wikipedia_org_wiki_illusions_de_l_27informatique_distribu_c3_a9e_illusions_de_l_informatique_distribuée_a">[ARTICLE] <a href="https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e">Illusions de l&#8217;informatique distribuée</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_c_est_un_bien_grand_mot_le_2021_02_23_rédigée_le_sur_a_href_https_fr_wikipedia_org_class_bare_https_fr_wikipedia_org_a">Lu (c&#8217;est un bien grand mot) le 2021-02-23, rédigée le ????-??-?? sur <a href="https://fr.wikipedia.org/" class="bare">https://fr.wikipedia.org/</a></h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Les illusions en question :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Le réseau est fiable.</p>
+</li>
+<li>
+<p>Le temps de latence est nul.</p>
+</li>
+<li>
+<p>La bande passante est infinie.</p>
+</li>
+<li>
+<p>Le réseau est sûr.</p>
+</li>
+<li>
+<p>La topologie du réseau ne change pas.</p>
+</li>
+<li>
+<p>Il y a un et un seul administrateur réseau.</p>
+</li>
+<li>
+<p>Le coût de transport est nul.</p>
+</li>
+<li>
+<p>Le réseau est homogène.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__article_a_href_https_h_deb_clg_qc_ca_sujets_divers_cplusplus_sainte_trinite_html_comprendre_la_sainte_trinité_a">[ARTICLE] <a href="https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/Sainte-Trinite.html">Comprendre la Sainte-Trinité</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lue_le_2021_02_07_rédigée_le_sur_a_href_https_h_deb_clg_qc_ca_le_site_de_patrice_roy_a_professeur_montréalais_qui_en_plus_d_être_strong_très_strong_pédagogique_de_faire_partie_du_a_href_http_www_open_std_org_jtc1_sc22_wg21_working_group_normalisant_le_c_a_est_super_gentil">Lue le 2021-02-07, rédigée le ????-??-?? sur <a href="https://h-deb.clg.qc.ca/">le site de Patrice ROY</a>, professeur Montréalais, qui en plus d&#8217;être <strong>très</strong> pédagogique, de faire partie du <a href="http://www.open-std.org/jtc1/sc22/wg21/">Working Group normalisant le C++</a>, est super gentil :-)</h3>
+<div class="ulist">
+<ul>
+<li>
+<p>Synthèse :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>"sainte-trinité" = règle de 3, de 5 ou de zéro selon les versions</p>
+</li>
+<li>
+<p>TL;DR : soit tu ne définis aucune des 5 fonctions suivantes toi-même, soit tu les définis tous :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>copy-constructor</p>
+</li>
+<li>
+<p>copy-assignment operator</p>
+</li>
+<li>
+<p>move-constructor</p>
+</li>
+<li>
+<p>move-assignment operator</p>
+</li>
+<li>
+<p>delete</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>attention : il y a des règles particulières indiquant si le compilo définira ou non lui-même ces fonctions</p>
+</li>
+<li>
+<p>Plutôt qu&#8217;une règle absolue, c&#8217;est une bonne pratique, qui invite à double-checker lorsqu&#8217;on est amenés à ne pas la suivre.</p>
+</li>
+<li>
+<p>le cas où il faut les définir soi-même est le cas où la classe est responsable d&#8217;une ressource (et dans ce cas, mieux vaut que ce soit sa <strong>seule</strong> responsabilité)</p>
+</li>
+<li>
+<p>règle étendue = 3½ / 5½ : ajoute la fonction <code>swap</code> aux 5 fonctions ci-dessus</p>
+</li>
+<li>
+<p>par ailleurs, l&#8217;article porte un regard intéressant sur les langages qui poussent la value-semantic, et ceux qui poussent la reference-semantic</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>NdM : l&#8217;état de mes connaissances avant de lire l&#8217;article :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>soit tu implémentes les 3(5) opérateurs, soit tu n&#8217;en implémentes aucun</p>
+</li>
+<li>
+<p>tu implémentes les 3(5) :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>si tu as besoin d&#8217;implémenter l&#8217;un des trois, tu as sans doute besoin d&#8217;implémenter les deux autres</p>
+</li>
+<li>
+<p>et c&#8217;est parce que la classe "gère une ressource externe"</p>
+</li>
+<li>
+<p>exemple = dans son constructeur, une classe alloue un int (et le stocke dans un int*)</p>
+</li>
+<li>
+<p>dans ce cas, on veut définir un destructeur particulier qui delete l&#8217;int*</p>
+</li>
+<li>
+<p>la règle de 3 dit alors qu&#8217;il faut définir ce qu&#8217;on veut faire quand on recopie une autre instance (copy-constructor ou copy-assignment)</p>
+</li>
+<li>
+<p>en effet, si on se contente de copier l&#8217;int*, la destruction des deux instances va delete deux fois le pointeur</p>
+</li>
+<li>
+<p>plus probablement, on veut delete notre int actuel et en allouer un autre (ou encore garder notre int, et copier la valeur)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>si tu n&#8217;en implémentes aucun :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>notre classe a une plutôt un comportement "normal" vis-à-vis de ses membres</p>
+</li>
+<li>
+<p>ils peuvent utiliser la copie-construction par défaut / destruction par défaut</p>
+</li>
+<li>
+<p>du coup, MIEUX VAUT utiliser les default versions de ces opérateurs (et donc n&#8217;en définir aucun, cf. la règle de 3)</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Définir ce qu&#8217;est un objet en POO :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>accès à un objet</p>
+</li>
+<li>
+<p>ça veut dire quoi construire l&#8217;objet</p>
+</li>
+<li>
+<p>ça veut dire quoi finaliser l&#8217;objet (aka destruction)</p>
+</li>
+<li>
+<p>ça veut dire quoi dupliquer l&#8217;objet</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Plutôt qu&#8217;une règle absolue, c&#8217;est une bonne pratique, qui invite à double-checker lorsqu&#8217;on est amenés à ne pas la suivre.</p>
+</li>
+<li>
+<p>Recommandation = expliciter son intention (au besoin, avec <code>=default</code> ou <code>=delete</code>)</p>
+</li>
+<li>
+<p>Valeurs par défauts des 3 opérations :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>construction par copie = appeler le constructeur de copie de chacun des attributs</p>
+</li>
+<li>
+<p>affectation = appeler l&#8217;affectation de chacun des attributs</p>
+</li>
+<li>
+<p>destruction = appeler le destructeur de chacun des attributs</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Rôle des 3 opérations :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>constructeur = mettre en place les invariants de l&#8217;objet construit</p>
+</li>
+<li>
+<p>opérations de copie = maintenir ces invariants (parmi d&#8217;autres rôles)</p>
+</li>
+<li>
+<p>destructeur = assurer la saine libération des ressources dont est responsable l&#8217;objet</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Sainte trinité d&#8217;un objet correcte si tous ses membres ont une sainte-trinité correcte et une opération de copie correctement définie.</p>
+</li>
+<li>
+<p>La sainte-trinité est à définir si un objet prend la responsabilité d&#8217;une ressource :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>allocation dynamique de mémoire</p>
+</li>
+<li>
+<p>ouverture d&#8217;un stream (NdM ou d&#8217;un fichier)</p>
+</li>
+<li>
+<p>prise en charge d&#8217;un mutex ou autre mécanisme de synchronisation</p>
+</li>
+<li>
+<p>(NdM : database connection, &#8230;&#8203;)</p>
+</li>
+<li>
+<p>NdM : à mes yeux, cette guideline est la plus importante qui va avec la règle de 5 : <em>si un objet prend la responsabilité d&#8217;une ressource, il faut définir les 5 opérations</em></p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Note importante : ce n&#8217;est pas parce qu&#8217;un objet contient des membres pointeurs (ou même un conteneur de pointeurs) qu&#8217;elle doit se préoccuper de la sainte-trinité !</p>
+<div class="ulist">
+<ul>
+<li>
+<p>en effet : si l&#8217;objet n&#8217;est pas RESPONSABLE des objets pointés (dans le sens où il doit penser à les détruire), il n&#8217;est pas oblité de définir les 3 opérations de la sainte-trinité</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Au sujet du lien entre la sainte-trinité et l&#8217;opposition entre value/reference-semantic :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>NdM : l&#8217;opposition reference-semantic vs. value-semantic semble être regroupée sous le terme "sémantique d&#8217;accès".</p>
+</li>
+<li>
+<p>java/C# = reference-semantic :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>objets créés dynamiquement (heap-allocated)</p>
+</li>
+<li>
+<p>on n&#8217;y accède que par référence (on n&#8217;a jamais accès à l&#8217;objet lui-même)</p>
+</li>
+<li>
+<p>garbage-collecté (donc la finalisation n&#8217;est pas déterministe)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>C++ = value-semantic :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>objets typiquement (mais pas exclusivement) stack-allocated</p>
+</li>
+<li>
+<p>finalisation déterministe</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>L&#8217;article explique qu&#8217;avoir une sémantique de valeur implique qu&#8217;il est plus important de savoir ce que représente une copie d&#8217;objet :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>possiblement, car il y a bien plus de copie que dans un langage ayant une sémantique de référence, notamment car il y en aura plein lors des appels de fonction ?</p>
+</li>
+<li>
+<p>EDIT : exprimé dans l&#8217;autre sens, dans un langage avec une sémantique de référence comme python, les objets sont rarement copiés, et la sainte trinité moins importante</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>De même l&#8217;implication avec le fait qu&#8217;il est plus important (qu&#8217;avec une reference-semantic) de bien savoir ce qu&#8217;est un destructeur n&#8217;est pas claire&#8230;&#8203;</p>
+<div class="ulist">
+<ul>
+<li>
+<p>possiblement car on va vouloir faire plus de choses avec le destructeur, vu que celui-ci est un outil plus utile ?</p>
+</li>
+<li>
+<p>possiblement aussi, car comme on copie souvent les objets, on les copie dans des contextes temporaires (comme un appel de fonction), et que du coup, les objets sont détruits souvents</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>EDIT : il clarifie ailleurs :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Dans un langage où l&#8217;usage est de manipuler des objets directement, offrir un support automatique de la Sainte-Trinité va de pair avec des principes de base de saine programmation.
+Évidemment, dans un langage où l&#8217;accent est mis sur l&#8217;allocation dynamique de ressources, le partage d&#8217;objets et l&#8217;accès indirect, les pratiques sont différentes.
+En C# et en Java, mieux vaut penser immuabilité (pour réduire les conséquences néfastes du partage implicite des objets) que d&#8217;insister sur la copie des objets, puisque cette dernière opération y est moins naturelle, moins idiomatique.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>EDIT 2 : et il détaille encore plus dans le chapitre "Risques du partage" :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Puisque tous les objets en C# et en Java sont alloués dynamiquement, et puisque la copie dans ces langages est d&#8217;abord et avant tout une copie de référence, donc une sémantique de partage du référé il est très important de développer avec ces langages l&#8217;habitude de concevoir des objets immuables.<br>
+Par immuable, on entend une classe dont les instances ne peuvent être modifiées une fois construite (pas de mutateurs ou de services semblables). Sans surprise, la plupart des classes importantes de langages comme C# et Java sont immuables (String en Java et string en C# en sont de bons exemples). Pour comprendre les enjeux, voir ce texte <a href="https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/Importance-constantes.html#immuabilite" class="bare">https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/Importance-constantes.html#immuabilite</a><br>
+Partager un objet qui n&#8217;est pas immuable est dangereux en situation de multiprogrammation, et prête à risque même en situation de monoprogrammation, brisant le principe de moindre surprise. Il est difficile de savoir quand il est le plus opportun de dupliquer un objet mutable (par clonage ou par copie) pour éviter les bris d&#8217;encapsulation; les objets faisant partie d&#8217;une interface dans ces langages devraient conséquemment tous être immuables.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>EDIT 3 : <a href="https://en.cppreference.com/w/cpp/language/rule_of_three">cette autre ressource</a> listée en bas de page donne des billes :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Because C++ copies and copy-assigns objects of user-defined types in various situations (passing/returning by value, manipulating a container, etc), these special member functions will be called, if accessible, and if they are not user-defined, they are implicitly-defined by the compiler.</p>
+</div>
+</blockquote>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Donc en gros, le lien avec la sémantique de référence, c&#8217;est qu&#8217;en C++, on a plus tendance à modifier les objets que par exemple en java, où les objets sont plus souvent immutables.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Le code d&#8217;exemple suivant est intéressant, notamment l&#8217;utilisation du copy-and-swap idiom pour implémenter l&#8217;opérateur d&#8217;affectation :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TiTableau</span> <span style="color: #f8f8f2">{</span>
+<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span>
+   <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">size_type</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">private</span><span style="color: #f92672">:</span>
+   <span style="color: #f8f8f2">size_type</span> <span style="color: #f8f8f2">nelems{};</span>
+   <span style="color: #66d9ef">int</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">elems;</span>
+<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span>
+   <span style="color: #f8f8f2">TiTableau(size_type</span> <span style="color: #f8f8f2">n)</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">elems{</span> <span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[n]</span> <span style="color: #f8f8f2">}</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #f8f8f2">fill(elems,</span> <span style="color: #f8f8f2">elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(),</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">);</span>
+   <span style="color: #f8f8f2">}</span>
+   <span style="color: #f8f8f2">TiTableau(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">nelems{</span> <span style="color: #f8f8f2">autre.size()</span> <span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">elems{</span> <span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[autre.size()]</span> <span style="color: #f8f8f2">}</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #f8f8f2">copy(autre.elems,</span> <span style="color: #f8f8f2">autre.elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(),</span> <span style="color: #f8f8f2">elems);</span>
+   <span style="color: #f8f8f2">}</span>
+   <span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">swap(TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">swap;</span>
+      <span style="color: #f8f8f2">swap(elems,</span> <span style="color: #f8f8f2">autre.elems);</span>
+      <span style="color: #f8f8f2">swap(nelems,</span> <span style="color: #f8f8f2">autre.nelems);</span>
+   <span style="color: #f8f8f2">}</span>
+   <span style="color: #f8f8f2">TiTableau</span><span style="color: #f92672">&amp;</span> <span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #f8f8f2">TiTableau{</span> <span style="color: #f8f8f2">autre</span> <span style="color: #f8f8f2">}.swap(</span><span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">);</span>
+      <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
+   <span style="color: #f8f8f2">}</span>
+   <span style="color: #f92672">~</span><span style="color: #f8f8f2">TiTableau()</span> <span style="color: #f8f8f2">{</span>
+      <span style="color: #66d9ef">delete</span> <span style="color: #f8f8f2">[]</span> <span style="color: #f8f8f2">elems;</span>
+   <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">};</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>L&#8217;opérateur swap est si important qu&#8217;on appelle parfois plutôt la règle de 5½.</p>
+</li>
+<li>
+<p>NdM : un autre exemple de cas où il a fallu se poser la question = unique_ptr.</p>
+<div class="ulist">
+<ul>
+<li>
+<p>comme la classe est responsable d&#8217;une ressource, il faut savoir quoi faire à la copy-construction, ou à la copy-affectation</p>
+</li>
+<li>
+<p>en l&#8217;occurence, unique_ptr n&#8217;est pas copiable ou assignable par copie : deux instances de unique_ptr ne peuvent pas gérer le même objet.</p>
+</li>
+<li>
+<p>(mais il peut transférer la responsabilité de l&#8217;objet qu&#8217;il gère via des move-operations)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Autre phrase intéressante :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Là où shared_ptr définit une sémantique de partage (copier un shared_ptr signifie partager son pointé), unique_ptr définit une responsabilité exclusive sur le pointé.
+Le contenu pointé par un unique_ptr peut être transféré d&#8217;un unique_ptr à un autre, mais un unique_ptr ne se copie pas.
+Pour cette raison, unique_ptr est plus sécuritaire en situation de multiprogrammation, et est aussi plus léger en mémoire.
+En C++, donc, c&#8217;est unique_ptr si possible, et shared_ptr si nécessaire.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>Il y a quelques lignes sur la comparaison à java et C#, l&#8217;intérêt des GC, et le fait que la structure C++ qui se rapproche le plus d&#8217;une création d&#8217;objet en java/C# est <code>auto x = shared_ptr&lt;X&gt;(new X);</code></p>
+</li>
+<li>
+<p>Génération automatiques par le compilo :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>les 5 opérations de la règle des 5 sont générées automatiquement par le compilateur, sauf si l&#8217;utilisateur en a défini au moins une lui-même</p>
+</li>
+<li>
+<p>si l&#8217;utilisateur empêche le compilo de définir les autres opérations parmi les 5, elles sont considérées comme =delete</p>
+</li>
+<li>
+<p>règle de zéro : pour une classe qui n&#8217;est pas explicitement responsable de ressources, mieux vaut ne coder aucune des opérations de la règle de cinq</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Les liens de la page sont une mine d&#8217;or :</p>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.cppreference.com/w/cpp/language/rule_of_three" class="bare">https://en.cppreference.com/w/cpp/language/rule_of_three</a></p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Rule of five : Because the presence of a user-defined destructor, copy-constructor, or copy-assignment operator prevents implicit definition of the move constructor and the move assignment operator, any class for which move semantics are desirable, has to declare all five special member functions: <br>
+Unlike Rule of Three, failing to provide move constructor and move assignment is usually not an error, but a missed optimization opportunity.<br>
+Rule of zero : Classes that have custom destructors, copy/move constructors or copy/move assignment operators should deal exclusively with ownership (which follows from the Single Responsibility Principle).<br>
+Other classes should not have custom destructors, copy/move constructors or copy/move assignment operators.</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p><a href="https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Rc-zero" class="bare">https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md#Rc-zero</a></p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>If you can avoid defining default operations, do<br>
+If you define or =delete any copy, move, or destructor function, define or =delete them all</p>
+</div>
+</blockquote>
+</div>
+</li>
+</ul>
+</div>
+</li>
+</ul>
 </div>
 </div>
 </div>
