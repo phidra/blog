@@ -44,7 +44,6 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
-
 == [VIDEO] https://www.youtube.com/watch?v=ZQFzMfHIxng[CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”]
 
 === Vue le 2021-02-23, publiée le 2017-10-10 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par https://www.oreilly.com/pub/au/7031[Fedor PIKUS], ancien dev Google, actuellement chez Mentor.
@@ -76,6 +75,52 @@ Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page
 * 57:30 : pour vraiment gagner des perfs avec les atomics, il faut utiliser les memory barriers
 * 58:00 quand faut il utiliser le lockfree ? Grosso modo quand on ne peut pas utiliser de locks, ou que c'est pas pratique de locker.
 * 01:03:00 IMPORTANT = Dans quels cas utiliser les memory order ? le cas où les memory order sont importantes sont les cas où l'atomic est utilisé pour synchroniser d'autres variables (e.g. pour synchroniser l'accès à un tableau). Si ça n'est pas le cas (e.g. car on ne s'intéresse qu'à la valeur en soi de l'atomic), alors on peut utiliser memory_order_relax.
+
+
+== [VIDEO] CppCon 2014: Herb Sutter "Lock-Free Programming (or, Juggling Razor Blades)" https://www.youtube.com/watch?v=c1gO9aB9nbs[part 1] et https://www.youtube.com/watch?v=CmxkPChOcvw[part 2]
+
+=== Vue le 2021-02-??, publiée le 2014-10-16 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par Herb SUTTER
+
+* *TL;DR* : un bon talk sur l'utilisation des atomic pour lock-free programming.
+* Notes vrac sur le premier talk :
+** 03:00 with locks, either simplicity or scalability
+** 03:30 mesurer avant (pour vérifier qu'on adresse bien le bon problème), et après (pour vérifier qu'on a bien avancé dans la bonne direction)
+** 05:00 useful to see locks as trafic lights
+** 06:00 analogie intéressante avec échangeur d'autoroute
+** 07:30 lockfree = transactional thinking + atomic
+** 17:00 wait-free vs lock-free vs obstruction-free
+** 18:30 double check locking (pour ne pas avoir à prendre le lock pour rien) utile pour initialiser un singleton, mais l'atomic reste indispensable
+** 22:00 les atomics ont des memory-barriers implicites (donc ne sont pas réordonnées).
+** 24:40 atomic store peut avoir un fort overhead, mais pas atomic load.
+** 27:00 call_once pour initialiser un truc une seule fois
+** 36:30 les invariants doivent être vrais aux frontières des sections critiques
+** 38:00 locking + lockfree
+** 45:00 et autour : ce qui est important pour le lockfree, c'est de comprendre comment les différents threads travaillent avec l'atomic
+** 55:00 (environ) : la question de savoir si travaille le plus vite (donc qui sera sous-utilisé) entre le producer et les consumers est importante pour choisir comment implémenter l'algo lockfree.
+* Notes vrac sur le deuxième talk :
+** ~13:00 ABA problème : on a un pointeur sur un T*, mais la même adresse pointe successivement vers deux objets différents (le premier a été détruit, et son adresse a été réutilisée pour créer le second)
+** ~26:00 utilisation de référence counting (shared ptr) pour être robuste à la concurrency.
+** 28:30 linearizability = même si deux opérations overlappent, tout se passe comme si elles avaient plutôt été successives car protégées par mutex.
+** Ndm : compare_exchange permet le pattern suivant, permettant de remplacer p par p->next, y compris en cas d'utilisation concurrente, tout en évitant les problèmes de TOCTOU :
++
+[source,cpp]
+----
+auto p = head.load();
+while(p && head.compare_exchange_weak(p, p->next)) {}
+----
++
+** L'idée est que s'il n'y a pas d'accès concurrent, on fera l'échange directement. Mais si p a changé depuis qu'on l'a lu (ou plutôt load), alors on recommence avec la NOUVELLE valeur de p (car en cas d'échec, compare_exchange fait un load de la NOUVELLE valeur de p)
+** 51:00 :
+*** Throughput = total work (ici, nombre d'objets) qui peuvent passer par la queue.
+*** Scalability = la capacité à accomplir plus de travail si on a plus de cores disponibles
+*** Contention = how much threads interfere with each other by fighting for resources.
+*** Oversubscription = quand il y a plus de threads (cou bound) que de cores pour les faire progresser.
+** La façon de mesurer les perfs dans un contexte concurrent (sur les 20 dernières minutes) est très intéressante. (À 01:07:15, il y a un autre graphique intéressant)
+** Plus généralement, c'est un rex concret d'optimisation multithread super (et guidé par des mesures!)
+** 56:30 pour améliorer les perfs, un point intéressant : je peux dégrader les perfs d'un thread (e.g. en faisant plus de heap allocation) si ça permet plus de parallelisation (e.g. en ayant moins de code dans une section critique).
+** 01:06:00 alignas pour éviter le false sharing
+** 01:09:40 si on dépasse la "subscription boundary" (i.e. si on commence à avoir plus de threads que de cores), il y a une brutale discontinuité dans les perfs
+** 01:10:00 to improve scalability, minimize contention
 
 == [ARTICLE] https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e[Illusions de l'informatique distribuée]
 
