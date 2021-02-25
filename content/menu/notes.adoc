@@ -44,6 +44,32 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
+== [ARTICLE] https://akrzemi1.wordpress.com/2012/02/03/value-semantics/[Value semantics]
+
+=== Lu le 2021-01-??, publié le 2012-02-03, sur https://akrzemi1.wordpress.com/[le blog d'Andrzej Krzemieński], un dev C++ polonais qui a l'air bien calé
+
+* *TL;DR* = une intéressante présentation de la value-semantics (un bon complément à https://h-deb.clg.qc.ca/Sujets/Divers\--cplusplus/Sainte-Trinite.html[la page de Patrice ROY sur la Sainte-Trinité])
+
+* `value` = "contenu" de l'objet
+* `object` = en value-semantics, simpel véhicule de la value
+* *value semantics* = on s'intéresse surtout à la value, plutôt qu'à son véhicule
+** par exemple : en value-semantics, si on ne travaille pas sur l'objet lui-même mais sur une copie qui a la même valeur, ça n'est pas grave
+* *reference semantics* = on s'intéresse à l'objet lui-même
+** par exemple : si on veut trier un tableau in-place, on veut trier le tableau lui-même (on veut le muter), et non pas une copie qui a le même contenu
+* En C++, la value-semantics est ce qu'on a par défaut : il faut faire du travail en plus (ajouter des caractères `&` ou `*`) pour avoir la reference semantics
+* Intérêts :
+** plus simple, car c'est ce qu'on a par défaut
+** plus proche du concept mathématique de fonction (functional programming FTW)
+** pas de memory-management à faire, car les objets ont un _storage duration_ automatique
+** pas de problème de reference aliasing. Chaque thread a sa propre copie -> pas de data-race.
+** referential transparency (TL;DR : on peut remplacer l'invocation d'une fonction par son résultat, ce qui n'est pas le cas si la fonction mute ses paramètres, car elle a alors des side-effects)
+* Pourquoi ne pas l'utiliser :
+** pour que plusieurs entités modifient le même objet, ils doivent manipuler une référence (e.g. `std::cout`, qui est global, et qui peut être utilisé à plusieurs endroits du code)
+** pour profiter de fonctionnalités nécessitant des pointeurs ou des références (e.g. polymorphisme)
+** pour gagner en perf en évitant de recopier de gros objets
+* Dans ce dernier cas, attention à bien mesurer, car le passage par valeur n'est pas nécessairement aussi coûteux qu'on pourrait le penser (le C++ a plusieurs mécanismes pour éviter les copies).
+* Note : les pointeurs ont beau être passés par valeur (le pointeur lui-même est copié), il est considéré comme reference semantic car il sert à référencer un objet.
+
 == [VIDEO] https://www.youtube.com/watch?v=ZAji7PkXaKY[Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020]
 
 === Vue le 2021-02-24, publiée le 2020-09-22 sur https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg[la chaîne de la CppCon], par https://github.com/BobSteagall[Bob STEAGALL], membre du comité C{plus}{plus}
