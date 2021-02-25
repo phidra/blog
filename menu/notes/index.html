@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          115 min read
+          120 min read
         </div></div>
     </header>
     <div class="post-content">
@@ -74,6 +74,8 @@ Liste des liens
 <div id="toctitle" class="title"></div>
 <ul class="sectlevel1">
 <li><a href="#_pourquoi_cette_page">Pourquoi cette page</a></li>
+<li><a href="#__article_a_href_https_akrzemi1_wordpress_com_2012_02_03_value_semantics_value_semantics_a">[ARTICLE] <a href="https://akrzemi1.wordpress.com/2012/02/03/value-semantics/">Value semantics</a></a></li>
+<li><a href="#__video_a_href_https_www_youtube_com_watch_v_zaji7pkxaky_back_to_basics_the_abstract_machine_bob_steagall_cppcon_2020_a">[VIDEO] <a href="https://www.youtube.com/watch?v=ZAji7PkXaKY">Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020</a></a></li>
 <li><a href="#__video_a_href_https_www_youtube_com_watch_v_zqfzmfhixng_cppcon_2017_fedor_pikus_c_atomics_from_basic_to_advanced_what_do_they_really_do_a">[VIDEO] <a href="https://www.youtube.com/watch?v=ZQFzMfHIxng">CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?”</a></a></li>
 <li><a href="#__video_cppcon_2014_herb_sutter_lock_free_programming_or_juggling_razor_blades_a_href_https_www_youtube_com_watch_v_c1go9ab9nbs_part_1_a_et_a_href_https_www_youtube_com_watch_v_cmxkpchocvw_part_2_a">[VIDEO] CppCon 2014: Herb Sutter "Lock-Free Programming (or, Juggling Razor Blades)" <a href="https://www.youtube.com/watch?v=c1gO9aB9nbs">part 1</a> et <a href="https://www.youtube.com/watch?v=CmxkPChOcvw">part 2</a></a></li>
 <li><a href="#__article_a_href_https_fr_wikipedia_org_wiki_illusions_de_l_27informatique_distribu_c3_a9e_illusions_de_l_informatique_distribuée_a">[ARTICLE] <a href="https://fr.wikipedia.org/wiki/Illusions_de_l%27informatique_distribu%C3%A9e">Illusions de l&#8217;informatique distribuée</a></a></li>
@@ -180,6 +182,215 @@ Liste des liens
 </div>
 <div class="paragraph">
 <p>Pour le moment, ça m&#8217;arrange plutôt d&#8217;avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j&#8217;envisagerai d&#8217;autres pistes (pagination ? <a href="https://sebsauvage.net/wiki/doku.php?id=php:shaarli">shaarli</a> ?).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__article_a_href_https_akrzemi1_wordpress_com_2012_02_03_value_semantics_value_semantics_a">[ARTICLE] <a href="https://akrzemi1.wordpress.com/2012/02/03/value-semantics/">Value semantics</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_lu_le_2021_01_publié_le_2012_02_03_sur_a_href_https_akrzemi1_wordpress_com_le_blog_d_andrzej_krzemieński_a_un_dev_c_polonais_qui_a_l_air_bien_calé">Lu le 2021-01-??, publié le 2012-02-03, sur <a href="https://akrzemi1.wordpress.com/">le blog d&#8217;Andrzej Krzemieński</a>, un dev C++ polonais qui a l&#8217;air bien calé</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> = une intéressante présentation de la value-semantics (un bon complément à <a href="https://h-deb.clg.qc.ca/Sujets/Divers--cplusplus/Sainte-Trinite.html">la page de Patrice ROY sur la Sainte-Trinité</a>)</p>
+</li>
+<li>
+<p><code>value</code> = "contenu" de l&#8217;objet</p>
+</li>
+<li>
+<p><code>object</code> = en value-semantics, simpel véhicule de la value</p>
+</li>
+<li>
+<p><strong>value semantics</strong> = on s&#8217;intéresse surtout à la value, plutôt qu&#8217;à son véhicule</p>
+<div class="ulist">
+<ul>
+<li>
+<p>par exemple : en value-semantics, si on ne travaille pas sur l&#8217;objet lui-même mais sur une copie qui a la même valeur, ça n&#8217;est pas grave</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>reference semantics</strong> = on s&#8217;intéresse à l&#8217;objet lui-même</p>
+<div class="ulist">
+<ul>
+<li>
+<p>par exemple : si on veut trier un tableau in-place, on veut trier le tableau lui-même (on veut le muter), et non pas une copie qui a le même contenu</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>En C++, la value-semantics est ce qu&#8217;on a par défaut : il faut faire du travail en plus (ajouter des caractères <code>&amp;</code> ou <code>*</code>) pour avoir la reference semantics</p>
+</li>
+<li>
+<p>Intérêts :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>plus simple, car c&#8217;est ce qu&#8217;on a par défaut</p>
+</li>
+<li>
+<p>plus proche du concept mathématique de fonction (functional programming FTW)</p>
+</li>
+<li>
+<p>pas de memory-management à faire, car les objets ont un <em>storage duration</em> automatique</p>
+</li>
+<li>
+<p>pas de problème de reference aliasing. Chaque thread a sa propre copie &#8594; pas de data-race.</p>
+</li>
+<li>
+<p>referential transparency (TL;DR : on peut remplacer l&#8217;invocation d&#8217;une fonction par son résultat, ce qui n&#8217;est pas le cas si la fonction mute ses paramètres, car elle a alors des side-effects)</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Pourquoi ne pas l&#8217;utiliser :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>pour que plusieurs entités modifient le même objet, ils doivent manipuler une référence (e.g. <code>std::cout</code>, qui est global, et qui peut être utilisé à plusieurs endroits du code)</p>
+</li>
+<li>
+<p>pour profiter de fonctionnalités nécessitant des pointeurs ou des références (e.g. polymorphisme)</p>
+</li>
+<li>
+<p>pour gagner en perf en évitant de recopier de gros objets</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>Dans ce dernier cas, attention à bien mesurer, car le passage par valeur n&#8217;est pas nécessairement aussi coûteux qu&#8217;on pourrait le penser (le C++ a plusieurs mécanismes pour éviter les copies).</p>
+</li>
+<li>
+<p>Note : les pointeurs ont beau être passés par valeur (le pointeur lui-même est copié), il est considéré comme reference semantic car il sert à référencer un objet.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="__video_a_href_https_www_youtube_com_watch_v_zaji7pkxaky_back_to_basics_the_abstract_machine_bob_steagall_cppcon_2020_a">[VIDEO] <a href="https://www.youtube.com/watch?v=ZAji7PkXaKY">Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020</a></h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vue_le_2021_02_24_publiée_le_2020_09_22_sur_a_href_https_www_youtube_com_channel_ucmlgfpww_rudwx_jblcukxg_la_chaîne_de_la_cppcon_a_par_a_href_https_github_com_bobsteagall_bob_steagall_a_membre_du_comité_c">Vue le 2021-02-24, publiée le 2020-09-22 sur <a href="https://www.youtube.com/channel/UCMlGfpWw-RUdWX_JbLCukXg">la chaîne de la CppCon</a>, par <a href="https://github.com/BobSteagall">Bob STEAGALL</a>, membre du comité C&#43;&#43;</h3>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>TL;DR</strong> : talk sur les similitudes et différences entre la différence entre <em>abstract machine</em> (dans le modèle mental du développeur, c&#8217;est ce qui fait tourner le code qu&#8217;on écrit) et <em>physical machine</em> (qui exécute réellement le programme).</p>
+</li>
+<li>
+<p>03:00 définition d&#8217;une abstract machine : processor (instruction set, register set, memory model) conçu non pas pour être implémenté physiquement, mais pour supporter l&#8217;exécution d&#8217;un langage intermédiaire</p>
+</li>
+<li>
+<p>03:20 C&#43;&#43; abstract machine = portable abstraction of your os, kernel and hardware</p>
+</li>
+<li>
+<p>04:20 variety of computing Platforms :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>général purpose cpu</p>
+</li>
+<li>
+<p>GPU</p>
+</li>
+<li>
+<p>embedded processors</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>05:00 quand on écrit des programmes, on ne veut pas écrire pour un hardware particulier</p>
+</li>
+<li>
+<p>08:00 there is no room for another langage between C&#43;&#43; and the hardware : C&#43;&#43; se mappe bien sur le hardware (e.g. les types fondamentaux se mappent naturellement sur des entités mémoire hardware)</p>
+</li>
+<li>
+<p>08:40 : C&#43;&#43; defines how programs work in terms of an abstract machine. Cette abstract machine est délibérément proche du hardware</p>
+</li>
+<li>
+<p>09:00 our programs describe operations performed on the abstract machine</p>
+<div class="ulist">
+<ul>
+<li>
+<p>C&#8217;est le point principal du talk : <em>When we write C&#43;&#43; code, we are writing to the C&#43;&#43; abstract machine</em></p>
+</li>
+<li>
+<p>En résumé, le dev est en charge d&#8217;écrire du code pour l&#8217;abstract machine, le compilo est en charge d&#8217;écrire du code pour la physical machine (fort heureusement nommé code machine)</p>
+</li>
+<li>
+<p>L&#8217;observable behaviour de l&#8217;abstract machine et de la physical machine sera identique.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>13:30 implementation-defined behaviour = marge laissée à l&#8217;implémentation (le compilo) sur son comportement. Elle doit être documentée. Certains aspects de l&#8217;abstract machine sont non specifies, et non déterministes</p>
+</li>
+<li>
+<p>16:00 définition de observable behaviour</p>
+</li>
+<li>
+<p>~23:00 implementation defined (= au choix de l&#8217;implémentation, mais déterministe et documenté, e.g. la taille d&#8217;un pointeur = <code>sizeof(void*)</code>) et unspecified (non-deterministe,p.ex. l&#8217;ordre d&#8217;évaluation des arguments d&#8217;une fonction)</p>
+</li>
+<li>
+<p>28:00 undefined behaviour. S&#8217;il y en a dans le programme, le programme ne sert plus à rien car il peut faire absolument n&#8217;importe quoi.</p>
+</li>
+<li>
+<p>29:00 ill-formed = l&#8217;implémentation doit avertir l&#8217;utilisateur. (il existe aussi une catégorie "no diagnostic required")</p>
+</li>
+<li>
+<p>31:30 structure de l&#8217;abstract machine :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>Memory</p>
+</li>
+<li>
+<p>Objects</p>
+</li>
+<li>
+<p>Threads</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>32:00 pour l&#8217;abstract machine, la mémoire est flat et homogène</p>
+</li>
+<li>
+<p>34:00 objects : size, alignement, storage duration (automatic/static/threadlocal), lifetime, type, value (possiblement indéterminé), name. At most ONE memory location.</p>
+</li>
+<li>
+<p>??:?? As-if rule : le compilo peut faire ce qu&#8217;il veut, si ça ne modifie pas le comportement observable du programme</p>
+</li>
+<li>
+<p>38:30 intéressant exemple concret d&#8217;arithmétique des pointeurs autorisée ou non par l&#8217;abstract machine : autorisé dans un tableau, mais pas en dehors.</p>
+</li>
+<li>
+<p>43:45 threads. Chaque thread a une toplevel fonction (celle du thread principal est <code>main</code>)</p>
+</li>
+<li>
+<p>52:40 le truc à retenir :</p>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>When we write C&#43;&#43; code, we are writing to the C&#43;&#43; abstract machine</p>
+</div>
+</blockquote>
+</div>
+</li>
+<li>
+<p>(Et c&#8217;est l&#8217;implémentation qui traduit les opérations effectuées par l&#8217;abstract machine en des opérations effectuables par la physical machine)</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
