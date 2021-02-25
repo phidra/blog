@@ -44,6 +44,43 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
 
+== [ARTICLE] https://hiringengineersbook.com/post/autonomy/[How to hire senior developers: Give them more autonomy]
+
+=== Lu le 2021-02-??, publié le ????-??-?? (pas clair, mais après 2018) sur https://hiringengineersbook.com/#aboutme[un site] destiné à promouvoir le travail autour du recrutement de http://vonfranque.com/[Alexander von Franqué].
+
+* *TL;DR* = un intéressant point de vue sur la valeur de l'entreprise, qui est plutôt dans ses développeurs que dans son code-source.
+* Contrairement à ce que le titre laisse penser, l'article ne concerne que de loin le recrutement (juste la fin de l'article).
+* La valeur de l'entreprise n'est pas dans le code-source, qui est très vite dépassé, et dur à prendre en main.
+* La valeur de l'entreprise est plutôt dans la connaissance qu'ont les développeurs, et notamment ce qu'il appelle les _intangible aspects of software_ :
+** how the code maps to the real world
+** why the code maps to the real world
+** the programmer can respond to a change request
+* Je reconnais plusieurs de mes points de vue dans l'article :
+** lien avec l'importance que j'accorde au fait de faciliter l'onboarding
+** lien avec mon goût pour tout ce qui facilite le fait de se construire simplement un modèle mental (accès simple aux données, outils ergonomiques, etc.).
+* Je ne suis pas d'accord avec le fait que ce qu'il appelle les intangible aspects of software ne peuvent pas être communiqués, ou le fait qu'il soit intuitif (plutôt qu'argumenté) : les _architecture decision records_ peuvent aider dans ce domaine.
+* Il avance que des interactions entre devs (notamment nouveaux devs et devs expérimentés) sont indispensables pour transmettre ces intangibles aspects.
+* La thèse au coeur de l'article :
++
+[quote]
+____
+The main value of a software company is the mapping of source code and problem space in the developer’s heads.
+____
++
+* Je trouve la note de base de page suivante qui vient compléter cette thèse particulièrement pertinente :
++
+[quote]
+____
+However, I believe this statement is only true for software companies where the core technology is the main asset. +
+For many software companies, the main value might not lie in their technology, but in other things, such as the network effects, relationships to customers, etc.
+____
++
+* Les 3 conseils à l'embauche sont intéressants :
+** _Teaching is an undervalued skill, especially in senior developers_
+** _Retaining talent is even more important than you might think._
+** _The Theory Building View also gives us insights on how to structure onboarding processes. It helps to explain why new developers often takes a very long time until they reach full productivity_
+
+
 == [ARTICLE] https://akrzemi1.wordpress.com/2012/02/03/value-semantics/[Value semantics]
 
 === Lu le 2021-01-??, publié le 2012-02-03, sur https://akrzemi1.wordpress.com/[le blog d'Andrzej Krzemieński], un dev C++ polonais qui a l'air bien calé
