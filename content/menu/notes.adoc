@@ -12,6 +12,8 @@ draft: false
 :imagesdir: ../notes-img
 = Articles, talks, blogposts, et autres liens
 
+*EDIT 2021-02-26* : pour diverses raisons expliquées <<pourquoi-abandonner-cette-page,plus bas>>, mes notes seront dorénavant prise sur https://github.com/phidra/notes/[ce repo github], et la présente page ne sera plus alimentée.
+
 +++ <details open><summary> +++
 Liste des liens
 +++ </summary><div> +++
@@ -43,6 +45,27 @@ La règle d'or que j'essaye (avec succès jusqu'ici, yay) de suivre est de n'inc
 
 Pour le moment, ça m'arrange plutôt d'avoir toutes les notes sur la même page web. Lorsque/si la page devient inutilisable du fait de sa taille, j'envisagerai d'autres pistes (pagination ? https://sebsauvage.net/wiki/doku.php?id=php:shaarli[shaarli] ?).
 
+== EDIT 2021-02-26 : abandon de cette page au profit d'un repo github de notes [[pourquoi-abandonner-cette-page]]
+
+Après environ un an d'utilisation, mon besoin de notes déstructurées reste plus que jamais d'actualité, mais je change mon workflow, et je vais plutôt les écrire dans https://github.com/phidra/notes/[ce repo github].
+
+Même si la présente page m'a permis d'affiner mon besoin, à l'usage, comme je prends mes notes d'abord au format de vim-outliner, je retranscris naturellement ces notes sous forme de listes à puces :
+
+* c'est *beaucoup* moins lisible et pratique que le format de vim-outliner
+* la liste à puce n'est pas forcément la meilleure façon de rendre mes notes (parfois, des titres et un sommaires sont plus intéressants)
+* je n'ai jamais pris le temps de la scripter, du coup la conversion du format vim-outliner en liste à puces asciidoctor est casse-bonbons
+
+Par ailleurs, je suis obligé de publier le blog pour publier ces notes, et rassembler toutes les notes sur une seule page est certes greppable, mais ne scale pas très bien (c'était attendu).
+
+A contrario, un repo github de notes fluidifiera la prise de notes — même si j'aime moins rédiger des notes en markdown qu'en vim-outliner :
+
+* le viewer github jouera le rôle d'interface de consultation
+* la publication sera (un peu) plus fluide puisque je n'aurai pas d'étape supplémenter pour publier : commiter/pusher sera suffisant
+* chaque note étant issue de la lecture d'un post (ou du visionnage d'une vidéo), il est plus logique de faire un fichier par prise de notes
+
+De plus, il facilite le traitement automatique des notes, comme le mirroring des notes sur ce site, si je souhaite tout consulter à un seul endroit.
+
+À court terme, je vais me contenter de prendre mes futures notes dans https://github.com/phidra/notes/[le repo github]. À moyen terme, j'y copierai également les notes actuelles de la présente page, qui sera archivée ou supprimée. À long terme, j'y mettrai peut-être mes autres notes : notes structurées mentionnées plus haut (actuellement dans des fichiers privés au format vim-outliner), et notes sur des papiers scientifiques (actuellement dans https://github.com/phidra/biblio[leur propre repo] ou dans des fichiers privés).
 
 == [ARTICLE] https://hiringengineersbook.com/post/autonomy/[How to hire senior developers: Give them more autonomy]
 
