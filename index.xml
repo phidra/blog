@@ -178,7 +178,8 @@
       <pubDate>Wed, 01 Jan 2020 12:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
-      <description>Liste des liens    Pourquoi cette page [ARTICLE] Value semantics [VIDEO] Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020 [VIDEO] CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced. What do they really do?” [VIDEO] CppCon 2014: Herb Sutter &#34;Lock-Free Programming (or, Juggling Razor Blades)&#34; part 1 et part 2 [ARTICLE] Illusions de l&amp;#8217;informatique distribuée [ARTICLE] Comprendre la Sainte-Trinité [VIDEO] What is an ABI, and Why is Breaking it Bad ?</description>
+      <description>EDIT 2021-02-26 : pour diverses raisons expliquées plus bas, mes notes seront dorénavant prise sur ce repo github, et la présente page ne sera plus alimentée.
+   Liste des liens    Pourquoi cette page EDIT 2021-02-26 : abandon de cette page au profit d&amp;#8217;un repo github de notes [ARTICLE] How to hire senior developers: Give them more autonomy [ARTICLE] Value semantics [VIDEO] Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020 [VIDEO] CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced.</description>
     </item>
     
     <item>
