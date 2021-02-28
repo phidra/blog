@@ -63,7 +63,9 @@ A contrario, un repo github de notes fluidifiera la prise de notes — même si 
 * la publication sera (un peu) plus fluide puisque je n'aurai pas d'étape supplémenter pour publier : commiter/pusher sera suffisant
 * chaque note étant issue de la lecture d'un post (ou du visionnage d'une vidéo), il est plus logique de faire un fichier par prise de notes
 
-De plus, il facilite le traitement automatique des notes, comme le mirroring des notes sur ce site, si je souhaite tout consulter à un seul endroit.
+De plus, il me permet via les _permalinks_ de créer facilement un lien vers une ligne particulière de mes notes ; cette fonctionnalité a beaucoup de valeur pour moi, car j'essaye de croiser mes notes le plus possible.
+
+Cerise sur le gâteau, il facilite le traitement automatique des notes, comme le mirroring des notes sur ce site, si je souhaite tout consulter à un seul endroit.
 
 À court terme, je vais me contenter de prendre mes futures notes dans https://github.com/phidra/notes/[le repo github]. À moyen terme, j'y copierai également les notes actuelles de la présente page, qui sera archivée ou supprimée. À long terme, j'y mettrai peut-être mes autres notes : notes structurées mentionnées plus haut (actuellement dans des fichiers privés au format vim-outliner), et notes sur des papiers scientifiques (actuellement dans https://github.com/phidra/biblio[leur propre repo] ou dans des fichiers privés).
 
