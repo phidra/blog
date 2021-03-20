@@ -25,6 +25,7 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://snarky.ca/[blog de Brett CANNON], core-dev python
 * https://vorpus.org/blog/[blog de Nathaniel SMITH], auteur de https://trio.readthedocs.io/en/stable/[trio]
 * https://cor3ntin.github.io[blog de Corentin JABOT], dev C{plus}{plus} bordelais impliqué dans le comité C{plus}{plus}
+* https://daniel.haxx.se/blog/[blog de Daniel STENBERG], auteur et mainteneur principal de curl
 
 == Références
 
