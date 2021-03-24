@@ -474,7 +474,7 @@ cout << nameof(parent_of_H) << endl;
 // affichera "G"
 ----
 
-[[back-from-annexe5]] De proche en proche, on peut ainsi reconstruire à rebours l'ensemble du plus court chemin entre `A` et `H`, le code est <<annexe5,en annexe>>.
+De proche en proche, on peut ainsi reconstruire à rebours l'ensemble du plus court chemin entre `A` et `H`, le code est <<annexe5,en annexe>>.
 
 == Conclusion
 
