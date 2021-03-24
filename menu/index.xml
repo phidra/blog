@@ -6,20 +6,16 @@
     <description>Recent content in Menus on Phidra&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-fr</language>
-    <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate>
-    
-	<atom:link href="https://phidra.github.io/blog/menu/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/menu/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>En deux mots</title>
       <link>https://phidra.github.io/blog/menu/in2words/</link>
       <pubDate>Sun, 20 Dec 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/in2words/</guid>
-      <description>L&amp;#8217;objectif de cette page est de &#34;documenter&#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
- Je mets des guillemets autour de &#34;documenter&#34;, car il s&amp;#8217;agit ici d&amp;#8217;être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
- D&amp;#8217;autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l&amp;#8217;intérêt pour MOI, vu que c&amp;#8217;est les notions que j&amp;#8217;ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
+      <description>L’objectif de cette page est de &amp;#34;documenter&amp;#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
+ Je mets des guillemets autour de &amp;#34;documenter&amp;#34;, car il s’agit ici d’être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
+ D’autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l’intérêt pour MOI, vu que c’est les notions que j’ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
     </item>
     
     <item>
@@ -29,7 +25,9 @@
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
       <description>EDIT 2021-02-26 : pour diverses raisons expliquées plus bas, mes notes seront dorénavant prise sur ce repo github, et la présente page ne sera plus alimentée.
-   Liste des liens    Pourquoi cette page EDIT 2021-02-26 : abandon de cette page au profit d&amp;#8217;un repo github de notes [ARTICLE] How to hire senior developers: Give them more autonomy [ARTICLE] Value semantics [VIDEO] Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020 [VIDEO] CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced.</description>
+   Liste des liens  
+   
+   Pourquoi cette page Je croise souvent des articles/vidéos/posts/etc. dont j’ai envie de garder quelque chose. Jusqu’ici, ma façon canonique de le faire était d’en &amp;#34;extraire&amp;#34; la connaissance et de trouver un endroit dans mes notes où l’ajouter.</description>
     </item>
     
     <item>
@@ -38,9 +36,9 @@
       <pubDate>Wed, 01 Jan 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/references/</guid>
-      <description>Work in progress &amp;#8594; liste non-exhaustive.
- Elle n&amp;#8217;est pas particulièrement triée : c&amp;#8217;est pas parce qu&amp;#8217;un item est en haut que je le juge plus intéressant que son voisin du dessous.
-   Sources   Sam &amp;amp; Max : on ne les présente plus. Si ? C&amp;#8217;est l&amp;#8217;une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c&amp;#8217;est l&amp;#8217;une des références qui m&amp;#8217;a donnée envie de blogger.</description>
+      <description>Work in progress → liste non-exhaustive.
+ Elle n’est pas particulièrement triée : c’est pas parce qu’un item est en haut que je le juge plus intéressant que son voisin du dessous.
+   Sources   Sam &amp;amp; Max : on ne les présente plus. Si ? C’est l’une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c’est l’une des références qui m’a donnée envie de blogger.</description>
     </item>
     
     <item>
@@ -49,7 +47,7 @@
       <pubDate>Wed, 01 Jan 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/about/</guid>
-      <description>Quoi Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → ce blog contient des posts liés au développement, surtout en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données (e.g. le rtree) ou algorithmes (e.g. l&amp;#8217;algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.g. le projet Aristote).</description>
+      <description>Quoi Je suis Phidra, développeur depuis une douzaine d’années → ce blog contient des posts liés au développement, surtout en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données (e.g. le rtree) ou algorithmes (e.g. l’algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.g. le projet Aristote).</description>
     </item>
     
   </channel>

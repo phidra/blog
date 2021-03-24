@@ -3,7 +3,7 @@
   <head>
     <title>Où linker ses librairies // Phidra&#39;s blog</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     
@@ -71,22 +71,22 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;iostream&gt;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;iostream&gt;</span>
 <span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;zlib.h&gt;</span>
 
 <span style="color: #66d9ef">int</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;zlib version = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">zlibVersion()</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">endl;</span>
+    <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;zlib version = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">zlibVersion()</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">endl;</span>
     <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>On a un <code>main.cpp</code> qui utilise une librairie, en l&#8217;occurence la <a href="https://zlib.net/">zlib</a> ; la question du jour concerne la commande à utiliser pour le builder. On <a href="https://github.com/lviennot/hl-csa-raptor/blob/e855eb19dd1a156c7bc21f23be09e7837bbe24d8/Makefile#L12">trouve parfois</a> ce type de commande :</p>
+<p>On a un <code>main.cpp</code> qui utilise une librairie, en l’occurence la <a href="https://zlib.net/">zlib</a> ; la question du jour concerne la commande à utiliser pour le builder. On <a href="https://github.com/lviennot/hl-csa-raptor/blob/e855eb19dd1a156c7bc21f23be09e7837bbe24d8/Makefile#L12">trouve parfois</a> ce type de commande :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ -lz main.cpp</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ -lz main.cpp</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -94,26 +94,26 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ -lz main.cpp
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ -lz main.cpp
 /tmp/ccAT3A7Z.o: In <span style="color: #66d9ef">function</span> <span style="color: #e6db74">`</span>main<span style="color: #e6db74">&#39;:</span>
 <span style="color: #e6db74">main.cpp:(.text+0xa): undefined reference to `zlibVersion&#39;</span>
 collect2: error: ld returned <span style="color: #ae81ff">1</span> <span style="color: #f8f8f2">exit</span> status</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Quoi quoi quoi ? <code>undefined reference to zlibVersion</code> ?! Pourtant, on passe bien <code>-lz</code> ?! Et on peut vérifier que <code>libz.so</code> est bien dans le search-path de gcc&#8230;&#8203;</p>
+<p>Quoi quoi quoi ? <code>undefined reference to zlibVersion</code> ?! Pourtant, on passe bien <code>-lz</code> ?! Et on peut vérifier que <code>libz.so</code> est bien dans le search-path de gcc…​</p>
 </div>
 <div class="paragraph">
 <p>En cherchant un peu, on peut <a href="https://stackoverflow.com/a/9741049">se voir suggérer</a> de déplacer <code>-lz</code> en fin de commande. Effectivement, ceci fonctionne :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ main.cpp -lz
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ main.cpp -lz
 <span style="color: #75715e"># succès :-)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Alors, que se passe-t-il ? Et pourquoi diable l&#8217;auteur du <code>Makefile</code> référencé ci-dessus n&#8217;a-t-il pas eu le même problème que moi ?</p>
+<p>Alors, que se passe-t-il ? Et pourquoi diable l’auteur du <code>Makefile</code> référencé ci-dessus n’a-t-il pas eu le même problème que moi ?</p>
 </div>
 </div>
 </div>
@@ -121,52 +121,52 @@ collect2: error: ld returned <span style="color: #ae81ff">1</span> <span style="
 <h2 id="_explication">Explication</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Signalons d&#8217;abord que stricto sensu, le code <strong>compile</strong> sans souci, c&#8217;est l&#8217;exécution du <strong>linker</strong> qui pose problème : la commande <code>g++ -S main.cpp</code>, qui s&#8217;arrête après la compilation, n&#8217;échoue pas.</p>
+<p>Signalons d’abord que stricto sensu, le code <strong>compile</strong> sans souci, c’est l’exécution du <strong>linker</strong> qui pose problème : la commande <code>g++ -S main.cpp</code>, qui s’arrête après la compilation, n’échoue pas.</p>
 </div>
 <div class="paragraph">
-<p>On peut regarder de plus près la ligne de commande utilisée par g++ pour invoquer le linker. Dans la sortie un poil verbeuse, la ligne qui nous intéresse est l&#8217;appel de <code>collect2</code>, <a href="https://gcc.gnu.org/onlinedocs/gccint/Collect2.html">qui est en fait</a> l&#8217;appel au linker <code>ld</code> :</p>
+<p>On peut regarder de plus près la ligne de commande utilisée par g++ pour invoquer le linker. Dans la sortie un poil verbeuse, la ligne qui nous intéresse est l’appel de <code>collect2</code>, <a href="https://gcc.gnu.org/onlinedocs/gccint/Collect2.html">qui est en fait</a> l’appel au linker <code>ld</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>g++ -### -lz main.cpp
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>g++ -### -lz main.cpp
 [...]
-/usr/lib/gcc/i686-linux-gnu/5/collect2 -plugin /usr/lib/gcc/i686-linux-gnu/5/liblto_plugin.so "-plugin-opt=/usr/lib/gcc/i686-linux-gnu/5/lto-wrapper" "-plugin-opt=-fresolution=/tmp/ccFNBq2t.res" "-plugin-opt=-pass-through=-lgcc_s" "-plugin-opt=-pass-through=-lgcc" "-plugin-opt=-pass-through=-lc" "-plugin-opt=-pass-through=-lgcc_s" "-plugin-opt=-pass-through=-lgcc" "--sysroot=/" --build-id --eh-frame-hdr -m elf_i386 "--hash-style=gnu" --as-needed -dynamic-linker /lib/ld-linux.so.2 -z relro /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crt1.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crti.o /usr/lib/gcc/i686-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/i686-linux-gnu/5 -L/usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu -L/usr/lib/gcc/i686-linux-gnu/5/../../../../lib -L/lib/i386-linux-gnu -L/lib/../lib -L/usr/lib/i386-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/i686-linux-gnu/5/../../.. -lz /tmp/ccHUyW4C.o "-lstdc++" -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/i686-linux-gnu/5/crtend.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crtn.o</code></pre>
+/usr/lib/gcc/i686-linux-gnu/5/collect2 -plugin /usr/lib/gcc/i686-linux-gnu/5/liblto_plugin.so &#34;-plugin-opt=/usr/lib/gcc/i686-linux-gnu/5/lto-wrapper&#34; &#34;-plugin-opt=-fresolution=/tmp/ccFNBq2t.res&#34; &#34;-plugin-opt=-pass-through=-lgcc_s&#34; &#34;-plugin-opt=-pass-through=-lgcc&#34; &#34;-plugin-opt=-pass-through=-lc&#34; &#34;-plugin-opt=-pass-through=-lgcc_s&#34; &#34;-plugin-opt=-pass-through=-lgcc&#34; &#34;--sysroot=/&#34; --build-id --eh-frame-hdr -m elf_i386 &#34;--hash-style=gnu&#34; --as-needed -dynamic-linker /lib/ld-linux.so.2 -z relro /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crt1.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crti.o /usr/lib/gcc/i686-linux-gnu/5/crtbegin.o -L/usr/lib/gcc/i686-linux-gnu/5 -L/usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu -L/usr/lib/gcc/i686-linux-gnu/5/../../../../lib -L/lib/i386-linux-gnu -L/lib/../lib -L/usr/lib/i386-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/i686-linux-gnu/5/../../.. -lz /tmp/ccHUyW4C.o &#34;-lstdc++&#34; -lm -lgcc_s -lgcc -lc -lgcc_s -lgcc /usr/lib/gcc/i686-linux-gnu/5/crtend.o /usr/lib/gcc/i686-linux-gnu/5/../../../i386-linux-gnu/crtn.o</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Je sais, je sais, c&#8217;est pas tip-top, niveau lisibilité ; mais comme je suis sympa, en voici une version condensée :</p>
+<p>Je sais, je sais, c’est pas tip-top, niveau lisibilité ; mais comme je suis sympa, en voici une version condensée :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>g++ -### -lz main.cpp
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>g++ -### -lz main.cpp
 [...]
 /usr/lib/gcc/i686-linux-gnu/5/collect2 [...] --as-needed [...]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Dans cette ligne absconse d&#8217;invocation du linker, on trouve donc l&#8217;option <code>--as-needed</code>. Voyons ce qu&#8217;en dit le man de <code>ld</code> :</p>
+<p>Dans cette ligne absconse d’invocation du linker, on trouve donc l’option <code>--as-needed</code>. Voyons ce qu’en dit le man de <code>ld</code> :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>--as-needed<br>
---no-as-needed<br>
+<p>--as-needed<br/>
+--no-as-needed<br/>
 Normally the linker will add a DT_NEEDED tag for each dynamic library mentioned on the command line, regardless of whether the library is actually needed or not. --as-needed causes a DT_NEEDED tag to only be emitted for a library that satisfies an undefined symbol reference from a regular object file.</p>
 </div>
 </blockquote>
 <div class="attribution">
-&#8212; <a href="https://linux.die.net/man/1/ld">man ld</a>
+— <a href="https://linux.die.net/man/1/ld">man ld</a>
 </div>
 </div>
 <div class="paragraph">
-<p>En clair, avec l&#8217;option <code>--as-needed</code>, un symbole d&#8217;une librairie linkée (ici, <code>libz.so</code>) ne sera chargé <strong>que</strong> si un fichier objet passé <strong>plus tôt dans la ligne de commande</strong> en a besoin.</p>
+<p>En clair, avec l’option <code>--as-needed</code>, un symbole d’une librairie linkée (ici, <code>libz.so</code>) ne sera chargé <strong>que</strong> si un fichier objet passé <strong>plus tôt dans la ligne de commande</strong> en a besoin.</p>
 </div>
 <div class="paragraph">
-<p>Comme l&#8217;option <code>--no-as-needed</code> inverse ce comportement (les symboles sont chargés quoi qu&#8217;il arrive), on a un moyen simple de confirmer que c&#8217;est bien <code>--as-needed</code> qui est responsable de l&#8217;échec sur mon poste :</p>
+<p>Comme l’option <code>--no-as-needed</code> inverse ce comportement (les symboles sont chargés quoi qu’il arrive), on a un moyen simple de confirmer que c’est bien <code>--as-needed</code> qui est responsable de l’échec sur mon poste :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ -Wl,--no-as-needed -lz main.cpp
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ -Wl,--no-as-needed -lz main.cpp
 <span style="color: #75715e"># succès :-)</span></code></pre>
 </div>
 </div>
@@ -175,55 +175,55 @@ Normally the linker will add a DT_NEEDED tag for each dynamic library mentioned 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ main.cpp -lz
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ main.cpp -lz
 <span style="color: #75715e"># succès :-)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>En effet, dans ce cas, lorsque le linker traite <code>libz.so</code>, <code>main.o</code> <strong>a déjà été traité</strong> et le linker a donc connaissance d&#8217;un symbole <code>zlibVersion</code> encore non-résolu, et il sait donc que c&#8217;est un symbole nécessaire lorsqu&#8217;il trouve enfin sa définition dans <code>libz.so</code>.</p>
+<p>En effet, dans ce cas, lorsque le linker traite <code>libz.so</code>, <code>main.o</code> <strong>a déjà été traité</strong> et le linker a donc connaissance d’un symbole <code>zlibVersion</code> encore non-résolu, et il sait donc que c’est un symbole nécessaire lorsqu’il trouve enfin sa définition dans <code>libz.so</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_l_enfer_c_est_les_autres">L&#8217;enfer c&#8217;est les autres</h2>
+<h2 id="_lenfer_cest_les_autres">L’enfer c’est les autres</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Reste une dernière petite question : pourquoi ça marchait chez l&#8217;auteur du <code>Makefile</code> référencé plus haut ?</p>
+<p>Reste une dernière petite question : pourquoi ça marchait chez l’auteur du <code>Makefile</code> référencé plus haut ?</p>
 </div>
 <div class="paragraph">
-<p>On vient de voir que passer <code>-lz</code> avant <code>main.cpp</code> dans la ligne de commande pouvait fonctionner ou non, en fonction de si l&#8217;option <code>--as-needed</code> était passée au linker par <strong>gcc</strong>.</p>
+<p>On vient de voir que passer <code>-lz</code> avant <code>main.cpp</code> dans la ligne de commande pouvait fonctionner ou non, en fonction de si l’option <code>--as-needed</code> était passée au linker par <strong>gcc</strong>.</p>
 </div>
 <div class="paragraph">
-<p>Or, selon les cas, le comportement par défaut de gcc (dont j&#8217;ai un peu de mal à cerner l&#8217;origine), est parfois d&#8217;ajouter <code>--as-needed</code>, parfois non, ce qu&#8217;on peut facilement observer sur ces images docker :</p>
+<p>Or, selon les cas, le comportement par défaut de gcc (dont j’ai un peu de mal à cerner l’origine), est parfois d’ajouter <code>--as-needed</code>, parfois non, ce qu’on peut facilement observer sur ces images docker :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">cat <span style="color: #e6db74">&lt;&lt; EOF &gt; /tmp/main.cpp</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>cat <span style="color: #e6db74">&lt;&lt; EOF &gt; /tmp/main.cpp</span>
 <span style="color: #e6db74">#include &lt;iostream&gt;</span>
 <span style="color: #e6db74">#include &lt;zlib.h&gt;</span>
 
 <span style="color: #e6db74">int main(void)</span>
 <span style="color: #e6db74">{</span>
-<span style="color: #e6db74">    std::cout &lt;&lt; &quot;zlib version = &quot; &lt;&lt; zlibVersion() &lt;&lt; std::endl;</span>
+<span style="color: #e6db74">    std::cout &lt;&lt; &#34;zlib version = &#34; &lt;&lt; zlibVersion() &lt;&lt; std::endl;</span>
 <span style="color: #e6db74">    return 0;</span>
 <span style="color: #e6db74">}</span>
 <span style="color: #e6db74">EOF</span>
 
 <span style="color: #75715e"># 1. sur une image récente de gcc, --as-needed n&#39;est pas passé :</span>
-docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c <span style="color: #e6db74">&quot;g++ -### -lz /main.cpp&quot;</span>
+docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c <span style="color: #e6db74">&#34;g++ -### -lz /main.cpp&#34;</span>
 
 <span style="color: #75715e"># du coup, ceci fonctionne :</span>
-docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c <span style="color: #e6db74">&quot;g++ -lz /main.cpp &amp;&amp; ./a.out&quot;</span>
-zlib <span style="color: #f8f8f2">version</span> <span style="color: #f92672">=</span> 1.2.11
+docker run --rm -it -v /tmp/main.cpp:/main.cpp gcc:latest /bin/bash -c <span style="color: #e6db74">&#34;g++ -lz /main.cpp &amp;&amp; ./a.out&#34;</span>
+zlib <span style="color: #f8f8f2">version</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">1</span>.2.11
 
 <span style="color: #75715e"># 2. sur une image récente d&#39;ubuntu, le paquet g++ passe l&#39;option --as-needed au linker :</span>
 docker run --rm -it -v /tmp/main.cpp:/main.cpp ubuntu:latest /bin/bash -c <span style="color: #ae81ff">\</span>
-    <span style="color: #e6db74">&quot;apt update ; apt install -y g++ zlib1g-dev ; g++ -### -lz /main.cpp&quot;</span>
+    <span style="color: #e6db74">&#34;apt update ; apt install -y g++ zlib1g-dev ; g++ -### -lz /main.cpp&#34;</span>
 <span style="color: #75715e"># on retrouve --as-needed dans la sortie</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Il se peut donc tout simplement que l&#8217;auteur du <code>Makefile</code> ait un gcc configuré pour <strong>ne pas</strong> passer <code>--as-needed</code> au linker (d&#8217;autant <a href="https://stackoverflow.com/a/35922660">qu&#8217;il semble</a> que c&#8217;était le comportement de g++ par le passé).</p>
+<p>Il se peut donc tout simplement que l’auteur du <code>Makefile</code> ait un gcc configuré pour <strong>ne pas</strong> passer <code>--as-needed</code> au linker (d’autant <a href="https://stackoverflow.com/a/35922660">qu’il semble</a> que c’était le comportement de g++ par le passé).</p>
 </div>
 </div>
 </div>
@@ -235,21 +235,21 @@ docker run --rm -it -v /tmp/main.cpp:/main.cpp ubuntu:latest /bin/bash -c <span 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ main.cpp -lz
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ main.cpp -lz
 <span style="color: #75715e"># succès :-)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>En revanche, on comprend maintenant mieux <strong>pourquoi</strong> elle résout notre problème. De plus, on dispose maintenant d&#8217;une autre corde à notre arc en cas de besoin :</p>
+<p>En revanche, on comprend maintenant mieux <strong>pourquoi</strong> elle résout notre problème. De plus, on dispose maintenant d’une autre corde à notre arc en cas de besoin :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">g++ -Wl,--no-as-needed -lz main.cpp
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>g++ -Wl,--no-as-needed -lz main.cpp
 <span style="color: #75715e"># succès :-)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Un détail pour finir : dans ce dernier cas, attention, que <code>-Wl,--no-as-needed</code> doit être placé <strong>avant</strong> <code>-lz</code> pour bien s&#8217;y appliquer.</p>
+<p>Un détail pour finir : dans ce dernier cas, attention, que <code>-Wl,--no-as-needed</code> doit être placé <strong>avant</strong> <code>-lz</code> pour bien s’y appliquer.</p>
 </div>
 </div>
 </div>

@@ -3,7 +3,7 @@
   <head>
     <title>Boost Graph Library tutorial // Phidra&#39;s blog</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     
@@ -65,45 +65,28 @@
     <div class="post-content">
       <div id="preamble">
 <div class="sectionbody">
-<div id="toc" class="toc">
-<div id="toctitle" class="title">De quoi va-t-on causer :</div>
-<ul class="sectlevel1">
-<li><a href="#_introduction">Introduction</a></li>
-<li><a href="#_création_de_notre_graphe">Création de notre graphe</a></li>
-<li><a href="#_remplissage_du_graphe">Remplissage du graphe</a></li>
-<li><a href="#_consultation_modification_du_graphe">Consultation/modification du graphe</a></li>
-<li><a href="#_les_property_map">Les property_map</a></li>
-<li><a href="#_enfin_on_exécute_l_algo">Enfin, on exécute l&#8217;algo !</a></li>
-<li><a href="#_conclusion">Conclusion</a></li>
-<li><a href="#annexe1">Annexe n°1 = à propos de la doc de la BGL</a></li>
-<li><a href="#annexe2">Annexe n°2 = installation de la BGL</a></li>
-<li><a href="#annexe3">Annexe n°3 = autre façon d&#8217;utiliser les properties</a></li>
-<li><a href="#annexe4">Annexe n°4 = property_map sur une propriété externe</a></li>
-<li><a href="#annexe5">Annexe n°5 = prédécesseurs et récupération du plus court chemin</a></li>
-<li><a href="#annexe6">Annexe n°6 = sujets laissés de côté</a></li>
-</ul>
-</div>
+
 </div>
 </div>
 <div class="sect1">
 <h2 id="_introduction">Introduction</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a id="back-from-annexe1"></a> C&#8217;est subjectif, mais je trouve la doc de la <strong>Boost Graph Library</strong> (appelée <strong>BGL</strong> dans la suite de ce post) <a href="#annexe1">pas super bien foutue</a>.</p>
+<p><a id="back-from-annexe1"></a> C’est subjectif, mais je trouve la doc de la <strong>Boost Graph Library</strong> (appelée <strong>BGL</strong> dans la suite de ce post) <a href="#annexe1">pas super bien foutue</a>.</p>
 </div>
 <div class="paragraph">
-<p>J&#8217;ai récemment joué un peu avec, mon objectif était simple : créer le graphe suivant, et calculer le plus court chemin entre <code>A</code> et <code>H</code> avec l&#8217;algorithme de Dijkstra :</p>
+<p>J’ai récemment joué un peu avec, mon objectif était simple : créer le graphe suivant, et calculer le plus court chemin entre <code>A</code> et <code>H</code> avec l’algorithme de Dijkstra :</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="../2020-12-31-boost-graph-library-img/dijkstra.svg" alt="dijkstra">
+<img src="../2020-12-31-boost-graph-library-img/dijkstra.svg" alt="dijkstra"/>
 </div>
 </div>
 <div class="paragraph">
 <p>Les lettres sont les vertex du graphe, les nombres au dessus des edges sont leur poids ; par conséquent, le plus court chemin entre <code>A</code> et <code>H</code> est <code>ABEGH</code>, de poids total <code>5+3+5+3=16</code>.</p>
 </div>
 <div class="paragraph">
-<p>J&#8217;ai trouvé le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">code donné en exemple</a>, un peu aride pour un débutant en BGL tel que moi, et la doc passe parfois trop vite sur certains concepts importants. Ce post est un guide détaillé permettant de :</p>
+<p>J’ai trouvé le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">code donné en exemple</a>, un peu aride pour un débutant en BGL tel que moi, et la doc passe parfois trop vite sur certains concepts importants. Ce post est un guide détaillé permettant de :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -111,7 +94,7 @@
 <p>définir un graphe</p>
 </li>
 <li>
-<p>le remplir d&#8217;edges et de vertex (avec leurs propriétés)</p>
+<p>le remplir d’edges et de vertex (avec leurs propriétés)</p>
 </li>
 <li>
 <p>manipuler le graphe et son contenu</p>
@@ -128,7 +111,7 @@
 <p>Et le plus important : vous aurez une introduction des concepts, principes et outils nécessaires pour comprendre comment on fait tout ça.</p>
 </div>
 <div class="paragraph">
-<p>Ça va sans dire mais ça va mieux en le disant, en tant que débutant dans l&#8217;utilisation de la librairie, ne prenez pas le contenu de ce post comme parole d&#8217;évangile : n&#8217;hésitez-pas à consulter la doc et faire vos propres expérimentations.</p>
+<p>Ça va sans dire mais ça va mieux en le disant, en tant que débutant dans l’utilisation de la librairie, ne prenez pas le contenu de ce post comme parole d’évangile : n’hésitez-pas à consulter la doc et faire vos propres expérimentations.</p>
 </div>
 <div class="paragraph">
 <p>Les pré-requis sont :</p>
@@ -136,10 +119,10 @@
 <div class="ulist">
 <ul>
 <li>
-<p>côté C&#43;&#43; : de savoir instancier un template, et de savoir que des types peuvent être contraints par des concepts</p>
+<p>côté C++ : de savoir instancier un template, et de savoir que des types peuvent être contraints par des concepts</p>
 </li>
 <li>
-<p>côté graphe, a minima de savoir ce qu&#8217;est un graphe (vertex et edge), et quel problème résoud l&#8217;algorithme de Dijkstra. Si besoin, la doc de la BGL comporte <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html">un très bon rappel synthétique de théorie des graphes</a>.</p>
+<p>côté graphe, a minima de savoir ce qu’est un graphe (vertex et edge), et quel problème résoud l’algorithme de Dijkstra. Si besoin, la doc de la BGL comporte <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html">un très bon rappel synthétique de théorie des graphes</a>.</p>
 </li>
 </ul>
 </div>
@@ -156,7 +139,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">Graph</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">adjacency_list</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">undirectedS,</span> <span style="color: #f8f8f2">VertexProperty,</span> <span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">Graph</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">adjacency_list</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">undirectedS,</span> <span style="color: #f8f8f2">VertexProperty,</span> <span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">Graph</span> <span style="color: #f8f8f2">mygraph;</span></code></pre>
 </div>
 </div>
@@ -166,7 +149,7 @@
 <div class="sect2">
 <h3 id="_type_de_graphe">Type de graphe</h3>
 <div class="paragraph">
-<p>Le template définit la façon de représenter le graphe ; ici, on utilise une <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">adjacency_list</a>. Pour simplifier le post, je ne parlerai pas <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html#sec:adjacency-list-representation">des autres représentations possibles</a>, et comme <code>adjacency_list</code> a le bon goût d&#8217;être la <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html">mieux documentée</a> des structures, c&#8217;est un bon choix pour un premier contact. Notez que les listes d&#8217;adjacence ne sont pas propres à la BGL : elles sont <a href="https://fr.wikipedia.org/wiki/Liste_d%27adjacence">une façon courante</a> de représenter un graphe.</p>
+<p>Le template définit la façon de représenter le graphe ; ici, on utilise une <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">adjacency_list</a>. Pour simplifier le post, je ne parlerai pas <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_theory_review.html#sec:adjacency-list-representation">des autres représentations possibles</a>, et comme <code>adjacency_list</code> a le bon goût d’être la <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html">mieux documentée</a> des structures, c’est un bon choix pour un premier contact. Notez que les listes d’adjacence ne sont pas propres à la BGL : elles sont <a href="https://fr.wikipedia.org/wiki/Liste_d%27adjacence">une façon courante</a> de représenter un graphe.</p>
 </div>
 <div class="paragraph">
 <p>Dans notre cas, ce template est paramétré par 5 arguments,  :</p>
@@ -177,7 +160,7 @@
 <p>les deux <code>vecS</code> configurent les containers utilisés pour stocker les vertex et les edges, je ne rentre pas dans les détails, que vous trouverez <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type">ici</a>.</p>
 </li>
 <li>
-<p><code>undirectedS</code> indique que notre graphe sera <strong>non-orienté</strong>. Dit autrement, si le graphe contient l&#8217;edge <code>AB</code>, il sera possible indifféremment de faire le trajet <code>A&#8594;B</code> et <code>B&#8594;A</code></p>
+<p><code>undirectedS</code> indique que notre graphe sera <strong>non-orienté</strong>. Dit autrement, si le graphe contient l’edge <code>AB</code>, il sera possible indifféremment de faire le trajet <code>A→B</code> et <code>B→A</code></p>
 </li>
 <li>
 <p><code>VertexProperty</code> et <code>EdgeProperty</code> sont les structures définissant les propriétés associées aux vertex/edge du graphe, je les détaille quelques lignes plus bas.</p>
@@ -188,14 +171,14 @@
 <div class="sect2">
 <h3 id="_properties_des_edges_et_vertex">Properties des edges et vertex</h3>
 <div class="paragraph">
-<p>Définir un graphe contenant des edges et des vertex, c&#8217;est bien. Pouvoir leur attribuer des propriétés, c&#8217;est mieux. Pour cela, on définit des structures <code>VertexProperty</code> et <code>EdgeProperty</code>, qu&#8217;on passe comme paramètre template de notre <code>adjacency_list</code>.</p>
+<p>Définir un graphe contenant des edges et des vertex, c’est bien. Pouvoir leur attribuer des propriétés, c’est mieux. Pour cela, on définit des structures <code>VertexProperty</code> et <code>EdgeProperty</code>, qu’on passe comme paramètre template de notre <code>adjacency_list</code>.</p>
 </div>
 <div class="paragraph">
-<p>Pour ce post, nos vertex disposeront d&#8217;un nom (p.ex. <code>"A"</code>), et de coordonnées géographiques (<code>latitude</code> + <code>longitude</code>). Chaque edge représente une route entre deux vertex, il disposera d&#8217;un nom (<code>roadname</code>), et d&#8217;un poids représentant la longueur du chemin entre les noeuds (<code>weight</code>) :</p>
+<p>Pour ce post, nos vertex disposeront d’un nom (p.ex. <code>&#34;A&#34;</code>), et de coordonnées géographiques (<code>latitude</code> + <code>longitude</code>). Chaque edge représente une route entre deux vertex, il disposera d’un nom (<code>roadname</code>), et d’un poids représentant la longueur du chemin entre les noeuds (<code>weight</code>) :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f8f8f2">{</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f8f8f2">{</span>
     <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">name;</span>
     <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">latitude;</span>
     <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">longitude;</span>
@@ -211,17 +194,17 @@
 <p>Certaines de ces propriétés ne sont pas indispensables, mais le post est plus pédagogqiue avec plusieurs propriétés.</p>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe3"></a> À noter : définies de cette façon, les properties des vertex/edges sont appelées <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html">bundled properties</a> dans la doc de la BGL ; <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">une autre façon</a> d&#8217;attribuer des propriétés aux vertex/edges existe, j&#8217;en touche un mot en <a href="#annexe3">en annexe</a>, car la façon de les utiliser diffère, et vous pouvez tomber sur du code les utilisant.</p>
+<p><a id="back-from-annexe3"></a> À noter : définies de cette façon, les properties des vertex/edges sont appelées <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html">bundled properties</a> dans la doc de la BGL ; <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">une autre façon</a> d’attribuer des propriétés aux vertex/edges existe, j’en touche un mot en <a href="#annexe3">en annexe</a>, car la façon de les utiliser diffère, et vous pouvez tomber sur du code les utilisant.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_au_final">Au final</h3>
 <div class="paragraph">
-<p>Au final, notre code permettant d&#8217;instancier un graphe vide est :</p>
+<p>Au final, notre code permettant d’instancier un graphe vide est :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f8f8f2">{</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f8f8f2">{</span>
     <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">name;</span>
     <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">latitude;</span>
     <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">longitude;</span>
@@ -247,10 +230,10 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;B&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">125002</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;C&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">125003</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;B&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">125002</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;C&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">125003</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
 
-<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Road to Eldorado&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span></code></pre>
+<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Road to Eldorado&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span></code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -260,76 +243,76 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">graph_traits</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Graph</span><span style="color: #f92672">&gt;::</span><span style="color: #f8f8f2">vertex_descriptor;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">graph_traits</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Graph</span><span style="color: #f92672">&gt;::</span><span style="color: #f8f8f2">vertex_descriptor;</span>
 <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">EdgeDescriptor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">graph_traits</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Graph</span><span style="color: #f92672">&gt;::</span><span style="color: #f8f8f2">edge_descriptor;</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ajout_de_vertex_et_d_edges">Ajout de vertex et d&#8217;edges</h3>
+<h3 id="_ajout_de_vertex_et_dedges">Ajout de vertex et d’edges</h3>
 <div class="paragraph">
-<p>Les opérations applicables aux graphe semblent être des free-floating functions, dont le dernier paramètre est le graphe ; j&#8217;ai trouvé ça un peu déroutant. C&#8217;est en tout cas vrai pour <code>add_vertex</code>, qui permet d&#8217;ajouter un vertex au graphe :</p>
+<p>Les opérations applicables aux graphe semblent être des free-floating functions, dont le dernier paramètre est le graphe ; j’ai trouvé ça un peu déroutant. C’est en tout cas vrai pour <code>add_vertex</code>, qui permet d’ajouter un vertex au graphe :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;A&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8472743</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3385463</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;B&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8538388</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.2667097</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;C&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8822442</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3355303</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">D</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;D&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8784585</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3682707</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">E</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;E&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8783875</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.2781327</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">F</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;F&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8751455</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3496791</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">G</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;G&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8695761</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3778204</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">H</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;HHHHH&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">999</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">888</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// wrong properties !</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;A&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8472743</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3385463</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;B&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8538388</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.2667097</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;C&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8822442</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3355303</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">D</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;D&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8784585</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3682707</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">E</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;E&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8783875</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.2781327</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">F</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;F&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8751455</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3496791</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">G</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;G&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">48.8695761</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2.3778204</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">H</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;HHHHH&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">999</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">888</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// wrong properties !</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p><code>add_vertex</code> attend comme premier paramètre un <code>VertexProperty</code> décrivant les propriétés du vertex (ici, construit à la volée), et notre graphe <code>mygraph</code> comme second paramètre.</p>
 </div>
 <div class="paragraph">
-<p>Petit aparté : dans la BGL, les opérations applicables à un graphe donné sont définies par <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">tout un tas de concepts</a> contraignant celui-ci. Les fonctions applicable à une <code>adjacency_list</code> sont indiquées <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc</a> (paragraphe <em>Non-Member Functions</em>). L&#8217;ensemble des fonctions existantes, assorties des concepts qu&#8217;elles nécessitent est dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">la doc des concepts</a>. Par exemple, pour pouvoir utiliser <code>add_vertex</code> sur notre graphe, il doit respecter le concept <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/MutablePropertyGraph.html">MutablePropertyGraph</a>.</p>
+<p>Petit aparté : dans la BGL, les opérations applicables à un graphe donné sont définies par <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">tout un tas de concepts</a> contraignant celui-ci. Les fonctions applicable à une <code>adjacency_list</code> sont indiquées <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc</a> (paragraphe <em>Non-Member Functions</em>). L’ensemble des fonctions existantes, assorties des concepts qu’elles nécessitent est dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">la doc des concepts</a>. Par exemple, pour pouvoir utiliser <code>add_vertex</code> sur notre graphe, il doit respecter le concept <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/MutablePropertyGraph.html">MutablePropertyGraph</a>.</p>
 </div>
 <div class="paragraph">
 <p>Similairement aux vertex, on peut créer les edges de notre graphe, assortis de leurs propriétés, notamment leur poids :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">B,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Boulevard Saint-Michel&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">10</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Avenue Mozart&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">D,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Place Pigalle&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Boulevard de la Vilette&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">E,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Avenue de Neuilly&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(C,</span> <span style="color: #f8f8f2">F,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Rue de Paradis&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(D,</span> <span style="color: #f8f8f2">E,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Boulevard de Belleville&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(E,</span> <span style="color: #f8f8f2">G,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Rue Lecourbe&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(F,</span> <span style="color: #f8f8f2">H,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Avenue des Champs-Élysées&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">add_edge(G,</span> <span style="color: #f8f8f2">H,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">3333</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Rue de la Paiiiiix&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// wrong properties !</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">B,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Boulevard Saint-Michel&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">10</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Avenue Mozart&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">D,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Place Pigalle&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Boulevard de la Vilette&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(B,</span> <span style="color: #f8f8f2">E,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Avenue de Neuilly&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(C,</span> <span style="color: #f8f8f2">F,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Rue de Paradis&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(D,</span> <span style="color: #f8f8f2">E,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Boulevard de Belleville&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(E,</span> <span style="color: #f8f8f2">G,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Rue Lecourbe&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(F,</span> <span style="color: #f8f8f2">H,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Avenue des Champs-Élysées&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">add_edge(G,</span> <span style="color: #f8f8f2">H,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">3333</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Rue de la Paiiiiix&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// wrong properties !</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ici, <code>add_edge</code> insère un edge entre deux vertex (qu&#8217;on manipule via les <code>VertexDescriptor</code> renvoyés par <code>add_vertex</code>), et lui associe un <code>EdgeProperty</code>, construit à la volée également. Comme précédemment, <code>add_edge</code> est une free-floating function qui prend <code>mygraph</code> comme dernier paramètre.</p>
+<p>Ici, <code>add_edge</code> insère un edge entre deux vertex (qu’on manipule via les <code>VertexDescriptor</code> renvoyés par <code>add_vertex</code>), et lui associe un <code>EdgeProperty</code>, construit à la volée également. Comme précédemment, <code>add_edge</code> est une free-floating function qui prend <code>mygraph</code> comme dernier paramètre.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_consultation_modification_du_graphe">Consultation/modification du graphe</h2>
+<h2 id="_consultationmodification_du_graphe">Consultation/modification du graphe</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>À ce stade, notre graphe est construit, et il contient (à quelques erreurs près) les edges et vertex modélisant le graphe illustré en introduction&#8230;&#8203;</p>
+<p>À ce stade, notre graphe est construit, et il contient (à quelques erreurs près) les edges et vertex modélisant le graphe illustré en introduction…​</p>
 </div>
 <div class="sect2">
 <h3 id="_accès_aux_vertex_edges">Accès aux vertex / edges</h3>
 <div class="paragraph">
-<p>Comme précédemment, c&#8217;est via des free-floating functions qu&#8217;on peut accéder au contenu du graphe :</p>
+<p>Comme précédemment, c’est via des free-floating functions qu’on peut accéder au contenu du graphe :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>sur l&#8217;ensemble du graphe :</p>
+<p>sur l’ensemble du graphe :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;This graph has &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">num_vertices(mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; vertices&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;This graph has &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">num_edges(mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; edges&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;This graph has &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">num_vertices(mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; vertices&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;This graph has &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">num_edges(mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; edges&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// itérer sur tous les vertices :</span>
 <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">VertexIterator</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">graph_traits</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Graph</span><span style="color: #f92672">&gt;::</span><span style="color: #f8f8f2">vertex_iterator;</span>
@@ -355,7 +338,7 @@
 <p>sur un vertex donné :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Vertex A has &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">out_degree(A,</span> <span style="color: #f8f8f2">mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; out-edges&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Vertex A has &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">out_degree(A,</span> <span style="color: #f8f8f2">mygraph)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; out-edges&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// itérer sur les edges incidents à un noeud donné :</span>
 <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">OutEdgeIterator</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">graph_traits</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">Graph</span><span style="color: #f92672">&gt;::</span><span style="color: #f8f8f2">out_edge_iterator;</span>
@@ -372,7 +355,7 @@
 <p>sur un edge donné :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// retrouver un edge à partir de ses noeuds :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// retrouver un edge à partir de ses noeuds :</span>
 <span style="color: #f8f8f2">EdgeDescriptor</span> <span style="color: #f8f8f2">GH</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">edge(G,</span> <span style="color: #f8f8f2">H,</span> <span style="color: #f8f8f2">mygraph).first;</span>
 
 <span style="color: #75715e">// accéder aux noeuds d&#39;un edge donné :</span>
@@ -385,33 +368,33 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Note : une opération importante serait de pouvoir retrouver un vertex (resp. edge) à partir d&#8217;une de ses propriétés. Par exemple, être capable de faire :</p>
+<p>Note : une opération importante serait de pouvoir retrouver un vertex (resp. edge) à partir d’une de ses propriétés. Par exemple, être capable de faire :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get_from_property(</span><span style="color: #e6db74">&quot;A&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">VertexProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">name,</span> <span style="color: #f8f8f2">mygraph);</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get_from_property(</span><span style="color: #e6db74">&#34;A&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">VertexProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">name,</span> <span style="color: #f8f8f2">mygraph);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>La doc ne mentionne rien à ce sujet, mais on trouve <a href="https://stackoverflow.com/questions/2244580/find-boost-bgl-vertex-by-a-key/2248090#2248090">quelques références</a> à un <code>labeled_graph</code> non-documenté, mais <a href="https://www.boost.org/doc/libs/1_75_0/boost/graph/labeled_graph.hpp">qui existe</a> dans la BGL, et qui semble permettre cet usage.</p>
 </div>
 <div class="paragraph">
-<p>De mon côté, comme je n&#8217;ai pas encore eu le temps de tester, je me suis limité à créer et maintenir un dictionnaire externe au graphe associant une propriété à son VertexDescriptor, mais c&#8217;est pas fi-fou, notamment car les <code>VertexDescriptor</code> peuvent être invalidés.</p>
+<p>De mon côté, comme je n’ai pas encore eu le temps de tester, je me suis limité à créer et maintenir un dictionnaire externe au graphe associant une propriété à son VertexDescriptor, mais c’est pas fi-fou, notamment car les <code>VertexDescriptor</code> peuvent être invalidés.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_accès_aux_properties_des_vertex_edges">Accès aux properties des vertex / edges</h3>
 <div class="paragraph">
-<p>Étant donné un vertex (resp. edge) donné, ou plus exactement, un <strong>VertexDescriptor</strong> donné, on accède à ses properties via l' <code>operator[]</code> du graphe :</p>
+<p>Étant donné un vertex (resp. edge) donné, ou plus exactement, un <strong>VertexDescriptor</strong> donné, on accède à ses properties via l&#39; <code>operator[]</code> du graphe :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">name_of_A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[A].name;</span>
-<span style="color: #f8f8f2">assert(name_of_A</span> <span style="color: #f92672">==</span> <span style="color: #e6db74">&quot;A&quot;</span><span style="color: #f8f8f2">);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">name_of_A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[A].name;</span>
+<span style="color: #f8f8f2">assert(name_of_A</span> <span style="color: #f92672">==</span> <span style="color: #e6db74">&#34;A&#34;</span><span style="color: #f8f8f2">);</span>
 
 <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">lat</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[A].latitude;</span>
 <span style="color: #66d9ef">double</span> <span style="color: #f8f8f2">lon</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[A].longitude;</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;vertex &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name_of_A</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; has coordinates (&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">lat</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;;&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">lon</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;)</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;vertex &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name_of_A</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; has coordinates (&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">lat</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;;&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">lon</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;)</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">};</span></code></pre>
 </div>
 </div>
@@ -420,21 +403,21 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">roadname_of_GH</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[GH].roadname;</span>
-<span style="color: #f8f8f2">assert(roadname_of_GH</span> <span style="color: #f92672">==</span> <span style="color: #e6db74">&quot;Rue de la Paiiiiix&quot;</span><span style="color: #f8f8f2">);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">roadname_of_GH</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">mygraph[GH].roadname;</span>
+<span style="color: #f8f8f2">assert(roadname_of_GH</span> <span style="color: #f92672">==</span> <span style="color: #e6db74">&#34;Rue de la Paiiiiix&#34;</span><span style="color: #f8f8f2">);</span>
 <span style="color: #f8f8f2">assert(mygraph[GH].weight</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">3333</span><span style="color: #f8f8f2">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ce même <code>operator[]</code> permet également de muter les properties des vertex/edge, ce qu&#8217;on va utiliser pour corriger les petites erreurs introduites plus haut :</p>
+<p>Ce même <code>operator[]</code> permet également de muter les properties des vertex/edge, ce qu’on va utiliser pour corriger les petites erreurs introduites plus haut :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">mygraph[H].name</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;H&quot;</span><span style="color: #f8f8f2">;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">mygraph[H].name</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#34;H&#34;</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">mygraph[H].latitude</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">48.8404808</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">mygraph[H].longitude</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">2.2935483</span><span style="color: #f8f8f2">;</span>
 
-<span style="color: #f8f8f2">mygraph[GH].roadname</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;Rue de la Paix&quot;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">mygraph[GH].roadname</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#34;Rue de la Paix&#34;</span><span style="color: #f8f8f2">;</span>
 <span style="color: #75715e">// on corrigera le weight de GH un peu plus bas</span></code></pre>
 </div>
 </div>
@@ -445,25 +428,25 @@
 <h2 id="_les_property_map">Les property_map</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>À ce stade, on est <strong>presque</strong> prêts à appliquer <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra">l&#8217;algorithme de Dijkstra</a> pour rechercher un plus court chemin.</p>
+<p>À ce stade, on est <strong>presque</strong> prêts à appliquer <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra">l’algorithme de Dijkstra</a> pour rechercher un plus court chemin.</p>
 </div>
 <div class="paragraph">
 <p>Presque.</p>
 </div>
 <div class="paragraph">
-<p>Il faut d&#8217;abord parler un chouïa des <strong>property_map</strong>.</p>
+<p>Il faut d’abord parler un chouïa des <strong>property_map</strong>.</p>
 </div>
 <div class="sect2">
-<h3 id="_c_est_quoi">C&#8217;est quoi ?</h3>
+<h3 id="_cest_quoi">C’est quoi ?</h3>
 <div class="paragraph">
-<p>On va la faire courte : les property_map sont une abstraction de la BGL pour représenter une structure de type <a href="https://fr.wikipedia.org/wiki/Tableau_associatif">dictionnaire</a>, c&#8217;est à dire permettant d&#8217;associer une clé à une valeur.</p>
+<p>On va la faire courte : les property_map sont une abstraction de la BGL pour représenter une structure de type <a href="https://fr.wikipedia.org/wiki/Tableau_associatif">dictionnaire</a>, c’est à dire permettant d’associer une clé à une valeur.</p>
 </div>
 <div class="paragraph">
-<p>Dans la BGL, elles sont utilisées pour associer un vertex (resp. edge) à l&#8217;une de ses propriétés, via une fonction <code>get</code>. Par exemple, la property-map suivante associe un edge — plus précisément un EdgeDescriptor — à son <code>weight</code> :</p>
+<p>Dans la BGL, elles sont utilisées pour associer un vertex (resp. edge) à l’une de ses propriétés, via une fonction <code>get</code>. Par exemple, la property-map suivante associe un edge — plus précisément un EdgeDescriptor — à son <code>weight</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">weight_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">weight,</span> <span style="color: #f8f8f2">mygraph);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">weight_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">weight,</span> <span style="color: #f8f8f2">mygraph);</span>
 
 <span style="color: #75715e">// Tout se passe comme si la property_map était un dictionnaire avec ce contenu :</span>
 <span style="color: #75715e">// AB -&gt; 5</span>
@@ -479,59 +462,59 @@
 </div>
 </div>
 <div class="paragraph">
-<p>On peut lire la valeur associée à une clé du dictionnaire avec <code>get</code> (d&#8217;un usage différent du <code>get</code> ci-dessus&#8230;&#8203;) :</p>
+<p>On peut lire la valeur associée à une clé du dictionnaire avec <code>get</code> (d’un usage différent du <code>get</code> ci-dessus…​) :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">weight_of_GH</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(weight_property_map,</span> <span style="color: #f8f8f2">GH);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">weight_of_GH</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(weight_property_map,</span> <span style="color: #f8f8f2">GH);</span>
 <span style="color: #f8f8f2">assert(weight_of_GH</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">3333</span><span style="color: #f8f8f2">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Et ça marche aussi en écriture, grâce à <code>put</code> ; on va en profiter pour corriger le poids de l&#8217;edge <code>GH</code> à une valeur plus raisonnable de <code>3</code> :</p>
+<p>Et ça marche aussi en écriture, grâce à <code>put</code> ; on va en profiter pour corriger le poids de l’edge <code>GH</code> à une valeur plus raisonnable de <code>3</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">put(weight_property_map,</span> <span style="color: #f8f8f2">GH,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">put(weight_property_map,</span> <span style="color: #f8f8f2">GH,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">);</span>
 <span style="color: #f8f8f2">assert(mygraph[GH].weight</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">);</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_Ça_sert_à_quoi">Ça sert à quoi ?</h3>
+<h3 id="_ça_sert_à_quoi">Ça sert à quoi ?</h3>
 <div class="paragraph">
-<p>Après tout, on avait déjà une interface tout à fait valable pour accéder au properties d&#8217;un vertex/edge, pourquoi diable aller s&#8217;embêter avec des property_maps ?</p>
+<p>Après tout, on avait déjà une interface tout à fait valable pour accéder au properties d’un vertex/edge, pourquoi diable aller s’embêter avec des property_maps ?</p>
 </div>
 <div class="paragraph">
 <p>Parce que les property_maps sont utilisées à peu près partout dans les algos de la BGL pour manipuler les propriétés des edges/vertex.</p>
 </div>
 <div class="paragraph">
-<p>Un exemple concret ? L&#8217;algorithme de Dijkstra calcule le plus court chemin entre deux noeuds, et a besoin du poids des edges. La façon canonique de passer les poids des edges à la fonction <code>dijkstra_shortest_paths</code> est de <strong>lui passer une property_map</strong> dont les clés sont les edges, et les valeurs sont leur poids.</p>
+<p>Un exemple concret ? L’algorithme de Dijkstra calcule le plus court chemin entre deux noeuds, et a besoin du poids des edges. La façon canonique de passer les poids des edges à la fonction <code>dijkstra_shortest_paths</code> est de <strong>lui passer une property_map</strong> dont les clés sont les edges, et les valeurs sont leur poids.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_propriété_interne_vs_propriété_externe">Propriété interne vs. propriété externe</h3>
 <div class="paragraph">
-<p>Les property_maps ne servent pas qu&#8217;à manipuler les <code>VertexProperty</code> et <code>EdgeProperty</code> qu&#8217;on a définis plus haut, mais également d&#8217;autres propriétés. En effet, on peut attribuer à un vertex/edge deux types de propriété : <strong>interne</strong> et <strong>externe</strong> :</p>
+<p>Les property_maps ne servent pas qu’à manipuler les <code>VertexProperty</code> et <code>EdgeProperty</code> qu’on a définis plus haut, mais également d’autres propriétés. En effet, on peut attribuer à un vertex/edge deux types de propriété : <strong>interne</strong> et <strong>externe</strong> :</p>
 </div>
 <div class="paragraph">
-<p><strong>Propriété interne</strong> : pour faire simple, une propriété interne d&#8217;un vertex est une propriété qui le caractérise, indissociable du vertex ; sans elle, le vertex n&#8217;a pas d&#8217;intérêt. Dit autrement, le cycle de vie de la propriété doit être confondu avec celui du vertex : un vertex construit doit disposer de cette propriété, celle-ci doit exister tant que le vertex existe, et ne pas lui survivre. Les properties définies dans plus haut dans <code>VertexProperty</code> ou <code>EdgeProperty</code> sont des propriétés internes.</p>
+<p><strong>Propriété interne</strong> : pour faire simple, une propriété interne d’un vertex est une propriété qui le caractérise, indissociable du vertex ; sans elle, le vertex n’a pas d’intérêt. Dit autrement, le cycle de vie de la propriété doit être confondu avec celui du vertex : un vertex construit doit disposer de cette propriété, celle-ci doit exister tant que le vertex existe, et ne pas lui survivre. Les properties définies dans plus haut dans <code>VertexProperty</code> ou <code>EdgeProperty</code> sont des propriétés internes.</p>
 </div>
 <div class="paragraph">
-<p><strong>Propriété externe</strong> : à l&#8217;inverse, les propriétés externes peuvent être rattachées à un vertex/edge <em>de façon transitoire</em> : elles ont leur propre cycle de vie, un graphe reste valide même si ses vertex sont dépourvus de ces propriétés externes.</p>
+<p><strong>Propriété externe</strong> : à l’inverse, les propriétés externes peuvent être rattachées à un vertex/edge <em>de façon transitoire</em> : elles ont leur propre cycle de vie, un graphe reste valide même si ses vertex sont dépourvus de ces propriétés externes.</p>
 </div>
 <div class="paragraph">
-<p>Un exemple concret ? Durant son exécution, l&#8217;algorithme de Dijkstra <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra#Mise_%C3%A0_jour_des_distances">maintient un tableau</a> associant un <code>tentative_distance</code> à chaque vertex, qui est la longueur du meilleur itinéraire (trouvé jusqu&#8217;ici) permettant de le rejoindre. Cette notion de <code>tentative_distance</code> n&#8217;a pas de sens en dehors du contexte de l&#8217;exécution de Dijkstra : en dehors de ce contexte, des vertex dépourvus de <code>tentative_distance</code> sont tout à fait valides.</p>
+<p>Un exemple concret ? Durant son exécution, l’algorithme de Dijkstra <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra#Mise_%C3%A0_jour_des_distances">maintient un tableau</a> associant un <code>tentative_distance</code> à chaque vertex, qui est la longueur du meilleur itinéraire (trouvé jusqu’ici) permettant de le rejoindre. Cette notion de <code>tentative_distance</code> n’a pas de sens en dehors du contexte de l’exécution de Dijkstra : en dehors de ce contexte, des vertex dépourvus de <code>tentative_distance</code> sont tout à fait valides.</p>
 </div>
 <div class="paragraph">
-<p>Le cycle de vie de la propriété <code>tentative_distance</code> associée à chaque vertex est donc lié à l&#8217;exécution de l&#8217;algorithme plutôt qu&#8217;au graphe lui-même : la property_map qui les stocke doit être créée au moment de l&#8217;algo, et pourra être supprimée dès qu&#8217;on n&#8217;aura plus besoin des résultats calculés par celui-ci.</p>
+<p>Le cycle de vie de la propriété <code>tentative_distance</code> associée à chaque vertex est donc lié à l’exécution de l’algorithme plutôt qu’au graphe lui-même : la property_map qui les stocke doit être créée au moment de l’algo, et pourra être supprimée dès qu’on n’aura plus besoin des résultats calculés par celui-ci.</p>
 </div>
 <div class="paragraph">
-<p>Le code suivant montre un exemple de création d&#8217;une property_map sur des propriétés externes :</p>
+<p>Le code suivant montre un exemple de création d’une property_map sur des propriétés externes :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// La propriété &quot;tentative_distance&quot; de chaque vertex est stockée dans ce vector.</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// La propriété &#34;tentative_distance&#34; de chaque vertex est stockée dans ce vector.</span>
 <span style="color: #75715e">// Ce vector a son propre cycle de vie, indépendant du graphe.</span>
 <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tentative_distances(num_vertices(mygraph));</span>
 
@@ -557,30 +540,30 @@
 </div>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe4"></a> Je donne un peu plus d&#8217;explications — notamment sur ce <code>vertex_index</code> — <a href="#annexe4">en annexe</a>.</p>
+<p><a id="back-from-annexe4"></a> Je donne un peu plus d’explications — notamment sur ce <code>vertex_index</code> — <a href="#annexe4">en annexe</a>.</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_enfin_on_exécute_l_algo">Enfin, on exécute l&#8217;algo !</h2>
+<h2 id="_enfin_on_exécute_lalgo">Enfin, on exécute l’algo !</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>On est enfin prêt à utiliser l&#8217;algorithme de Dijkstra.</p>
+<p>On est enfin prêt à utiliser l’algorithme de Dijkstra.</p>
 </div>
 <div class="sect2">
-<h3 id="_l_algorithme_de_dijkstra_dans_la_bgl">L&#8217;algorithme de Dijkstra dans la BGL</h3>
+<h3 id="_lalgorithme_de_dijkstra_dans_la_bgl">L’algorithme de Dijkstra dans la BGL</h3>
 <div class="paragraph">
-<p>Dans sa version de base, l&#8217;algorithme de Dijkstra ne calcule pas le plus court chemin entre <code>A</code> et <code>H</code>, mais entre <code>A</code> et <strong>chaque vertex du graphe</strong>, y compris <code>H</code>, qui est le vertex qui nous intéresse ici. Internet regorge de ressources documentant <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra">l&#8217;algorithme de Dijkstra</a>, je vous invite à les consulter si vous souhaitez plus de détails.</p>
+<p>Dans sa version de base, l’algorithme de Dijkstra ne calcule pas le plus court chemin entre <code>A</code> et <code>H</code>, mais entre <code>A</code> et <strong>chaque vertex du graphe</strong>, y compris <code>H</code>, qui est le vertex qui nous intéresse ici. Internet regorge de ressources documentant <a href="https://fr.wikipedia.org/wiki/Algorithme_de_Dijkstra">l’algorithme de Dijkstra</a>, je vous invite à les consulter si vous souhaitez plus de détails.</p>
 </div>
 <div class="paragraph">
-<p>Pour fonctionner, l&#8217;algo a besoin du graphe, des poids de ses edges (propriété interne associée aux vertex du graphe) ; il maintient pour chaque vertex deux propriétés temporaires (qu&#8217;on va donc stocker de façon externe au graphe) : la <code>tentative_distance</code>, et le <code>predecessor</code>. Ces propriétés sont modifiées au cours de l&#8217;algorithme, et lorsque l&#8217;algo retourne, elles jouent le rôle de "résultat" produit en sortie.</p>
+<p>Pour fonctionner, l’algo a besoin du graphe, des poids de ses edges (propriété interne associée aux vertex du graphe) ; il maintient pour chaque vertex deux propriétés temporaires (qu’on va donc stocker de façon externe au graphe) : la <code>tentative_distance</code>, et le <code>predecessor</code>. Ces propriétés sont modifiées au cours de l’algorithme, et lorsque l’algo retourne, elles jouent le rôle de &#34;résultat&#34; produit en sortie.</p>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe5"></a> J&#8217;ai mentionné brièvement la <code>tentative_distance</code> plus haut, et je relègue une brève explication sur les prédécesseurs et leur utilisation <a href="#annexe5">en annexe</a>.</p>
+<p><a id="back-from-annexe5"></a> J’ai mentionné brièvement la <code>tentative_distance</code> plus haut, et je relègue une brève explication sur les prédécesseurs et leur utilisation <a href="#annexe5">en annexe</a>.</p>
 </div>
 <div class="paragraph">
-<p>Au total, on va donc passer à l&#8217;algorithme trois property_map :</p>
+<p>Au total, on va donc passer à l’algorithme trois property_map :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -600,7 +583,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">weight_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">weight,</span> <span style="color: #f8f8f2">mygraph);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">weight_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">weight,</span> <span style="color: #f8f8f2">mygraph);</span>
 
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">vertex_index_pmap</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(vertex_index,</span> <span style="color: #f8f8f2">mygraph);</span>
 
@@ -613,13 +596,13 @@
 </div>
 </div>
 <div class="sect2">
-<h3 id="_invocation_de_l_algo">Invocation de l&#8217;algo</h3>
+<h3 id="_invocation_de_lalgo">Invocation de l’algo</h3>
 <div class="paragraph">
-<p>Ayé ! On peut appeler l&#8217;algo :</p>
+<p>Ayé ! On peut appeler l’algo :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">SOURCE</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">A;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">SOURCE</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">A;</span>
 
 <span style="color: #f8f8f2">dijkstra_shortest_paths(</span>
     <span style="color: #f8f8f2">mygraph,</span>
@@ -631,12 +614,12 @@
 </div>
 </div>
 <div class="paragraph">
-<p>La <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html">doc de l&#8217;algo</a> renseigne sur la signification de chaque paramètre :</p>
+<p>La <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html">doc de l’algo</a> renseigne sur la signification de chaque paramètre :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>mygraph</code> : self-explanatory, c&#8217;est sur notre graphe crafté avec amour que l&#8217;algo travaille</p>
+<p><code>mygraph</code> : self-explanatory, c’est sur notre graphe crafté avec amour que l’algo travaille</p>
 </li>
 <li>
 <p><code>SOURCE</code> : le vertex à partir duquel tous les plus courts chemins sont calculés</p>
@@ -645,7 +628,7 @@
 <p><code>weight_property_map</code> : la property_map contenant le poids de chaque edge</p>
 </li>
 <li>
-<p><code>predecessors_map</code> : la property_map contenant le parent de chaque vertex sur le plus court chemin depuis la source, cf. <a href="#annexe5">l&#8217;annexe dédiée au sujet</a>.</p>
+<p><code>predecessors_map</code> : la property_map contenant le parent de chaque vertex sur le plus court chemin depuis la source, cf. <a href="#annexe5">l’annexe dédiée au sujet</a>.</p>
 </li>
 <li>
 <p><code>tentative_distances_map</code> : la property_map contenant la <code>tentative_distance</code> de chaque vertex</p>
@@ -656,48 +639,48 @@
 <div class="sect2">
 <h3 id="_named_parameters">Named-parameters</h3>
 <div class="paragraph">
-<p>Vous noterez que les property_map sont passées d&#8217;une façon un peu particulière, en chaînant 3 appels de fonction :</p>
+<p>Vous noterez que les property_map sont passées d’une façon un peu particulière, en chaînant 3 appels de fonction :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// je parle de ça :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// je parle de ça :</span>
 <span style="color: #f8f8f2">weight_map(weight_property_map).predecessor_map(predecessors_pmap).distance_map(tentative_distances_pmap)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Long story short, c&#8217;est une astuce de la BGL pour pallier le fait que le C++ ne dispose pas de paramètres nommés.</p>
+<p>Long story short, c’est une astuce de la BGL pour pallier le fait que le C++ ne dispose pas de paramètres nommés.</p>
 </div>
 <div class="paragraph">
-<p>C&#8217;est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bgl_named_params.html">documenté ici</a>, ça simplifie le passage des paramètres, puisqu&#8217;on peut les passer sans se soucier de leur ordre et en utilisant facilement leurs valeurs par défaut.</p>
+<p>C’est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bgl_named_params.html">documenté ici</a>, ça simplifie le passage des paramètres, puisqu’on peut les passer sans se soucier de leur ordre et en utilisant facilement leurs valeurs par défaut.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_utilisation_des_résultats">Utilisation des résultats</h3>
 <div class="paragraph">
-<p>Une fois l&#8217;exécution de l&#8217;algo terminée, les deux property_map externes contiennent les résultats.</p>
+<p>Une fois l’exécution de l’algo terminée, les deux property_map externes contiennent les résultats.</p>
 </div>
 <div class="paragraph">
 <p>Ainsi, <code>tentative_distances_pmap</code> associe à chaque vertex le poids total du plus court chemin permettant de le rejoindre depuis la <code>SOURCE</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Le plus court chemin de &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(SOURCE)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; vers &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(H)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; a pour poids total : </span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Le plus court chemin de &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(SOURCE)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; vers &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(H)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; a pour poids total : </span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(tentative_distances_pmap,</span> <span style="color: #f8f8f2">H)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 <span style="color: #75715e">// affichera 16 = 5+3+5+3, ce qui est bien le poids attendu</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>La récupération des détails du plus court chemin est un chouille moins immédiate : la property_map <code>predecessors_pmap</code> associe chaque vertex <code>V</code> à son <strong>parent</strong> dans le plus court chemin reliant <code>A</code> à <code>V</code>. Ainsi, le code suivant affiche l&#8217;avant-dernier vertex sur le plus court chemin entre <code>A</code> et <code>H</code> (qui est <code>G</code>) :</p>
+<p>La récupération des détails du plus court chemin est un chouille moins immédiate : la property_map <code>predecessors_pmap</code> associe chaque vertex <code>V</code> à son <strong>parent</strong> dans le plus court chemin reliant <code>A</code> à <code>V</code>. Ainsi, le code suivant affiche l’avant-dernier vertex sur le plus court chemin entre <code>A</code> et <code>H</code> (qui est <code>G</code>) :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">parent_of_H</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(predecessors_pmap,</span> <span style="color: #f8f8f2">H);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">parent_of_H</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(predecessors_pmap,</span> <span style="color: #f8f8f2">H);</span>
 <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(parent_of_H)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
-<span style="color: #75715e">// affichera &quot;G&quot;</span></code></pre>
+<span style="color: #75715e">// affichera &#34;G&#34;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe5"></a> De proche en proche, on peut ainsi reconstruire à rebours l&#8217;ensemble du plus court chemin entre <code>A</code> et <code>H</code>, le code est <a href="#annexe5">en annexe</a>.</p>
+<p>De proche en proche, on peut ainsi reconstruire à rebours l’ensemble du plus court chemin entre <code>A</code> et <code>H</code>, le code est <a href="#annexe5">en annexe</a>.</p>
 </div>
 </div>
 </div>
@@ -706,13 +689,13 @@
 <h2 id="_conclusion">Conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a id="back-from-annexe6"></a> J&#8217;espère que le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">code donné en exemple</a> par la doc de la BGL pour l&#8217;algorithme de Dijkstra est maintenant compréhensible.</p>
+<p><a id="back-from-annexe6"></a> J’espère que le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">code donné en exemple</a> par la doc de la BGL pour l’algorithme de Dijkstra est maintenant compréhensible.</p>
 </div>
 <div class="paragraph">
-<p>J&#8217;insiste : je n&#8217;ai fait que jouer avec la librairie, je suis donc loin de la maîtriser, soyez critiques vis-à-vis de ce que vous venez de lire. Je liste <a href="#annexe6">en annexe</a> quelques sujets laissés de côté, et il y en a bien d&#8217;autres dont je n&#8217;ai même pas connaissance.</p>
+<p>J’insiste : je n’ai fait que jouer avec la librairie, je suis donc loin de la maîtriser, soyez critiques vis-à-vis de ce que vous venez de lire. Je liste <a href="#annexe6">en annexe</a> quelques sujets laissés de côté, et il y en a bien d’autres dont je n’ai même pas connaissance.</p>
 </div>
 <div class="paragraph">
-<p>Pour finir, même si je critique la doc de la librairie, je trouve le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> très instructif, et je vous invite à commencer par là ; quelque part, ce post était une façon parmi d&#8217;autres de me l&#8217;approprier.</p>
+<p>Pour finir, même si je critique la doc de la librairie, je trouve le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> très instructif, et je vous invite à commencer par là ; quelque part, ce post était une façon parmi d’autres de me l’approprier.</p>
 </div>
 </div>
 </div>
@@ -723,39 +706,39 @@
 <p>(<a href="#back-from-annexe1">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Je trouve la doc de la BGL pas très ergonomique. C&#8217;est pas toujours de sa faute, c&#8217;est loin d&#8217;être critique, et c&#8217;est même sans doute un point de vue d&#8217;enfant-gâté-par-les-excellentes-docs de la plupart des librairies qui atteignent un certain degré de popularité. Mais quand même&#8230;&#8203;</p>
+<p>Je trouve la doc de la BGL pas très ergonomique. C’est pas toujours de sa faute, c’est loin d’être critique, et c’est même sans doute un point de vue d’enfant-gâté-par-les-excellentes-docs de la plupart des librairies qui atteignent un certain degré de popularité. Mais quand même…​</p>
 </div>
 <div class="paragraph">
-<p>Déjà, la navigation au sein de la doc n&#8217;est pas facile. Ok ok, c&#8217;est pas gravissime, mais c&#8217;est quand même pas la mort d&#8217;avoir un lien vers le sommaire dans le header de chaque page ? Sommaire qui non seulement n&#8217;est pas sur <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/">la page d&#8217;accueil</a> — à la limite, pourquoi pas&#8230;&#8203; — mais dont <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/table_of_contents.html">le lien</a> est complètement paumé au beau milieu de celle-ci&#8230;&#8203;</p>
+<p>Déjà, la navigation au sein de la doc n’est pas facile. Ok ok, c’est pas gravissime, mais c’est quand même pas la mort d’avoir un lien vers le sommaire dans le header de chaque page ? Sommaire qui non seulement n’est pas sur <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/">la page d’accueil</a> — à la limite, pourquoi pas…​ — mais dont <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/table_of_contents.html">le lien</a> est complètement paumé au beau milieu de celle-ci…​</p>
 </div>
 <div class="paragraph">
-<p>Derrière, c&#8217;est une préférence personnelle, mais j&#8217;aime que les pages volumineuses disposent d&#8217;une table des matières cliquable : d&#8217;une part ça permet de référencer certaines sections (par exemple dans des notes), et d&#8217;autre part ça aide à comprendre comment se structure la page. La doc de la BGL est au mieux inégale sur ce pint : <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc de référence d&#8217;adjacency_list</a> ou <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a> n&#8217;en ont pas, mais <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html">une autre doc sur adjacency_list</a>, pourtant moins touffue, en a une.</p>
+<p>Derrière, c’est une préférence personnelle, mais j’aime que les pages volumineuses disposent d’une table des matières cliquable : d’une part ça permet de référencer certaines sections (par exemple dans des notes), et d’autre part ça aide à comprendre comment se structure la page. La doc de la BGL est au mieux inégale sur ce pint : <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc de référence d’adjacency_list</a> ou <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a> n’en ont pas, mais <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html">une autre doc sur adjacency_list</a>, pourtant moins touffue, en a une.</p>
 </div>
 <div class="paragraph">
-<p>En plus, les pages de la doc sont assez mal indexées par Google : n&#8217;hésitez-pas à abuser de la feature permettant de restreindre la recherche au sous-domaine de la doc, en préfixant la recherche par <code>site:</code> :</p>
+<p>En plus, les pages de la doc sont assez mal indexées par Google : n’hésitez-pas à abuser de la feature permettant de restreindre la recherche au sous-domaine de la doc, en préfixant la recherche par <code>site:</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>adjacency_list site:www.boost.org/doc/libs/1_75_0/libs/graph/doc/</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>adjacency_list site:www.boost.org/doc/libs/1_75_0/libs/graph/doc/</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Bref, rien de bloquant, mais ce manque de fluidité, associé à l&#8217;organisation du contenu, obscur quand on découvre la librairie, rend la doc pas très beginner-friendly à mes yeux.</p>
+<p>Bref, rien de bloquant, mais ce manque de fluidité, associé à l’organisation du contenu, obscur quand on découvre la librairie, rend la doc pas très beginner-friendly à mes yeux.</p>
 </div>
 <div class="paragraph">
-<p>Côté contenu, la doc est parfois imprécise, inhomogène, ou ment par omission. Par exemple, sur <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">la page résumant les graph-concepts</a>, la fonction <code>edge</code> est mentionnée pour le concept <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/AdjacencyMatrix.html">AdjacencyMatrix</a>. Il ne contraint pas <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">adjacency_list</a>, pourtant, on peut bien utiliser <code>edge</code> sur l&#8217;adjacency_list, ce qui apparaît sur sa doc de référence. La fonction <code>vertex</code> n&#8217;est pas mentionnée du tout sur la page des concepts, mais est disponible pour adjacency_list. De même, <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/IncidenceGraph.html">IncidenceGraph</a> ne fait pas partie des modèles d&#8217;adjacency_list, pourtant on peut appliquer ses free-floating functions à une adjacency_list.</p>
+<p>Côté contenu, la doc est parfois imprécise, inhomogène, ou ment par omission. Par exemple, sur <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/graph_concepts.html">la page résumant les graph-concepts</a>, la fonction <code>edge</code> est mentionnée pour le concept <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/AdjacencyMatrix.html">AdjacencyMatrix</a>. Il ne contraint pas <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">adjacency_list</a>, pourtant, on peut bien utiliser <code>edge</code> sur l’adjacency_list, ce qui apparaît sur sa doc de référence. La fonction <code>vertex</code> n’est pas mentionnée du tout sur la page des concepts, mais est disponible pour adjacency_list. De même, <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/IncidenceGraph.html">IncidenceGraph</a> ne fait pas partie des modèles d’adjacency_list, pourtant on peut appliquer ses free-floating functions à une adjacency_list.</p>
 </div>
 <div class="paragraph">
 <p>Un autre exemple : la liste des <code>PropertyTag</code> prédéfinis <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html">dans la doc de PropertyTag</a> est différente de <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">celle de la doc sur adjacency_list</a>, qui est elle-même différente de celle <a href="https://www.boost.org/doc/libs/1_75_0/boost/graph/properties.hpp">du code-source</a> (ou <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79">du code-source github</a>).</p>
 </div>
 <div class="paragraph">
-<p>À titre perso, ça me met dans une disposition d&#8217;esprit de <em>doute</em> vis-à-vis de la doc : j&#8217;ai le sentiment que je ne peux pas lui faire aveuglément confiance. Et c&#8217;est d&#8217;autant plus embêtant que le code-source n&#8217;est pas des plus simples à lire.</p>
+<p>À titre perso, ça me met dans une disposition d’esprit de <em>doute</em> vis-à-vis de la doc : j’ai le sentiment que je ne peux pas lui faire aveuglément confiance. Et c’est d’autant plus embêtant que le code-source n’est pas des plus simples à lire.</p>
 </div>
 <div class="paragraph">
-<p>L&#8217;excellent atout de la doc, qui rattrape tous ces défauts, c&#8217;est la présence d&#8217;exemples illustratifs. On dirait que la plupart des algos en disposent. Un autre bon point pour la doc, c&#8217;est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a>, qui fait bien le café.</p>
+<p>L’excellent atout de la doc, qui rattrape tous ces défauts, c’est la présence d’exemples illustratifs. On dirait que la plupart des algos en disposent. Un autre bon point pour la doc, c’est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">le quick-tour</a>, qui fait bien le café.</p>
 </div>
 <div class="paragraph">
-<p>Enfin, je préfère conclure cette annexe critique positivement : vus <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/history.html">le peu de contributeurs à la librairie</a> (ou à boost d&#8217;une façon générale), mon avis est plus proche de <em>"woah, c&#8217;est quand même génial de disposer d&#8217;une librairie d&#8217;une telle qualité"</em> que de <em>"la librairie est inutilisable à cause de sa doc"</em>.</p>
+<p>Enfin, je préfère conclure cette annexe critique positivement : vus <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/history.html">le peu de contributeurs à la librairie</a> (ou à boost d’une façon générale), mon avis est plus proche de <em>&#34;woah, c’est quand même génial de disposer d’une librairie d’une telle qualité&#34;</em> que de <em>&#34;la librairie est inutilisable à cause de sa doc&#34;</em>.</p>
 </div>
 </div>
 </div>
@@ -766,27 +749,27 @@
 <p>(<a href="#back-from-annexe2">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>En fonction de votre distribution Linux (je ne parlerai pas pour Windows ou Mac, dont je n&#8217;ai presqu&#8217;aucune connaissance), la version de boost packagée dans les repos du système pourra être <a href="https://www.boost.org/users/history/">un peu ancienne</a> :</p>
+<p>En fonction de votre distribution Linux (je ne parlerai pas pour Windows ou Mac, dont je n’ai presqu’aucune connaissance), la version de boost packagée dans les repos du système pourra être <a href="https://www.boost.org/users/history/">un peu ancienne</a> :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>Debian 10 Buster = <code>1.67</code> qui date d&#8217;avril 2018</p>
+<p>Debian 10 Buster = <code>1.67</code> qui date d’avril 2018</p>
 </li>
 <li>
-<p>Ubuntu 18.04 (l&#8217;avant-dernière LTS) = <code>1.62</code> et <code>1.65</code>, qui datent respectivement de septembre 2016 et août 2017</p>
+<p>Ubuntu 18.04 (l’avant-dernière LTS) = <code>1.62</code> et <code>1.65</code>, qui datent respectivement de septembre 2016 et août 2017</p>
 </li>
 <li>
-<p>Ubuntu 20.04 (l&#8217;actuelle LTS) = <code>1.67</code> et <code>1.71</code>, cette dernière datant d&#8217;août 2019</p>
+<p>Ubuntu 20.04 (l’actuelle LTS) = <code>1.67</code> et <code>1.71</code>, cette dernière datant d’août 2019</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Pour disposer d&#8217;une version récente (<code>1.75</code>, la dernière en date), et surtout pour ne pas dépendre d&#8217;une installation system-wide, j&#8217;utilise <a href="https://docs.conan.io/en/latest/">conan</a>, un package-manager C++&#8230;&#8203; que j&#8217;installe <a href="https://pipxproject.github.io/pipx/">avec pipx</a>&#8230;&#8203; que j&#8217;installe <a href="https://packaging.python.org/key_projects/#pip">avec pip</a>&#8230;&#8203; Je sais, je sais (&gt;_&lt;').</p>
+<p>Pour disposer d’une version récente (<code>1.75</code>, la dernière en date), et surtout pour ne pas dépendre d’une installation system-wide, j’utilise <a href="https://docs.conan.io/en/latest/">conan</a>, un package-manager C++…​ que j’installe <a href="https://pipxproject.github.io/pipx/">avec pipx</a>…​ que j’installe <a href="https://packaging.python.org/key_projects/#pip">avec pip</a>…​ Je sais, je sais (&gt;_&lt;&#39;).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">python3.6 -m pip install --user pipx
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>python3.6 -m pip install --user pipx
 pipx install conan</code></pre>
 </div>
 </div>
@@ -795,7 +778,7 @@ pipx install conan</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>[requires]
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>[requires]
 boost/1.75.0
 
 [generators]
@@ -807,9 +790,9 @@ cmake</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>cmake_minimum_required(VERSION 3.0)
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>cmake_minimum_required(VERSION 3.0)
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror")
+set(CMAKE_CXX_FLAGS &#34;-Wall -Wextra -Werror&#34;)
 
 project(bgl-tuto)
 set(CMAKE_BUILD_TYPE Release)
@@ -825,24 +808,24 @@ add_executable(dijkstra-bin dijkstra.cpp)</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>conan install --install-folder="_build" .
-cmake -B"_build" -H"."
-make -j -C "_build"</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>conan install --install-folder=&#34;_build&#34; .
+cmake -B&#34;_build&#34; -H&#34;.&#34;
+make -j -C &#34;_build&#34;</code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="annexe3">Annexe n°3 = autre façon d&#8217;utiliser les properties</h2>
+<h2 id="annexe3">Annexe n°3 = autre façon d’utiliser les properties</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>(<a href="#back-from-annexe3">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Les <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html">bundled properties</a> décrites plus haut dans le post sont la façon "moderne" d&#8217;attribuer des properties aux vertex/edge du graphe.</p>
+<p>Les <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/bundles.html">bundled properties</a> décrites plus haut dans le post sont la façon &#34;moderne&#34; d’attribuer des properties aux vertex/edge du graphe.</p>
 </div>
 <div class="paragraph">
-<p>Mais il existe une autre façon, utilisée dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">la doc de la BGL</a>, et dans d&#8217;autres tutos sur internet.
+<p>Mais il existe une autre façon, utilisée dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">la doc de la BGL</a>, et dans d’autres tutos sur internet.
 Je la trouve moins pratique, mais je préfère la présenter tout de même, car vous risquez de tomber dessus.</p>
 </div>
 <div class="sect2">
@@ -852,18 +835,18 @@ Je la trouve moins pratique, mais je préfère la présenter tout de même, car 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">property</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vertex_name_t,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">VertexProperty</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">property</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vertex_name_t,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ici, <code>vertex_name_t</code> est un <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html">PropertyTag</a> prédéfini dans la librairie. Il en existe plusieurs, et malheureusement, les différentes pages de la doc (e.g. <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">ici</a>) sont inhomogènes sur leur liste. En cas de besoin, il reste possible d&#8217;aller <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79">consulter le code-source</a> pour connaître la liste exacte.</p>
+<p>Ici, <code>vertex_name_t</code> est un <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyTag.html">PropertyTag</a> prédéfini dans la librairie. Il en existe plusieurs, et malheureusement, les différentes pages de la doc (e.g. <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:adjacency-list-properties">ici</a>) sont inhomogènes sur leur liste. En cas de besoin, il reste possible d’aller <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L79">consulter le code-source</a> pour connaître la liste exacte.</p>
 </div>
 <div class="paragraph">
-<p>Bien sûr, on peut aussi définir ses propres tags custom. Par ailleurs, si on veut définir plus d&#8217;une property, le troisième paramètre template permet de chaîner les properties suivantes. Illustrons ces deux points en définissant les <code>EdgeProperty</code> :</p>
+<p>Bien sûr, on peut aussi définir ses propres tags custom. Par ailleurs, si on veut définir plus d’une property, le troisième paramètre template permet de chaîner les properties suivantes. Illustrons ces deux points en définissant les <code>EdgeProperty</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">edge_walk_allowed_t</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">kind</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">edge_property_tag;</span> <span style="color: #f8f8f2">};</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">edge_walk_allowed_t</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">kind</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">edge_property_tag;</span> <span style="color: #f8f8f2">};</span>
 <span style="color: #75715e">//                           ^</span>
 <span style="color: #75715e">// c&#39;est comme ceci qu&#39;on définit un PropertyTag custom :</span>
 
@@ -880,22 +863,22 @@ Je la trouve moins pratique, mais je préfère la présenter tout de même, car 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">Graph</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">adjacency_list</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">bidirectionalS,</span> <span style="color: #f8f8f2">VertexProperty,</span> <span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">Graph</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">adjacency_list</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">vecS,</span> <span style="color: #f8f8f2">bidirectionalS,</span> <span style="color: #f8f8f2">VertexProperty,</span> <span style="color: #f8f8f2">EdgeProperty</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_création_et_remplissage_du_graphe">Création et remplissage du graphe</h3>
 <div class="paragraph">
-<p>Une fois le graphe défini, sa construction et l&#8217;ajout de vertex et d&#8217;edges n&#8217;est pas différente des <em>bundled-properties</em> : les <code>VertexProperty</code>/<code>EdgeProperty</code> sont construits comme avant, explicitement, ou via une initializer-list.</p>
+<p>Une fois le graphe défini, sa construction et l’ajout de vertex et d’edges n’est pas différente des <em>bundled-properties</em> : les <code>VertexProperty</code>/<code>EdgeProperty</code> sont construits comme avant, explicitement, ou via une initializer-list.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">Graph</span> <span style="color: #f8f8f2">mygraph;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">Graph</span> <span style="color: #f8f8f2">mygraph;</span>
 
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex(VertexProperty(</span><span style="color: #e6db74">&quot;A&quot;</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// explicite</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;B&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// initializer-list</span>
-<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&quot;C&quot;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">A</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex(VertexProperty(</span><span style="color: #e6db74">&#34;A&#34;</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// explicite</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">B</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;B&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>  <span style="color: #75715e">// initializer-list</span>
+<span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">C</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">add_vertex({</span><span style="color: #e6db74">&#34;C&#34;</span><span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">mygraph);</span>
 
 <span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">B,</span> <span style="color: #f8f8f2">EdgeProperty(</span><span style="color: #ae81ff">76</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">true),</span> <span style="color: #f8f8f2">mygraph);</span>
 <span style="color: #f8f8f2">add_edge(A,</span> <span style="color: #f8f8f2">C,</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">2534</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">false},</span> <span style="color: #f8f8f2">mygraph);</span>
@@ -904,19 +887,19 @@ Je la trouve moins pratique, mais je préfère la présenter tout de même, car 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_lecture_Écriture_de_propriétés">Lecture / Écriture de propriétés</h3>
+<h3 id="_lecture_écriture_de_propriétés">Lecture / Écriture de propriétés</h3>
 <div class="paragraph">
-<p>La lecture/écriture de ces propriétés old-school est un peu différente des <em>bundled properties</em>. On utilise les fonctions <code>get</code> et <code>put</code> en leur passant le <code>PropertyTag</code> de la propriété souhaitée, c&#8217;est documenté <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyGraph.html">ici</a> :</p>
+<p>La lecture/écriture de ces propriétés old-school est un peu différente des <em>bundled properties</em>. On utilise les fonctions <code>get</code> et <code>put</code> en leur passant le <code>PropertyTag</code> de la propriété souhaitée, c’est documenté <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/PropertyGraph.html">ici</a> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// Lecture du &#39;name&#39; d&#39;un vertex :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// Lecture du &#39;name&#39; d&#39;un vertex :</span>
 <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">name</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(vertex_name_t{},</span> <span style="color: #f8f8f2">mygraph,</span> <span style="color: #f8f8f2">A);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;This vertex has the name : &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;This vertex has the name : &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// Ça marche pareil pour les properties custom :</span>
 <span style="color: #66d9ef">bool</span> <span style="color: #f8f8f2">edge_walk_allowed</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(edge_walk_allowed_t{},</span> <span style="color: #f8f8f2">mygraph,</span> <span style="color: #f8f8f2">AB);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Walk is &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">(edge_walk_allowed</span> <span style="color: #f92672">?</span> <span style="color: #e6db74">&quot;ALLOWED&quot;</span> <span style="color: #f92672">:</span> <span style="color: #e6db74">&quot;FORBIDDEN&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot; for pedestrians.&quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Walk is &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">(edge_walk_allowed</span> <span style="color: #f92672">?</span> <span style="color: #e6db74">&#34;ALLOWED&#34;</span> <span style="color: #f92672">:</span> <span style="color: #e6db74">&#34;FORBIDDEN&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34; for pedestrians.&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// Ça fonctionne en écriture aussi, via &#39;put&#39; :</span>
 <span style="color: #f8f8f2">put(edge_weight_t{},</span> <span style="color: #f8f8f2">mygraph,</span> <span style="color: #f8f8f2">AB,</span> <span style="color: #ae81ff">99999</span><span style="color: #f8f8f2">);</span></code></pre>
@@ -924,23 +907,23 @@ Je la trouve moins pratique, mais je préfère la présenter tout de même, car 
 </div>
 </div>
 <div class="sect2">
-<h3 id="_récupération_d_une_property_map">Récupération d&#8217;une property_map</h3>
+<h3 id="_récupération_dune_property_map">Récupération d’une property_map</h3>
 <div class="paragraph">
 <p>Récupérer une property_map associant un edge (ou un vertex) à une propriété se fait différemment des <em>bundled properties</em>, ici aussi en passant une instance de <code>PropertyTag</code> à <code>get</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// récupération d&#39;une property-map grâce à &#39;get&#39; + PropertyTag :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// récupération d&#39;une property-map grâce à &#39;get&#39; + PropertyTag :</span>
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">weight_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(edge_weight_t{},</span> <span style="color: #f8f8f2">mygraph);</span>
 
 <span style="color: #75715e">// en revanche, une fois récupérée, son utilisation n&#39;est pas différente :</span>
 <span style="color: #f8f8f2">EdgeDescriptor</span> <span style="color: #f8f8f2">AB</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">edge(A,</span> <span style="color: #f8f8f2">B,</span> <span style="color: #f8f8f2">mygraph).first;</span>
 <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">weight</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(weight_property_map,</span> <span style="color: #f8f8f2">AB);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;weight of edge AB = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">weight</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;weight of edge AB = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">weight</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Le code complet utilisant "l&#8217;ancienne façon" de définir et manipuler les properties est accessible <a href="https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/oldproperties.cpp">ici</a>.</p>
+<p>Le code complet utilisant &#34;l’ancienne façon&#34; de définir et manipuler les properties est accessible <a href="https://github.com/phidra/blog/blob/master/content/2020-12-31-boost-graph-library-code/oldproperties.cpp">ici</a>.</p>
 </div>
 </div>
 </div>
@@ -952,64 +935,64 @@ Je la trouve moins pratique, mais je préfère la présenter tout de même, car 
 <p>(<a href="#back-from-annexe4">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Une property_map, c&#8217;est une interface de type "dictionnaire" sur quelque chose.
+<p>Une property_map, c’est une interface de type &#34;dictionnaire&#34; sur quelque chose.
 La doc est <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/property_map.html">ici</a>, et comme pour la BGL, <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/example/">les exemples</a> sont une aide précieuse pour comprendre le principe.</p>
 </div>
 <div class="sect2">
 <h3 id="_un_dictionnaire_sur_un_dictionnaire">Un dictionnaire sur un dictionnaire ?</h3>
 <div class="paragraph">
-<p>Le setup le plus intuitif — mais pas le plus utile — c&#8217;est de construire une property_map sur une <code>std::map</code> :</p>
+<p>Le setup le plus intuitif — mais pas le plus utile — c’est de construire une property_map sur une <code>std::map</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// On commence avec une map classique :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// On commence avec une map classique :</span>
 <span style="color: #f8f8f2">map</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string,</span> <span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">name2address;</span>
-<span style="color: #f8f8f2">name2address.insert({</span><span style="color: #e6db74">&quot;Fred&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;The Burrow, England&quot;</span><span style="color: #f8f8f2">});</span>
-<span style="color: #f8f8f2">name2address.insert({</span><span style="color: #e6db74">&quot;George&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;The Burrow, England&quot;</span><span style="color: #f8f8f2">});</span>
+<span style="color: #f8f8f2">name2address.insert({</span><span style="color: #e6db74">&#34;Fred&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;The Burrow, England&#34;</span><span style="color: #f8f8f2">});</span>
+<span style="color: #f8f8f2">name2address.insert({</span><span style="color: #e6db74">&#34;George&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;The Burrow, England&#34;</span><span style="color: #f8f8f2">});</span>
 
 <span style="color: #75715e">// Construction d&#39;une property_map, en utilisant la map classique comme storage :</span>
 <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">associative_property_map</span><span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">map</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string,</span> <span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">address_pmap(name2address);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>À partir de maintenant, la <code>property_map</code> présente une interface de type dictionnaire sur son storage. Ok ok, comme le storage de notre exemple est une <code>std::map</code>, ça n&#8217;a pas beaucoup d&#8217;intérêt, mais promis ça devient mieux après.
+<p>À partir de maintenant, la <code>property_map</code> présente une interface de type dictionnaire sur son storage. Ok ok, comme le storage de notre exemple est une <code>std::map</code>, ça n’a pas beaucoup d’intérêt, mais promis ça devient mieux après.
 On peut donc utiliser notre dictionnaire, avec les free-floating functions <code>get</code> et <code>put</code>, ou son <code>operator[]</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// lecture :</span>
-<span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">fred_old_address</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(address_pmap,</span> <span style="color: #e6db74">&quot;Fred&quot;</span><span style="color: #f8f8f2">);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Until now, Fred lived in : &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">fred_old_address</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// lecture :</span>
+<span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">fred_old_address</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(address_pmap,</span> <span style="color: #e6db74">&#34;Fred&#34;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Until now, Fred lived in : &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">fred_old_address</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// écriture :</span>
-<span style="color: #f8f8f2">put(address_pmap,</span> <span style="color: #e6db74">&quot;Fred&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;Somewhere else...&quot;</span><span style="color: #f8f8f2">);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;But from now on, Fred lives : &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name2address[</span><span style="color: #e6db74">&quot;Fred&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">put(address_pmap,</span> <span style="color: #e6db74">&#34;Fred&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;Somewhere else...&#34;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;But from now on, Fred lives : &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name2address[</span><span style="color: #e6db74">&#34;Fred&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// référence + operator[] :</span>
-<span style="color: #f8f8f2">string</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">george_address</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">address_pmap[</span><span style="color: #e6db74">&quot;George&quot;</span><span style="color: #f8f8f2">];</span>
-<span style="color: #f8f8f2">george_address</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&quot;Alone&quot;</span><span style="color: #f8f8f2">;</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;And George is now : &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name2address[</span><span style="color: #e6db74">&quot;George&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
+<span style="color: #f8f8f2">string</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">george_address</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">address_pmap[</span><span style="color: #e6db74">&#34;George&#34;</span><span style="color: #f8f8f2">];</span>
+<span style="color: #f8f8f2">george_address</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#34;Alone&#34;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;And George is now : &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">name2address[</span><span style="color: #e6db74">&#34;George&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Je n&#8217;ai pas l&#8217;impression qu&#8217;il soit possible d&#8217;itérer sur les éléments d&#8217;une property-map (car le storage n&#8217;est pas nécessairement itérable ?), ni de savoir si une clé est valide ou non. En même temps, c&#8217;est pas le but.</p>
+<p>Je n’ai pas l’impression qu’il soit possible d’itérer sur les éléments d’une property-map (car le storage n’est pas nécessairement itérable ?), ni de savoir si une clé est valide ou non. En même temps, c’est pas le but.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_property_map_sur_une_propriété_interne_du_graphe">property_map sur une propriété interne du graphe</h3>
 <div class="paragraph">
-<p>Un exemple déjà plus utile est donnée dans le post : la construction d&#8217;une property_map sur les propriétés d&#8217;un vertex (ou edge) d&#8217;un graphe.</p>
+<p>Un exemple déjà plus utile est donnée dans le post : la construction d’une property_map sur les propriétés d’un vertex (ou edge) d’un graphe.</p>
 </div>
 <div class="paragraph">
-<p>Les propriétés internes du graphe ont leur cycle de vie confondus avec le graphe (en quelque sorte, leur storage <strong>est</strong> le graphe), et construire une property_map dessus permet d&#8217;accéder à un dictionnaire associant un <code>VertexDescriptor</code> à un <code>VertexProperty</code>.</p>
+<p>Les propriétés internes du graphe ont leur cycle de vie confondus avec le graphe (en quelque sorte, leur storage <strong>est</strong> le graphe), et construire une property_map dessus permet d’accéder à un dictionnaire associant un <code>VertexDescriptor</code> à un <code>VertexProperty</code>.</p>
 </div>
 <div class="paragraph">
 <p>Le principe est illustré dans le post, mais histoire de varier les plaisirs, voici un exemple différent :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">latitude_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">VertexProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">latitude,</span> <span style="color: #f8f8f2">mygraph);</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;latitude of D = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(latitude_property_map,</span> <span style="color: #f8f8f2">D)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">latitude_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">VertexProperty</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">latitude,</span> <span style="color: #f8f8f2">mygraph);</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;latitude of D = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(latitude_property_map,</span> <span style="color: #f8f8f2">D)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
 
 <span style="color: #75715e">// comme pour toutes les property_map, put / operator[] sont aussi dispos</span></code></pre>
 </div>
@@ -1022,29 +1005,29 @@ On peut donc utiliser notre dictionnaire, avec les free-floating functions <code
 </div>
 <div class="paragraph">
 <p>Les propriétés externes du graphe sont des propriétés associées aux Vertex/Edge du graphe, mais détachées du graphe.
-Dit autrement, le cycle de vie de la propriété externe est différent du cycle de vie du graphe. On a vu plus haut un cas l&#8217;intérêt que ça pouvait présenter :  pour associer un <code>predecessor</code> à chaque Vertex "juste" le temps de l&#8217;exécution du Dijkstra.</p>
+Dit autrement, le cycle de vie de la propriété externe est différent du cycle de vie du graphe. On a vu plus haut un cas l’intérêt que ça pouvait présenter :  pour associer un <code>predecessor</code> à chaque Vertex &#34;juste&#34; le temps de l’exécution du Dijkstra.</p>
 </div>
 <div class="paragraph">
 <p>On peut créer une property_map qui utilise un <code>std::vector</code> comme storage. Mais il y a un hic : comme la property_map associe une clé à une valeur, à moins que le type de la clé soit un entier (pour être utilisé comme index du vector), ça ne va pas nous suffire.</p>
 </div>
 <div class="paragraph">
-<p>Par exemple, supposons qu&#8217;on veuille une property_map dont la clé est un nom de personne (<code>string</code>), et la valeur son âge (<code>int</code>) :</p>
+<p>Par exemple, supposons qu’on veuille une property_map dont la clé est un nom de personne (<code>string</code>), et la valeur son âge (<code>int</code>) :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// le storage :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// le storage :</span>
 <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">ages</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">22</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">22</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">45</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">58</span><span style="color: #f8f8f2">};</span>
 
 <span style="color: #75715e">// sera détaillé plus tard = comment construire la proprety_map :</span>
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">vector_property_map</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">build_my_property_map(ages);</span>
 
 <span style="color: #75715e">// à partir de là, on souhaite récupérer les âges à partir d&#39;une clé de type string :</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Âge de Luke   = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&quot;luke&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Âge de Anakin = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&quot;anakin&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Âge de Luke   = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&#34;luke&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Âge de Anakin = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&#34;anakin&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Et on voit le hic mentionné plus haut : en l&#8217;état, ce code n&#8217;est pas capable d&#8217;associer une <code>std::string</code> aux valeurs contenues dans le storage-vector.</p>
+<p>Et on voit le hic mentionné plus haut : en l’état, ce code n’est pas capable d’associer une <code>std::string</code> aux valeurs contenues dans le storage-vector.</p>
 </div>
 <div class="paragraph">
 <p>Aussi, pour les property_map utilisant des <code>std::vector</code> (ou tout autre iterable) comme storage, il faut une étape supplémentaire associant une clé à une position dans le vector.
@@ -1057,7 +1040,7 @@ Boost <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/itera
 </div>
 </blockquote>
 <div class="attribution">
-&#8212; <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/iterator_property_map.html">doc de iterator_property_map</a>
+— <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/iterator_property_map.html">doc de iterator_property_map</a>
 </div>
 </div>
 <div class="paragraph">
@@ -1065,7 +1048,7 @@ Boost <a href="https://www.boost.org/doc/libs/1_75_0/libs/property_map/doc/itera
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>       (OffsetMap)              (storage vector)
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>       (OffsetMap)              (storage vector)
 clé ----------------&gt; offset ---------------------&gt; valeur</code></pre>
 </div>
 </div>
@@ -1074,15 +1057,15 @@ clé ----------------&gt; offset ---------------------&gt; valeur</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// le storage :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// le storage :</span>
 <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">ages</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">22</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">22</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">45</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">58</span><span style="color: #f8f8f2">};</span>
 
 <span style="color: #75715e">// construction de l&#39;OffsetMap :</span>
 <span style="color: #f8f8f2">map</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string,</span> <span style="color: #66d9ef">size_t</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">offsets;</span>
-<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&quot;luke&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&quot;leia&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">;</span>  <span style="color: #75715e">// dans le storage-vector, l&#39;âge de &quot;leia&quot; est à l&#39;index 1</span>
-<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&quot;anakin&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
-<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&quot;obi-wan&quot;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&#34;luke&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&#34;leia&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">;</span>  <span style="color: #75715e">// dans le storage-vector, l&#39;âge de &#34;leia&#34; est à l&#39;index 1</span>
+<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&#34;anakin&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">offsets[</span><span style="color: #e6db74">&#34;obi-wan&#34;</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">;</span>
 <span style="color: #75715e">// malheureusement, on ne peut pas utiliser directement offsets</span>
 <span style="color: #75715e">// en effet, OffsetMap doit être une property_map, qu&#39;il faut donc construire :</span>
 <span style="color: #f8f8f2">associative_property_map</span><span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">map</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string,</span> <span style="color: #66d9ef">size_t</span><span style="color: #f92672">&gt;</span> <span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">offsets_pmap(offsets);</span>
@@ -1091,29 +1074,29 @@ clé ----------------&gt; offset ---------------------&gt; valeur</code></pre>
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">vector_pmap</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">make_iterator_property_map(ages.begin(),</span> <span style="color: #f8f8f2">offsets_pmap);</span>
 
 <span style="color: #75715e">// à partir de là, on souhaite récupérer les âges à partir d&#39;une clé de type string :</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Âge de Luke   = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&quot;luke&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
-<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&quot;Âge de Anakin = &quot;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&quot;anakin&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Âge de Luke   = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&#34;luke&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;Âge de Anakin = &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">get(vector_property_map,</span> <span style="color: #e6db74">&#34;anakin&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Pas très efficace me direz-vous, vu qu&#8217;en plus du vector, on est obligés de définir un dictionnaire associant une clé à un offset (et en dériver une property_map par dessus le marché !) ?</p>
+<p>Pas très efficace me direz-vous, vu qu’en plus du vector, on est obligés de définir un dictionnaire associant une clé à un offset (et en dériver une property_map par dessus le marché !) ?</p>
 </div>
 <div class="paragraph">
-<p>En fait, dans le cadre de la BGL, c&#8217;est un peu différent, puisque le dictionnaire associant une clé (un <code>VertexDescriptor</code> ou un <code>EdgeDescriptor</code>) à un offset <strong>existe déjà</strong> !</p>
+<p>En fait, dans le cadre de la BGL, c’est un peu différent, puisque le dictionnaire associant une clé (un <code>VertexDescriptor</code> ou un <code>EdgeDescriptor</code>) à un offset <strong>existe déjà</strong> !</p>
 </div>
 <div class="paragraph">
 <p>En effet, les <code>adjacency_list</code> utilisant <code>vecS</code> pour stocker leurs vertex ont une propriété interne implicitement associée aux vertex : leur index dans le vector stockant les vertex.
 Et comme toute propriété interne, on peut récupérer une property_map qui pointe dessus.</p>
 </div>
 <div class="paragraph">
-<p>C&#8217;est documenté dans une petite ligne perdue quelque part au milieu <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">de cette page</a>, mais c&#8217;est en revanche bien illustré (à condition de comprendre le principe, d&#8217;où ce billet de blog) dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">le code donné en exemple pour illustrer le dijkstra</a>.</p>
+<p>C’est documenté dans une petite ligne perdue quelque part au milieu <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">de cette page</a>, mais c’est en revanche bien illustré (à condition de comprendre le principe, d’où ce billet de blog) dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">le code donné en exemple pour illustrer le dijkstra</a>.</p>
 </div>
 <div class="paragraph">
-<p>Du coup, on a maintenant tout ce qu&#8217;il faut pour comprendre en détail le code du billet, qui crée une property_map stockant des propriétés externes au graphe (le <code>predecessor</code> de chaque vertex), en les stockant dans un <code>std::vector</code> :</p>
+<p>Du coup, on a maintenant tout ce qu’il faut pour comprendre en détail le code du billet, qui crée une property_map stockant des propriétés externes au graphe (le <code>predecessor</code> de chaque vertex), en les stockant dans un <code>std::vector</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">// Récupération de l&#39;OffsetMap associant un VertexDescriptor à un index dans un vector :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// Récupération de l&#39;OffsetMap associant un VertexDescriptor à un index dans un vector :</span>
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">vertex_index_pmap</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(vertex_index,</span> <span style="color: #f8f8f2">mygraph);</span>
 
 <span style="color: #75715e">// Création du vector qui stockera la propriété externe de chaque vertex :</span>
@@ -1133,11 +1116,11 @@ Et comme toute propriété interne, on peut récupérer une property_map qui poi
 <p>(<a href="#back-from-annexe5">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>On a vu plus haut que Dijkstra nécessitait une property_map sur une propriété externe associée aux vertex : <strong>leur prédécesseur</strong>. Cette annexe détaille ce dont il s&#8217;agit, et comment les utiliser.</p>
+<p>On a vu plus haut que Dijkstra nécessitait une property_map sur une propriété externe associée aux vertex : <strong>leur prédécesseur</strong>. Cette annexe détaille ce dont il s’agit, et comment les utiliser.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">dijkstra_shortest_paths(</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">dijkstra_shortest_paths(</span>
     <span style="color: #f8f8f2">mygraph,</span>
     <span style="color: #f8f8f2">SOURCE,</span>
     <span style="color: #f8f8f2">weight_map(weight_property_map).</span>
@@ -1147,18 +1130,18 @@ Et comme toute propriété interne, on peut récupérer une property_map qui poi
 
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">parent_of_H</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(predecessors_pmap,</span> <span style="color: #f8f8f2">H);</span>
 <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">nameof(parent_of_H)</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
-<span style="color: #75715e">// affichera &quot;G&quot;</span></code></pre>
+<span style="color: #75715e">// affichera &#34;G&#34;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>L&#8217;algorithme de Dijkstra de la BGL calcule le plus court chemin entre la SOURCE, et <strong>tous</strong> les vertex du graphe.</p>
+<p>L’algorithme de Dijkstra de la BGL calcule le plus court chemin entre la SOURCE, et <strong>tous</strong> les vertex du graphe.</p>
 </div>
 <div class="paragraph">
-<p>Par exemple, une fois l&#8217;algo exécuté, la <code>tentative_distances_pmap</code> (qui n&#8217;est alors plus vraiment <code>tentative</code> mais plutôt <strong>définitive</strong>) associe à chaque vertex <code>V</code> du graphe le poids du plus court chemin <code>SOURCE &#8594; V</code> :</p>
+<p>Par exemple, une fois l’algo exécuté, la <code>tentative_distances_pmap</code> (qui n’est alors plus vraiment <code>tentative</code> mais plutôt <strong>définitive</strong>) associe à chaque vertex <code>V</code> du graphe le poids du plus court chemin <code>SOURCE → V</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>A -&gt; 0   # A étant la SOURCE, le trajet est instantané
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>A -&gt; 0   # A étant la SOURCE, le trajet est instantané
 B -&gt; 5   # le plus court chemin entre A et B a pour poids 5
 C -&gt; 10  # le plus court chemin entre A et C a pour poids 10
 D -&gt; 1   # etc.
@@ -1169,14 +1152,14 @@ H -&gt; 16</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>La property_map des predécesseurs, <code>predecessors_pmap</code>, permet de récupérer non pas le <strong>poids</strong> du plus court chemin, mais le <strong>trajet</strong> à suivre, i.e. l&#8217;enchaînement de vertex permettant d&#8217;aller de <code>SOURCE</code> à <code>V</code> en suivant le plus court chemin.</p>
+<p>La property_map des predécesseurs, <code>predecessors_pmap</code>, permet de récupérer non pas le <strong>poids</strong> du plus court chemin, mais le <strong>trajet</strong> à suivre, i.e. l’enchaînement de vertex permettant d’aller de <code>SOURCE</code> à <code>V</code> en suivant le plus court chemin.</p>
 </div>
 <div class="paragraph">
-<p>On pourrait imaginer qu&#8217;elle stocke la liste de vertex, comme ceci :</p>
+<p>On pourrait imaginer qu’elle stocke la liste de vertex, comme ceci :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>A -&gt; [A]
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>A -&gt; [A]
 B -&gt; [A,B]
 C -&gt; [A,C]
 D -&gt; [A,D]
@@ -1187,11 +1170,11 @@ H -&gt; [A,B,E,G,H]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Mais en réalité, c&#8217;est plus alambiqué (et plus efficace) : elle associe à chaque vertex le "node d&#8217;avant" sur le chemin reliant la source au vertex, c&#8217;est à dire l&#8217;avant-dernier node du plus court chemin :</p>
+<p>Mais en réalité, c’est plus alambiqué (et plus efficace) : elle associe à chaque vertex le &#34;node d’avant&#34; sur le chemin reliant la source au vertex, c’est à dire l’avant-dernier node du plus court chemin :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>A -&gt; A
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>A -&gt; A
 B -&gt; A
 C -&gt; A
 D -&gt; A
@@ -1202,17 +1185,17 @@ H -&gt; G</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Par exemple, le plus court chemin entre <code>A</code> et <code>H</code> est <code>ABEGH</code>. La <code>predecessors_pmap</code> associe à <code>H</code> le prédécesseur <code>G</code>, puis à <code>G</code> le prédécesseur <code>E</code>, etc. jusqu&#8217;à <code>A</code>.</p>
+<p>Par exemple, le plus court chemin entre <code>A</code> et <code>H</code> est <code>ABEGH</code>. La <code>predecessors_pmap</code> associe à <code>H</code> le prédécesseur <code>G</code>, puis à <code>G</code> le prédécesseur <code>E</code>, etc. jusqu’à <code>A</code>.</p>
 </div>
 <div class="paragraph">
-<p>Vous pouvez vous convaincre par l&#8217;absurde que ça fonctionne, car si <code>ABEGH</code> est le plus court chemin reliant <code>A</code> à <code>H</code>, alors <code>ABEG</code> est le plus court chemin reliant <code>A</code> à <code>G</code>. En effet, s&#8217;il existait un chemin <code>A&#8230;&#8203;G</code> ENCORE plus court, le plus court chemin reliant <code>A</code> à <code>H</code> ne serait pas <code>ABEGH</code>, mais serait plutôt <code>A&#8230;&#8203;GH</code>.</p>
+<p>Vous pouvez vous convaincre par l’absurde que ça fonctionne, car si <code>ABEGH</code> est le plus court chemin reliant <code>A</code> à <code>H</code>, alors <code>ABEG</code> est le plus court chemin reliant <code>A</code> à <code>G</code>. En effet, s’il existait un chemin <code>A…​G</code> ENCORE plus court, le plus court chemin reliant <code>A</code> à <code>H</code> ne serait pas <code>ABEGH</code>, mais serait plutôt <code>A…​GH</code>.</p>
 </div>
 <div class="paragraph">
-<p>En utilisant cette property_map, on peut reconstituer à rebours l&#8217;enchaînement des vertex constituant le plus court chemin complet entre <code>A</code> et <code>H</code>. Voici un exemple de code pour faire ça :</p>
+<p>En utilisant cette property_map, on peut reconstituer à rebours l’enchaînement des vertex constituant le plus court chemin complet entre <code>A</code> et <code>H</code>. Voici un exemple de code pour faire ça :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">VertexDescriptor</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">shortest_path</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{TARGET};</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">VertexDescriptor</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">shortest_path</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{TARGET};</span>
 <span style="color: #f8f8f2">VertexDescriptor</span> <span style="color: #f8f8f2">current_predecessor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">TARGET;</span>
 <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">next_predecessor</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">get(predecessors_pmap,</span> <span style="color: #f8f8f2">current_predecessor);</span>
 
@@ -1230,7 +1213,7 @@ H -&gt; G</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html">La doc de l&#8217;algo</a> précise que lorsqu&#8217;un vertex est son propre prédecesseur, c&#8217;est que ledit vertex est soit la source de l&#8217;algo, soit un vertex injoignable depuis la source. Pour des graphes non-orientés comme le nôtre, ça ne peut arriver que si le graphe n&#8217;est pas connexe.</p>
+<p><a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/dijkstra_shortest_paths.html">La doc de l’algo</a> précise que lorsqu’un vertex est son propre prédecesseur, c’est que ledit vertex est soit la source de l’algo, soit un vertex injoignable depuis la source. Pour des graphes non-orientés comme le nôtre, ça ne peut arriver que si le graphe n’est pas connexe.</p>
 </div>
 </div>
 </div>
@@ -1241,7 +1224,7 @@ H -&gt; G</code></pre>
 <p>(<a href="#back-from-annexe6">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Il y a une foule de sujets qui n&#8217;ont pas été abordés dans ce tuto ; la présente annexe en liste quelques-uns, sans ordre particulier. Gardez à l&#8217;esprit que ce sont les sujets dont moi — débutant en BGL — j&#8217;ai connaissance, mais il y en a probablement beaucoup, <strong>beaucoup</strong> plus que je ne connais même pas : <em>je ne sais même pas ce que je ne sais pas</em>.</p>
+<p>Il y a une foule de sujets qui n’ont pas été abordés dans ce tuto ; la présente annexe en liste quelques-uns, sans ordre particulier. Gardez à l’esprit que ce sont les sujets dont moi — débutant en BGL — j’ai connaissance, mais il y en a probablement beaucoup, <strong>beaucoup</strong> plus que je ne connais même pas : <em>je ne sais même pas ce que je ne sais pas</em>.</p>
 </div>
 <div class="sect2">
 <h3 id="_type_de_graphe_2">Type de graphe</h3>
@@ -1252,13 +1235,13 @@ H -&gt; G</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>c&#8217;est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type">documenté ici</a> : <em>The adjacency_list is like a swiss-army knife in that it can be configured in many ways.</em></p>
+<p>c’est <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/using_adjacency_list.html#sec:choosing-graph-type">documenté ici</a> : <em>The adjacency_list is like a swiss-army knife in that it can be configured in many ways.</em></p>
 </li>
 <li>
 <p>le lien avec les possibilités offertes par le graphe, notamment les multigraphes (= les graphes autorisant plusieurs edges différents en parallèle, reliant la même paire de vertex)</p>
 </li>
 <li>
-<p>l&#8217;impact du choix des structures de stocakge des vertex/edges (opérations autorisées/interdites, time-complexity, space-complexity)</p>
+<p>l’impact du choix des structures de stocakge des vertex/edges (opérations autorisées/interdites, time-complexity, space-complexity)</p>
 </li>
 </ul>
 </div>
@@ -1270,7 +1253,7 @@ H -&gt; G</code></pre>
 <p>ce que retourne <code>add_edge</code>, qui a été crassement ignoré dans le billet (notamment le lien avec les multigraphes)</p>
 </li>
 <li>
-<p>le fait qu&#8217;il y a une différence entre les graphes <code>bidirectionalS</code> et les graphes <code>undirectedS</code> :</p>
+<p>le fait qu’il y a une différence entre les graphes <code>bidirectionalS</code> et les graphes <code>undirectedS</code> :</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1290,16 +1273,16 @@ H -&gt; G</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Que se passe-t-il en cas d&#8217;ajout d&#8217;edge qui utilise des vertex encore non-existants : sont-il ajoutés au graphe ? est-ce un undefined-behaviour ?</p>
+<p>Que se passe-t-il en cas d’ajout d’edge qui utilise des vertex encore non-existants : sont-il ajoutés au graphe ? est-ce un undefined-behaviour ?</p>
 </li>
 <li>
-<p>La doc de <code>add_edge</code> dans la section "Structure Modification" de <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">cette page</a> éclaire partiellement : <em>If the VertexList selector is vecS, and if either vertex descriptor u or v (which are integers) has a value greater than the current number of vertices in the graph, the graph is enlarged so that the number of vertices is std::max(u,v) + 1.</em></p>
+<p>La doc de <code>add_edge</code> dans la section &#34;Structure Modification&#34; de <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">cette page</a> éclaire partiellement : <em>If the VertexList selector is vecS, and if either vertex descriptor u or v (which are integers) has a value greater than the current number of vertices in the graph, the graph is enlarged so that the number of vertices is std::max(u,v) + 1.</em></p>
 </li>
 <li>
-<p>Par ailleurs, <code>adjacency_list</code> dispose d&#8217;un constructeur où on ne passe QUE la liste des edges (utilisé dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">l&#8217;exemple Dijkstra</a>).</p>
+<p>Par ailleurs, <code>adjacency_list</code> dispose d’un constructeur où on ne passe QUE la liste des edges (utilisé dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/example/dijkstra-example.cpp">l’exemple Dijkstra</a>).</p>
 </li>
 <li>
-<p>Les deux cumulés, il se peut que si le storage des Vertex est <code>vecS</code>, les vertex non-initialisés se comportent comme les vertex qui n&#8217;ont pas d&#8217;edges (?)</p>
+<p>Les deux cumulés, il se peut que si le storage des Vertex est <code>vecS</code>, les vertex non-initialisés se comportent comme les vertex qui n’ont pas d’edges (?)</p>
 </li>
 </ul>
 </div>
@@ -1309,13 +1292,13 @@ H -&gt; G</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>Que se passe-t-il si je supprime un vertex : que deviennent les edges qui l&#8217;utilisaient ? que devient son emplacement dans le vector, est-ce qu&#8217;il a un "trou" ?</p>
+<p>Que se passe-t-il si je supprime un vertex : que deviennent les edges qui l’utilisaient ? que devient son emplacement dans le vector, est-ce qu’il a un &#34;trou&#34; ?</p>
 </li>
 <li>
-<p>Il y a un paragraphe spécifique sur l&#8217;invalidation des itérateurs dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc d&#8217;adjacency_list</a>, section "Iterator and Descriptor Stability/Invalidation".</p>
+<p>Il y a un paragraphe spécifique sur l’invalidation des itérateurs dans <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/adjacency_list.html">la doc d’adjacency_list</a>, section &#34;Iterator and Descriptor Stability/Invalidation&#34;.</p>
 </li>
 <li>
-<p>ça a l&#8217;air de dépendre du type de storage :</p>
+<p>ça a l’air de dépendre du type de storage :</p>
 <div class="ulist">
 <ul>
 <li>
@@ -1335,19 +1318,19 @@ H -&gt; G</code></pre>
 <div class="ulist">
 <ul>
 <li>
-<p>On peut également attribuer des properties au graphe : l&#8217;exemple donné dans <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L93">le code-source de la BGL</a> est son nom</p>
+<p>On peut également attribuer des properties au graphe : l’exemple donné dans <a href="https://github.com/boostorg/graph/blob/e4e12158e78157397254505f6cbae688e3e3174f/include/boost/graph/properties.hpp#L93">le code-source de la BGL</a> est son nom</p>
 </li>
 <li>
-<p>Je n&#8217;ai pas regardé de près, mais la librairie semble particulièrement extensible, via <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/visitor_concepts.html">des visitors</a>.</p>
+<p>Je n’ai pas regardé de près, mais la librairie semble particulièrement extensible, via <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/visitor_concepts.html">des visitors</a>.</p>
 </li>
 <li>
-<p>Le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> démontre l&#8217;interopérabilité avec la STL</p>
+<p>Le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> démontre l’interopérabilité avec la STL</p>
 </li>
 <li>
-<p>Par défaut, les edges intéressants sont les <em>out-edges</em> (dans l&#8217;adjacency_list, pour un vertex donné, on stocke ses <em>out-edges</em> uniquement)</p>
+<p>Par défaut, les edges intéressants sont les <em>out-edges</em> (dans l’adjacency_list, pour un vertex donné, on stocke ses <em>out-edges</em> uniquement)</p>
 </li>
 <li>
-<p>Dans le billet, on a construit le graphe vide, puis on l&#8217;a rempli après coup. Il existe d&#8217;autres constructeurs permettant de définir les edges à la construction, ils sont probablement plus efficaces (confirmé dans le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> : <em>Instead of calling the add_edge() function for each edge, we could use the edge iterator constructor of the graph. This is typically more efficient than using add_edge()</em>), mais je trouve le billet plus clair en ayant séparé la construction et le remplissage.</p>
+<p>Dans le billet, on a construit le graphe vide, puis on l’a rempli après coup. Il existe d’autres constructeurs permettant de définir les edges à la construction, ils sont probablement plus efficaces (confirmé dans le <a href="https://www.boost.org/doc/libs/1_75_0/libs/graph/doc/quick_tour.html">quick-tour</a> : <em>Instead of calling the add_edge() function for each edge, we could use the edge iterator constructor of the graph. This is typically more efficient than using add_edge()</em>), mais je trouve le billet plus clair en ayant séparé la construction et le remplissage.</p>
 </li>
 </ul>
 </div>

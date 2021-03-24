@@ -3,7 +3,7 @@
   <head>
     <title>RTFM ? // Phidra&#39;s blog</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     
@@ -67,7 +67,7 @@
 <h2 id="_position_du_problème">Position du problème</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>La plupart du temps, quand j&#8217;utilise <code>man</code>, je m&#8217;embête pas, et je fais par exemple :</p>
+<p>La plupart du temps, quand j’utilise <code>man</code>, je m’embête pas, et je fais par exemple :</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -75,7 +75,7 @@
 </div>
 </div>
 <div class="paragraph">
-<p>Mais on trouve <a href="https://stackoverflow.com/a/705483">de temps à autre</a> une syntaxe précisant un numéro, assortie parfois d&#8217;une vague mention de "sections". Par exemple :</p>
+<p>Mais on trouve <a href="https://stackoverflow.com/a/705483">de temps à autre</a> une syntaxe précisant un numéro, assortie parfois d’une vague mention de &#34;sections&#34;. Par exemple :</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -83,10 +83,10 @@
 </div>
 </div>
 <div class="paragraph">
-<p>J&#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs "chapitres", et que ce numéro était le numéro du chapitre : <code>man 3 zlib</code> était équivalent à <em>ouvre le troisième chapitre du man de zlib</em>.</p>
+<p>J’avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : <code>man 3 zlib</code> était équivalent à <em>ouvre le troisième chapitre du man de zlib</em>.</p>
 </div>
 <div class="paragraph">
-<p>Spoiler alert, j&#8217;avais tout faux ^^</p>
+<p>Spoiler alert, j’avais tout faux ^^</p>
 </div>
 </div>
 </div>
@@ -94,7 +94,7 @@
 <h2 id="_les_fameuses_sections">Les fameuses sections</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Déjà, ma supposition était mal barrée quand on voit que <code>man 1 zlib</code> ne permet pas de consulter "le premier chapitre de zlib" :</p>
+<p>Déjà, ma supposition était mal barrée quand on voit que <code>man 1 zlib</code> ne permet pas de consulter &#34;le premier chapitre de zlib&#34; :</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -122,20 +122,20 @@ No manual entry for zlib in section 1</pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>L&#8217;intérêt de préciser le numéro de section est donc de lever l&#8217;ambiguité entre par exemple :</p>
+<p>L’intérêt de préciser le numéro de section est donc de lever l’ambiguité entre par exemple :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>la page de manuel du syscall <code>tee</code> (permettant de dupliquer un pipe) qu&#8217;on trouverait avec <code>man 2 tee</code></p>
+<p>la page de manuel du syscall <code>tee</code> (permettant de dupliquer un pipe) qu’on trouverait avec <code>man 2 tee</code></p>
 </li>
 <li>
-<p>la page de manuel du programme <code>tee</code> (qui redirige stdin à la fois sur stdout et dans un fichier) qu&#8217;on trouverait avec <code>man 1 tee</code></p>
+<p>la page de manuel du programme <code>tee</code> (qui redirige stdin à la fois sur stdout et dans un fichier) qu’on trouverait avec <code>man 1 tee</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Les chiffres qu&#8217;on trouve parfois entre parenthèse dans des références proposées par les manpages correspondent justement à ces sections, ce qui peut-être pratique pour savoir de quoi on parle. Par exemple avec :</p>
+<p>Les chiffres qu’on trouve parfois entre parenthèse dans des références proposées par les manpages correspondent justement à ces sections, ce qui peut-être pratique pour savoir de quoi on parle. Par exemple avec :</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -152,7 +152,7 @@ No manual entry for zlib in section 1</pre>
 <p>Ici, le <code>open</code> dont il est question est un syscall, dont il faut consulter la manpage avec <code>man 2 open</code> (à ne pas confondre avec <code>man 1 open</code>).</p>
 </div>
 <div class="paragraph">
-<p>À l&#8217;inverse, <code>fclose</code> est une fonction de la glibc qu&#8217;on consulte avec <code>man 3 fclose</code>, à ne pas confondre avec le syscall <code>close</code> qui serait dans la section 2.</p>
+<p>À l’inverse, <code>fclose</code> est une fonction de la glibc qu’on consulte avec <code>man 3 fclose</code>, à ne pas confondre avec le syscall <code>close</code> qui serait dans la section 2.</p>
 </div>
 </div>
 </div>
@@ -160,39 +160,39 @@ No manual entry for zlib in section 1</pre>
 <h2 id="_quelques_commandes_utiles">Quelques commandes utiles</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>D&#8217;abord <code>man man</code>. Et également :</p>
+<p>D’abord <code>man man</code>. Et également :</p>
 </div>
 <div class="sect2">
-<h3 id="_connaître_le_contenu_d_une_section_donnée">connaître le contenu d&#8217;une section donnée</h3>
+<h3 id="_connaître_le_contenu_dune_section_donnée">connaître le contenu d’une section donnée</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">man <span style="color: #ae81ff">3</span> intro
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>man <span style="color: #ae81ff">3</span> intro
 Section  <span style="color: #ae81ff">3</span>  of the manual describes all library functions excluding the library functions
-<span style="color: #f92672">(</span>system call wrappers<span style="color: #f92672">)</span> described in Section 2, which implement system calls.
+<span style="color: #f92672">(</span>system call wrappers<span style="color: #f92672">)</span> described in Section <span style="color: #ae81ff">2</span>, which implement system calls.
 <span style="color: #f92672">(</span>...<span style="color: #f92672">)</span></code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_voir_s_il_existe_plusieurs_manpages_pour_quelque_chose">voir s&#8217;il existe plusieurs manpages pour quelque chose</h3>
+<h3 id="_voir_sil_existe_plusieurs_manpages_pour_quelque_chose">voir s’il existe plusieurs manpages pour quelque chose</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># manpages titrées &quot;exit&quot; + leur section et description :</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #75715e"># manpages titrées &#34;exit&#34; + leur section et description :</span>
 man -f <span style="color: #f8f8f2">exit</span>
-<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span>2<span style="color: #f92672">)</span>             - terminate the calling process
-<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span>3<span style="color: #f92672">)</span>             - cause normal process termination</code></pre>
+<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">2</span><span style="color: #f92672">)</span>             - terminate the calling process
+<span style="color: #f8f8f2">exit</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">3</span><span style="color: #f92672">)</span>             - cause normal process termination</code></pre>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_trouver_les_manpages_qui_peuvent_m_aider_sur_un_sujet">trouver les manpages qui peuvent m&#8217;aider sur un sujet</h3>
+<h3 id="_trouver_les_manpages_qui_peuvent_maider_sur_un_sujet">trouver les manpages qui peuvent m’aider sur un sujet</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># manpages dont le titre ou la description matche la regex</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #75715e"># manpages dont le titre ou la description matche la regex</span>
 man -k <span style="color: #e6db74">&#39;(postgresql|pg_)&#39;</span>
 <span style="color: #f92672">(</span>...<span style="color: #f92672">)</span>
-oid2name <span style="color: #f92672">(</span>1<span style="color: #f92672">)</span>         - resolve OIDs and file nodes in a PostgreSQL data directory
-pg_archivecleanup <span style="color: #f92672">(</span>1<span style="color: #f92672">)</span> - clean up PostgreSQL WAL archive files
+oid2name <span style="color: #f92672">(</span><span style="color: #ae81ff">1</span><span style="color: #f92672">)</span>         - resolve OIDs and file nodes in a PostgreSQL data directory
+pg_archivecleanup <span style="color: #f92672">(</span><span style="color: #ae81ff">1</span><span style="color: #f92672">)</span> - clean up PostgreSQL WAL archive files
 <span style="color: #f92672">(</span>...<span style="color: #f92672">)</span></code></pre>
 </div>
 </div>

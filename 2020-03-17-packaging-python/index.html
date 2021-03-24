@@ -3,7 +3,7 @@
   <head>
     <title>Packaging python // Phidra&#39;s blog</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     
@@ -66,24 +66,24 @@
       <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>Comme <a href="https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/">beaucoup</a> (<a href="https://www.stella.coop/blog/00003-l-enfer-des-paquets-python-le-sac-de-noeuds.html">beaucoup</a>) <a href="http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/">d&#8217;autres</a> <a href="https://philpep.org/blog/etat-de-l-art-du-packaging-python">avant</a> <a href="https://www.bernat.tech/pep-517-and-python-packaging/">moi</a>, je blogge sur le packaging python.</p>
+<p>Comme <a href="https://hynek.me/articles/sharing-your-labor-of-love-pypi-quick-and-dirty/">beaucoup</a> (<a href="https://www.stella.coop/blog/00003-l-enfer-des-paquets-python-le-sac-de-noeuds.html">beaucoup</a>) <a href="http://sametmax.com/creer-un-setup-py-et-mettre-sa-bibliotheque-python-en-ligne-sur-pypi/">d’autres</a> <a href="https://philpep.org/blog/etat-de-l-art-du-packaging-python">avant</a> <a href="https://www.bernat.tech/pep-517-and-python-packaging/">moi</a>, je blogge sur le packaging python.</p>
 </div>
 <div class="paragraph">
-<p>Je ne vais pas cependant <strong>PAS</strong> expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d&#8217;expliquer grossièrement ce dont on parle quand on s&#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&#8217;ai faite moi.</p>
+<p>Je ne vais pas cependant <strong>PAS</strong> expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d’expliquer grossièrement ce dont on parle quand on s’intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j’ai faite moi.</p>
 </div>
 <div class="paragraph">
-<p>Ce post <strong>n&#8217;est donc pas suffisant</strong> pour naviguer comme un poisson dans les eaux du packaging python, l&#8217;objectif est plutôt d&#8217;en sortir un peu mieux armé pour <strong>utiliser les autres ressources sur le sujet</strong> : docs, articles, tutos, etc. Pour atteindre cet objectif, j&#8217;ai essayé de reléguer les infos non-essentielles (mais intéressantes tout de même) dans des collapsibles, que vous pouvez allègrement ignorer en première lecture, comme celui-ci :</p>
+<p>Ce post <strong>n’est donc pas suffisant</strong> pour naviguer comme un poisson dans les eaux du packaging python, l’objectif est plutôt d’en sortir un peu mieux armé pour <strong>utiliser les autres ressources sur le sujet</strong> : docs, articles, tutos, etc. Pour atteindre cet objectif, j’ai essayé de reléguer les infos non-essentielles (mais intéressantes tout de même) dans des collapsibles, que vous pouvez allègrement ignorer en première lecture, comme celui-ci :</p>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
+<p> </p><details><summary> 
 FACULTATIF = info non-essentielle (mais intéressante tout de même)
- </summary><div> </p>
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>Nan, mais là, c&#8217;était juste pour illustrer : passez votre chemin, y&#8217;a rien à voir ^^'</p>
+<p>Nan, mais là, c’était juste pour illustrer : passez votre chemin, y’a rien à voir ^^&#39;</p>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 <div class="paragraph">
 <p>Buckle up.</p>
@@ -91,7 +91,7 @@ FACULTATIF = info non-essentielle (mais intéressante tout de même)
 </div>
 </div>
 <div class="sect1">
-<h2 id="__span_class_line_through_fifty_span_two_shades_of_packaging"><span class="line-through">Fifty</span> Two shades of packaging</h2>
+<h2 id="_fifty_two_shades_of_packaging"><span class="line-through">Fifty</span> Two shades of packaging</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>La mère de toutes les confusions : il existe <strong>DEUX</strong> types de personnes qui sont intéressées par le packaging python, et elles ont des besoins <strong>TRÈS</strong> différents :</p>
@@ -102,25 +102,25 @@ FACULTATIF = info non-essentielle (mais intéressante tout de même)
 <p>Le <strong>CONSOMMATEUR</strong> du package : prenons un développeur (appelons-le Motoki) qui travaille sur son projet <code>killerapp</code>, qui va révolutionner tous les serveurs de France et de Navarre. <code>killerapp</code> a parfois besoin de faire des requêtes HTTP, et le projet dépend donc de la librairie <code>requests</code>. Motoki va alors installer <code>requests</code> par exemple en lançant :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip install requests</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip install requests</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>Le <strong>PRODUCTEUR</strong> du package : prenons un autre développeur (appelons-le <a href="https://requests.readthedocs.io/en/master/">Kenneth REITZ</a>), qui a créé et maintient la librairie <code>requests</code>. Pour que sa librairie puisse être utile, Kenneth doit pouvoir la distribuer à d&#8217;autres développeurs, et pour ce faire, il pourra commencer par lancer, depuis le répertoire de son projet :</p>
+<p>Le <strong>PRODUCTEUR</strong> du package : prenons un autre développeur (appelons-le <a href="https://requests.readthedocs.io/en/master/">Kenneth REITZ</a>), qui a créé et maintient la librairie <code>requests</code>. Pour que sa librairie puisse être utile, Kenneth doit pouvoir la distribuer à d’autres développeurs, et pour ce faire, il pourra commencer par lancer, depuis le répertoire de son projet :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip wheel .</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip wheel .</code></pre>
 </div>
 </div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Typiquement, un dev sera bien plus souvent dans la peau de Motoki que dans celle de Kenneth. Pourtant, consommateur et producteur sont les deux facettes d&#8217;un même sujet : pour que Motoki puisse installer sa librairie, il a bien fallu que quelqu&#8217;un (Kenneth) ait préparé les fichiers d&#8217;abord.</p>
+<p>Typiquement, un dev sera bien plus souvent dans la peau de Motoki que dans celle de Kenneth. Pourtant, consommateur et producteur sont les deux facettes d’un même sujet : pour que Motoki puisse installer sa librairie, il a bien fallu que quelqu’un (Kenneth) ait préparé les fichiers d’abord.</p>
 </div>
 <div class="paragraph">
-<p>Beaucoup de ressources mélangent les deux points de vue, ce qui nuit à la compréhension du sujet. Par exemple <a href="https://packaging.python.org/">la page d&#8217;accueil du site référent sur la question</a>, qui mentionne à égalité l&#8217;installation et la distribution de packages :</p>
+<p>Beaucoup de ressources mélangent les deux points de vue, ce qui nuit à la compréhension du sujet. Par exemple <a href="https://packaging.python.org/">la page d’accueil du site référent sur la question</a>, qui mentionne à égalité l’installation et la distribution de packages :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -130,23 +130,23 @@ FACULTATIF = info non-essentielle (mais intéressante tout de même)
 <div class="ulist">
 <ul>
 <li>
-<p>to learn how to install packages, see &#8230;&#8203;</p>
+<p>to learn how to install packages, see …​</p>
 </li>
 <li>
-<p>to learn how to manage dependencies in a version controlled project, see &#8230;&#8203;</p>
+<p>to learn how to manage dependencies in a version controlled project, see …​</p>
 </li>
 <li>
-<p>to learn how to package and distribute your projects, see &#8230;&#8203;</p>
+<p>to learn how to package and distribute your projects, see …​</p>
 </li>
 </ul>
 </div>
 </blockquote>
 <div class="attribution">
-&#8212; <a href="https://packaging.python.org/">Python Packaging User Guide</a>
+— <a href="https://packaging.python.org/">Python Packaging User Guide</a>
 </div>
 </div>
 <div class="paragraph">
-<p>Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, <code>pip</code>, <a href="https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing">officiellement recommandé</a> pour installer les packages python, peut être utilisé aussi bien par Motoki que par Kenneth, alors que leurs besoins n&#8217;ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre utilisable par d&#8217;autres développeurs.</p>
+<p>Cette confusion entre consommateur et producteur est renforcée par le fait que le même outil, <code>pip</code>, <a href="https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing">officiellement recommandé</a> pour installer les packages python, peut être utilisé aussi bien par Motoki que par Kenneth, alors que leurs besoins n’ont rien à voir : Motoki veut installer une librairie dont son projet dépend, Kenneth veut préparer son code pour le rendre utilisable par d’autres développeurs.</p>
 </div>
 </div>
 </div>
@@ -154,15 +154,15 @@ FACULTATIF = info non-essentielle (mais intéressante tout de même)
 <h2 id="_le_packaging_vu_par_motoki_consommateur_de_package">Le packaging vu par Motoki, CONSOMMATEUR de package</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Maintenant qu&#8217;on sait qu&#8217;il y a deux facettes au packaging, voyons un peu de quoi on parle.</p>
+<p>Maintenant qu’on sait qu’il y a deux facettes au packaging, voyons un peu de quoi on parle.</p>
 </div>
 <div class="paragraph">
 <p>Motoki veut que son code puisse utiliser <code>requests</code>. Par exemple, il veut pouvoir écrire :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span style="color: #f92672">import</span> <span style="color: #f8f8f2">requests</span>
-<span style="color: #f8f8f2">r</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">requests</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get(</span><span style="color: #e6db74">&quot;http://mysuperservice.com/api/&quot;</span><span style="color: #f8f8f2">)</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">requests</span>
+<span style="color: #f8f8f2">r</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">requests</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">get(</span><span style="color: #e6db74">&#34;http://mysuperservice.com/api/&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -182,25 +182,25 @@ FACULTATIF = info non-essentielle (mais intéressante tout de même)
 </ol>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
-FACULTATIF = plus de détails sur cet "emplacement accessible à python"
- </summary><div> </p>
+<p> </p><details><summary> 
+FACULTATIF = plus de détails sur cet &#34;emplacement accessible à python&#34;
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>La question est : où faut-il copier du code pour qu&#8217;il soit utilisable par une ligne du genre <code>import requests</code> ?</p>
+<p>La question est : où faut-il copier du code pour qu’il soit utilisable par une ligne du genre <code>import requests</code> ?</p>
 </div>
 <div class="paragraph">
-<p>Le plus souvent, sous Linux, il s&#8217;agit du répertoire <code>site-packages</code> dans le virtualenv.</p>
+<p>Le plus souvent, sous Linux, il s’agit du répertoire <code>site-packages</code> dans le virtualenv.</p>
 </div>
 <div class="paragraph">
-<p>En simplifiant grossièrement, (<a href="https://docs.python.org/3/reference/import.html">plus de détails ici</a>), lorsque python exécute <code>import requests</code>, il va rechercher un module nommé <code>requests</code> dans <a href="https://docs.python.org/3/library/sys.html#sys.path">l&#8217;un des chemins du <code>sys.path</code></a>, l&#8217;exécuter, et créer un objet représentant le module (contenant notamment la fonction membre <code>get</code>, utilisée ci-dessus), accessible par la variable <code>requests</code>.</p>
+<p>En simplifiant grossièrement, (<a href="https://docs.python.org/3/reference/import.html">plus de détails ici</a>), lorsque python exécute <code>import requests</code>, il va rechercher un module nommé <code>requests</code> dans <a href="https://docs.python.org/3/library/sys.html#sys.path">l’un des chemins du <code>sys.path</code></a>, l’exécuter, et créer un objet représentant le module (contenant notamment la fonction membre <code>get</code>, utilisée ci-dessus), accessible par la variable <code>requests</code>.</p>
 </div>
 <div class="paragraph">
-<p>Ce qui m&#8217;intéresse ici est le <code>sys.path</code> : on facilement regarder ce qu&#8217;il y a dedans :</p>
+<p>Ce qui m’intéresse ici est le <code>sys.path</code> : on facilement regarder ce qu’il y a dedans :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>python -c 'import sys ; print("\n".join(sys.path))'</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>python -c &#39;import sys ; print(&#34;\n&#34;.join(sys.path))&#39;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -208,53 +208,53 @@ FACULTATIF = plus de détails sur cet "emplacement accessible à python"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>/path/to/virtualenvs/mysupervenv/local/lib/python2.7/site-packages
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>/path/to/virtualenvs/mysupervenv/local/lib/python2.7/site-packages
 /path/to/virtualenvs/mysupervenv/lib/python2.7/site-packages</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>On peut vérifier que le code qu&#8217;on y met est importable par python :</p>
+<p>On peut vérifier que le code qu’on y met est importable par python :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="sh">cat <span style="color: #e6db74">&lt;&lt; EOF &gt; /path/to/virtualenvs/mysupervenv/lib/python2.7/site-packages/salut.py</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>cat <span style="color: #e6db74">&lt;&lt; EOF &gt; /path/to/virtualenvs/mysupervenv/lib/python2.7/site-packages/salut.py</span>
 
 <span style="color: #e6db74">def coucou_le_monde():</span>
-<span style="color: #e6db74">    print(&quot;non, en fait rien&quot;)</span>
+<span style="color: #e6db74">    print(&#34;non, en fait rien&#34;)</span>
 
 <span style="color: #e6db74">EOF</span>
 
-python -c <span style="color: #e6db74">&quot;import salut ; salut.coucou_le_monde()&quot;</span>
-<span style="color: #75715e"># affiche &quot;non, en fait rien&quot;</span></code></pre>
+python -c <span style="color: #e6db74">&#34;import salut ; salut.coucou_le_monde()&#34;</span>
+<span style="color: #75715e"># affiche &#34;non, en fait rien&#34;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 <div class="sect2">
-<h3 id="_et_l_archive_de_code_téléchargée_elle_provient_d_où">Et l&#8217;archive de code téléchargée, elle provient d&#8217;où ?</h3>
+<h3 id="_et_larchive_de_code_téléchargée_elle_provient_doù">Et l’archive de code téléchargée, elle provient d’où ?</h3>
 <div class="paragraph">
-<p>Dans la majorité des cas, de <a href="https://pypi.org/">PyPI</a>, un repo public de programmes et librairies python. Par défaut, c&#8217;est de PyPI que Motoki obtient <code>requests</code>, lorsqu&#8217;il fait :</p>
+<p>Dans la majorité des cas, de <a href="https://pypi.org/">PyPI</a>, un repo public de programmes et librairies python. Par défaut, c’est de PyPI que Motoki obtient <code>requests</code>, lorsqu’il fait :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip install requests</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip install requests</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
+<p> </p><details><summary> 
 FACULTATIF = zoom sur le téléchargement de <code>requests</code> depuis PyPI
- </summary><div> </p>
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>Toujours en simplifiant, <code>pip install requests</code> déclenche une belle mécanique qui va regarder les versions disponibles sur <a href="https://pypi.org/simple/requests/">la page de requests sur PyPI</a>, télécharger une archive (<a href="https://packaging.python.org/glossary/#term-wheel">le fameux wheel</a>) de la version la plus récente, et la décompresser dans l&#8217;un des répertoires présents dans le <code>sys.path</code>.</p>
+<p>Toujours en simplifiant, <code>pip install requests</code> déclenche une belle mécanique qui va regarder les versions disponibles sur <a href="https://pypi.org/simple/requests/">la page de requests sur PyPI</a>, télécharger une archive (<a href="https://packaging.python.org/glossary/#term-wheel">le fameux wheel</a>) de la version la plus récente, et la décompresser dans l’un des répertoires présents dans le <code>sys.path</code>.</p>
 </div>
 <div class="paragraph">
-<p>Si on sait ce qu&#8217;on y cherche, on peut suivre ce qui se passe dans la sortie de la commande pip :</p>
+<p>Si on sait ce qu’on y cherche, on peut suivre ce qui se passe dans la sortie de la commande pip :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="sh">pip install -vvv requests
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>pip install -vvv requests
 
 
 <span style="color: #75715e"># pip interroge la page de requests sur pypi :</span>
@@ -266,12 +266,12 @@ Collecting requests
 <span style="color: #75715e"># on y trouve les différentes versions de requests, sous forme de liens vers des archives :</span>
   Analyzing links from page https://pypi.org/simple/requests/
 
-    Found link https://files.pythonhosted.org/packages/ba/bb/dfa0141a32d773c47e4dede1a617c59a23b74dd302e449cf85413fc96bc4/requests-0.2.0.tar.gz#sha256<span style="color: #f92672">=</span>813202ace4d9301a3c00740c700e012fb9f3f8c73ddcfe02ab558a8df6f175fd <span style="color: #f92672">(</span>from https://pypi.org/simple/requests/<span style="color: #f92672">)</span>, version: 0.2.0
+    Found link https://files.pythonhosted.org/packages/ba/bb/dfa0141a32d773c47e4dede1a617c59a23b74dd302e449cf85413fc96bc4/requests-0.2.0.tar.gz#sha256<span style="color: #f92672">=</span>813202ace4d9301a3c00740c700e012fb9f3f8c73ddcfe02ab558a8df6f175fd <span style="color: #f92672">(</span>from https://pypi.org/simple/requests/<span style="color: #f92672">)</span>, version: <span style="color: #ae81ff">0</span>.2.0
     <span style="color: #f92672">[</span>... une tétrachiée d<span style="color: #e6db74">&#39;autres versions ...]</span>
 <span style="color: #e6db74">    Found link https://files.pythonhosted.org/packages/f5/4f/280162d4bd4d8aad241a21aecff7a6e46891b905a4341e7ab549ebaf7915/requests-2.23.0.tar.gz#sha256=b3f43d496c6daba4493e7c431722aeb7dbc6288f52a6e04e7b6023b0247817e6 (from https://pypi.org/simple/requests/) (requires-python:&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*), version: 2.23.0</span>
 
 <span style="color: #e6db74"># comme Motoki n&#39;</span>a pas précisé de version particulière, c<span style="color: #e6db74">&#39;est la plus récente qui est utilisée :</span>
-<span style="color: #e6db74">  Using version 2.23.0 (newest of versions: 0.2.0, [... une tétrachiée d&#39;</span>autres versions ...<span style="color: #f92672">]</span> , 2.22.0, 2.23.0<span style="color: #f92672">)</span>
+<span style="color: #e6db74">  Using version 2.23.0 (newest of versions: 0.2.0, [... une tétrachiée d&#39;</span>autres versions ...<span style="color: #f92672">]</span> , <span style="color: #ae81ff">2</span>.22.0, <span style="color: #ae81ff">2</span>.23.0<span style="color: #f92672">)</span>
 
 <span style="color: #75715e"># pip télécharge l&#39;archive adéquate, et la décompresse :</span>
   Created temporary directory: /tmp/pip-unpack-AoA2ag
@@ -280,12 +280,12 @@ Collecting requests
 <span style="color: #75715e"># pip va aussi adresser les 4 dépendances de requests : urllib3, certifi, chardet, et idna.</span>
 <span style="color: #75715e"># les dépendances vers urllib3 et certifi sont déjà résolues pour notre venv :</span>
 
-Requirement already satisfied: urllib3!<span style="color: #f92672">=</span>1.25.0,!<span style="color: #f92672">=</span>1.25.1,&lt;1.26,&gt;<span style="color: #f92672">=</span>1.21.1 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span> <span style="color: #f92672">(</span>1.21.1<span style="color: #f92672">)</span>
-Requirement already satisfied: certifi&gt;<span style="color: #f92672">=</span>2017.4.17 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span> <span style="color: #f92672">(</span>2017.4.17<span style="color: #f92672">)</span>
+Requirement already satisfied: urllib3!<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span>.25.0,!<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span>.25.1,&lt;<span style="color: #ae81ff">1</span>.26,&gt;<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span>.21.1 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">1</span>.21.1<span style="color: #f92672">)</span>
+Requirement already satisfied: certifi&gt;<span style="color: #f92672">=</span><span style="color: #ae81ff">2017</span>.4.17 in /media/truecrypt1/virtualenvs/mysupervenv/lib/python2.7/site-packages <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span> <span style="color: #f92672">(</span><span style="color: #ae81ff">2017</span>.4.17<span style="color: #f92672">)</span>
 
 <span style="color: #75715e"># pour les dépendances vers chardet et idna, la MÊME mécanique que pour requests se met en place :</span>
 
-Collecting chardet&lt;4,&gt;<span style="color: #f92672">=</span>3.0.2 <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span>
+Collecting chardet&lt;<span style="color: #ae81ff">4</span>,&gt;<span style="color: #f92672">=</span><span style="color: #ae81ff">3</span>.0.2 <span style="color: #f92672">(</span>from requests<span style="color: #f92672">)</span>
   <span style="color: #ae81ff">1</span> location<span style="color: #f92672">(</span>s<span style="color: #f92672">)</span> to search <span style="color: #66d9ef">for</span> versions of chardet:
   * https://pypi.org/simple/chardet/
   <span style="color: #f92672">[</span> ... mêmes actions que ce qui a permis d<span style="color: #960050; background-color: #1e0010">&#39;</span>installer requests, mais pour chardet, puis idna... <span style="color: #f92672">]</span>
@@ -297,18 +297,18 @@ Cleaning up...</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 <div class="paragraph">
-<p>Cependant, même si <a href="https://pypi.org/">PyPI</a> est son fournisseur de package par défaut, pip sait installer des packages à partir d&#8217;autres provenances. Le <a href="https://packaging.python.org/tutorials/installing-packages/">tuto officiel sur l&#8217;installation de paquets via pip</a> fait un meilleur travail de récap que les quelques lignes qui suivent, mais en gros, il est possible d&#8217;installer des packages :</p>
+<p>Cependant, même si <a href="https://pypi.org/">PyPI</a> est son fournisseur de package par défaut, pip sait installer des packages à partir d’autres provenances. Le <a href="https://packaging.python.org/tutorials/installing-packages/">tuto officiel sur l’installation de paquets via pip</a> fait un meilleur travail de récap que les quelques lignes qui suivent, mais en gros, il est possible d’installer des packages :</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>depuis le repo public du projet ; pour <code>requests</code>, c&#8217;est <a href="https://github.com/psf/requests">un repo github</a> :</p>
+<p>depuis le repo public du projet ; pour <code>requests</code>, c’est <a href="https://github.com/psf/requests">un repo github</a> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip install git+https://github.com/psf/requests#egg=requests</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip install git+https://github.com/psf/requests#egg=requests</code></pre>
 </div>
 </div>
 </li>
@@ -316,16 +316,16 @@ Cleaning up...</code></pre>
 <p>depuis une archive locale (éventuellement, téléchargée avec <code>pip download</code>) :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip download requests --dest /tmp/downloaded/
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip download requests --dest /tmp/downloaded/
 pip install /tmp/downloaded/requests-2.23.0-py2.py3-none-any.whl</code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>depuis un répertoire local contenant un projet python (dans ce cas, pip fabrique lui-même le package à partir du contenu du répertoire, avant de l&#8217;installer) :</p>
+<p>depuis un répertoire local contenant un projet python (dans ce cas, pip fabrique lui-même le package à partir du contenu du répertoire, avant de l’installer) :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
 pip install /tmp/local-requests</code></pre>
 </div>
 </div>
@@ -334,35 +334,35 @@ pip install /tmp/local-requests</code></pre>
 <p>un cas particulier de ce qui précède : on peut installer un projet et ses dépendances directement depuis le répertoire de son projet avec <code>pip install .</code> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>git clone --depth=1 https://github.com/psf/requests /tmp/local-requests
 cd /tmp/local-requests
 pip install .</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Certains projets utilisent cette façon de faire (que je trouve moins intuitive qu&#8217;un <code>pip install -r requirements.txt</code>) pour installer leurs dépendances. L&#8217;apparente magie de <code>pip install .</code> m&#8217;a longtemps laissé perplexe et c&#8217;est allé mieux le jour où j&#8217;ai compris le mécanisme d&#8217;installation de package décrit ci-dessus.</p>
+<p>Certains projets utilisent cette façon de faire (que je trouve moins intuitive qu’un <code>pip install -r requirements.txt</code>) pour installer leurs dépendances. L’apparente magie de <code>pip install .</code> m’a longtemps laissé perplexe et c’est allé mieux le jour où j’ai compris le mécanisme d’installation de package décrit ci-dessus.</p>
 </div>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>Le point important à garder à l&#8217;esprit, c&#8217;est que dans tous ces cas, le TL;DR ci-dessus reste vrai : pip se contente de récupérer du code pour le mettre à un emplacement accessible à python.</p>
+<p>Le point important à garder à l’esprit, c’est que dans tous ces cas, le TL;DR ci-dessus reste vrai : pip se contente de récupérer du code pour le mettre à un emplacement accessible à python.</p>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
+<p> </p><details><summary> 
 FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de package
- </summary><div> </p>
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>Pour simplifier le propos, j&#8217;ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d&#8217;ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :</p>
+<p>Pour simplifier le propos, j’ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d’ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>les <a href="https://virtualenv.pypa.io/en/latest/#">virtualenvs</a> et ce qu&#8217;ils apportent : l&#8217;un des sujets les plus importants, mais dont la compréhension ne présente pas de difficulté particulière</p>
+<p>les <a href="https://virtualenv.pypa.io/en/latest/#">virtualenvs</a> et ce qu’ils apportent : l’un des sujets les plus importants, mais dont la compréhension ne présente pas de difficulté particulière</p>
 </li>
 <li>
-<p><code>setuptools</code>, le fait d&#8217;utiliser <code>setup.py</code> pour installer des packages (<code>python setup.py install</code> ou <code>python setup.py develop</code>), et <a href="https://stackoverflow.com/questions/15724093/difference-between-python-setup-py-install-and-pip-install/15731459#15731459">pourquoi il reste préférable d&#8217;utiliser <code>pip</code></a>.</p>
+<p><code>setuptools</code>, le fait d’utiliser <code>setup.py</code> pour installer des packages (<code>python setup.py install</code> ou <code>python setup.py develop</code>), et <a href="https://stackoverflow.com/questions/15724093/difference-between-python-setup-py-install-and-pip-install/15731459#15731459">pourquoi il reste préférable d’utiliser <code>pip</code></a>.</p>
 </li>
 <li>
 <p><a href="https://pip.pypa.io/en/stable/user_guide/#requirements-files">le fichier <code>requirements.txt</code></a></p>
@@ -374,10 +374,10 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 <p>la gestion récursive des dépendances</p>
 </li>
 <li>
-<p><a href="https://pypi.org/simple">l&#8217;URL par défaut</a> utilisée par pip pour contacter PyPI, et comment aller taper dans un pypi alternatif :</p>
+<p><a href="https://pypi.org/simple">l’URL par défaut</a> utilisée par pip pour contacter PyPI, et comment aller taper dans un pypi alternatif :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code>pip help install | grep "Base URL of Python Package Index"
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>pip help install | grep &#34;Base URL of Python Package Index&#34;
   -i, --index-url &lt;url&gt;   Base URL of Python Package Index (default https://pypi.org/simple).
                           This should point to a repository compliant with PEP 503 (the simple repository API
                           or a local directory laid out in</code></pre>
@@ -388,13 +388,13 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 <p>la <a href="https://www.python.org/dev/peps/pep-0503/">Simple Repository API</a> exposée par PyPI (que je trouve un peu bizarre)</p>
 </li>
 <li>
-<p><a href="https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs">l&#8217;installation en mode editable</a> avec <code>pip install -e .</code> ou <code>python setup.py develop</code></p>
+<p><a href="https://pip.pypa.io/en/stable/reference/pip_install/#editable-installs">l’installation en mode editable</a> avec <code>pip install -e .</code> ou <code>python setup.py develop</code></p>
 </li>
 <li>
-<p>l&#8217;installation <a href="http://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies">d&#8217;extra</a>, et ce que signifie la syntaxe avec crochets : <code>pip install -e .[mysuperextra]</code></p>
+<p>l’installation <a href="http://setuptools.readthedocs.io/en/latest/setuptools.html#declaring-extras-optional-features-with-their-own-dependencies">d’extra</a>, et ce que signifie la syntaxe avec crochets : <code>pip install -e .[mysuperextra]</code></p>
 </li>
 <li>
-<p>la différence <strong>à l&#8217;installation d&#8217;un package</strong> entre <a href="https://packaging.python.org/glossary/#term-source-distribution-or-sdist">une source-distribution</a> et une <a href="https://packaging.python.org/glossary/#term-built-distribution">une built-distribution</a> (notamment si le package a <a href="https://docs.python.org/3/extending/extending.html">des extensions C</a>, comme par exemple <a href="https://pypi.org/project/ujson/">ujson</a>)</p>
+<p>la différence <strong>à l’installation d’un package</strong> entre <a href="https://packaging.python.org/glossary/#term-source-distribution-or-sdist">une source-distribution</a> et une <a href="https://packaging.python.org/glossary/#term-built-distribution">une built-distribution</a> (notamment si le package a <a href="https://docs.python.org/3/extending/extending.html">des extensions C</a>, comme par exemple <a href="https://pypi.org/project/ujson/">ujson</a>)</p>
 </li>
 <li>
 <p>les alternatives à pip, notamment <a href="https://pipenv.pypa.io/en/latest/">pipenv</a> (<a href="https://packaging.python.org/tutorials/managing-dependencies/">officiellement recommandé</a>), et <a href="https://python-poetry.org/">poetry</a>, vus comme le futur™</p>
@@ -402,7 +402,7 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 </ul>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 </div>
 </div>
@@ -411,15 +411,15 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 <h2 id="_le_packaging_vu_par_kenneth_producteur_de_package">Le packaging vu par Kenneth, PRODUCTEUR de package</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>TL;DR : une fois qu&#8217;on a compris ce que voulait faire Motoki, il devient plus facile de comprendre l&#8217;objectif de Kenneth :</p>
+<p>TL;DR : une fois qu’on a compris ce que voulait faire Motoki, il devient plus facile de comprendre l’objectif de Kenneth :</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>mettre dans une archive les fichiers dont va avoir besoin Motoki&#8230;&#8203;</p>
+<p>mettre dans une archive les fichiers dont va avoir besoin Motoki…​</p>
 </li>
 <li>
-<p>&#8230;&#8203;assorties des méta-données et informations lui permettant de les installer correctement</p>
+<p>…​assorties des méta-données et informations lui permettant de les installer correctement</p>
 </li>
 <li>
 <p>les publier sur PyPI</p>
@@ -427,33 +427,33 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 </ol>
 </div>
 <div class="paragraph">
-<p>La bonne nouvelle, c&#8217;est que pip va (presque) tout gérer automatiquement : la seule chose que Kenneth doit faire, c&#8217;est lui donner à manger les infos dont il aura besoin : quels sont les fichiers qu&#8217;on veut distribuer (en effet, ce serait ballot d&#8217;intégrer le <code>.gitignore</code> ou des <code>*.swp</code> au package), et quelles sont les métadonnées du package (version du package, dépendances, version de python supportée, mais également auteur, license, etc.).</p>
+<p>La bonne nouvelle, c’est que pip va (presque) tout gérer automatiquement : la seule chose que Kenneth doit faire, c’est lui donner à manger les infos dont il aura besoin : quels sont les fichiers qu’on veut distribuer (en effet, ce serait ballot d’intégrer le <code>.gitignore</code> ou des <code>*.swp</code> au package), et quelles sont les métadonnées du package (version du package, dépendances, version de python supportée, mais également auteur, license, etc.).</p>
 </div>
 <div class="paragraph">
-<p>La façon canonique de passer ces infos à pip, et de les mettre dans <a href="https://packaging.python.org/glossary/#term-setup-py">un fichier <code>setup.py</code></a> à la racine du projet. Plus précisément, ce fichier <code>setup.py</code> <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L69">appelle la fonction <code>setuptools.setup</code></a>, en lui passant en argument les infos nécessaires pour builder le package. C&#8217;est un peu déroutant au début d&#8217;appeler une fonction pour définir des métadonnées, mais on s&#8217;y fait.</p>
+<p>La façon canonique de passer ces infos à pip, et de les mettre dans <a href="https://packaging.python.org/glossary/#term-setup-py">un fichier <code>setup.py</code></a> à la racine du projet. Plus précisément, ce fichier <code>setup.py</code> <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L69">appelle la fonction <code>setuptools.setup</code></a>, en lui passant en argument les infos nécessaires pour builder le package. C’est un peu déroutant au début d’appeler une fonction pour définir des métadonnées, mais on s’y fait.</p>
 </div>
 <div class="sect2">
 <h3 id="_concrètement_ça_ressemble_à_quoi">Concrètement ça ressemble à quoi ?</h3>
 <div class="paragraph">
-<p>Je garde le code de <code>requests</code> comme fil rouge, voici <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py">son setup.py à l&#8217;heure où j&#8217;écris ces lignes</a>. Quand je dis que Kenneth doit donner à manger à pip les infos nécesaires, ça ressemble à ça :</p>
+<p>Je garde le code de <code>requests</code> comme fil rouge, voici <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py">son setup.py à l’heure où j’écris ces lignes</a>. Quand je dis que Kenneth doit donner à manger à pip les infos nécesaires, ça ressemble à ça :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L78">l&#8217;argument <code>packages</code></a> indique à pip quels sont les fichiers du repo qui doivent être packagés :</p>
+<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L78">l’argument <code>packages</code></a> indique à pip quels sont les fichiers du repo qui doivent être packagés :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span style="color: #f8f8f2">packages</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span><span style="color: #e6db74">&#39;requests&#39;</span><span style="color: #f8f8f2">]</span>  <span style="color: #75715e"># ligne 42 : variable intermédiaire</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">packages</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span><span style="color: #e6db74">&#39;requests&#39;</span><span style="color: #f8f8f2">]</span>  <span style="color: #75715e"># ligne 42 : variable intermédiaire</span>
 <span style="color: #75715e"># ...</span>
 <span style="color: #f8f8f2">packages</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">packages,</span>  <span style="color: #75715e"># ligne 78 : pip doit packager un seul répertoire : requests</span></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L44">l&#8217;argument <code>install_requires</code></a> indique quelles sont les dépendances de requests :</p>
+<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L44">l’argument <code>install_requires</code></a> indique quelles sont les dépendances de requests :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span style="color: #f8f8f2">requires</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span>  <span style="color: #75715e"># ligne 44 : variable intermédiaire</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">requires</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span>  <span style="color: #75715e"># ligne 44 : variable intermédiaire</span>
     <span style="color: #e6db74">&#39;chardet&gt;=3.0.2,&lt;4&#39;</span><span style="color: #f8f8f2">,</span>
     <span style="color: #e6db74">&#39;idna&gt;=2.5,&lt;3&#39;</span><span style="color: #f8f8f2">,</span>
     <span style="color: #e6db74">&#39;urllib3&gt;=1.21.1,&lt;1.26,!=1.25.0,!=1.25.1&#39;</span><span style="color: #f8f8f2">,</span>
@@ -465,18 +465,18 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 </div>
 </li>
 <li>
-<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L82">l&#8217;argument <code>python_requires</code></a> indique les versions de python supportées :</p>
+<p><a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L82">l’argument <code>python_requires</code></a> indique les versions de python supportées :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span style="color: #f8f8f2">python_requires</span><span style="color: #f92672">=</span><span style="color: #e6db74">&quot;&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*&quot;</span><span style="color: #f8f8f2">,</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">python_requires</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;&gt;=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*&#34;</span><span style="color: #f8f8f2">,</span></code></pre>
 </div>
 </div>
 </li>
 <li>
-<p>les métadonnées du package (nom, version, auteur, license, etc.) sont définies dans <a href="https://github.com/psf/requests/blob/b7c6aba848b10933f327fcce41970c29dc59051b/requests/<em>version</em>.py">un fichier annexe</a> et <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L70">utilisées par setup.py</a> :</p>
+<p>les métadonnées du package (nom, version, auteur, license, etc.) sont définies dans <a href="https://github.com/psf/requests/blob/b7c6aba848b10933f327fcce41970c29dc59051b/requests/&lt;em&gt;version&lt;/em&gt;.py">un fichier annexe</a> et <a href="https://github.com/psf/requests/blob/c46f55bd48dabc02f033d252f8c64e2011f37361/setup.py#L70">utilisées par setup.py</a> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="python"><span style="color: #f8f8f2">__title__</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;requests&#39;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">__title__</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;requests&#39;</span>
 <span style="color: #f8f8f2">__description__</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;Python HTTP for Humans.&#39;</span>
 <span style="color: #f8f8f2">__url__</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;https://requests.readthedocs.io&#39;</span>
 <span style="color: #f8f8f2">__version__</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">&#39;2.23.0&#39;</span>
@@ -488,15 +488,15 @@ FACULTATIF = pour aller plus loin, côté <strong>consommateur</strong> de packa
 </ul>
 </div>
 <div class="paragraph">
-<p>Allez, je vais me la jouer "site du zéro", et proposer un TP. C&#8217;est vraiment pas indispensable pour avoir compris cette partie, mais <a href="http://www.1001-citations.com/citation-31397/">j&#8217;entends &#8594; j&#8217;oublie ; je vois &#8594; je retiens ; toussa toussa</a> : faire les choses moi-même m&#8217;aide à les comprendre, je pars du principe que ça va être pareil pour vous.</p>
+<p>Allez, je vais me la jouer &#34;site du zéro&#34;, et proposer un TP. C’est vraiment pas indispensable pour avoir compris cette partie, mais <a href="http://www.1001-citations.com/citation-31397/">j’entends → j’oublie ; je vois → je retiens ; toussa toussa</a> : faire les choses moi-même m’aide à les comprendre, je pars du principe que ça va être pareil pour vous.</p>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
+<p> </p><details><summary> 
 FACULTATIF : installe <code>requests</code> via un package que tu as buildé toi-même avec amour &lt;3
- </summary><div> </p>
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>À noter que c&#8217;est même pas obligé de prendre un vrai projet comme <code>requests</code> pour ça : c&#8217;est également très intéressant de packager un repo quasi-vide, et de trouver quelles sont les conditions minimales pour que pip accepte d&#8217;en faire un package.</p>
+<p>À noter que c’est même pas obligé de prendre un vrai projet comme <code>requests</code> pour ça : c’est également très intéressant de packager un repo quasi-vide, et de trouver quelles sont les conditions minimales pour que pip accepte d’en faire un package.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -504,7 +504,7 @@ FACULTATIF : installe <code>requests</code> via un package que tu as buildé toi
 <p>builder un package à partir du repo requests</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">mkdir /tmp/monsupertp/ <span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">cd</span> /tmp/monsupertp/
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>mkdir /tmp/monsupertp/ <span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">cd</span> /tmp/monsupertp/
 git clone --depth<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span> https://github.com/psf/requests local-requests
 <span style="color: #f8f8f2">cd</span> local-requests
 
@@ -514,10 +514,10 @@ pip wheel --wheel-dir<span style="color: #f92672">=</span>/tmp/monsupertp/wheel-
 </div>
 </li>
 <li>
-<p>trifouiller et regarder ce qu&#8217;il y a dans la wheel buildée :</p>
+<p>trifouiller et regarder ce qu’il y a dans la wheel buildée :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">cd</span> /tmp/monsupertp/
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #f8f8f2">cd</span> /tmp/monsupertp/
 <span style="color: #75715e"># la wheel n&#39;est qu&#39;une archive zip des fichiers packagés + des métadonnées :</span>
 file wheel-dir/requests-2.23.0-py2.py3-none-any.whl
 <span style="color: #75715e"># wheel-dir/requests-2.23.0-py2.py3-none-any.whl: Zip archive data, at least v2.0 to extract</span>
@@ -527,18 +527,18 @@ ls /tmp/monsupertp/unzipped-wheel/
 <span style="color: #75715e"># requests  requests-2.23.0.dist-info</span>
 
 <span style="color: #75715e"># les fichiers packagés sont bien ceux du repo :</span>
-find unzipped-wheel/requests -type f -print0<span style="color: #f8f8f2">|</span>xargs -0 md5sum<span style="color: #f8f8f2">|</span>cut -d<span style="color: #e6db74">&quot; &quot;</span> -f1<span style="color: #f8f8f2">|</span>md5sum
+find unzipped-wheel/requests -type f -print0<span style="color: #f8f8f2">|</span>xargs -0 md5sum<span style="color: #f8f8f2">|</span>cut -d<span style="color: #e6db74">&#34; &#34;</span> -f1<span style="color: #f8f8f2">|</span>md5sum
 <span style="color: #75715e"># 943bfbe6cf829cec797d84e09862f826  -</span>
-find local-requests/requests -type f -print0<span style="color: #f8f8f2">|</span>xargs -0 md5sum<span style="color: #f8f8f2">|</span>cut -d<span style="color: #e6db74">&quot; &quot;</span> -f1<span style="color: #f8f8f2">|</span>md5sum
+find local-requests/requests -type f -print0<span style="color: #f8f8f2">|</span>xargs -0 md5sum<span style="color: #f8f8f2">|</span>cut -d<span style="color: #e6db74">&#34; &#34;</span> -f1<span style="color: #f8f8f2">|</span>md5sum
 <span style="color: #75715e"># 943bfbe6cf829cec797d84e09862f826  -</span>
 
 <span style="color: #75715e"># les métadonnées sont bien celles qui étaient précisées dans l&#39;appel à setuptools.setup() :</span>
 <span style="color: #f8f8f2">cd</span> unzipped-wheel/requests-2.23.0.dist-info/
 
-grep <span style="color: #e6db74">&quot;Python HTTP for Humans&quot;</span> METADATA
+grep <span style="color: #e6db74">&#34;Python HTTP for Humans&#34;</span> METADATA
 <span style="color: #75715e"># Summary: Python HTTP for Humans.</span>
 
-grep <span style="color: #e6db74">&quot;Programming Language :: Python&quot;</span> METADATA <span style="color: #f8f8f2">|</span> grep <span style="color: #e6db74">&quot;\.&quot;</span>
+grep <span style="color: #e6db74">&#34;Programming Language :: Python&#34;</span> METADATA <span style="color: #f8f8f2">|</span> grep <span style="color: #e6db74">&#34;\.&#34;</span>
 <span style="color: #75715e"># Classifier: Programming Language :: Python :: 2.7</span>
 <span style="color: #75715e"># Classifier: Programming Language :: Python :: 3.5</span>
 <span style="color: #75715e"># Classifier: Programming Language :: Python :: 3.6</span>
@@ -554,10 +554,10 @@ grep Requires-Dist METADATA <span style="color: #f8f8f2">|</span> grep -v extra
 </div>
 </li>
 <li>
-<p>vérifier qu&#8217;on peut utiliser la wheel pour installer <code>requests</code></p>
+<p>vérifier qu’on peut utiliser la wheel pour installer <code>requests</code></p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #75715e"># (commande à lancer dans un virtualenv vierge)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #75715e"># (commande à lancer dans un virtualenv vierge)</span>
 <span style="color: #75715e"># note : pip se débrouille pour installer les dépendances de requests</span>
 pip install /tmp/monsupertp/wheel-dir/requests-2.23.0-py2.py3-none-any.whl</code></pre>
 </div>
@@ -569,38 +569,38 @@ pip install /tmp/monsupertp/wheel-dir/requests-2.23.0-py2.py3-none-any.whl</code
 </ol>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 <div class="paragraph">
-<p>Pour résumer, côté PRODUCTEUR, on veut "juste" remplir un <code>setup.py</code> correct pour que pip puisse bosser, et transformer un repo de code (parfois appelé <code>source-tree</code>) en un package.</p>
+<p>Pour résumer, côté PRODUCTEUR, on veut &#34;juste&#34; remplir un <code>setup.py</code> correct pour que pip puisse bosser, et transformer un repo de code (parfois appelé <code>source-tree</code>) en un package.</p>
 </div>
 <div class="paragraph">
-<p> <details><summary> 
+<p> </p><details><summary> 
 FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
- </summary><div> </p>
+ </summary><div> <p></p>
 </div>
 <div class="paragraph">
-<p>Pour simplifier le propos, j&#8217;ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d&#8217;ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :</p>
+<p>Pour simplifier le propos, j’ai laissé plusieurs points intéressants de côté. Ils ne sont pas indispensables pour avoir une vision d’ensemble du packaging, mais vous les croiserez forcément si vous creusez un peu le sujet :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives">l&#8217;utilisation directe de <code>setup.py</code> pour builder un package</a> (<code>python setup.py sdist/bidst/bidst_wheel</code>), le lien avec <code>pip wheel</code>, et l&#8217;absence de possibilité pour pip de builder des source-distribution (même si <a href="https://github.com/pypa/pip/issues/6041">une issue est ouverte sur le sujet</a>)</p>
+<p><a href="https://packaging.python.org/tutorials/packaging-projects/#generating-distribution-archives">l’utilisation directe de <code>setup.py</code> pour builder un package</a> (<code>python setup.py sdist/bidst/bidst_wheel</code>), le lien avec <code>pip wheel</code>, et l’absence de possibilité pour pip de builder des source-distribution (même si <a href="https://github.com/pypa/pip/issues/6041">une issue est ouverte sur le sujet</a>)</p>
 </li>
 <li>
-<p>c&#8217;est pas tout de créer un package, encore faut-il l&#8217;uploader sur PyPI, ce que pip ne sait pas faire : c&#8217;est le boulot de <a href="https://pypi.org/project/twine/">twine</a> ou de <a href="https://flit.readthedocs.io/en/latest/">flit</a></p>
+<p>c’est pas tout de créer un package, encore faut-il l’uploader sur PyPI, ce que pip ne sait pas faire : c’est le boulot de <a href="https://pypi.org/project/twine/">twine</a> ou de <a href="https://flit.readthedocs.io/en/latest/">flit</a></p>
 </li>
 <li>
-<p>la différence <strong>à la création d&#8217;un package</strong> entre <a href="https://packaging.python.org/glossary/#term-source-distribution-or-sdist">une source-distribution</a> et une <a href="https://packaging.python.org/glossary/#term-built-distribution">une built-distribution</a> (notamment si le package a <a href="https://docs.python.org/3/extending/extending.html">des extensions C</a>, comme par exemple <a href="https://pypi.org/project/ujson/">ujson</a>)</p>
+<p>la différence <strong>à la création d’un package</strong> entre <a href="https://packaging.python.org/glossary/#term-source-distribution-or-sdist">une source-distribution</a> et une <a href="https://packaging.python.org/glossary/#term-built-distribution">une built-distribution</a> (notamment si le package a <a href="https://docs.python.org/3/extending/extending.html">des extensions C</a>, comme par exemple <a href="https://pypi.org/project/ujson/">ujson</a>)</p>
 </li>
 <li>
-<p>l&#8217;utilisation de <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html#configuring-setup-using-setup-cfg-files">setup.cfg</a> pour avoir un appel à <code>setuptools.setup(&#8230;&#8203;)</code> minimaliste</p>
+<p>l’utilisation de <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html#configuring-setup-using-setup-cfg-files">setup.cfg</a> pour avoir un appel à <code>setuptools.setup(…​)</code> minimaliste</p>
 </li>
 <li>
 <p>le subtil art de préciser les fichiers qui feront partie du package : <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html#using-find-packages">find_packages</a>, <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html#including-data-files">MANIFEST.in + include_package_data</a>, etc.</p>
 </li>
 <li>
-<p>le non-moins subtil art de préciser les dépendances de son package, et <a href="https://packaging.python.org/tutorials/managing-dependencies/">l&#8217;apport de pipenv</a> (ou poetry) sur le sujet</p>
+<p>le non-moins subtil art de préciser les dépendances de son package, et <a href="https://packaging.python.org/tutorials/managing-dependencies/">l’apport de pipenv</a> (ou poetry) sur le sujet</p>
 </li>
 <li>
 <p>les <a href="https://packaging.python.org/guides/distributing-packages-using-setuptools/#universal-wheels">wheels universelles</a> ou pure-python</p>
@@ -612,15 +612,15 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <p>le fait que <code>wheel</code> (qui fournit <code>bdist_wheel</code>), <code>setuptools</code>, et <code>twine</code> soient des packages tierces</p>
 </li>
 <li>
-<p>la <a href="https://docs.python.org/3/distutils/extending.html#integrating-new-commands">customisation de l&#8217;étape de build</a> de son package</p>
+<p>la <a href="https://docs.python.org/3/distutils/extending.html#integrating-new-commands">customisation de l’étape de build</a> de son package</p>
 </li>
 <li>
-<p>les alternatives aux <a href="https://packaging.python.org/glossary/#term-wheel">wheels</a> comme format de built-distributions, et notamment <a href="https://packaging.python.org/glossary/#term-egg">les eggs</a>, même s&#8217;ils sont <a href="https://packaging.python.org/discussions/wheel-vs-egg/">moins intéressants que les wheels</a>, et <a href="https://stackoverflow.com/questions/6292652/what-is-the-difference-between-an-sdist-tar-gz-distribution-and-an-python-egg/6292710#6292710">considérés comme deprecated</a>.</p>
+<p>les alternatives aux <a href="https://packaging.python.org/glossary/#term-wheel">wheels</a> comme format de built-distributions, et notamment <a href="https://packaging.python.org/glossary/#term-egg">les eggs</a>, même s’ils sont <a href="https://packaging.python.org/discussions/wheel-vs-egg/">moins intéressants que les wheels</a>, et <a href="https://stackoverflow.com/questions/6292652/what-is-the-difference-between-an-sdist-tar-gz-distribution-and-an-python-egg/6292710#6292710">considérés comme deprecated</a>.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p> </div></details> </p>
+<p> </p></div></details> <p></p>
 </div>
 </div>
 </div>
@@ -629,10 +629,10 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <h2 id="_en_conclusion">En conclusion</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>L&#8217;objectif de cet article était de donner une vue générale du sujet (ce qui se passe quand on installe un package, et ce qu&#8217;il faut donc faire pour en produire un) avec comme espoir qu&#8217;il soit ainsi plus facile de comprendre les articles, docs, tutos et autres ressources sur le sujet.</p>
+<p>L’objectif de cet article était de donner une vue générale du sujet (ce qui se passe quand on installe un package, et ce qu’il faut donc faire pour en produire un) avec comme espoir qu’il soit ainsi plus facile de comprendre les articles, docs, tutos et autres ressources sur le sujet.</p>
 </div>
 <div class="paragraph">
-<p>Si on garde cette vision avec un peu de hauteur, le packaging python, c&#8217;est pas si compliqué :</p>
+<p>Si on garde cette vision avec un peu de hauteur, le packaging python, c’est pas si compliqué :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -645,18 +645,18 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 </ul>
 </div>
 <div class="paragraph">
-<p>En dehors de la confusion entre ces deux rôles, le sujet est rendu ardu par le joyeux bordel que sont la doc et les outils. J&#8217;aurais pu commencer par là tellement c&#8217;est le bazar : l&#8217;histoire du packaging python a été longue et douloureuse, parsemée d&#8217;une ribambelle de librairies, outils et formats aujourd&#8217;hui dépréciés (en vrac, et ne visitez les liens que pour faire de l&#8217;archéologie : <a href="https://setuptools.readthedocs.io/en/latest/easy_install.html">easy_install</a>, <a href="https://wiki.python.org/moin/Distribute">distribute</a>, <a href="https://pypi.org/project/Distutils2/">distutils2</a>, <a href="https://packaging.python.org/glossary/#term-egg">les eggs</a>, &#8230;&#8203;).</p>
+<p>En dehors de la confusion entre ces deux rôles, le sujet est rendu ardu par le joyeux bordel que sont la doc et les outils. J’aurais pu commencer par là tellement c’est le bazar : l’histoire du packaging python a été longue et douloureuse, parsemée d’une ribambelle de librairies, outils et formats aujourd’hui dépréciés (en vrac, et ne visitez les liens que pour faire de l’archéologie : <a href="https://setuptools.readthedocs.io/en/latest/easy_install.html">easy_install</a>, <a href="https://wiki.python.org/moin/Distribute">distribute</a>, <a href="https://pypi.org/project/Distutils2/">distutils2</a>, <a href="https://packaging.python.org/glossary/#term-egg">les eggs</a>, …​).</p>
 </div>
 <div class="paragraph">
-<p>Concernant la doc, ça va beaucoup mieux depuis quelques années, et il <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html">n&#8217;est plus si compliqué de trouver la documentation des features, même inhabituelles</a>. Restez tout de même critique à la lecture des docs et autres billets de blog sur le sujet : comme il n&#8217;y en a pas tant que ça d&#8217;une part, et que le sujet évolue vite d&#8217;autre part, beaucoup d&#8217;articles sont maintenant (partiellement) dépréciés. Cette remarque est valable aussi pour le présent article : cher lecteur du futur (c&#8217;est un pléonasme, ça, non ?), je t&#8217;invite à bien vérifier la date à laquelle j&#8217;ai écrit cet article.</p>
+<p>Concernant la doc, ça va beaucoup mieux depuis quelques années, et il <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html">n’est plus si compliqué de trouver la documentation des features, même inhabituelles</a>. Restez tout de même critique à la lecture des docs et autres billets de blog sur le sujet : comme il n’y en a pas tant que ça d’une part, et que le sujet évolue vite d’autre part, beaucoup d’articles sont maintenant (partiellement) dépréciés. Cette remarque est valable aussi pour le présent article : cher lecteur du futur (c’est un pléonasme, ça, non ?), je t’invite à bien vérifier la date à laquelle j’ai écrit cet article.</p>
 </div>
 <div class="paragraph">
-<p>Concernant les outils, ça vaut c&#8217;que ça vaut, mais pour commencer, j&#8217;aurais tendance à conseiller de tout ignorer à part :</p>
+<p>Concernant les outils, ça vaut c’que ça vaut, mais pour commencer, j’aurais tendance à conseiller de tout ignorer à part :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>setuptools</code> = <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html">package tierce permettant de packager un projet</a>, s&#8217;appuie sur <code>distutils</code> (qui est standard, mais que vous pouvez ignorer car rarement utilisé directement)</p>
+<p><code>setuptools</code> = <a href="https://setuptools.readthedocs.io/en/latest/setuptools.html">package tierce permettant de packager un projet</a>, s’appuie sur <code>distutils</code> (qui est standard, mais que vous pouvez ignorer car rarement utilisé directement)</p>
 </li>
 <li>
 <p><code>pip</code> = outil <a href="https://packaging.python.org/tutorials/installing-packages/#use-pip-for-installing">officiellement recommandé</a> (et le plus utilisé) pour installer les packages python. pip utilise <code>setuptools</code> sous le capot.</p>
@@ -668,7 +668,7 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <p><code>twine</code> / <code>flit</code> = utilitaires utilisés pour publier son package sur PyPI</p>
 </li>
 <li>
-<p><code>pipenv</code> / <code>poetry</code> = pipenv est <a href="https://pipenv.pypa.io/en/latest/">l&#8217;outil officiellement recommandé</a> faisant le café pour la gestion des packages, car mélangeant le métier de <code>virtualenv</code>, de <code>pip</code>, du <code>requirements.txt</code>, et du <code>package.json</code> <a href="https://docs.npmjs.com/creating-a-package-json-file">de npm</a>. poetry est une <a href="https://python-poetry.org/">alternative à pipenv</a> jouant le même rôle, souvent considérée comme mieux foutue.</p>
+<p><code>pipenv</code> / <code>poetry</code> = pipenv est <a href="https://pipenv.pypa.io/en/latest/">l’outil officiellement recommandé</a> faisant le café pour la gestion des packages, car mélangeant le métier de <code>virtualenv</code>, de <code>pip</code>, du <code>requirements.txt</code>, et du <code>package.json</code> <a href="https://docs.npmjs.com/creating-a-package-json-file">de npm</a>. poetry est une <a href="https://python-poetry.org/">alternative à pipenv</a> jouant le même rôle, souvent considérée comme mieux foutue.</p>
 </li>
 </ul>
 </div>
@@ -678,15 +678,15 @@ FACULTATIF = pour aller plus loin, côté <strong>producteur</strong> de package
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://packaging.python.org/glossary/#term-distribution-package">distribution package</a> : une archive contenant du code, des données et métadonnées. Le lecteur attentif remarquera que c&#8217;est ce dont il était question tout au long du présent article.</p>
+<p><a href="https://packaging.python.org/glossary/#term-distribution-package">distribution package</a> : une archive contenant du code, des données et métadonnées. Le lecteur attentif remarquera que c’est ce dont il était question tout au long du présent article.</p>
 </li>
 <li>
-<p><a href="https://packaging.python.org/glossary/#term-import-package">import package</a> : ce sont des <a href="https://docs.python.org/3/tutorial/modules.html#packages">regroupements de modules python</a>, c&#8217;est à dire grosso-modo, des répertoires contenant des fichiers de code.</p>
+<p><a href="https://packaging.python.org/glossary/#term-import-package">import package</a> : ce sont des <a href="https://docs.python.org/3/tutorial/modules.html#packages">regroupements de modules python</a>, c’est à dire grosso-modo, des répertoires contenant des fichiers de code.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>C&#8217;est le contexte qui dit de quoi on parle, n&#8217;hésitez-pas à vous référer au <a href="https://packaging.python.org/glossary/">glossaire officiel</a>, car à défaut d&#8217;être exhaustif, il a le mérite d&#8217;être particulièrement clair et concis.</p>
+<p>C’est le contexte qui dit de quoi on parle, n’hésitez-pas à vous référer au <a href="https://packaging.python.org/glossary/">glossaire officiel</a>, car à défaut d’être exhaustif, il a le mérite d’être particulièrement clair et concis.</p>
 </div>
 </div>
 </div>

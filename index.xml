@@ -6,18 +6,16 @@
     <description>Recent content on Phidra&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>fr-fr</language>
-    <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate>
-    
-	<atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Boost Graph Library tutorial</title>
       <link>https://phidra.github.io/blog/2020-12-31-boost-graph-library/</link>
       <pubDate>Thu, 31 Dec 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-12-31-boost-graph-library/</guid>
-      <description>De quoi va-t-on causer : Introduction Création de notre graphe Remplissage du graphe Consultation/modification du graphe Les property_map Enfin, on exécute l&amp;#8217;algo ! Conclusion Annexe n°1 = à propos de la doc de la BGL Annexe n°2 = installation de la BGL Annexe n°3 = autre façon d&amp;#8217;utiliser les properties Annexe n°4 = property_map sur une propriété externe Annexe n°5 = prédécesseurs et récupération du plus court chemin Annexe n°6 = sujets laissés de côté     Introduction  C&amp;#8217;est subjectif, mais je trouve la doc de la Boost Graph Library (appelée BGL dans la suite de ce post) pas super bien foutue.</description>
+      <description>Introduction  C’est subjectif, mais je trouve la doc de la Boost Graph Library (appelée BGL dans la suite de ce post) pas super bien foutue.
+ J’ai récemment joué un peu avec, mon objectif était simple : créer le graphe suivant, et calculer le plus court chemin entre A et H avec l’algorithme de Dijkstra :
+   Les lettres sont les vertex du graphe, les nombres au dessus des edges sont leur poids ; par conséquent, le plus court chemin entre A et H est ABEGH, de poids total 5+3+5+3=16.</description>
     </item>
     
     <item>
@@ -26,9 +24,9 @@
       <pubDate>Sun, 20 Dec 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/in2words/</guid>
-      <description>L&amp;#8217;objectif de cette page est de &#34;documenter&#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
- Je mets des guillemets autour de &#34;documenter&#34;, car il s&amp;#8217;agit ici d&amp;#8217;être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
- D&amp;#8217;autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l&amp;#8217;intérêt pour MOI, vu que c&amp;#8217;est les notions que j&amp;#8217;ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
+      <description>L’objectif de cette page est de &amp;#34;documenter&amp;#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
+ Je mets des guillemets autour de &amp;#34;documenter&amp;#34;, car il s’agit ici d’être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
+ D’autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l’intérêt pour MOI, vu que c’est les notions que j’ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
     </item>
     
     <item>
@@ -37,8 +35,8 @@
       <pubDate>Sat, 05 Dec 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-12-05-pas-facile-de-rester-concis/</guid>
-      <description>De quoi va-t-on causer : De l&amp;#8217;idée au post Infos essentielles et infos secondaires Trois lecteurs Stragégies possibles And the winner is&amp;#8230;&amp;#8203;     De l&amp;#8217;idée au post Ça fait environ 10 mois que j&amp;#8217;ai publié le premier post de ce blog. D&amp;#8217;autres ont suivi, tous liés au développement logiciel ; le présent post sera le premier qui parlera d&amp;#8217;autre chose.
- Même s&amp;#8217;il n&amp;#8217;est pas encore temps de faire un bilan ni de comparer mon expérience à ce que j&amp;#8217;en attendais, je veux réfléchir dès maintenant à ma façon de blogger, et notamment à une question précise, que je formule un peu plus bas.</description>
+      <description>De l’idée au post Ça fait environ 10 mois que j’ai publié le premier post de ce blog. D’autres ont suivi, tous liés au développement logiciel ; le présent post sera le premier qui parlera d’autre chose.
+ Même s’il n’est pas encore temps de faire un bilan ni de comparer mon expérience à ce que j’en attendais, je veux réfléchir dès maintenant à ma façon de blogger, et notamment à une question précise, que je formule un peu plus bas.</description>
     </item>
     
     <item>
@@ -47,7 +45,9 @@
       <pubDate>Fri, 20 Nov 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-11-20-saut-de-ligne-final/</guid>
-      <description>De quoi va-t-on causer : Tout commence en parsant du CSV Faut-il un saut de ligne final ? Robust or not robust ? Conclusion = ce qu&amp;#8217;il faut retenir Annexe n°1 = visualiser le saut de ligne final Annexe n°2 = intérêt des sauts de lignes Annexe n°3 = pourquoi j&amp;#8217;ai voulu utiliser .good() Annexe n°4 = quelle différence entre getline(&amp;#8230;&amp;#8203;) et getline(&amp;#8230;&amp;#8203;).good() ? Annexe n°5 = liens utiles     Tout commence en parsant du CSV Récemment, j&amp;#8217;ai eu à parser un fichier CSV en C++.</description>
+      <description>Tout commence en parsant du CSV Récemment, j’ai eu à parser un fichier CSV en C++. C’est souvent une fausse bonne idée de parser soi-même du CSV, car c’est plus compliqué qu’il n’y paraît, mais là ça s’y prêtait bien.
+ J’ai écrit quelque chose comme :
+ #include &amp;lt;sstream&amp;gt; #include &amp;lt;vector&amp;gt; using namespace std; vector&amp;lt;string&amp;gt; parse(istream&amp;amp; stream) { vector&amp;lt;string&amp;gt; tokens; string line; while(getline(stream, line).good()) { tokens.push_back(line); } return tokens; } int main(void) { istringstream iss(&amp;#34;line1\nline2\n&amp;#34;); parse(iss); // {&amp;#34;line1&amp;#34;, &amp;#34;line2&amp;#34;} }   Et ce code fonctionne correctement…​ ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n’a pas de saut de ligne final (\n), la dernière ligne est ignorée :</description>
     </item>
     
     <item>
@@ -57,7 +57,7 @@
       
       <guid>https://phidra.github.io/blog/2020-11-03-linker-options-order/</guid>
       <description>Mise en situation Allez, pour une fois, on attaque cash pistache avec du code :
- #include &amp;lt;iostream&amp;gt; #include &amp;lt;zlib.h&amp;gt; int main(void) { std::cout &amp;lt;&amp;lt; &amp;quot;zlib version = &amp;quot; &amp;lt;&amp;lt; zlibVersion() &amp;lt;&amp;lt; std::endl; return 0; }   On a un main.cpp qui utilise une librairie, en l&amp;#8217;occurence la zlib ; la question du jour concerne la commande à utiliser pour le builder. On trouve parfois ce type de commande :</description>
+ #include &amp;lt;iostream&amp;gt; #include &amp;lt;zlib.h&amp;gt; int main(void) { std::cout &amp;lt;&amp;lt; &amp;#34;zlib version = &amp;#34; &amp;lt;&amp;lt; zlibVersion() &amp;lt;&amp;lt; std::endl; return 0; }   On a un main.cpp qui utilise une librairie, en l’occurence la zlib ; la question du jour concerne la commande à utiliser pour le builder. On trouve parfois ce type de commande :</description>
     </item>
     
     <item>
@@ -66,8 +66,9 @@
       <pubDate>Mon, 31 Aug 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-08-31-std-ref/</guid>
-      <description>De quoi va-t-on causer : ce qu&amp;#8217;en dit la doc conversion implicite en T&amp;amp; et std::ref dans tout ça ? exemple 1 : std::bind exemple 2 : std::thread résumé et autre usage   Je repars aujourd&amp;#8217;hui de ce post sur std::reference_wrapper, pour expliquer l&amp;#8217;intérêt de std::ref dans les appels de fonctions template.
- Dans un précédent post, on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :</description>
+      <description>Je repars aujourd’hui de ce post sur std::reference_wrapper, pour expliquer l’intérêt de std::ref dans les appels de fonctions template.
+ Dans un précédent post, on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :
+ void heavy_task(int&amp;amp; result, const int amount) { /* ... */ } int main(void) { int result_even = 0; auto th = std::thread(heavy_task, std::ref(result_even), amount); }   On s’intéresse à std::ref(result_even) : qu’apporte std::ref, et pourquoi est-il nécessaire ici ?</description>
     </item>
     
     <item>
@@ -76,9 +77,9 @@
       <pubDate>Wed, 19 Aug 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-08-19-nested-quotes-in-bash/</guid>
-      <description>Pourquoi mettre des quotes Même s&amp;#8217;ils sont bien pratiques car utilisables presque partout et proches du système, dès que j&amp;#8217;ai un besoin complexe, je préfère éviter les scripts bash.
- L&amp;#8217;une des raisons à cela est que la gestion des chaînes de caractères est bug-prone. Prenons l&amp;#8217;exemple d&amp;#8217;un fichier dans un répertoire, avec les deux noms contenant un espace :
- mkdir &amp;quot;this directory&amp;quot; myfile=&amp;quot;this directory/that file.txt&amp;quot; touch &amp;quot;$myfile&amp;quot; tree # .</description>
+      <description>Pourquoi mettre des quotes Même s’ils sont bien pratiques car utilisables presque partout et proches du système, dès que j’ai un besoin complexe, je préfère éviter les scripts bash.
+ L’une des raisons à cela est que la gestion des chaînes de caractères est bug-prone. Prenons l’exemple d’un fichier dans un répertoire, avec les deux noms contenant un espace :
+ mkdir &amp;#34;this directory&amp;#34; myfile=&amp;#34;this directory/that file.txt&amp;#34; touch &amp;#34;$myfile&amp;#34; tree # .</description>
     </item>
     
     <item>
@@ -87,8 +88,8 @@
       <pubDate>Sat, 08 Aug 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-08-08-birthday-problem/</guid>
-      <description>De quoi va-t-on causer : Création d&amp;#8217;une base temporaire Paradoxe des anniversaires Implémentations alternatives Le meilleur code est celui qu&amp;#8217;on n&amp;#8217;écrit pas Pour conclure     Création d&amp;#8217;une base temporaire Lors d&amp;#8217;une revue de code, je suis tombé récemment sur la création d&amp;#8217;une base de données temporaire :
- db_name = &amp;quot;test_{}&amp;quot;.format(randrange(1000))   Le contexte : un test a besoin d&amp;#8217;une base de données vierge, il créée donc une base temporaire dont le nom est celui de la ligne ci-dessus, puis la supprime après utilisation.</description>
+      <description>Création d’une base temporaire Lors d’une revue de code, je suis tombé récemment sur la création d’une base de données temporaire :
+ db_name = &amp;#34;test_{}&amp;#34;.format(randrange(1000))   Le contexte : un test a besoin d’une base de données vierge, il créée donc une base temporaire dont le nom est celui de la ligne ci-dessus, puis la supprime après utilisation. Le sujet qui nous intéresse aujourd’hui : pour s’assurer sans trop d’effort que des exécutions concurrentes du test ne se marcheront pas dessus, le nom de la base temporaire comporte un suffixe aléatoire : randrange(1000).</description>
     </item>
     
     <item>
@@ -97,8 +98,9 @@
       <pubDate>Tue, 09 Jun 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-06-09-concurrency-vs-parallelism/</guid>
-      <description>De quoi va-t-on causer : Concurrence == parallélisme ? Concurrence Parallélisme Un peu de code BONUS = toi aussi, ralentis ton programme en le parallélisant     Concurrence == parallélisme ? À l&amp;#8217;oral, on mélange souvent concurrence et parallélisme. D&amp;#8217;ailleurs, en première approche, à la question &#34;C&amp;#8217;est quoi un programme qui exécute des tâches concurrentes ?&#34;, on serait tenté de répondre :
-  — C&amp;#8217;est un programme qui exécute plusieurs tâches en même temps.</description>
+      <description>Concurrence == parallélisme ? À l’oral, on mélange souvent concurrence et parallélisme. D’ailleurs, en première approche, à la question &amp;#34;C’est quoi un programme qui exécute des tâches concurrentes ?&amp;#34;, on serait tenté de répondre :
+  — C’est un programme qui exécute plusieurs tâches en même temps.
+   Et à la question &amp;#34;C’est quoi un programme qui exécute des tâches en parallèle ?&amp;#34;, on peut également fournir la même réponse :</description>
     </item>
     
     <item>
@@ -107,8 +109,8 @@
       <pubDate>Fri, 01 May 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-05-01-rtree/</guid>
-      <description>De quoi va-t-on causer : Une histoire de graphe One solution : revolution rectangulation Let me see the code Pour conclure     Une histoire de graphe Supposons qu&amp;#8217;on veuille implémenter un calculateur d&amp;#8217;itinéraire permettant de retrouver le plus court chemin entre deux lieux quelconques de Bordeaux. Par exemple, on veut trouver le plus court chemin entre la place de la Victoire et &#34;chez moi&#34;.
- Pour cela, on dispose d&amp;#8217;une liste de toutes les rues de Bordeaux, accompagnées de leur géométrie.</description>
+      <description>Une histoire de graphe Supposons qu’on veuille implémenter un calculateur d’itinéraire permettant de retrouver le plus court chemin entre deux lieux quelconques de Bordeaux. Par exemple, on veut trouver le plus court chemin entre la place de la Victoire et &amp;#34;chez moi&amp;#34;.
+ Pour cela, on dispose d’une liste de toutes les rues de Bordeaux, accompagnées de leur géométrie. La géométrie d’une rue est vue comme une liste de N segments consécutifs, donc une liste de N+1 points GPS.</description>
     </item>
     
     <item>
@@ -117,9 +119,9 @@
       <pubDate>Tue, 17 Mar 2020 22:14:41 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-03-17-packaging-python/</guid>
-      <description>Comme beaucoup (beaucoup) d&amp;#8217;autres avant moi, je blogge sur le packaging python.
- Je ne vais pas cependant PAS expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d&amp;#8217;expliquer grossièrement ce dont on parle quand on s&amp;#8217;intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j&amp;#8217;ai faite moi.
- Ce post n&amp;#8217;est donc pas suffisant pour naviguer comme un poisson dans les eaux du packaging python, l&amp;#8217;objectif est plutôt d&amp;#8217;en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.</description>
+      <description>Comme beaucoup (beaucoup) d’autres avant moi, je blogge sur le packaging python.
+ Je ne vais pas cependant PAS expliquer comment packager son projet (ou pas beaucoup, et ça restera facultatif ^^). À la place, je vais essayer d’expliquer grossièrement ce dont on parle quand on s’intéresse au packaging, et clarifier une confusion fréquente — en tout cas que j’ai faite moi.
+ Ce post n’est donc pas suffisant pour naviguer comme un poisson dans les eaux du packaging python, l’objectif est plutôt d’en sortir un peu mieux armé pour utiliser les autres ressources sur le sujet : docs, articles, tutos, etc.</description>
     </item>
     
     <item>
@@ -128,13 +130,13 @@
       <pubDate>Wed, 11 Mar 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-03-11-aristotle-project/</guid>
-      <description>Si on vous posait la question, qu&amp;#8217;est-ce que vous répondriez ? Pour ma part, j&amp;#8217;aurais sans doute avancé des éléments comme :
+      <description>Si on vous posait la question, qu’est-ce que vous répondriez ? Pour ma part, j’aurais sans doute avancé des éléments comme :
    des membres compétents
-  des membres qui s&amp;#8217;entendent bien
+  des membres qui s’entendent bien
   un niveau technique homogène (ou au contraire disparate ?)
-  des membres qui savent travailler en équipe (ça veut dire quoi, ça, d&amp;#8217;ailleurs ?)
+  des membres qui savent travailler en équipe (ça veut dire quoi, ça, d’ailleurs ?)
   une équipe à taille humaine
-  &amp;#8230;&amp;#8203;</description>
+  …​</description>
     </item>
     
     <item>
@@ -143,10 +145,10 @@
       <pubDate>Fri, 28 Feb 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-02-28-shuffle/</guid>
-      <description>Position du problème Je suis tombé sur un article très intéressant, j&amp;#8217;avais commencé à prendre des notes, mais ça se finit en post :-)
- Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible ait la même probabilité d&amp;#8217;être choisie ?
+      <description>Position du problème Je suis tombé sur un article très intéressant, j’avais commencé à prendre des notes, mais ça se finit en post :-)
+ Étant donné un jeu de N cartes, comment le mélanger de telle sorte que chaque permutation possible ait la même probabilité d’être choisie ?
  Exemple concret : prenons un jeu de 5 cartes ABCDE :
-  Figure 1. Jeu de 5 cartes  L&amp;#8217;objectif final est de le mélanger :</description>
+  Figure 1. Jeu de 5 cartes  L’objectif final est de le mélanger :</description>
     </item>
     
     <item>
@@ -155,9 +157,9 @@
       <pubDate>Thu, 20 Feb 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-02-20-man/</guid>
-      <description>Position du problème La plupart du temps, quand j&amp;#8217;utilise man, je m&amp;#8217;embête pas, et je fais par exemple :
- man tar   Mais on trouve de temps à autre une syntaxe précisant un numéro, assortie parfois d&amp;#8217;une vague mention de &#34;sections&#34;. Par exemple :
- man 3 zlib   J&amp;#8217;avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &#34;chapitres&#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib.</description>
+      <description>Position du problème La plupart du temps, quand j’utilise man, je m’embête pas, et je fais par exemple :
+ man tar   Mais on trouve de temps à autre une syntaxe précisant un numéro, assortie parfois d’une vague mention de &amp;#34;sections&amp;#34;. Par exemple :
+ man 3 zlib   J’avais toujours supposé sans jamais le vérifier que ces commandes avaient leur manuel découpé en plusieurs &amp;#34;chapitres&amp;#34;, et que ce numéro était le numéro du chapitre : man 3 zlib était équivalent à ouvre le troisième chapitre du man de zlib.</description>
     </item>
     
     <item>
@@ -166,9 +168,9 @@
       <pubDate>Fri, 14 Feb 2020 15:08:25 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/2020-02-15-make_shared/</guid>
-      <description>Ça sert à quoi make_shared ? Quel est l&amp;#8217;intérêt de make_shared ? Après tout, on peut très bien s&amp;#8217;en passer pour créer des shared_ptr :
+      <description>Ça sert à quoi make_shared ? Quel est l’intérêt de make_shared ? Après tout, on peut très bien s’en passer pour créer des shared_ptr :
  shared_ptr&amp;lt;int&amp;gt; age{new int(42)};   Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :
- shared_ptr&amp;lt;int&amp;gt; age = make_shared&amp;lt;int&amp;gt;(42);   TL;DR : c&amp;#8217;est plus un peu plus efficace, et un peu moins risqué.
+ shared_ptr&amp;lt;int&amp;gt; age = make_shared&amp;lt;int&amp;gt;(42);   TL;DR : c’est plus un peu plus efficace, et un peu moins risqué.
    Mais au fait, ça marche comment, shared_ptr ?</description>
     </item>
     
@@ -179,7 +181,9 @@
       
       <guid>https://phidra.github.io/blog/menu/notes/</guid>
       <description>EDIT 2021-02-26 : pour diverses raisons expliquées plus bas, mes notes seront dorénavant prise sur ce repo github, et la présente page ne sera plus alimentée.
-   Liste des liens    Pourquoi cette page EDIT 2021-02-26 : abandon de cette page au profit d&amp;#8217;un repo github de notes [ARTICLE] How to hire senior developers: Give them more autonomy [ARTICLE] Value semantics [VIDEO] Back to Basics: The Abstract Machine - Bob Steagall - CppCon 2020 [VIDEO] CppCon 2017: Fedor Pikus “C++ atomics, from basic to advanced.</description>
+   Liste des liens  
+   
+   Pourquoi cette page Je croise souvent des articles/vidéos/posts/etc. dont j’ai envie de garder quelque chose. Jusqu’ici, ma façon canonique de le faire était d’en &amp;#34;extraire&amp;#34; la connaissance et de trouver un endroit dans mes notes où l’ajouter.</description>
     </item>
     
     <item>
@@ -188,9 +192,9 @@
       <pubDate>Wed, 01 Jan 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/references/</guid>
-      <description>Work in progress &amp;#8594; liste non-exhaustive.
- Elle n&amp;#8217;est pas particulièrement triée : c&amp;#8217;est pas parce qu&amp;#8217;un item est en haut que je le juge plus intéressant que son voisin du dessous.
-   Sources   Sam &amp;amp; Max : on ne les présente plus. Si ? C&amp;#8217;est l&amp;#8217;une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c&amp;#8217;est l&amp;#8217;une des références qui m&amp;#8217;a donnée envie de blogger.</description>
+      <description>Work in progress → liste non-exhaustive.
+ Elle n’est pas particulièrement triée : c’est pas parce qu’un item est en haut que je le juge plus intéressant que son voisin du dessous.
+   Sources   Sam &amp;amp; Max : on ne les présente plus. Si ? C’est l’une des ressources francophones sur python des plus pédagogiques, très accessibles aux débutants. Le blog est freezé mais reste en ligne, c’est l’une des références qui m’a donnée envie de blogger.</description>
     </item>
     
     <item>
@@ -199,7 +203,7 @@
       <pubDate>Wed, 01 Jan 2020 10:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/about/</guid>
-      <description>Quoi Je suis Phidra, développeur depuis une douzaine d&amp;#8217;années → ce blog contient des posts liés au développement, surtout en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données (e.g. le rtree) ou algorithmes (e.g. l&amp;#8217;algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.g. le projet Aristote).</description>
+      <description>Quoi Je suis Phidra, développeur depuis une douzaine d’années → ce blog contient des posts liés au développement, surtout en C++ (e.g. utilité de make_shared) et en python (e.g. le packaging python) qui sont mes langages principaux, mais également des structures de données (e.g. le rtree) ou algorithmes (e.g. l’algorithme de Sattolo), des outils (e.g. les sections de man), voire des sujets liés à la vie de développeur (e.g. le projet Aristote).</description>
     </item>
     
   </channel>

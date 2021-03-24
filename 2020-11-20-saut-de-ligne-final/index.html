@@ -3,7 +3,7 @@
   <head>
     <title>Saut de ligne en fin de fichier // Phidra&#39;s blog</title>
     <meta charset="utf-8" />
-    <meta name="generator" content="Hugo 0.73.0" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     
@@ -65,34 +65,21 @@
     <div class="post-content">
       <div id="preamble">
 <div class="sectionbody">
-<div id="toc" class="toc">
-<div id="toctitle" class="title">De quoi va-t-on causer :</div>
-<ul class="sectlevel1">
-<li><a href="#_tout_commence_en_parsant_du_csv">Tout commence en parsant du CSV</a></li>
-<li><a href="#_faut_il_un_saut_de_ligne_final">Faut-il un saut de ligne final ?</a></li>
-<li><a href="#_robust_or_not_robust">Robust or not robust ?</a></li>
-<li><a href="#_conclusion_ce_qu_il_faut_retenir">Conclusion = ce qu&#8217;il faut retenir</a></li>
-<li><a href="#annexe1">Annexe n°1 = visualiser le saut de ligne final</a></li>
-<li><a href="#annexe2">Annexe n°2 = intérêt des sauts de lignes</a></li>
-<li><a href="#annexe3">Annexe n°3 = pourquoi j&#8217;ai voulu utiliser <code>.good()</code></a></li>
-<li><a href="#annexe4">Annexe n°4 = quelle différence entre <code>getline(&#8230;&#8203;)</code> et <code>getline(&#8230;&#8203;).good()</code> ?</a></li>
-<li><a href="#_annexe_n_5_liens_utiles">Annexe n°5 = liens utiles</a></li>
-</ul>
-</div>
+
 </div>
 </div>
 <div class="sect1">
 <h2 id="_tout_commence_en_parsant_du_csv">Tout commence en parsant du CSV</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Récemment, j&#8217;ai eu à parser un fichier CSV en C++. C&#8217;est souvent une fausse bonne idée de parser soi-même du CSV, car c&#8217;est <a href="https://sebsauvage.net/wiki/doku.php?id=csv">plus compliqué qu&#8217;il n&#8217;y paraît</a>, mais là ça s&#8217;y prêtait bien.</p>
+<p>Récemment, j’ai eu à parser un fichier CSV en C++. C’est souvent une fausse bonne idée de parser soi-même du CSV, car c’est <a href="https://sebsauvage.net/wiki/doku.php?id=csv">plus compliqué qu’il n’y paraît</a>, mais là ça s’y prêtait bien.</p>
 </div>
 <div class="paragraph">
-<p>J&#8217;ai écrit quelque chose comme :</p>
+<p>J’ai écrit quelque chose comme :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;sstream&gt;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;sstream&gt;</span>
 <span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;vector&gt;</span>
 
 <span style="color: #66d9ef">using</span> <span style="color: #66d9ef">namespace</span> <span style="color: #f8f8f2">std;</span>
@@ -110,23 +97,23 @@
 
 <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">main(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">istringstream</span> <span style="color: #f8f8f2">iss(</span><span style="color: #e6db74">&quot;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">);</span>
-    <span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&quot;line1&quot;, &quot;line2&quot;}</span>
+    <span style="color: #f8f8f2">istringstream</span> <span style="color: #f8f8f2">iss(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">);</span>
+    <span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Et ce code fonctionne correctement&#8230;&#8203; ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n&#8217;a pas de saut de ligne final (<code>\n</code>), la dernière ligne est ignorée :</p>
+<p>Et ce code fonctionne correctement…​ ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n’a pas de saut de ligne final (<code>\n</code>), la dernière ligne est ignorée :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">istringstream</span> <span style="color: #a6e22e">iss</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&quot;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line3&quot;</span><span style="color: #f8f8f2">);</span>
-<span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&quot;line1&quot;, &quot;line2&quot;}</span>
-<span style="color: #75715e">// je m&#39;attendais plutôt à {&quot;line1&quot;, &quot;line2&quot;, &quot;line3&quot;} !</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">istringstream</span> <span style="color: #a6e22e">iss</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line3&#34;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
+<span style="color: #75715e">// je m&#39;attendais plutôt à {&#34;line1&#34;, &#34;line2&#34;, &#34;line3&#34;} !</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Alors : un "bon" fichier CSV a-t-il obligatoirement un saut de ligne final ? Dans quelle mesure est-ce "grave" s&#8217;il en est dépourvu ?</p>
+<p>Alors : un &#34;bon&#34; fichier CSV a-t-il obligatoirement un saut de ligne final ? Dans quelle mesure est-ce &#34;grave&#34; s’il en est dépourvu ?</p>
 </div>
 </div>
 </div>
@@ -134,10 +121,10 @@
 <h2 id="_faut_il_un_saut_de_ligne_final">Faut-il un saut de ligne final ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p><a id="back-from-annexe1"></a>Déjà, ce n&#8217;est  <a href="#annexe1">pas toujours simple</a> de distinguer un fichier avec et sans saut de ligne final.</p>
+<p><a id="back-from-annexe1"></a>Déjà, ce n’est  <a href="#annexe1">pas toujours simple</a> de distinguer un fichier avec et sans saut de ligne final.</p>
 </div>
 <div class="paragraph">
-<p>Quand on creuse un peu, on constate que la présence d&#8217;un saut de ligne final est requise par <a href="https://pubs.opengroup.org/onlinepubs/9699919799/">le standard POSIX</a>. La <a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html">troisième section</a> du standard est consacrée aux définitions des termes utilisés, et on y trouve celles d&#8217;un fichier texte, d&#8217;une ligne, et d&#8217;un saut de ligne :</p>
+<p>Quand on creuse un peu, on constate que la présence d’un saut de ligne final est requise par <a href="https://pubs.opengroup.org/onlinepubs/9699919799/">le standard POSIX</a>. La <a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html">troisième section</a> du standard est consacrée aux définitions des termes utilisés, et on y trouve celles d’un fichier texte, d’une ligne, et d’un saut de ligne :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -148,12 +135,12 @@
 <p><a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_206"><strong>Line</strong></a> : A sequence of zero or more non-&lt;newline&gt; characters plus a terminating &lt;newline&gt; character.</p>
 </li>
 <li>
-<p><a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_243"><strong>Newline Character</strong></a> : A character that in the output stream indicates that printing should start at the beginning of the next line. It is the character designated by '\n' in the C language.</p>
+<p><a href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap03.html#tag_03_243"><strong>Newline Character</strong></a> : A character that in the output stream indicates that printing should start at the beginning of the next line. It is the character designated by &#39;\n&#39; in the C language.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Vues ces trois définitions, tout fichier texte non-vide doit obligatoirement se terminer par un <code>\n</code>. C&#8217;est d&#8217;ailleurs confirmé par les définitions des lignes vides, blanches ,et incomplètes :</p>
+<p>Vues ces trois définitions, tout fichier texte non-vide doit obligatoirement se terminer par un <code>\n</code>. C’est d’ailleurs confirmé par les définitions des lignes vides, blanches ,et incomplètes :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -169,10 +156,10 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Le standard est clair : un fichier texte doit obligatoirement se terminer par un <code>\n</code>, y compris si c&#8217;est une ligne vide (ou <em>blank</em>). Une ligne qui ne se terminerait pas par ce <code>\n</code> n&#8217;est pas une ligne vide : c&#8217;est une ligne <strong>incomplète</strong> !</p>
+<p>Le standard est clair : un fichier texte doit obligatoirement se terminer par un <code>\n</code>, y compris si c’est une ligne vide (ou <em>blank</em>). Une ligne qui ne se terminerait pas par ce <code>\n</code> n’est pas une ligne vide : c’est une ligne <strong>incomplète</strong> !</p>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe2"></a>La raison de cette situation est à la fois historique et pratique, j&#8217;en touche un mot <a href="#annexe2">en annexe</a>.</p>
+<p><a id="back-from-annexe2"></a>La raison de cette situation est à la fois historique et pratique, j’en touche un mot <a href="#annexe2">en annexe</a>.</p>
 </div>
 </div>
 </div>
@@ -182,39 +169,39 @@
 <div class="sect2">
 <h3 id="_utilisation_idiomatique_de_getline">Utilisation idiomatique de getline</h3>
 <div class="paragraph">
-<p><a id="back-from-annexe3"></a>Pour revenir sur l&#8217;exemple initial, le code donné plus haut utilise <code>getline(&#8230;&#8203;).good()</code> (<a href="#annexe3">qui me paraît plus clair</a>), dans la boucle while :</p>
+<p><a id="back-from-annexe3"></a>Pour revenir sur l’exemple initial, le code donné plus haut utilise <code>getline(…​).good()</code> (<a href="#annexe3">qui me paraît plus clair</a>), dans la boucle while :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Mais la façon <a href="http://www.cplusplus.com/doc/tutorial/files/">idiomatique</a> d&#8217;utiliser <code>getline</code> est plutôt sans <code>.good()</code>, comme ceci :</p>
+<p>Mais la façon <a href="http://www.cplusplus.com/doc/tutorial/files/">idiomatique</a> d’utiliser <code>getline</code> est plutôt sans <code>.good()</code>, comme ceci :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><a id="back-from-annexe4"></a>Et effectivement, en suivant la façon idiomatique, le dernier token est correctement parsé, peu importe que le fichier soit ou non pourvu d&#8217;un <code>\n</code> final. L&#8217;explication tient à la gestion des <em>state flags</em> du stream utilisé par getline, j&#8217;explique en détail <a href="#annexe4">en fin de post</a> pourquoi <code>getline(&#8230;&#8203;).good()</code> et <code>getline(&#8230;&#8203;)</code> se comportent différement.</p>
+<p><a id="back-from-annexe4"></a>Et effectivement, en suivant la façon idiomatique, le dernier token est correctement parsé, peu importe que le fichier soit ou non pourvu d’un <code>\n</code> final. L’explication tient à la gestion des <em>state flags</em> du stream utilisé par getline, j’explique en détail <a href="#annexe4">en fin de post</a> pourquoi <code>getline(…​).good()</code> et <code>getline(…​)</code> se comportent différement.</p>
 </div>
 <div class="paragraph">
-<p>Une façon de présenter les choses, c&#8217;est de dire que la façon idiomatique d&#8217;utiliser <code>getline</code> rend le code <strong>robuste</strong> à l&#8217;absence de <code>\n</code> final, alors qu&#8217;un code utilisant <code>.good()</code> comme présenté en début de post n&#8217;y est <strong>pas robuste</strong>.</p>
+<p>Une façon de présenter les choses, c’est de dire que la façon idiomatique d’utiliser <code>getline</code> rend le code <strong>robuste</strong> à l’absence de <code>\n</code> final, alors qu’un code utilisant <code>.good()</code> comme présenté en début de post n’y est <strong>pas robuste</strong>.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_exception_dans_le_modèle_mental">Exception dans le modèle mental</h3>
 <div class="paragraph">
-<p>Utiliser <code>getline</code> de façon idiomatique me pose un (petit) problème : le "modèle mental" que je me forge pour comprendre le comportement du parser doit alors forcément inclure une "règle exceptionnelle".</p>
+<p>Utiliser <code>getline</code> de façon idiomatique me pose un (petit) problème : le &#34;modèle mental&#34; que je me forge pour comprendre le comportement du parser doit alors forcément inclure une &#34;règle exceptionnelle&#34;.</p>
 </div>
 <div class="paragraph">
 <p>Voici un exemple pour illustrer de quoi je parle :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">parse(string</span> <span style="color: #f8f8f2">str)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">parse(string</span> <span style="color: #f8f8f2">str)</span>
 <span style="color: #f8f8f2">{</span>
     <span style="color: #f8f8f2">istringstream</span> <span style="color: #f8f8f2">stream(str);</span>
     <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
@@ -227,27 +214,27 @@
 <span style="color: #f8f8f2">}</span>
 
 <span style="color: #75715e">// 3 tokens non-vides :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&quot;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&quot;pomme&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;pêche&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;poire&quot;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// 3 tokens, dont un vide :</span>
 
 <span style="color: #75715e">// cas 1 = c&#39;est le premier token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&quot;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&quot;&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;pêche&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;poire&quot;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// cas 2 = c&#39;est le second token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&quot;pomme</span><span style="color: #ae81ff">\n\n</span><span style="color: #e6db74">poire&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&quot;pomme&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;poire&quot;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// cas 3 = c&#39;est le troisième token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&quot;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&quot;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&quot;pomme&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;pêche&quot;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&quot;&quot;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// FALSE !</span></code></pre>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// FALSE !</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Dans le code ci-dessus, on parse un texte (ne se terminant <strong>PAS</strong> par <code>\n</code>) comportant 3 lignes, c&#8217;est à dire 3 tokens. Que se passe-t-il quand l&#8217;un des tokens est une string vide <code>""</code> ? C&#8217;est là que ça devient intéressant :</p>
+<p>Dans le code ci-dessus, on parse un texte (ne se terminant <strong>PAS</strong> par <code>\n</code>) comportant 3 lignes, c’est à dire 3 tokens. Que se passe-t-il quand l’un des tokens est une string vide <code>&#34;&#34;</code> ? C’est là que ça devient intéressant :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>si le token vide est ailleurs qu&#8217;en dernière position, le parsing produit bien 3 tokens, dont un vide</p>
+<p>si le token vide est ailleurs qu’en dernière position, le parsing produit bien 3 tokens, dont un vide</p>
 </li>
 <li>
 <p>si le token vide est en dernière position, le parsing ne produit que 2 tokens, et ignore le token vide</p>
@@ -255,12 +242,12 @@
 </ul>
 </div>
 <div class="paragraph">
-<p>Du coup, si on voulait décrire le comportement du parser, la phrase qu&#8217;on emploierait devrait <strong>obligatoirement</strong> comporter une exception, par exemple :</p>
+<p>Du coup, si on voulait décrire le comportement du parser, la phrase qu’on emploierait devrait <strong>obligatoirement</strong> comporter une exception, par exemple :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Le contenu d&#8217;un fichier est considéré comme une liste de tokens séparés par des sauts de lignes. Ceci reste valable même si un token est vide, <strong>SAUF SI</strong> ce token vide est situé en dernière position.</p>
+<p>Le contenu d’un fichier est considéré comme une liste de tokens séparés par des sauts de lignes. Ceci reste valable même si un token est vide, <strong>SAUF SI</strong> ce token vide est situé en dernière position.</p>
 </div>
 </blockquote>
 </div>
@@ -270,35 +257,35 @@
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p>Le contenu d&#8217;un fichier est considéré comme une liste de tokens se terminant tous par un saut de ligne. Le parser ajoute un token additionnel constitué du texte entre le dernier saut de ligne et la fin du fichier, <strong>SAUF SI</strong> ce token additionnel est vide.</p>
+<p>Le contenu d’un fichier est considéré comme une liste de tokens se terminant tous par un saut de ligne. Le parser ajoute un token additionnel constitué du texte entre le dernier saut de ligne et la fin du fichier, <strong>SAUF SI</strong> ce token additionnel est vide.</p>
 </div>
 </blockquote>
 </div>
 <div class="paragraph">
-<p>Peu importe comment on tourne l&#8217;explication : utiliser <code>getline</code> de façon idiomatique (et ainsi être robuste aux fichiers sans saut de ligne final) s&#8217;accompagne systématiquement d&#8217;un comportement (un peu) incohérent.</p>
+<p>Peu importe comment on tourne l’explication : utiliser <code>getline</code> de façon idiomatique (et ainsi être robuste aux fichiers sans saut de ligne final) s’accompagne systématiquement d’un comportement (un peu) incohérent.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_que_faut_il_faire">Que faut-il faire ?</h3>
 <div class="paragraph">
-<p>Fort de tout ça, j&#8217;implémente quoi, au final ?</p>
+<p>Fort de tout ça, j’implémente quoi, au final ?</p>
 </div>
 <div class="paragraph">
-<p>Même si le puriste en moi préfère un comportement clair ne nécessitant pas de règle exceptionnelle, le parser idiomatique est le meilleur choix, au moins pour la situation dans laquelle j&#8217;étais :</p>
+<p>Même si le puriste en moi préfère un comportement clair ne nécessitant pas de règle exceptionnelle, le parser idiomatique est le meilleur choix, au moins pour la situation dans laquelle j’étais :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>moins bugprone</strong> : dans ma situation, et même s&#8217;il devrait être considéré comme incomplet, je peux être amené à parser un fichier sans saut de ligne final. C&#8217;est alors assez facile d&#8217;introduire un bug en ne remarquant pas que le parser ignore crassement la fin du fichier.</p>
+<p><strong>moins bugprone</strong> : dans ma situation, et même s’il devrait être considéré comme incomplet, je peux être amené à parser un fichier sans saut de ligne final. C’est alors assez facile d’introduire un bug en ne remarquant pas que le parser ignore crassement la fin du fichier.</p>
 </li>
 <li>
-<p><strong>comportement plus intuitif</strong> : c&#8217;est subjectif, mais l&#8217;absence de parsing du dernier token (décrit en tête de post) m&#8217;a surpris : lorsque le fichier ne se termine pas par un saut de ligne, je trouve le comportement du parser idiomatique plus intuitif.</p>
+<p><strong>comportement plus intuitif</strong> : c’est subjectif, mais l’absence de parsing du dernier token (décrit en tête de post) m’a surpris : lorsque le fichier ne se termine pas par un saut de ligne, je trouve le comportement du parser idiomatique plus intuitif.</p>
 </li>
 <li>
-<p><strong>plus homogène</strong> : j&#8217;ai testé quelques parsers standards (<a href="https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.py">python</a>, <a href="https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.rb">ruby</a>, libreoffice), ils suivent tous le comportement du parser idiomatique. Une autre façon de dire les choses est que le comportement du parser idiomatique surprendra moins <em>d&#8217;utilisateurs</em>.</p>
+<p><strong>plus homogène</strong> : j’ai testé quelques parsers standards (<a href="https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.py">python</a>, <a href="https://github.com/phidra/blog/blob/master/content/2020-11-20-saut-de-ligne-final-code/python_ruby/parse_csv.rb">ruby</a>, libreoffice), ils suivent tous le comportement du parser idiomatique. Une autre façon de dire les choses est que le comportement du parser idiomatique surprendra moins <em>d’utilisateurs</em>.</p>
 </li>
 <li>
-<p><strong>plus idiomatique</strong> : c&#8217;est la façon usuelle de parser un fichier en C++ avec <code>getline</code> : le code du parser idiomatique surprendra moins de <em>développeurs</em>.</p>
+<p><strong>plus idiomatique</strong> : c’est la façon usuelle de parser un fichier en C++ avec <code>getline</code> : le code du parser idiomatique surprendra moins de <em>développeurs</em>.</p>
 </li>
 </ul>
 </div>
@@ -306,7 +293,7 @@
 </div>
 </div>
 <div class="sect1">
-<h2 id="_conclusion_ce_qu_il_faut_retenir">Conclusion = ce qu&#8217;il faut retenir</h2>
+<h2 id="_conclusion_ce_quil_faut_retenir">Conclusion = ce qu’il faut retenir</h2>
 <div class="sectionbody">
 <div class="olist arabic">
 <ol class="arabic">
@@ -314,19 +301,19 @@
 <p>un fichier texte correctement formatté doit se terminer par un saut de ligne final <code>\n</code>. À charge pour le développeur de choisir quoi faire face à un fichier incomplet.</p>
 </li>
 <li>
-<p>on devrait toujours avoir une bonne raison de déroger aux façons de faire idiomatiques&#8230;&#8203;</p>
+<p>on devrait toujours avoir une bonne raison de déroger aux façons de faire idiomatiques…​</p>
 </li>
 <li>
-<p>&#8230;&#8203;mais plutôt que de les respecter sans les comprendre, il est toujours intéressant de creuser et de savoir pourquoi elles sont idiomatiques</p>
+<p>…​mais plutôt que de les respecter sans les comprendre, il est toujours intéressant de creuser et de savoir pourquoi elles sont idiomatiques</p>
 </li>
 <li>
-<p>l&#8217;état d&#8217;un <code>std::istream</code> et les <em>state flags</em> qui vont avec peuvent être un chouïa tricky ; c&#8217;est pas la mer à boire non plus si on lit <a href="https://en.cppreference.com/w/cpp/io/ios_base/iostate">la doc</a> attentivement, mais c&#8217;est pas intuitif.</p>
+<p>l’état d’un <code>std::istream</code> et les <em>state flags</em> qui vont avec peuvent être un chouïa tricky ; c’est pas la mer à boire non plus si on lit <a href="https://en.cppreference.com/w/cpp/io/ios_base/iostate">la doc</a> attentivement, mais c’est pas intuitif.</p>
 </li>
 <li>
-<p>en particulier, les deux codes suivants ne sont pas équivalents s&#8217;ils traitent un fichier texte sans saut de ligne final :</p>
+<p>en particulier, les deux codes suivants ne sont pas équivalents s’ils traitent un fichier texte sans saut de ligne final :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span>        <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span>        <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span>
 <span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -342,12 +329,12 @@
 <p>(<a href="#back-from-annexe1">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Savoir si un fichier texte se termine ou non par un saut de ligne n&#8217;est pas aussi trivial qu&#8217;on pourrait le penser. Prenons les deux fichiers suivants :</p>
+<p>Savoir si un fichier texte se termine ou non par un saut de ligne n’est pas aussi trivial qu’on pourrait le penser. Prenons les deux fichiers suivants :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">echo</span> -e -n <span style="color: #e6db74">&quot;pouet&quot;</span>   &gt; /tmp/incomplete
-<span style="color: #f8f8f2">echo</span> -e -n <span style="color: #e6db74">&quot;pouet\n&quot;</span> &gt; /tmp/complete</code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #f8f8f2">echo</span> -e -n <span style="color: #e6db74">&#34;pouet&#34;</span>   &gt; /tmp/incomplete
+<span style="color: #f8f8f2">echo</span> -e -n <span style="color: #e6db74">&#34;pouet\n&#34;</span> &gt; /tmp/complete</code></pre>
 </div>
 </div>
 <div class="sect2">
@@ -356,17 +343,17 @@
 <p>De façon trompeuse, vim les affichera exactement pareil :-/</p>
 </div>
 <div class="paragraph">
-<p>Sous vim, pour savoir que le saut de ligne final est manquant, il faut interroger  l&#8217;option <code>endofline</code> :</p>
+<p>Sous vim, pour savoir que le saut de ligne final est manquant, il faut interroger  l’option <code>endofline</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">:set endofline?
-<span style="color: #75715e"># renvoie &quot;endofline&quot; pour /tmp/complete</span>
-<span style="color: #75715e"># renvoie &quot;noendofline&quot; pour /tmp/incomplete</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>:set endofline?
+<span style="color: #75715e"># renvoie &#34;endofline&#34; pour /tmp/complete</span>
+<span style="color: #75715e"># renvoie &#34;noendofline&#34; pour /tmp/incomplete</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ça n&#8217;est pas forcément une mauvaise idée de mettre cette info dans la status-bar d&#8217;ailleurs&#8230;&#8203;</p>
+<p>Ça n’est pas forcément une mauvaise idée de mettre cette info dans la status-bar d’ailleurs…​</p>
 </div>
 </div>
 <div class="sect2">
@@ -376,7 +363,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">cat /tmp/complete
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>cat /tmp/complete
 pouet
 
 cat /tmp/incomplete
@@ -387,7 +374,7 @@ pouet%   <span style="color: #75715e"># notez le &#39;%&#39; final</span></code>
 <div class="sect2">
 <h3 id="_od">od</h3>
 <div class="paragraph">
-<p><code>od</code> est en quelque sorte un visualisateur du contenu brut d&#8217;un fichier :</p>
+<p><code>od</code> est en quelque sorte un visualisateur du contenu brut d’un fichier :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -396,15 +383,15 @@ pouet%   <span style="color: #75715e"># notez le &#39;%&#39; final</span></code>
 </div>
 </blockquote>
 <div class="attribution">
-&#8212; <a href="https://man7.org/linux/man-pages/man1/od.1.html">man od</a>
+— <a href="https://man7.org/linux/man-pages/man1/od.1.html">man od</a>
 </div>
 </div>
 <div class="paragraph">
-<p>Il permet (si nécessaire, couplé à <code>tail</code>) de visualiser la fin du fichier, pour voir s&#8217;il se termine par <code>\n</code> :</p>
+<p>Il permet (si nécessaire, couplé à <code>tail</code>) de visualiser la fin du fichier, pour voir s’il se termine par <code>\n</code> :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">od -c /tmp/complete
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>od -c /tmp/complete
 <span style="color: #75715e"># 0000000   p   o   u   e   t  \n</span>
 <span style="color: #75715e"># 0000006</span>
 
@@ -417,20 +404,20 @@ od -c /tmp/incomplete
 <div class="sect2">
 <h3 id="_création">création</h3>
 <div class="paragraph">
-<p>Dans la mesure où un fichier texte sans saut de ligne final est considéré comme incomplet, ça n&#8217;est pas surprenant qu&#8217;il ne soit pas trivial non plus de créer un tel fichier incomplet.</p>
+<p>Dans la mesure où un fichier texte sans saut de ligne final est considéré comme incomplet, ça n’est pas surprenant qu’il ne soit pas trivial non plus de créer un tel fichier incomplet.</p>
 </div>
 <div class="paragraph">
-<p>On a vu plus haut qu&#8217;on pouvait utiliser <code>echo</code>. vim permet également de modifier le fichier en cours d&#8217;édition pour supprimer le <code>\n</code> terminal :</p>
+<p>On a vu plus haut qu’on pouvait utiliser <code>echo</code>. vim permet également de modifier le fichier en cours d’édition pour supprimer le <code>\n</code> terminal :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash">:set binary
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span>:set binary
 :set noeol
 :w</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Par ailleurs, s&#8217;il ne s&#8217;agit que de supprimer le saut de ligne final, <code>hexedit</code> ou tout autre éditeur hexa fera également l&#8217;affaire.</p>
+<p>Par ailleurs, s’il ne s’agit que de supprimer le saut de ligne final, <code>hexedit</code> ou tout autre éditeur hexa fera également l’affaire.</p>
 </div>
 </div>
 </div>
@@ -442,10 +429,10 @@ od -c /tmp/incomplete
 <p>(<a href="#back-from-annexe2">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>On peut se demander pourquoi une ligne ne se terminant pas par <code>\n</code> est considérée comme incomplète ? La raison principale est pratico-pratique : c&#8217;est plus simple comme ça.</p>
+<p>On peut se demander pourquoi une ligne ne se terminant pas par <code>\n</code> est considérée comme incomplète ? La raison principale est pratico-pratique : c’est plus simple comme ça.</p>
 </div>
 <div class="paragraph">
-<p>On va prendre trois exemples pour l&#8217;illustrer. Dans ces exemples, on suppose que <strong>les fichiers ne se terminent pas par un saut de ligne</strong>.</p>
+<p>On va prendre trois exemples pour l’illustrer. Dans ces exemples, on suppose que <strong>les fichiers ne se terminent pas par un saut de ligne</strong>.</p>
 </div>
 <div class="sect2">
 <h3 id="_code_c">code C++</h3>
@@ -455,16 +442,16 @@ od -c /tmp/incomplete
 <div class="listingblock">
 <div class="title">pouet.h</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaire</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaire</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>S&#8217;il est inclus dans un fichier source :</p>
+<p>S’il est inclus dans un fichier source :</p>
 </div>
 <div class="listingblock">
 <div class="title">pouet.cpp</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #75715e">#include</span> <span style="color: #75715e">&quot;pouet.h&quot;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span> <span style="color: #75715e">&#34;pouet.h&#34;</span>
 <span style="color: #66d9ef">int</span> <span style="color: #a6e22e">process</span><span style="color: #f8f8f2">(Pouet</span> <span style="color: #f8f8f2">p)</span> <span style="color: #f8f8f2">{...};</span></code></pre>
 </div>
 </div>
@@ -474,41 +461,41 @@ od -c /tmp/incomplete
 <div class="listingblock">
 <div class="title">pouet.cpp (après preprocessing)</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaireint process(Pouet p) {...};</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaireint process(Pouet p) {...};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p>Aïe, la définition de la fonction <code>process</code> se retrouve commentée !</p>
 </div>
 <div class="paragraph">
-<p>Bon, en vrai, l&#8217;absence de saut de ligne final ne fait ni chaud ni froid aux compilateurs modernes, mais historiquement ça a posé suffisamment de soucis pour que le <a href="http://port70.net/~nsz/c/c99/n1256.html#5.1.1.2">standard C requière explicitement</a> que les fichiers se terminent par un saut de ligne.</p>
+<p>Bon, en vrai, l’absence de saut de ligne final ne fait ni chaud ni froid aux compilateurs modernes, mais historiquement ça a posé suffisamment de soucis pour que le <a href="http://port70.net/~nsz/c/c99/n1256.html#5.1.1.2">standard C requière explicitement</a> que les fichiers se terminent par un saut de ligne.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_concaténation_de_fichiers_ou_de_commandes">concaténation de fichiers ou de commandes</h3>
 <div class="paragraph">
-<p>La concaténation de 3 fichiers ne comportant qu&#8217;une seule ligne ne donne pas trois lignes, mais une seule grande ligne :</p>
+<p>La concaténation de 3 fichiers ne comportant qu’une seule ligne ne donne pas trois lignes, mais une seule grande ligne :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Luke is a jedi, brother of Leia&quot;</span> &gt; file1
-<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Leia is a princess, sister of Luke&quot;</span> &gt; file2
-<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Anakin is... well, it&#39;s complicated&quot;</span> &gt; file3
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Luke is a jedi, brother of Leia&#34;</span> &gt; file1
+<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Leia is a princess, sister of Luke&#34;</span> &gt; file2
+<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Anakin is... well, it&#39;s complicated&#34;</span> &gt; file3
 
 cat file1 file2 file3
 <span style="color: #75715e"># Luke is a jedi, brother of LeiaLeia is a princess, sister of LukeAnakin is... well, it&#39;s complicated%</span>
 
-cat file1 file2 file3 <span style="color: #f8f8f2">|</span> grep <span style="color: #e6db74">&quot;^Leia&quot;</span>
-<span style="color: #75715e"># ... rien n&#39;est renvoyé, puisque la ligne résultant de la concaténation ne commence pas par &quot;Leia&quot;</span></code></pre>
+cat file1 file2 file3 <span style="color: #f8f8f2">|</span> grep <span style="color: #e6db74">&#34;^Leia&#34;</span>
+<span style="color: #75715e"># ... rien n&#39;est renvoyé, puisque la ligne résultant de la concaténation ne commence pas par &#34;Leia&#34;</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Côté affichage, l&#8217;enchaînement de commande peut produire des résultats surprenants :</p>
+<p>Côté affichage, l’enchaînement de commande peut produire des résultats surprenants :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Luke\nObi-wan\nYoda&quot;</span> &gt; jedis
-<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Anakin\nPalpatine\nDooku&quot;</span> &gt; siths
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Luke\nObi-wan\nYoda&#34;</span> &gt; jedis
+<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Anakin\nPalpatine\nDooku&#34;</span> &gt; siths
 tail --lines<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span> jedis <span style="color: #f8f8f2">;</span> tail --lines<span style="color: #f92672">=</span><span style="color: #ae81ff">1</span> siths
 <span style="color: #75715e"># YodaDooku%</span></code></pre>
 </div>
@@ -517,12 +504,12 @@ tail --lines<span style="color: #f92672">=</span><span style="color: #ae81ff">1<
 <div class="sect2">
 <h3 id="_ça_rend_le_diff_compliqué">ça rend le diff compliqué</h3>
 <div class="paragraph">
-<p>Les outils comparant des fichiers ligne par ligne voient leur métier rendu (un peu plus) compliqué par l&#8217;absence de saut de ligne final, puisqu&#8217;ils peuvent avoir à indiquer deux types de différences pour une même ligne :</p>
+<p>Les outils comparant des fichiers ligne par ligne voient leur métier rendu (un peu plus) compliqué par l’absence de saut de ligne final, puisqu’ils peuvent avoir à indiquer deux types de différences pour une même ligne :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="bash"><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Luke\nAnakin\nYoda&quot;</span> &gt; file1
-<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&quot;Luke\nAnakin\nYoda\n&quot;</span> &gt; file2
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Luke\nAnakin\nYoda&#34;</span> &gt; file1
+<span style="color: #f8f8f2">echo</span> -n -e <span style="color: #e6db74">&#34;Luke\nAnakin\nYoda\n&#34;</span> &gt; file2
 diff file1 file2
 <span style="color: #75715e"># 3c3</span>
 <span style="color: #75715e"># &lt; Yoda</span>
@@ -535,13 +522,13 @@ diff file1 file2
 </div>
 </div>
 <div class="sect1">
-<h2 id="annexe3">Annexe n°3 = pourquoi j&#8217;ai voulu utiliser <code>.good()</code></h2>
+<h2 id="annexe3">Annexe n°3 = pourquoi j’ai voulu utiliser <code>.good()</code></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>(<a href="#back-from-annexe3">revenir au post</a>)</p>
 </div>
 <div class="paragraph">
-<p>Parmi les principes énoncés par le <em>zen of Python</em>, j&#8217;aime particulièrement le second :</p>
+<p>Parmi les principes énoncés par le <em>zen of Python</em>, j’aime particulièrement le second :</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -550,35 +537,35 @@ diff file1 file2
 </div>
 </blockquote>
 <div class="attribution">
-&#8212; <a href="https://www.python.org/dev/peps/pep-0020/">zen of python</a>
+— <a href="https://www.python.org/dev/peps/pep-0020/">zen of python</a>
 </div>
 </div>
 <div class="paragraph">
-<p>Je n&#8217;aime donc pas beaucoup :</p>
+<p>Je n’aime donc pas beaucoup :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Je trouve que l&#8217;évaluation booléene du retour de <code>getline</code> n&#8217;est pas claire : en effet, sans aller consulter <a href="https://en.cppreference.com/w/cpp/string/basic_string/getline">la doc de getline</a>, on pense naturellement que <code>getline</code> renvoie un booléen indiquant si oui ou non la lecture s&#8217;est bien passée.</p>
+<p>Je trouve que l’évaluation booléene du retour de <code>getline</code> n’est pas claire : en effet, sans aller consulter <a href="https://en.cppreference.com/w/cpp/string/basic_string/getline">la doc de getline</a>, on pense naturellement que <code>getline</code> renvoie un booléen indiquant si oui ou non la lecture s’est bien passée.</p>
 </div>
 <div class="paragraph">
-<p>Comme ça ne coûte pas beaucoup plus cher à écrire, j&#8217;avais donc une petite préférence pour :</p>
+<p>Comme ça ne coûte pas beaucoup plus cher à écrire, j’avais donc une petite préférence pour :</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Ça n&#8217;est toujours pas d&#8217;une clarté limpide, mais au moins on voit que <code>getline</code> ne renvoit pas un booléen, mais un objet qui dispose d&#8217;une fonction-membre <code>.good()</code> : le lien avec le comportement réel de <code>getline</code> (renvoyer <code>stream</code>) est plus facile à faire.</p>
+<p>Ça n’est toujours pas d’une clarté limpide, mais au moins on voit que <code>getline</code> ne renvoit pas un booléen, mais un objet qui dispose d’une fonction-membre <code>.good()</code> : le lien avec le comportement réel de <code>getline</code> (renvoyer <code>stream</code>) est plus facile à faire.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="annexe4">Annexe n°4 = quelle différence entre <code>getline(&#8230;&#8203;)</code> et <code>getline(&#8230;&#8203;).good()</code> ?</h2>
+<h2 id="annexe4">Annexe n°4 = quelle différence entre <code>getline(…​)</code> et <code>getline(…​).good()</code> ?</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>(<a href="#back-from-annexe4">revenir au post</a>)</p>
@@ -587,7 +574,7 @@ diff file1 file2
 <p>Expliquer cette différence de comportement nécessite de creuser un peu le fonctionnement des streams et de getline.</p>
 </div>
 <div class="sect2">
-<h3 id="_state_flags_d_un_stream">state flags d&#8217;un stream</h3>
+<h3 id="_state_flags_dun_stream">state flags d’un stream</h3>
 <div class="paragraph">
 <p>Les <code>istream</code> héritent de <a href="https://en.cppreference.com/w/cpp/io/basic_ios">std::basic_ios</a>, qui dispose de trois <a href="https://en.cppreference.com/w/cpp/io/ios_base/iostate">state flags</a> :</p>
 </div>
@@ -615,15 +602,15 @@ diff file1 file2
 </blockquote>
 </div>
 <div class="paragraph">
-<p>So far so good. La consultation des state flags d&#8217;un stream donné peut se faire de différentes façons :</p>
+<p>So far so good. La consultation des state flags d’un stream donné peut se faire de différentes façons :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://en.cppreference.com/w/cpp/io/basic_ios/rdstate">rdstate</a> permet de récupérer <a href="https://en.cppreference.com/w/cpp/io/ios_base/iostate">une structure</a> décrivant tous les flags d&#8217;un coup</p>
+<p><a href="https://en.cppreference.com/w/cpp/io/basic_ios/rdstate">rdstate</a> permet de récupérer <a href="https://en.cppreference.com/w/cpp/io/ios_base/iostate">une structure</a> décrivant tous les flags d’un coup</p>
 </li>
 <li>
-<p>le stream lui-même dispose de 4 fonctions membres permettant de consulter l&#8217;état : <a href="https://en.cppreference.com/w/cpp/io/basic_ios/good">good</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/eof">eof</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/fail">fail</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/bad">bad</a></p>
+<p>le stream lui-même dispose de 4 fonctions membres permettant de consulter l’état : <a href="https://en.cppreference.com/w/cpp/io/basic_ios/good">good</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/eof">eof</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/fail">fail</a>, <a href="https://en.cppreference.com/w/cpp/io/basic_ios/bad">bad</a></p>
 </li>
 <li>
 <p>le stream surcharge <a href="https://en.cppreference.com/w/cpp/io/basic_ios/operator_bool">operator_bool</a> et <a href="https://en.cppreference.com/w/cpp/io/basic_ios/operator!">operator!</a>, dont les retours dépendent des trois state flags</p>
@@ -634,18 +621,18 @@ diff file1 file2
 <p>La table de vérité mappant les state flags à ces différentes façons de les consulter est rappelée en fin de chacune des pages de docs ci-dessus.</p>
 </div>
 <div class="paragraph">
-<p>Le problème : certes, si on prend quelque minutes pour lire la doc, le comportement des flags et des accesseurs est très bien documenté, et non-ambigü. Malheureusement, il n&#8217;est <strong>pas intuitif</strong> du tout, et viole allègrement le <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principe de moindre surprise</a> :</p>
+<p>Le problème : certes, si on prend quelque minutes pour lire la doc, le comportement des flags et des accesseurs est très bien documenté, et non-ambigü. Malheureusement, il n’est <strong>pas intuitif</strong> du tout, et viole allègrement le <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principe de moindre surprise</a> :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>stream.bad()</code> n&#8217;est <strong>PAS</strong> équivalent à <code>!stream.good()</code></p>
+<p><code>stream.bad()</code> n’est <strong>PAS</strong> équivalent à <code>!stream.good()</code></p>
 </li>
 <li>
-<p><code>bool(stream)</code> n&#8217;est <strong>PAS</strong> équivalent à <code>stream.good()</code>, ni même à <code>!stream.bad()</code>, mais à <code>!stream.fail()</code></p>
+<p><code>bool(stream)</code> n’est <strong>PAS</strong> équivalent à <code>stream.good()</code>, ni même à <code>!stream.bad()</code>, mais à <code>!stream.fail()</code></p>
 </li>
 <li>
-<p><code>stream.bad()</code> et <code>stream.eof()</code> ont la même table de vérité que leur flag, mais ça n&#8217;est <strong>PAS</strong> le cas de <code>stream.fail()</code></p>
+<p><code>stream.bad()</code> et <code>stream.eof()</code> ont la même table de vérité que leur flag, mais ça n’est <strong>PAS</strong> le cas de <code>stream.fail()</code></p>
 </li>
 </ul>
 </div>
@@ -658,17 +645,17 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p><code>getline(stream, line)</code> extrait des caractères de <code>stream</code> (et les place dans <code>line</code>) et s&#8217;arrête lorsqu&#8217;il rencontre <code>\n</code> ou la fin du stream</p>
+<p><code>getline(stream, line)</code> extrait des caractères de <code>stream</code> (et les place dans <code>line</code>) et s’arrête lorsqu’il rencontre <code>\n</code> ou la fin du stream</p>
 </li>
 <li>
 <p>il sette les différents flags sur <code>stream</code> si besoin, et en particulier :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>il settera <code>eofbit</code> s&#8217;il a atteint la fin du stream</p>
+<p>il settera <code>eofbit</code> s’il a atteint la fin du stream</p>
 </li>
 <li>
-<p>il settera <code>failbit</code> s&#8217;il n&#8217;a placé aucun caractère dans <code>line</code> (par exemple parce que le stream était vide)</p>
+<p>il settera <code>failbit</code> s’il n’a placé aucun caractère dans <code>line</code> (par exemple parce que le stream était vide)</p>
 </li>
 </ul>
 </div>
@@ -679,23 +666,23 @@ diff file1 file2
 </ul>
 </div>
 <div class="paragraph">
-<p>Fort de ces préliminaires, on peut comprendre la différence entre : <code>while(getline(&#8230;&#8203;).good())</code> et <code>while(getline(&#8230;&#8203;))</code> :</p>
+<p>Fort de ces préliminaires, on peut comprendre la différence entre : <code>while(getline(…​).good())</code> et <code>while(getline(…​))</code> :</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>dans les deux cas, comme <code>getline</code> retourne un stream, on consulte l&#8217;état du stream que getline a parsé</p>
+<p>dans les deux cas, comme <code>getline</code> retourne un stream, on consulte l’état du stream que getline a parsé</p>
 </li>
 <li>
-<p>dans le premier cas, la boucle <code>while</code> porte sur <code>stream.good()</code>, qui n&#8217;est vrai que si <strong>aucun</strong> des trois state flags n&#8217;est setté</p>
+<p>dans le premier cas, la boucle <code>while</code> porte sur <code>stream.good()</code>, qui n’est vrai que si <strong>aucun</strong> des trois state flags n’est setté</p>
 </li>
 <li>
-<p>dans le second cas, la boucle <code>while</code> porte sur <code>bool(stream)</code> qui est équivalent à <code>!stream.fail()</code>, qui est vrai si <code>failbit</code> et <code>badbit</code> ne sont pas settés, peu importe l&#8217;état de <code>eofbit</code></p>
+<p>dans le second cas, la boucle <code>while</code> porte sur <code>bool(stream)</code> qui est équivalent à <code>!stream.fail()</code>, qui est vrai si <code>failbit</code> et <code>badbit</code> ne sont pas settés, peu importe l’état de <code>eofbit</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>En résumé, <code>while(getline(&#8230;&#8203;))</code> passera dans le corps de la boucle même si <code>eofbit</code> est setté, alors que <code>while(getline(&#8230;&#8203;).good())</code> sortira de la boucle dès que <code>eofbit</code> sera setté.</p>
+<p>En résumé, <code>while(getline(…​))</code> passera dans le corps de la boucle même si <code>eofbit</code> est setté, alors que <code>while(getline(…​).good())</code> sortira de la boucle dès que <code>eofbit</code> sera setté.</p>
 </div>
 </div>
 <div class="sect2">
@@ -705,7 +692,7 @@ diff file1 file2
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight"><code data-lang="cpp"><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
 <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">line;</span>
 <span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span>
 <span style="color: #f8f8f2">{</span>
@@ -716,19 +703,19 @@ diff file1 file2
 <div class="sect3">
 <h4 id="_cas_du_fichier_avec_saut_de_ligne_final">Cas du fichier avec saut de ligne final</h4>
 <div class="paragraph">
-<p>Supposons que le contenu du fichier soit quelque chose comme <code>token1\ntoken2\n</code>. Notez que ce fichier est bien pourvu d&#8217;un saut de ligne <code>\n</code> final.</p>
+<p>Supposons que le contenu du fichier soit quelque chose comme <code>token1\ntoken2\n</code>. Notez que ce fichier est bien pourvu d’un saut de ligne <code>\n</code> final.</p>
 </div>
 <div class="paragraph">
-<p>À l&#8217;exception de la première ligne qui représente l&#8217;état initial (avant le premier appel à <code>getline</code>), chaque ligne représente l&#8217;état juste après le N-ième appel à <code>getline</code>, et juste avant l&#8217;évaluation de la condition par <code>while</code> :</p>
+<p>À l’exception de la première ligne qui représente l’état initial (avant le premier appel à <code>getline</code>), chaque ligne représente l’état juste après le N-ième appel à <code>getline</code>, et juste avant l’évaluation de la condition par <code>while</code> :</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all fit-content stretch">
 <colgroup>
-<col>
-<col>
-<col>
-<col>
-<col>
-<col>
+<col/>
+<col/>
+<col/>
+<col/>
+<col/>
+<col/>
 </colgroup>
 <thead>
 <tr>
@@ -744,7 +731,7 @@ diff file1 file2
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 (initial)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
@@ -752,23 +739,23 @@ diff file1 file2
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token1"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;token1&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1"}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token2"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{&#34;token1&#34;}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;token2&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1", "token2"}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{&#34;token1&#34;, &#34;token2&#34;}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>skip loop</strong></p></td>
@@ -781,23 +768,23 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p>Ligne #0 : l&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
+<p>Ligne #0 : l’état initial du stream est : aucun des <em>state flags</em> n’est setté.</p>
 </li>
 <li>
 <p>Ligne #1 : après le premier appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>getline a lu le stream jusqu&#8217;à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
+<p>getline a lu le stream jusqu’à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
 </li>
 <li>
-<p>la lecture ayant réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
+<p>la lecture ayant réussi → le flag <code>failbit</code> n’est pas setté.</p>
 </li>
 <li>
-<p>le stream n&#8217;étant pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
+<p>le stream n’étant pas épuisé → le flag <code>eofbit</code> n’est pas setté.</p>
 </li>
 <li>
-<p>aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s&#8217;apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
+<p>aucun flag n’étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s’apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
@@ -810,10 +797,10 @@ diff file1 file2
 <p>getline a lu la suite du stream, et a rencontré le second <code>\n</code></p>
 </li>
 <li>
-<p>tout se passe comme pour le premier tour de boucle, notamment, <code>getline</code> ne sette pas encore <code>eofbit</code> : comme il s&#8217;est arrêté au <code>\n</code>, il ne sait pas encore s&#8217;il reste ou non des caractères après ce <code>\n</code>.</p>
+<p>tout se passe comme pour le premier tour de boucle, notamment, <code>getline</code> ne sette pas encore <code>eofbit</code> : comme il s’est arrêté au <code>\n</code>, il ne sait pas encore s’il reste ou non des caractères après ce <code>\n</code>.</p>
 </li>
 <li>
-<p>on s&#8217;apprête donc ici aussi à passer dans le corps de la boucle (ce qui ajoutera <code>token2</code> aux <code>tokens</code>).</p>
+<p>on s’apprête donc ici aussi à passer dans le corps de la boucle (ce qui ajoutera <code>token2</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
@@ -823,48 +810,48 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p>getline a lu la suite du stream, et a constaté qu&#8217;il ne reste plus de caractères à lire</p>
+<p>getline a lu la suite du stream, et a constaté qu’il ne reste plus de caractères à lire</p>
 </li>
 <li>
 <p>il a donc setté <code>eofbit</code>, et a retourné immédiatement</p>
 </li>
 <li>
-<p>de plus, comme il n&#8217;a pas placé de caractère dans <code>line</code>, il a également setté <code>failbit</code></p>
+<p>de plus, comme il n’a pas placé de caractère dans <code>line</code>, il a également setté <code>failbit</code></p>
 </li>
 <li>
-<p><code>stream.good()</code> a donc deux bonnes raisons de retourner <code>false</code> &#8594; on ne passe pas dans le corps de la boucle</p>
+<p><code>stream.good()</code> a donc deux bonnes raisons de retourner <code>false</code> → on ne passe pas dans le corps de la boucle</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>le contenu final de <code>tokens</code> est <code>{"token1", "token2"}</code></p>
+<p>le contenu final de <code>tokens</code> est <code>{&#34;token1&#34;, &#34;token2&#34;}</code></p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Qu&#8217;est-ce qui change si on utilise le code idiomatique <code>while(getline(stream, line))</code> au lieu de <code>while(getline(stream, line).good())</code> ? <strong>RIEN</strong> : on a vu que le code idiomatique évaluait <code>!stream.fail()</code> au lieu de <code>stream.good()</code>. Or, pour chacune des 3 lignes ci-dessus, ces deux appels se comportent de façon identique.</p>
+<p>Qu’est-ce qui change si on utilise le code idiomatique <code>while(getline(stream, line))</code> au lieu de <code>while(getline(stream, line).good())</code> ? <strong>RIEN</strong> : on a vu que le code idiomatique évaluait <code>!stream.fail()</code> au lieu de <code>stream.good()</code>. Or, pour chacune des 3 lignes ci-dessus, ces deux appels se comportent de façon identique.</p>
 </div>
 <div class="paragraph">
-<p>TL;DR : pour un fichier correctement pourvu d&#8217;un saut de ligne final, <code>while(getline(&#8230;&#8203;))</code> et <code>while(getline(&#8230;&#8203;).good())</code> sont équivalents.</p>
+<p>TL;DR : pour un fichier correctement pourvu d’un saut de ligne final, <code>while(getline(…​))</code> et <code>while(getline(…​).good())</code> sont équivalents.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_cas_du_fichier_sans_saut_de_ligne_final">Cas du fichier sans saut de ligne final</h4>
 <div class="paragraph">
-<p>Supposons maintenant que le contenu du fichier soit quelque chose comme <code>token1\ntoken2</code>. Notez l&#8217;absence de saut de ligne <code>\n</code> final.</p>
+<p>Supposons maintenant que le contenu du fichier soit quelque chose comme <code>token1\ntoken2</code>. Notez l’absence de saut de ligne <code>\n</code> final.</p>
 </div>
 <div class="paragraph">
 <p>Refaisons notre tableau :</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
+<table class="tableblock frame-all grid-all fit-content stretch">
 <colgroup>
-<col>
-<col>
-<col>
-<col>
-<col>
-<col>
+<col/>
+<col/>
+<col/>
+<col/>
+<col/>
+<col/>
 </colgroup>
 <thead>
 <tr>
@@ -880,7 +867,7 @@ diff file1 file2
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 (initial)</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>""</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
@@ -888,15 +875,15 @@ diff file1 file2
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token1"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;token1&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>enter loop</strong></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{"token1"}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>"token2"</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{&#34;token1&#34;}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&#34;token2&#34;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>???</strong></p></td>
@@ -909,23 +896,23 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p>Ligne #0 : l&#8217;état initial du stream est : aucun des <em>state flags</em> n&#8217;est setté.</p>
+<p>Ligne #0 : l’état initial du stream est : aucun des <em>state flags</em> n’est setté.</p>
 </li>
 <li>
 <p>Ligne #1 : après le premier appel à <code>getline</code> :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>comme précédemment, getline a lu le stream jusqu&#8217;à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
+<p>comme précédemment, getline a lu le stream jusqu’à rencontrer le premier <code>\n</code>, et a copié la chaîne <code>token1</code> dans <code>line</code></p>
 </li>
 <li>
-<p>la lecture ayant réussi → le flag <code>failbit</code> n&#8217;est pas setté.</p>
+<p>la lecture ayant réussi → le flag <code>failbit</code> n’est pas setté.</p>
 </li>
 <li>
-<p>le stream n&#8217;étant pas épuisé → le flag <code>eofbit</code> n&#8217;est pas setté.</p>
+<p>le stream n’étant pas épuisé → le flag <code>eofbit</code> n’est pas setté.</p>
 </li>
 <li>
-<p>aucun flag n&#8217;étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s&#8217;apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
+<p>aucun flag n’étant setté, <code>stream.good()</code> renvoie <code>true</code>, on s’apprête à passer dans le corps de la boucle (ce qui ajoutera <code>token1</code> aux <code>tokens</code>).</p>
 </li>
 </ul>
 </div>
@@ -935,10 +922,10 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p>getline a lu la suite du stream, a rencontré les caractères <code>"token2"</code> (qu&#8217;il a placé dans <code>line</code>), puis a rencontré la fin du stream.</p>
+<p>getline a lu la suite du stream, a rencontré les caractères <code>&#34;token2&#34;</code> (qu’il a placé dans <code>line</code>), puis a rencontré la fin du stream.</p>
 </li>
 <li>
-<p>la lecture a bien réussi (on a placé <code>token2</code> dans <code>line</code>) → le flag <code>failbit</code> n&#8217;est pas setté.</p>
+<p>la lecture a bien réussi (on a placé <code>token2</code> dans <code>line</code>) → le flag <code>failbit</code> n’est pas setté.</p>
 </li>
 <li>
 <p>la fin du stream ayant été atteinte, → le flag <code>eofbit</code> a été setté.</p>
@@ -949,7 +936,7 @@ diff file1 file2
 </ul>
 </div>
 <div class="paragraph">
-<p>À la différence du cas où le fichier est bien formatté, on se retrouve dans le cas où seul <code>eofbit</code> est setté. Et c&#8217;est là où les deux codes ont des comportements différents :</p>
+<p>À la différence du cas où le fichier est bien formatté, on se retrouve dans le cas où seul <code>eofbit</code> est setté. Et c’est là où les deux codes ont des comportements différents :</p>
 </div>
 <div class="ulist">
 <ul>
@@ -958,20 +945,20 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p><code>"token2"</code> est ajouté aux <code>tokens</code></p>
+<p><code>&#34;token2&#34;</code> est ajouté aux <code>tokens</code></p>
 </li>
 <li>
-<p>ce n&#8217;est qu&#8217;au tour de boucle suivant que <code>getline</code> settera <code>failbit</code> (vu qu&#8217;il ne reste plus de caractères à placer dans <code>line</code>), et qu&#8217;on sortira de la boucle.</p>
+<p>ce n’est qu’au tour de boucle suivant que <code>getline</code> settera <code>failbit</code> (vu qu’il ne reste plus de caractères à placer dans <code>line</code>), et qu’on sortira de la boucle.</p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p>Avec <code>getline(&#8230;&#8203;).good()</code>, on sort de la boucle immédiatement :</p>
+<p>Avec <code>getline(…​).good()</code>, on sort de la boucle immédiatement :</p>
 <div class="ulist">
 <ul>
 <li>
-<p>par conséquent, le contenu de <code>line</code>, c&#8217;est à dire <code>"token2"</code> n&#8217;est <strong>PAS</strong> ajouté aux <code>tokens</code> !</p>
+<p>par conséquent, le contenu de <code>line</code>, c’est à dire <code>&#34;token2&#34;</code> n’est <strong>PAS</strong> ajouté aux <code>tokens</code> !</p>
 </li>
 </ul>
 </div>
@@ -979,14 +966,14 @@ diff file1 file2
 </ul>
 </div>
 <div class="paragraph">
-<p>TL;DR : pour un fichier dépourvu de saut de ligne final, <code>while(getline(&#8230;&#8203;))</code> et <code>while(getline(&#8230;&#8203;).good())</code> se comportent différemment : le second ignorera le dernier token du fichier.</p>
+<p>TL;DR : pour un fichier dépourvu de saut de ligne final, <code>while(getline(…​))</code> et <code>while(getline(…​).good())</code> se comportent différemment : le second ignorera le dernier token du fichier.</p>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_annexe_n_5_liens_utiles">Annexe n°5 = liens utiles</h2>
+<h2 id="_annexe_n5_liens_utiles">Annexe n°5 = liens utiles</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>En creusant le sujet, je suis tombé sur quelques liens intéressants :</p>
@@ -994,14 +981,14 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p><a href="https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/">ce post</a> sur le parsing de fichiers, assez complet, qui s&#8217;intéresse au même sujet, et indique notamment comment gérer les erreurs. Il résume la question en deux règles à suivre :</p>
+<p><a href="https://gehrcke.de/2011/06/reading-files-in-c-using-ifstream-dealing-correctly-with-badbit-failbit-eofbit-and-perror/">ce post</a> sur le parsing de fichiers, assez complet, qui s’intéresse au même sujet, et indique notamment comment gérer les erreurs. Il résume la question en deux règles à suivre :</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>ne pas traiter une ligne parsée avant d&#8217;avoir vérifié si l&#8217;appel de <code>getline</code> s&#8217;est bien déroulé (c&#8217;est ce que font <code>while(getline(&#8230;&#8203;))</code> et <code>while(getline(&#8230;&#8203;).good())</code></p>
+<p>ne pas traiter une ligne parsée avant d’avoir vérifié si l’appel de <code>getline</code> s’est bien déroulé (c’est ce que font <code>while(getline(…​))</code> et <code>while(getline(…​).good())</code></p>
 </li>
 <li>
-<p>si <code>failbit</code> ou <code>badbit</code> sont définis, considérer que le pasing s&#8217;est mal passé. Si <code>eofbit</code> est défini, la question se pose de savoir si on considère que ça s&#8217;est mal passé (<code>while(getline(&#8230;&#8203;).good())</code>) ou pas (<code>while(getline(&#8230;&#8203;))</code>).</p>
+<p>si <code>failbit</code> ou <code>badbit</code> sont définis, considérer que le pasing s’est mal passé. Si <code>eofbit</code> est défini, la question se pose de savoir si on considère que ça s’est mal passé (<code>while(getline(…​).good())</code>) ou pas (<code>while(getline(…​))</code>).</p>
 </li>
 </ol>
 </div>
@@ -1011,25 +998,25 @@ diff file1 file2
 <div class="ulist">
 <ul>
 <li>
-<p><em>Utilities that are supposed to operate on text files may not cope well with files that don&#8217;t end with a newline; historical Unix utilities might ignore the text after the last newline, for example. GNU utilities have a policy of behaving decently with non-text files, and so do most other modern utilities, but you may still encounter odd behavior with files that are missing a final newline</em></p>
+<p><em>Utilities that are supposed to operate on text files may not cope well with files that don’t end with a newline; historical Unix utilities might ignore the text after the last newline, for example. GNU utilities have a policy of behaving decently with non-text files, and so do most other modern utilities, but you may still encounter odd behavior with files that are missing a final newline</em></p>
 </li>
 <li>
 <p>le <a href="http://port70.net/~nsz/c/c99/n1256.html#5.1.1.2">standard C</a> oblige à terminer les fichiers par un saut de ligne : <em>A source file that is not empty shall end in a new-line character, which shall not be immediately preceded by a backslash character before</em></p>
 </li>
 <li>
-<p><em>About the warning from C compilers, I guess they insist for a final newline for backward compatibility purposes. Very old compilers might not accept the last line if doesn&#8217;t end with \n (or other system-dependent end-of-line char sequence).</em></p>
+<p><em>About the warning from C compilers, I guess they insist for a final newline for backward compatibility purposes. Very old compilers might not accept the last line if doesn’t end with \n (or other system-dependent end-of-line char sequence).</em></p>
 </li>
 </ul>
 </div>
 </li>
 <li>
-<p><a href="https://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline">cette autre question stackoverflow</a> donne quelques infos intéressantes : <em>There&#8217;s at least one hard advantage to this guideline when working on a terminal emulator: All Unix tools expect this convention and work with it. For instance, when concatenating files with cat, a file terminated by newline will have a different effect than one without</em></p>
+<p><a href="https://stackoverflow.com/questions/729692/why-should-text-files-end-with-a-newline">cette autre question stackoverflow</a> donne quelques infos intéressantes : <em>There’s at least one hard advantage to this guideline when working on a terminal emulator: All Unix tools expect this convention and work with it. For instance, when concatenating files with cat, a file terminated by newline will have a different effect than one without</em></p>
 </li>
 <li>
 <p><a href="https://stackoverflow.com/a/729725">encore une réponse stackoverflow</a> sur le standard C</p>
 </li>
 <li>
-<p><a href="https://stackoverflow.com/questions/16222530/why-do-i-need-vim-in-binary-mode-for-noeol-to-work">une dernière question stackoverflow</a> pour la route, avec ceci : <em>The "newline" character or more accurately "end of line" character (&lt;EOL&gt;) means "whatever comes after this point must be considered to be on another line". With this interpretation — &lt;EOL&gt; is a line terminator — the last line of the file is effectively the last one with an &lt;EOL&gt;.</em></p>
+<p><a href="https://stackoverflow.com/questions/16222530/why-do-i-need-vim-in-binary-mode-for-noeol-to-work">une dernière question stackoverflow</a> pour la route, avec ceci : <em>The &#34;newline&#34; character or more accurately &#34;end of line&#34; character (&lt;EOL&gt;) means &#34;whatever comes after this point must be considered to be on another line&#34;. With this interpretation — &lt;EOL&gt; is a line terminator — the last line of the file is effectively the last one with an &lt;EOL&gt;.</em></p>
 </li>
 </ul>
 </div>
