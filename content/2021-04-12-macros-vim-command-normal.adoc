@@ -1,0 +1,260 @@
+---
+title: "macros vim et commande :normal"
+date: 2021-04-12T10:00:00+01:00
+draft: false
+has_asciinema: true
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 1
+= macros vim et commande :normal
+
+toc::[]
+
+*préambule* : ce post nécessite de connaître le principe des recordings vim, https://vim.fandom.com/wiki/Macros[que j'appellerai macro dans la suite du post] ; cf. `:help recording`.
+
+== Unlimited poweeeeer !
+
+Voici un combo génial de vim dont je viens d'apprendre la puissance :
+
+[source,vim]
+----
+:normal! @a
+----
+
+Cette commande va appliquer la macro `a` sur la ligne courante. Joie. Bonheur. Extase.
+
+Pas convaincu ? Tu penses que tu aurais économisé des mouvements de doigts en te contentant de taper `@a` ?
+
+Alors déjà, sache qu'on peut l'abréger en :
+
+[source,vim]
+----
+:norm! @a
+----
+
+Et surtout, il faut bien voir ce que ce combo représente : *il permet d'appliquer une macro à un groupe de lignes* !
+
+Soit à un groupe de lignes sélectionnées visuellement :
+
+[source,vim]
+----
+:'<,'>norm! @a
+----
+
+Soit à des lignes sélectionnées avec un PATTERN (cf. `:help global`) :
+
+[source,vim]
+----
+:%g/PATTERN/norm! @a
+----
+
+Soit même, les deux, c'est à dire _"parmi les lignes sélectionnées, applique la macro `@a` à celles qui matchent le PATTERN"_ :
+
+[source,vim]
+----
+:'<,'>g/PATTERN/norm! @a
+----
+
+Je trouve ce combo très très puissant, puisqu'il permet d'appliquer simplement des actions à plusieurs lignes.
+
+== Un exemple sur un fichier CSV
+
+Par exemple, suppons qu'on dispose du fichier CSV suivant, décrivant des villes :
+
+----
+id,name,area_km2,population,region,country
+01,Bordeaux,49.36,257068,Nouvelle-Aquitaine,France
+02,Lyon,47.87,513275,Auvergne-Rhône-Alpes,France
+03,Marseille,240.62,868277,Provence-Alpes-Côte d’Azur,France
+04,Paris,105.40,2175601,Île-de-France,France
+[... et encore quelques centaines de villes...]
+----
+
+À titre informatif, voici le même fichier, après un p'tit coup https://github.com/godlygeek/tabular[du plugin tabularize], juste pour mieux le visualiser :
+
+----
+id , name      , area_km2 , population , region                     , country
+01 , Bordeaux  , 49.36    , 257068     , Nouvelle-Aquitaine         , France
+02 , Lyon      , 47.87    , 513275     , Auvergne-Rhône-Alpes       , France
+03 , Marseille , 240.62   , 868277     , Provence-Alpes-Côte d’Azur , France
+04 , Paris     , 105.40   , 2175601    , Île-de-France              , France
+----
+
+Si on veut réordonner les champs pour placer la superficie et la population (`area_km2` et `population`) en dernières colonnes, il suffira de commencer par enregistrer l'opération sur la première ligne, en tant que macro :
+
+* placer le curseur sur le début de la première ligne
+* appuyer sur `qa` pour démarrer l'enregistrement d'une macro (cf. `:help recording`)
+* enregistrer le déplacement des troisième et quatrième colonnes à la fin (par exemple : `f,;v;;hd$p` ; comme on dit, je laisse la compréhension de cette macro en exercice au lecteur — `f,;d2t,$p` est même encore plus simple, mais moins visuel pour le screencast ci-dessous)
+* réappuyer sur `q` pour arrêter l'enregistrement
+
+Puis on peut appliquer la macro à toutes les autres lignes du fichier. Dans notre cas, on pourra par exemple annuler les modifications sur la première ligne, puis d'appliquer la macro à *toutes* les lignes du fichier :
+
+[source,vim]
+----
+:%norm! @a
+----
+
+Et c'est tout ! En action, ça donne ça :
+
+++++
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record1-moving-columns.asciinema" rows="16" cols="61" preload="true" poster="npt:0:14"></asciinema-player>
+++++
+
+(utilisateur de firefox ayant installé les fonts Powerline, malheureusement pour toi, l'asciinema ci-dessus sera peut-être un peu tronqué à cause de https://bugzilla.mozilla.org/show_bug.cgi?id=1636690[ce bug firefox] :-( )
+
+== Comme une regex, mais en mieux ?
+
+Si tu étais tatillon, tu me dirais qu'on peut faire la même chose avec substitute (`:help substitute`) et une regex bien sentie, et tu n'aurais pas tout à fait tort.
+
+Par exemple, voici une regex qui permet de faire la même opération de déplacement de champs illustrée plus haut :
+
+[source,vim]
+----
+:s/\v^([^,]+,[^,]+)(,[^,]+,[^,]+)(.*)/\1\3\2
+----
+
+Ok ok, je ne suis pas particulièrement calé en regex, donc il y a peut-être plus simple, mais tout de même : je pointe un oeil sévère sur la complexité de cette regex rapportée à la simplicité de l'opération souhaitée.
+
+De surcroît, je trouve plus facile de modifier une ligne en temps réel (pendant que j'enregistre la macro) plutôt que de devoir crafter la regex qui va bien en avance de phase...  Rien que pour ça, dans les cas non-triviaux, `:norm! @a` remplace avantageusement certaines regex, qui seraient sinon un peu casse-bonbons à taper.
+
+Et surtout, avec les macros, on peut faire des choses compliquées/impossibles pour les substitutions. Dans notre exemple ci-dessus, supposons qu'au lieu de déplacer des colonnes, on veuille plutôt ajouter une colonne supplémentaire contenant la densité de population.
+
+*Aparté* : note bien que je ne recommande *pas* d'utiliser une macro vim pour des traitements de ce genre (notamment parce que supposer qu'il n'y aura jamais de virgule dans le contenu d'une colonne CSV, c'est se fourrer le doigt dans l'oeil jusqu'à la clavicule). Il y a plein d'outils plus adaptés, à commencer par un petit script python utilisant le module `csv`, qui sera plus robuste et qui pourra resservir. Cependant, choisir cet exemple m'arrange bien pour montrer une opération inaccessible aux substitutions.
+
+Revenons à nos moutons : on peut tout à fait enregistrer une macro qui ajoute un champ supplémentaire contenant la densité de population, avec la macro suivante :
+
+[source,vim]
+----
+f,;lvt,"oyf,lve"py$a,<C-R>=<C-R>p/<C-R>o<CR><Esc>
+----
+
+Alors vu comme ça, ça ne te paraît pas forcément évident : les commandes vim, c'est pas ce qu'il y a de plus facile à lire dans le texte :-)
+
+Mais en vrai, à taper interactivement, c'est plutôt simple, vois plutôt :
+
+++++
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record2-adding-density.asciinema" rows="20" cols="90" preload="true" poster="npt:0:8"></asciinema-player>
+++++
+
+
+Tu peux sauter cette explication si besoin, mais ici la macro ne consiste qu'en trois étapes :
+
+* à copier la superficie dans un registre `o` (`vt,"oy`)
+* à copier la population dans un autre registre `p` (`ve"py`)
+* à utiliser l'expression-register (`ctrl+R` suivi de `=`) pour insérer en fin de ligne le produit de l'opération obtenu par la division du registre `p` (`ctrl+R` suivi de `p`) par le registre o (`ctrl+R` suivi de `o`).
+
+Un peu plus d'infos sur les merveilleux usages de `ctrl+R` se trouve dans l'aide  `:help <C-R>`.
+
+== Un exemple plus lisible
+
+Mon petit doigt me dit que malgré mon joli screencast, cette macro tarabiscotée ne t'a pas convaincu de la simplicité du système ! Ça ira mieux avec une macro plus simple, et pour faire bonne mesure, on va la coupler avec un filtrage des lignes via `:g`.
+
+Je dois parfois manipuler des polygones géographiques ; j'utilise alors le très pratique https://geojson.io. Le principe est simple : tu dessines graphiquement ton polygone, et tu récupères en temps-réel le geojson le représentant — https://fr.wikipedia.org/wiki/GeoJSON[le format geojson] permet d'encoder en json des données géospatiales, telles que des formes géométriques sur une carte.
+
+Par exemple, un polygone grossier (ne comportant que 40 points) qui délimiterait l'Australie pourrait être représenté par un geojson dans ce genre :
+
+[source,json]
+----
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              115.13671875,
+              -34.59704151614416
+            ],
+            [
+              116.89453125,
+              -35.101934057246055
+            ],
+            [
+              119.794921875,
+              -33.87041555094182
+            ],
+            [
+              123.31054687499999,
+              -34.016241889667015
+            ],
+            "... 36 autres points ..."
+          ]
+        ]
+      }
+    }
+  ]
+}
+----
+
+Il a beau être grossier, comme chacun des 40 points occupe 4 lignes, on consomme déjà bien plus de 100 lignes _juste_ pour encoder les points du polygone...
+
+Notre souhait : le fichier serait déjà un peu plus compact si on n'utilisait qu'une seule ligne pour encoder chaque point, comme ceci :
+
+[source,json]
+----
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [115.13671875, -34.59704151614416],
+            [116.89453125, -35.101934057246055],
+            [119.794921875, -33.87041555094182],
+            [123.31054687499999, -34.016241889667015],
+            "... 36 autres points..."
+          ]
+        ]
+      }
+    }
+  ]
+}
+----
+
+Enregistrer une macro pour transformer un groupe de 4 lignes en une seule, c'est fastoche la brioche, c'est simplement `JxJJx`. En prenant le premier point comme exemple :
+
+* `J` pour merger la ligne courante avec la ligne suivante (`:help J`), ce qui donne `[ 115.13671875,`
+* `x` pour supprimer l'espace en trop après le `[` que le merge a ajouté, ce qui donne `[115.13671875,`
+* `J` pour merger de nouveau la ligne suivante, ce qui donne `[115.13671875, -34.59704151614416`. Ici, on laisse l'espace ajouté (après la virgule) qui nous convient bien.
+* `Jx` pour merger enfin la dernière ligne (contenant le bracket fermant `]`), et supprimer l'espace de trop, ce qui donne notre ligne cible : `[115.13671875, -34.59704151614416],`
+
+(j'insiste, lire une macro sur un blog n'est pas très lisible, mais c'est bien plus intuitif en l'enregistrant interactivement : n'hésite-pas à essayer toi-même, ou bien regarde le screencast ci-dessous)
+
+Comme on ne s'intéresse qu'aux lignes encodant les points du polygone, on va les sélectionner visuellement (`V`). Et parmi les lignes sélectionnées, on ne veut appliquer la macro qu'aux lignes qui commencent par un bracket ouvrant `[`. Rien de plus facile avec la commande `g` (voir `:help :global`), suivi de `norm! @a` :
+
+[source,vim]
+----
+:'<,'>g/\V[/norm! @a
+----
+
+L'effet de cette commande :
+
+* parmi les lignes sélectionnées visuellement `'<,'>`...
+* ...la commande `g/\V[/` filtre celles qui commencent par un `[`...
+* ... et le mystic-combo `norm! @a` applique à chacune d'entre elles notre macro `@a`, qui merge un groupe de 4 lignes
+
+Ici, la macro est même tellement simple qu'on aurait pu s'en passer et se contenter d'appliquer `norm! JxJJx`, mais je trouve plus intuitif de la voir se dérouler en temps-réel pendant que je l'enregistre. Au final, ça donne ça :
+
+++++
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record3-australie.asciinema" rows="35" cols="90" preload="true" poster="npt:0:6"></asciinema-player>
+++++
+
+== Conclusion
+
+Tu sais maintenant appliquer une macro à un groupe de lignes, fais bon usage de tes nouveaux pouvoirs ;-)
+
+C'est une bonne alternative à certaines regex car non seulement ça permet de faire plus de choses, mais c'est également plus intuitif : pendant qu'on enregistre une macro, on voit l'opération en cours se dérouler interactivement. On peut même s'apercevoir qu'on s'est trompé, et corriger en temps-réel : tant qu'on enregistre la correction dans la macro, l'opération finale sera correcte.
+
+Une petite astuce pour finir (même si elle n'a rien à voir avec le post), retiens l'usage du very-magic mode `\v` (et son opposé `\V`), cf. `:help magic` : je les trouve TRÈS pratique pour ne pas avoir à mémoriser si un caractère spécial est à échapper ou non dans les patterns de recherche.
