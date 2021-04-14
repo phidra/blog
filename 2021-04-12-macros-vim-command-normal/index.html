@@ -1,0 +1,420 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>macros vim et commande :normal // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
+
+    
+    
+    <link rel="stylesheet" href="/blog/asciinema-v2.6.1/asciinema-player.css"/>
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">macros vim et commande :normal</h1>
+      <div class="post-meta">
+        <div>
+          Apr 12, 2021
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          8 min read
+        </div></div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+
+<div class="paragraph">
+<p><strong>préambule</strong> : ce post nécessite de connaître le principe des recordings vim, <a href="https://vim.fandom.com/wiki/Macros">que j’appellerai macro dans la suite du post</a> ; cf. <code>:help recording</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_unlimited_poweeeeer">Unlimited poweeeeer !</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voici un combo génial de vim dont je viens d’apprendre la puissance :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span>normal<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Cette commande va appliquer la macro <code>a</code> sur la ligne courante. Joie. Bonheur. Extase.</p>
+</div>
+<div class="paragraph">
+<p>Pas convaincu ? Tu penses que tu aurais économisé des mouvements de doigts en te contentant de taper <code>@a</code> ?</p>
+</div>
+<div class="paragraph">
+<p>Alors déjà, sache qu’on peut l’abréger en :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span>norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et surtout, il faut bien voir ce que ce combo représente : <strong>il permet d’appliquer une macro à un groupe de lignes</strong> !</p>
+</div>
+<div class="paragraph">
+<p>Soit à un groupe de lignes sélectionnées visuellement :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span><span style="color: #e6db74">&#39;&lt;,&#39;</span><span style="color: #f8f8f2">&gt;</span>norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Soit à des lignes sélectionnées avec un PATTERN (cf. <code>:help global</code>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span>%<span style="color: #66d9ef">g</span><span style="color: #e6db74">/PATTERN/</span>norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Soit même, les deux, c’est à dire <em>&#34;parmi les lignes sélectionnées, applique la macro <code>@a</code> à celles qui matchent le PATTERN&#34;</em> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span><span style="color: #e6db74">&#39;&lt;,&#39;</span><span style="color: #f8f8f2">&gt;</span><span style="color: #66d9ef">g</span><span style="color: #e6db74">/PATTERN/</span>norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Je trouve ce combo très très puissant, puisqu’il permet d’appliquer simplement des actions à plusieurs lignes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_un_exemple_sur_un_fichier_csv">Un exemple sur un fichier CSV</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Par exemple, suppons qu’on dispose du fichier CSV suivant, décrivant des villes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>id,name,area_km2,population,region,country
+01,Bordeaux,49.36,257068,Nouvelle-Aquitaine,France
+02,Lyon,47.87,513275,Auvergne-Rhône-Alpes,France
+03,Marseille,240.62,868277,Provence-Alpes-Côte d’Azur,France
+04,Paris,105.40,2175601,Île-de-France,France
+[... et encore quelques centaines de villes...]</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À titre informatif, voici le même fichier, après un p’tit coup <a href="https://github.com/godlygeek/tabular">du plugin tabularize</a>, juste pour mieux le visualiser :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>id , name      , area_km2 , population , region                     , country
+01 , Bordeaux  , 49.36    , 257068     , Nouvelle-Aquitaine         , France
+02 , Lyon      , 47.87    , 513275     , Auvergne-Rhône-Alpes       , France
+03 , Marseille , 240.62   , 868277     , Provence-Alpes-Côte d’Azur , France
+04 , Paris     , 105.40   , 2175601    , Île-de-France              , France</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si on veut réordonner les champs pour placer la superficie et la population (<code>area_km2</code> et <code>population</code>) en dernières colonnes, il suffira de commencer par enregistrer l’opération sur la première ligne, en tant que macro :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>placer le curseur sur le début de la première ligne</p>
+</li>
+<li>
+<p>appuyer sur <code>qa</code> pour démarrer l’enregistrement d’une macro (cf. <code>:help recording</code>)</p>
+</li>
+<li>
+<p>enregistrer le déplacement des troisième et quatrième colonnes à la fin (par exemple : <code>f,;v;;hd$p</code> ; comme on dit, je laisse la compréhension de cette macro en exercice au lecteur — <code>f,;d2t,$p</code> est même encore plus simple, mais moins visuel pour le screencast ci-dessous)</p>
+</li>
+<li>
+<p>réappuyer sur <code>q</code> pour arrêter l’enregistrement</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Puis on peut appliquer la macro à toutes les autres lignes du fichier. Dans notre cas, on pourra par exemple annuler les modifications sur la première ligne, puis d’appliquer la macro à <strong>toutes</strong> les lignes du fichier :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span>%norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et c’est tout ! En action, ça donne ça :</p>
+</div>
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record1-moving-columns.asciinema" rows="16" cols="61" preload="true" poster="npt:0:14"></asciinema-player>
+<div class="paragraph">
+<p>(utilisateur de firefox ayant installé les fonts Powerline, malheureusement pour toi, l’asciinema ci-dessus sera peut-être un peu tronqué à cause de <a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1636690">ce bug firefox</a> :-( )</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_comme_une_regex_mais_en_mieux">Comme une regex, mais en mieux ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Si tu étais tatillon, tu me dirais qu’on peut faire la même chose avec substitute (<code>:help substitute</code>) et une regex bien sentie, et tu n’aurais pas tout à fait tort.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, voici une regex qui permet de faire la même opération de déplacement de champs illustrée plus haut :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span>s<span style="color: #e6db74">/\v^([^,]+,[^,]+)(,[^,]+,[^,]+)(.*)/</span>\<span style="color: #ae81ff">1</span>\<span style="color: #ae81ff">3</span>\<span style="color: #ae81ff">2</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ok ok, je ne suis pas particulièrement calé en regex, donc il y a peut-être plus simple, mais tout de même : je pointe un oeil sévère sur la complexité de cette regex rapportée à la simplicité de l’opération souhaitée.</p>
+</div>
+<div class="paragraph">
+<p>De surcroît, je trouve plus facile de modifier une ligne en temps réel (pendant que j’enregistre la macro) plutôt que de devoir crafter la regex qui va bien en avance de phase…​  Rien que pour ça, dans les cas non-triviaux, <code>:norm! @a</code> remplace avantageusement certaines regex, qui seraient sinon un peu casse-bonbons à taper.</p>
+</div>
+<div class="paragraph">
+<p>Et surtout, avec les macros, on peut faire des choses compliquées/impossibles pour les substitutions. Dans notre exemple ci-dessus, supposons qu’au lieu de déplacer des colonnes, on veuille plutôt ajouter une colonne supplémentaire contenant la densité de population.</p>
+</div>
+<div class="paragraph">
+<p><strong>Aparté</strong> : note bien que je ne recommande <strong>pas</strong> d’utiliser une macro vim pour des traitements de ce genre (notamment parce que supposer qu’il n’y aura jamais de virgule dans le contenu d’une colonne CSV, c’est se fourrer le doigt dans l’oeil jusqu’à la clavicule). Il y a plein d’outils plus adaptés, à commencer par un petit script python utilisant le module <code>csv</code>, qui sera plus robuste et qui pourra resservir. Cependant, choisir cet exemple m’arrange bien pour montrer une opération inaccessible aux substitutions.</p>
+</div>
+<div class="paragraph">
+<p>Revenons à nos moutons : on peut tout à fait enregistrer une macro qui ajoute un champ supplémentaire contenant la densité de population, avec la macro suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #66d9ef">f</span><span style="color: #f8f8f2">,</span>;lvt<span style="color: #f8f8f2">,</span><span style="color: #e6db74">&#34;oyf,lve&#34;</span><span style="color: #66d9ef">py</span>$<span style="color: #66d9ef">a</span><span style="color: #f8f8f2">,&lt;</span>C<span style="color: #f8f8f2">-</span>R<span style="color: #f8f8f2">&gt;=&lt;</span>C<span style="color: #f8f8f2">-</span>R<span style="color: #f8f8f2">&gt;</span><span style="color: #66d9ef">p</span>/<span style="color: #f8f8f2">&lt;</span>C<span style="color: #f8f8f2">-</span>R<span style="color: #f8f8f2">&gt;</span><span style="color: #66d9ef">o</span><span style="color: #f8f8f2">&lt;</span>CR<span style="color: #f8f8f2">&gt;&lt;</span>Esc<span style="color: #f8f8f2">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alors vu comme ça, ça ne te paraît pas forcément évident : les commandes vim, c’est pas ce qu’il y a de plus facile à lire dans le texte :-)</p>
+</div>
+<div class="paragraph">
+<p>Mais en vrai, à taper interactivement, c’est plutôt simple, vois plutôt :</p>
+</div>
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record2-adding-density.asciinema" rows="20" cols="90" preload="true" poster="npt:0:8"></asciinema-player>
+<div class="paragraph">
+<p>Tu peux sauter cette explication si besoin, mais ici la macro ne consiste qu’en trois étapes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>à copier la superficie dans un registre <code>o</code> (<code>vt,&#34;oy</code>)</p>
+</li>
+<li>
+<p>à copier la population dans un autre registre <code>p</code> (<code>ve&#34;py</code>)</p>
+</li>
+<li>
+<p>à utiliser l’expression-register (<code>ctrl+R</code> suivi de <code>=</code>) pour insérer en fin de ligne le produit de l’opération obtenu par la division du registre <code>p</code> (<code>ctrl+R</code> suivi de <code>p</code>) par le registre o (<code>ctrl+R</code> suivi de <code>o</code>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Un peu plus d’infos sur les merveilleux usages de <code>ctrl+R</code> se trouve dans l’aide  <code>:help &lt;C-R&gt;</code>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_un_exemple_plus_lisible">Un exemple plus lisible</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Mon petit doigt me dit que malgré mon joli screencast, cette macro tarabiscotée ne t’a pas convaincu de la simplicité du système ! Ça ira mieux avec une macro plus simple, et pour faire bonne mesure, on va la coupler avec un filtrage des lignes via <code>:g</code>.</p>
+</div>
+<div class="paragraph">
+<p>Je dois parfois manipuler des polygones géographiques ; j’utilise alors le très pratique <a href="https://geojson.io" class="bare">https://geojson.io</a>. Le principe est simple : tu dessines graphiquement ton polygone, et tu récupères en temps-réel le geojson le représentant — <a href="https://fr.wikipedia.org/wiki/GeoJSON">le format geojson</a> permet d’encoder en json des données géospatiales, telles que des formes géométriques sur une carte.</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, un polygone grossier (ne comportant que 40 points) qui délimiterait l’Australie pourrait être représenté par un geojson dans ce genre :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="json"><span></span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;FeatureCollection&#34;</span><span style="color: #f8f8f2">,</span>
+  <span style="color: #f92672">&#34;features&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+    <span style="color: #f8f8f2">{</span>
+      <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;Feature&#34;</span><span style="color: #f8f8f2">,</span>
+      <span style="color: #f92672">&#34;properties&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{},</span>
+      <span style="color: #f92672">&#34;geometry&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;Polygon&#34;</span><span style="color: #f8f8f2">,</span>
+        <span style="color: #f92672">&#34;coordinates&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+          <span style="color: #f8f8f2">[</span>
+            <span style="color: #f8f8f2">[</span>
+              <span style="color: #ae81ff">115.13671875</span><span style="color: #f8f8f2">,</span>
+              <span style="color: #ae81ff">-34.59704151614416</span>
+            <span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span>
+              <span style="color: #ae81ff">116.89453125</span><span style="color: #f8f8f2">,</span>
+              <span style="color: #ae81ff">-35.101934057246055</span>
+            <span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span>
+              <span style="color: #ae81ff">119.794921875</span><span style="color: #f8f8f2">,</span>
+              <span style="color: #ae81ff">-33.87041555094182</span>
+            <span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span>
+              <span style="color: #ae81ff">123.31054687499999</span><span style="color: #f8f8f2">,</span>
+              <span style="color: #ae81ff">-34.016241889667015</span>
+            <span style="color: #f8f8f2">],</span>
+            <span style="color: #e6db74">&#34;... 36 autres points ...&#34;</span>
+          <span style="color: #f8f8f2">]</span>
+        <span style="color: #f8f8f2">]</span>
+      <span style="color: #f8f8f2">}</span>
+    <span style="color: #f8f8f2">}</span>
+  <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Il a beau être grossier, comme chacun des 40 points occupe 4 lignes, on consomme déjà bien plus de 100 lignes <em>juste</em> pour encoder les points du polygone…​</p>
+</div>
+<div class="paragraph">
+<p>Notre souhait : le fichier serait déjà un peu plus compact si on n’utilisait qu’une seule ligne pour encoder chaque point, comme ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="json"><span></span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;FeatureCollection&#34;</span><span style="color: #f8f8f2">,</span>
+  <span style="color: #f92672">&#34;features&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+    <span style="color: #f8f8f2">{</span>
+      <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;Feature&#34;</span><span style="color: #f8f8f2">,</span>
+      <span style="color: #f92672">&#34;properties&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{},</span>
+      <span style="color: #f92672">&#34;geometry&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+        <span style="color: #f92672">&#34;type&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;Polygon&#34;</span><span style="color: #f8f8f2">,</span>
+        <span style="color: #f92672">&#34;coordinates&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">[</span>
+          <span style="color: #f8f8f2">[</span>
+            <span style="color: #f8f8f2">[</span><span style="color: #ae81ff">115.13671875</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">-34.59704151614416</span><span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span><span style="color: #ae81ff">116.89453125</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">-35.101934057246055</span><span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span><span style="color: #ae81ff">119.794921875</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">-33.87041555094182</span><span style="color: #f8f8f2">],</span>
+            <span style="color: #f8f8f2">[</span><span style="color: #ae81ff">123.31054687499999</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">-34.016241889667015</span><span style="color: #f8f8f2">],</span>
+            <span style="color: #e6db74">&#34;... 36 autres points...&#34;</span>
+          <span style="color: #f8f8f2">]</span>
+        <span style="color: #f8f8f2">]</span>
+      <span style="color: #f8f8f2">}</span>
+    <span style="color: #f8f8f2">}</span>
+  <span style="color: #f8f8f2">]</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Enregistrer une macro pour transformer un groupe de 4 lignes en une seule, c’est fastoche la brioche, c’est simplement <code>JxJJx</code>. En prenant le premier point comme exemple :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>J</code> pour merger la ligne courante avec la ligne suivante (<code>:help J</code>), ce qui donne <code>[ 115.13671875,</code></p>
+</li>
+<li>
+<p><code>x</code> pour supprimer l’espace en trop après le <code>[</code> que le merge a ajouté, ce qui donne <code>[115.13671875,</code></p>
+</li>
+<li>
+<p><code>J</code> pour merger de nouveau la ligne suivante, ce qui donne <code>[115.13671875, -34.59704151614416</code>. Ici, on laisse l’espace ajouté (après la virgule) qui nous convient bien.</p>
+</li>
+<li>
+<p><code>Jx</code> pour merger enfin la dernière ligne (contenant le bracket fermant <code>]</code>), et supprimer l’espace de trop, ce qui donne notre ligne cible : <code>[115.13671875, -34.59704151614416],</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>(j’insiste, lire une macro sur un blog n’est pas très lisible, mais c’est bien plus intuitif en l’enregistrant interactivement : n’hésite-pas à essayer toi-même, ou bien regarde le screencast ci-dessous)</p>
+</div>
+<div class="paragraph">
+<p>Comme on ne s’intéresse qu’aux lignes encodant les points du polygone, on va les sélectionner visuellement (<code>V</code>). Et parmi les lignes sélectionnées, on ne veut appliquer la macro qu’aux lignes qui commencent par un bracket ouvrant <code>[</code>. Rien de plus facile avec la commande <code>g</code> (voir <code>:help :global</code>), suivi de <code>norm! @a</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="vim"><span></span><span style="color: #f8f8f2">:</span><span style="color: #e6db74">&#39;&lt;,&#39;</span><span style="color: #f8f8f2">&gt;</span><span style="color: #66d9ef">g</span><span style="color: #e6db74">/\V[/</span>norm<span style="color: #f8f8f2">!</span> @<span style="color: #66d9ef">a</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>L’effet de cette commande :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>parmi les lignes sélectionnées visuellement <code>&#39;&lt;,&#39;&gt;</code>…​</p>
+</li>
+<li>
+<p>…​la commande <code>g/\V[/</code> filtre celles qui commencent par un <code>[</code>…​</p>
+</li>
+<li>
+<p>…​ et le mystic-combo <code>norm! @a</code> applique à chacune d’entre elles notre macro <code>@a</code>, qui merge un groupe de 4 lignes</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ici, la macro est même tellement simple qu’on aurait pu s’en passer et se contenter d’appliquer <code>norm! JxJJx</code>, mais je trouve plus intuitif de la voir se dérouler en temps-réel pendant que je l’enregistre. Au final, ça donne ça :</p>
+</div>
+<asciinema-player src="../records/2021-04-12-macros-vim-command-normal-record3-australie.asciinema" rows="35" cols="90" preload="true" poster="npt:0:6"></asciinema-player>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tu sais maintenant appliquer une macro à un groupe de lignes, fais bon usage de tes nouveaux pouvoirs ;-)</p>
+</div>
+<div class="paragraph">
+<p>C’est une bonne alternative à certaines regex car non seulement ça permet de faire plus de choses, mais c’est également plus intuitif : pendant qu’on enregistre une macro, on voit l’opération en cours se dérouler interactivement. On peut même s’apercevoir qu’on s’est trompé, et corriger en temps-réel : tant qu’on enregistre la correction dans la macro, l’opération finale sera correcte.</p>
+</div>
+<div class="paragraph">
+<p>Une petite astuce pour finir (même si elle n’a rien à voir avec le post), retiens l’usage du very-magic mode <code>\v</code> (et son opposé <code>\V</code>), cf. <code>:help magic</code> : je les trouve TRÈS pratique pour ne pas avoir à mémoriser si un caractère spécial est à échapper ou non dans les patterns de recherche.</p>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+      <script src="/blog/asciinema-v2.6.1/asciinema-player.js"></script>
+    
+
+  </body>
+</html>

@@ -8,6 +8,18 @@
     <language>fr-fr</language>
     <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>macros vim et commande :normal</title>
+      <link>https://phidra.github.io/blog/2021-04-12-macros-vim-command-normal/</link>
+      <pubDate>Mon, 12 Apr 2021 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2021-04-12-macros-vim-command-normal/</guid>
+      <description>préambule : ce post nécessite de connaître le principe des recordings vim, que j’appellerai macro dans la suite du post ; cf. :help recording.
+   Unlimited poweeeeer ! Voici un combo génial de vim dont je viens d’apprendre la puissance :
+ :normal! @a   Cette commande va appliquer la macro a sur la ligne courante. Joie. Bonheur. Extase.
+ Pas convaincu ? Tu penses que tu aurais économisé des mouvements de doigts en te contentant de taper @a ?</description>
+    </item>
+    
+    <item>
       <title>Boost Graph Library tutorial</title>
       <link>https://phidra.github.io/blog/2020-12-31-boost-graph-library/</link>
       <pubDate>Thu, 31 Dec 2020 10:00:00 +0100</pubDate>
