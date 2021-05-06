@@ -27,7 +27,7 @@ Elle n'est pas particulièrement triée : c'est pas parce qu'un item est en haut
 * https://cor3ntin.github.io[blog de Corentin JABOT], dev C{plus}{plus} bordelais impliqué dans le comité C{plus}{plus}
 * https://daniel.haxx.se/blog/[blog de Daniel STENBERG], auteur et mainteneur principal de curl
 * https://www.youtube.com/c/BenEater[la chaîne youtue de Ben EATER], avec tout plein de chouettes vidéos orientées éléctronique (beaucoup étant connexes à l'informatique)
-* https://jvns.ca[le blog de Julia EVANS], j'aime beaucoup sa relation à l'apprentissage et l'auto-amélioration
+* https://jvns.ca[le blog de Julia EVANS], j'aime beaucoup sa relation à l'apprentissage et l'auto-amélioration. Ses comics sont accessibles https://wizardzines.com/comics/[ici].
 
 == Références
 
