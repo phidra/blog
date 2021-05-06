@@ -45,3 +45,4 @@ Référence = ressource à laquelle je peux me référer régulièrement :
 * Les bonnes pratiques de Google sur la code-review : https://google.github.io/eng-practices/review/reviewer/[côté reviewer], et https://google.github.io/eng-practices/review/developer/[côté reviewee]
 * Le https://www.scrumguides.org/scrum-guide.html[scrum guide]
 * https://optimal-codestyle.github.io/[Optimal codestyle] = justification de coding-style rigoureuse et basée sur la vision/cognition humaine
+* https://developers.google.com/tech-writing/overview[Technical writing course] = cours dispensé par Google sur la rédaction de doc technique
