@@ -8,6 +8,20 @@
     <language>fr-fr</language>
     <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>from xxx import something</title>
+      <link>https://phidra.github.io/blog/2021-10-03-from-xxx-import-something/</link>
+      <pubDate>Sun, 03 Oct 2021 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2021-10-03-from-xxx-import-something/</guid>
+      <description>Une syntaxe confuse Un point m’a toujours chiffonné en python. Question simple :
+ from xxx import something   C’est quoi exactement something ? Et où est le code importé ?
+ TL;DR : on va voir que cette ligne peut importer trois types d’objets différents :
+   le top-level objet something du module xxx
+  le module something du package xxx
+  le subpackage something du package xxx</description>
+    </item>
+    
+    <item>
       <title>macros vim et commande :normal</title>
       <link>https://phidra.github.io/blog/2021-04-12-macros-vim-command-normal/</link>
       <pubDate>Mon, 12 Apr 2021 10:00:00 +0100</pubDate>
