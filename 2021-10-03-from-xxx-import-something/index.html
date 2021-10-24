@@ -1,0 +1,907 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>from xxx import something // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">from xxx import something</h1>
+      <div class="post-meta">
+        <div>
+          Oct 3, 2021
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          15 min read
+        </div></div>
+    <div>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#_une_syntaxe_confuse">Une syntaxe confuse</a></li>
+    <li><a href="#_cas_n1_importer_un_top_level_object_dun_module">Cas n°1 = importer un top-level object d’un module</a></li>
+    <li><a href="#_cas_n2_importer_un_module_dun_package">Cas n°2 = importer un module d’un package</a></li>
+    <li><a href="#_cas_n3_importer_un_subpackage_dun_package">Cas n°3 = importer un subpackage d’un package</a></li>
+    <li><a href="#_conclusion">Conclusion</a></li>
+    <li><a href="#annexe">Annexe = mécanisme d’import, module, et package</a>
+      <ul>
+        <li><a href="#_chargement_dun_module">Chargement d’un module</a></li>
+        <li><a href="#_explication_du_cas_n1">Explication du cas n°1</a></li>
+        <li><a href="#_package_modules_répertoire_fichiers">Package + modules == répertoire + fichiers ?</a></li>
+        <li><a href="#_première_différence_un_répertoire_est_un_simple_conteneur_de_fichiers">Première différence : un répertoire est un simple conteneur de fichiers</a></li>
+        <li><a href="#_deuxième_différence_un_répertoire_représente_son_contenu_récursif">Deuxième différence : un répertoire représente son contenu récursif</a></li>
+        <li><a href="#_explication_du_cas_n3">Explication du cas n°3</a></li>
+        <li><a href="#_pour_aller_plus_loin">Pour aller plus loin</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+    </div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_une_syntaxe_confuse">Une syntaxe confuse</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Un point m’a toujours chiffonné en python. Question simple :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>C’est quoi exactement <code>something</code> ? Et où est le code importé ?</p>
+</div>
+<div class="paragraph">
+<p>TL;DR : on va voir que cette ligne peut importer trois types d’objets différents :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>le <em>top-level objet</em> <code>something</code> du module <code>xxx</code></p>
+</li>
+<li>
+<p>le module <code>something</code> du package <code>xxx</code></p>
+</li>
+<li>
+<p>le subpackage <code>something</code> du package <code>xxx</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p><em>Note préliminaire</em> : dans tous les exemples, on suppose que <code>main.py</code> fait l’import suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cas_n1_importer_un_top_level_object_dun_module">Cas n°1 = importer un top-level object d’un module</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Le cas le plus simple — &#34;simple&#34; car il ne fait pas intervenir la notion de package, plus complexe qu’elle n’en a l’air — est celui-ci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>case1_importing_toplevel_object_from_a_module
+├── main.py
+└── xxx.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Où le fichier <code>xxx.py</code> contient uniquement les deux lignes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">def</span> <span style="color: #a6e22e">something</span><span style="color: #f8f8f2">():</span>
+    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;something was called&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, <code>xxx</code> est un <a href="https://docs.python.org/3/glossary.html#term-module">module</a> (en simplifié, un fichier python), et <code>something</code> est un objet racine (<em>top-level object</em>) de ce module, en l’occurence une fonction. <code>main</code> pourra l’utiliser directement :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span>
+<span style="color: #f8f8f2">something()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case1_importing_toplevel_object_from_a_module">lien vers le code d’exemple</a>)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cas_n2_importer_un_module_dun_package">Cas n°2 = importer un module d’un package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Voyons maintenant le cas suivant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>case2_importing_module_from_a_package
+├── xxx
+│   ├── __init__.py
+│   └── something.py
+└── main.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Où le fichier <code>xxx/__init__.py</code> est vide, et où le fichier <code>xxx/something.py</code> contient (par exemple) uniquement les deux lignes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">def</span> <span style="color: #a6e22e">greet</span><span style="color: #f8f8f2">():</span>
+    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;Greetings, mortal... Are you ready to die ?&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, <code>xxx</code> est un <a href="https://docs.python.org/3/glossary.html#term-package">package</a> (en simplifié, un groupe de modules python), et <code>something</code> est l’un des modules du package. <code>main</code> pourra utiliser le module, par exemple en accédant à sa fonction <code>greet</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span>
+
+<span style="color: #f8f8f2">something</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">greet()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case2_importing_module_from_a_package">lien vers le code d’exemple</a>)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_cas_n3_importer_un_subpackage_dun_package">Cas n°3 = importer un subpackage d’un package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Enfin, si on a l’arborescence suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>case3_importing_subpackage_from_a_package
+├── xxx
+│   ├── something
+│   │   ├── __init__.py
+│   │   └── skywalkers.py
+│   └── __init__.py
+└── main.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Où les trois fichiers <code>.py</code> sont :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>xxx/__init__.py</code> est vide</p>
+</li>
+<li>
+<p><code>xxx/something/__init__.py</code> contient par exemple :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">FORCE_SIDES</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #e6db74">&#34;light&#34;</span><span style="color: #f8f8f2">,</span>
+    <span style="color: #e6db74">&#34;dark&#34;</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p><code>xxx/something/skywalkers.py</code> contient par exemple le code suivant :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">JEDIS</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span>
+    <span style="color: #e6db74">&#34;luke&#34;</span><span style="color: #f8f8f2">,</span>
+    <span style="color: #e6db74">&#34;anakin&#34;</span><span style="color: #f8f8f2">,</span>
+<span style="color: #f8f8f2">]</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Alors <code>xxx</code> est un package, <code>something</code> est un package également, qui se trouve être un <strong>sous-package</strong> de <code>xxx</code>, lui-même contenant le module <code>skywalkers.py</code> (dans notre exemple, ce module ne sera ni importé ni utilisé).</p>
+</div>
+<div class="paragraph">
+<p>En important le package <code>something</code>, le main importe en réalité son <code>__init__.py</code>, qui définit la variable <code>FORCE_SIDES</code>. Le main peut donc l’utiliser comme ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(f</span><span style="color: #e6db74">&#34;Number of sides in the force = {len(something.FORCE_SIDES)}&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>J’insiste car ce n’est pas intuitif : en important un package, on exécute son <code>__init__.py</code>, comme l’indique explicitement la <a href="https://docs.python.org/3.8/reference/import.html#regular-packages">doc</a> :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>When a regular package is imported, [its] __init__.py file is implicitly executed, and the objects it defines are bound to names in the package’s namespace.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case3_importing_subpackage_from_a_package">lien vers le code d’exemple</a>)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Pas de conclusion mirobolante, juste qu’il n’est pas toujours trivial de savoir ce qui est importé par :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">from</span><span style="color: #960050; background-color: #1e0010"> </span><span style="color: #f8f8f2">xxx</span><span style="color: #960050; background-color: #1e0010"> </span><span style="color: #f8f8f2">import</span><span style="color: #960050; background-color: #1e0010"> </span><span style="color: #f8f8f2">something</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Si vous voulez creuser, il y a un twist : <em>dans les trois cas décrits plus haut, c’est bien un module qu’on exécute et importe</em> ;-)</p>
+</div>
+<div class="paragraph">
+<p>Pour comprendre pourquoi, il faut s’intéresser à ce qu’est un package, et comment fonctionne le mécanisme d’import ; j’explique tout ceci <a href="#annexe">en annexe</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annexe">Annexe = mécanisme d’import, module, et package</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dans cette annexe, on va expliquer pourquoi les trois situations de l’article sont plus similaires qu’il n’y paraît car elles importent toutes trois un module.</p>
+</div>
+<div class="paragraph">
+<p>On s’intéressera à ce qu’est un module et comment on le charge d’une part, et à la différence entre un package et un module d’autre part.</p>
+</div>
+<div class="sect2">
+<h3 id="_chargement_dun_module">Chargement d’un module</h3>
+<div class="paragraph">
+<p>Reprenons le cas le plus facile ci-dessus, le cas n°1 :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>case1_importing_toplevel_object_from_a_module
+├── main.py
+└── xxx.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Ici, on a un module <code>xxx.py</code> au même niveau que le main. Les contenus des fichiers sont simples, <code>main.py</code> ne contient qu’une ligne :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">xxx</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et <code>xxx.py</code> ne contient que les quatre lignes suivantes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;module code is executed&#34;</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #66d9ef">def</span> <span style="color: #a6e22e">something</span><span style="color: #f8f8f2">():</span>
+    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;something was called&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Dans ce cas, que se passe-t-il à l’exécution du main <code>python3 ./main.py</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>un objet de type <code>module</code> est créé (c’est un objet python comme les autres)</p>
+</li>
+<li>
+<p>l’interpréteur <strong>exécute</strong> le code du module <code>xxx.py</code> (on va donc voir s’afficher <code>module code is executed</code>)</p>
+</li>
+<li>
+<p>les <em>top-level obejcts</em> du module (toute variable, objet, classe ou fonction définis au niveau 0 d’indentation dans le module) sont créés en tant qu’attributs de l’objet module. Dans notre exemple; c’est la fonction <code>something</code> qui est définie, en tant qu’attribut de l’objet module</p>
+</li>
+<li>
+<p>(c’est un détail qu’on va laisser de côté, mais cette exécution n’a lieu que la première fois que le module est importé : l’objet module est alors caché dans <code>sys.modules</code> et sera réutilisé directement par tout futur import)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Une fois cet objet module créé, il est bindé au nom <code>xxx</code> dans le module <code>main</code> ; dit autrement, au sein du module main, <code>xxx</code> est une variable qui référence l’objet module. On peut l’utiliser comme n’importe quelle autre variable, et notamment l’inspecter et accéder à ses attributs :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>&gt;&gt;&gt; import xxx
+
+&gt;&gt;&gt; repr(xxx)
+&lt;module &#39;xxx&#39; from &#39;/path/to/xxx.py&#39;&gt;
+
+&gt;&gt;&gt; dir(xxx)
+[&#39;__builtins__&#39;, &#39;__cached__&#39;, &#39;__doc__&#39;, &#39;__file__&#39;, &#39;__loader__&#39;, &#39;__name__&#39;, &#39;__package__&#39;, &#39;__spec__&#39;, &#39;something&#39;]
+
+xxx.something
+&lt;function something at 0x7f6c9015d3a0&gt;</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En particulier, si l’un de ses attributs est une fonction, on peut l’invoquer :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">xxx</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">something()</span>  <span style="color: #75715e"># affichera &#34;something was called&#34;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Donc en résumé <code>import xxx</code> a deux effets, qu’il faut bien différencier :</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>création d’un objet module, initialisé en <strong>exécutant</strong> le code du module</p>
+</li>
+<li>
+<p>binding la variable <code>xxx</code> du module courant à cet objet module</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>La doc python explique tout ceci dans <a href="https://docs.python.org/3.8/tutorial/modules.html">cette page</a>, plutôt introductive, et <a href="https://docs.python.org/3.8/reference/import.html">cette autre page</a>, plus complète.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_explication_du_cas_n1">Explication du cas n°1</h3>
+<div class="paragraph">
+<p>Avec le même code que juste au dessus, que se passe-t-il si le main contient plutôt :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Hé bien…​ presque la même chose : toute la première étape reste identique (on crée un objet module, on exécute <strong>TOUT</strong> le code du module <code>xxx.py</code>), ça n’est que la deuxième étape qui diffère : la variable <code>xxx</code> ne pointera plus vers l’objet-module entier, mais uniquement vers la fonction <code>something</code>.</p>
+</div>
+<div class="paragraph">
+<p>Très concrètement pour l’utilisateur, l’invocation de la fonction est différente : au lieu de devoir faire <code>xxx.something()</code>, il peut faire directement <code>something()</code>.</p>
+</div>
+<div class="paragraph">
+<p>Le revers de la médaille, c’est que comme on n’a bindé que le <em>top-level object</em> <code>something</code>, les autres <em>top-level objects</em> du module ne sont plus directement accessibles. Par exemple, si <code>xxx.py</code> en contient deux :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">def</span> <span style="color: #a6e22e">something</span><span style="color: #f8f8f2">():</span>
+    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;something was called&#34;</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #f8f8f2">ANSWER_TO_AN_IMPORTANT_QUESTION</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">42</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alors le main n’a accès directement qu’au <em>top-level object</em> qui a été explicitement importé, et pas aux autres :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span>
+
+<span style="color: #f8f8f2">something()</span>
+<span style="color: #75715e"># ok, affiche &#39;something was called&#39;</span>
+
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(ANSWER_TO_AN_IMPORTANT_QUESTION)</span>
+<span style="color: #75715e"># NameError: name &#39;ANSWER_TO_AN_IMPORTANT_QUESTION&#39; is not defined</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>J’ai dit plus haut que même dans ce cas n°1 c’était bien un module qu’on importait, parce que le module <strong>complet</strong> est intégralement exécuté et chargé, c’est juste qu’on n’a accès directement qu’à certains de ses éléments = ceux explicitement importés.</p>
+</div>
+<div class="paragraph">
+<p>Mais comme les autres <em>top-level objects</em> ont également été chargés, il reste possible d’y accéder indirectement depuis le <code>main</code>, en retrouvant l’objet module dans <code>sys.modules</code> (<a href="https://docs.python.org/fr/3/library/sys.html#sys.modules">lien</a>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">xxx</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">something</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">sys</span>
+
+<span style="color: #f8f8f2">module_object</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">sys</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">modules[</span><span style="color: #e6db74">&#34;xxx&#34;</span><span style="color: #f8f8f2">]</span>
+<span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(module_object</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">ANSWER_TO_AN_IMPORTANT_QUESTION)</span>
+<span style="color: #75715e"># 42</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>En résumé, même dans le cas n°1 du post, c’est bien le module <code>xxx</code> dans son entièreté qui a été exécuté, et la différence, c’est qu’on s’est contenté de binder l’un de ses <em>top-level objects</em> à une variable du <code>main</code>, plutôt que l’objet-module complet.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_package_modules_répertoire_fichiers">Package + modules == répertoire + fichiers ?</h3>
+<div class="paragraph">
+<p>Note préliminaire : quand je parle de fichiers et répertoires, pour simplifier les choses, je considère qu’un répertoire est un &#34;conteneur de fichiers et d’autres répertoires&#34;, même si dans la vraie vie c’est <a href="https://en.wikipedia.org/wiki/Everything_is_a_file">plus nuancé</a>.</p>
+</div>
+<div class="paragraph">
+<p>Quand on découvre la notion de modules et packages en python, on a naturellement tendance faire le parallèle avec les <strong>fichiers</strong> et les <strong>répertoires</strong> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>un module c’est un <strong>fichier</strong> python</p>
+</li>
+<li>
+<p>un package contient des modules python de la même façon qu’un <strong>répertoire</strong> contient des <strong>fichiers</strong> python</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ainsi, dans ce modèle mental, importer un sous-module est un peu l’équivalent de manipuler (par exemple, déplacer) un fichier d’une arboresence de répertoire :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span><span style="color: #75715e"># import d&#39;un module, dans une arborescence de packages :</span>
+import package.subpackage.module
+
+<span style="color: #75715e"># analogie avec fichiers/répertoires :</span>
+mv package/subpackage/module.py  /tmp</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec le même parallèle, importer un package parent a pour analogue la manipulation du répertoire parent, oui ?</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span><span style="color: #75715e"># import python :</span>
+import package
+
+<span style="color: #75715e"># analogie avec la manipulation d&#39;un répertoire :</span>
+mv package/  /tmp/</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Non ! Ce modèle mental, très utile au début, induit vite en erreur quand on s’intéresse aux détails. Les packages sont différents des répertoires pour deux raisons importantes.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_première_différence_un_répertoire_est_un_simple_conteneur_de_fichiers">Première différence : un répertoire est un simple conteneur de fichiers</h3>
+<div class="paragraph">
+<p>La première différence importante, c’est que dans notre modèle mental (simplifié), un fichier est fondamentalement différent d’un répertoire, car ce dernier est un simple conteneur de fichiers et sous-répertoires, sans contenu propre :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>cat /etc/fstab
+<span style="color: #75715e"># OK = afficher le contenu du fichier texte</span>
+
+cat /etc/
+<span style="color: #75715e"># ERROR = un répertoire n&#39;a pas de &#39;contenu&#39; que cat pourrait afficher</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À l’inverse, un package n’est pas qu’un simple conteneur de modules et sous-packages : un package est <strong>avant tout un module</strong>. Certes un module un peu particulier, mais un module tout de même, disposant notamment de son propre code.</p>
+</div>
+<div class="paragraph">
+<p>Et quel est le code d’un package ? Celui de son fichier <code>__init__.py</code>, pardi !</p>
+</div>
+<div class="paragraph">
+<p>Ainsi, pour une utilisation directe (i.e. si le main fait <code>import greeter</code>), il n’y a pas de différences concrètes entre les deux situations suivantes, à condition que les contenus des fichiers <code>pouet.py</code> et <code>__init__.py</code> soient identiques :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>situation1
+├── greeter.py
+└── main.py
+
+situation2
+├── greeter
+│   └── __init__.py
+└── main.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Petite précision concernant les sous-packages : importer un sous-package exécute le <code>__init__.py</code> non seulement du sous-package, mais également de tous ses packages parents (en commençant par eux d’ailleurs). Ainsi, dans la situation suivante :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>situation3
+├── package
+│   ├── subpackage
+│   │   ├── greeter
+│   │   │   └── __init__.py
+│   │   └── __init__.py
+│   └── __init__.py
+└── main.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alors si le main fait <code>import package.subpackage.greeter</code>, les fichiers <code>__init__.py</code> suivants seront exécutés, dans cet ordre :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>package/__init__.py</code></p>
+</li>
+<li>
+<p><code>package/subpackage/__init__.py</code></p>
+</li>
+<li>
+<p><code>package/subpackage/greeter/__init__.py</code></p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_deuxième_différence_un_répertoire_représente_son_contenu_récursif">Deuxième différence : un répertoire représente son contenu récursif</h3>
+<div class="paragraph">
+<p>La seconde différence importante, c’est que dans notre modèle mental (simplifié), en manipulant un répertoire, on le manipule avec tout son contenu, récursivement :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>mv package/ /tmp/
+
+<span style="color: #75715e"># /tmp/package/ contient maintenant TOUT le contenu (récursif) de package/</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>À l’inverse, importer un package ne donne PAS accès aux modules et sous-packages qu’il contient ! Il faut importer explicitement le module du package pour pouvoir l’utiliser !</p>
+</div>
+<div class="paragraph">
+<p>Ça m’a beaucoup perturbé, illustrons ce point avec la lib standard : intéressons nous au module <code>email.utils</code> du package <code>email</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #75715e"># importer le package n&#39;est PAS suffisant pour utiliser l&#39;un de ses modules :</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">email</span>
+
+<span style="color: #f8f8f2">email</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">utils</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parsedate(</span><span style="color: #e6db74">&#34;23 Oct 2021 19:10:00&#34;</span><span style="color: #f8f8f2">)</span>
+<span style="color: #75715e"># AttributeError: module &#39;email&#39; has no attribute &#39;utils&#39;</span>
+<span style="color: #75715e"># importer `email` n&#39;donc a PAS importé son sous-module `email.utils`</span>
+
+
+<span style="color: #75715e"># pour utiliser `email.utils`, il faut l&#39;importer explicitement :</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">email.utils</span>
+<span style="color: #f8f8f2">email</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">utils</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parsedate(</span><span style="color: #e6db74">&#34;23 Oct 2021 19:10:00&#34;</span><span style="color: #f8f8f2">)</span>
+<span style="color: #75715e"># (2021, 10, 23, 19, 10, 0, 0, 1, -1)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Pour reprendre l’analogie avec les fichiers+répertoires, une situation proche serait celle où déplacer un répertoire vers une clé USB ne déplace que le contenu direct du répertoire, sans copier récursivement ses sous-répertoires !</p>
+</div>
+<div class="paragraph">
+<p>Si on se résume :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>voir les packages comme de simples conteneurs de modules est imprécis ; du coup, l’analogie avec des répertoires de fichiers a ses limites</p>
+</li>
+<li>
+<p>un package est un module avant tout, et <a href="https://docs.python.org/3/glossary.html#term-package">sa définition dans le glossaire</a> est d’ailleurs &#34;un module un peu particulier&#34;</p>
+</li>
+<li>
+<p>à ce titre, comme pour tous les modules, importer un package exécute son code, c’est à dire son <code>__init__.py</code></p>
+</li>
+<li>
+<p>attention : importer un package n’importe <strong>PAS</strong> ses modules ou packages enfants !</p>
+</li>
+<li>
+<p>il est donc tout à fait possible (entendre : ça n’est pas une erreur) d’enchaîner l’import d’un package et d’un de ses fils, comme ceci :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">email</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">email.utils</span></code></pre>
+</div>
+</div>
+</li>
+<li>
+<p>en effet, on peut très bien vouloir utiliser à la fois email et email.utils :</p>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">a</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">email</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">message_from_string(s)</span>
+<span style="color: #f8f8f2">b</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">email</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">utils</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">parsedate(</span><span style="color: #e6db74">&#34;23 Oct 2021 19:10:00&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>De nouveau, je vous renvoie aux docs python, <a href="https://docs.python.org/3.8/tutorial/modules.html">ici</a> et <a href="https://docs.python.org/3.8/reference/import.html">là</a>.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_explication_du_cas_n3">Explication du cas n°3</h3>
+<div class="paragraph">
+<p>On peut maintenant revenir au cas n°3, et comprendre pourquoi ici aussi c’est un module qui est exécuté. Rappelons la situation :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>case3_importing_subpackage_from_a_package
+├── xxx
+│   ├── something
+│   │   ├── __init__.py
+│   │   └── skywalkers.py
+│   └── __init__.py
+└── main.py</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Lorsque le main fait <code>from xxx import something</code>, alors <code>something</code> est un sous-package du package-parent <code>xxx</code>.</p>
+</div>
+<div class="paragraph">
+<p>Selon ce qu’on vient de voir, c’est bien le module <code>xxx/something/__init__.py</code> qu’on exécute et qu’on importe dans le main.</p>
+</div>
+<div class="paragraph">
+<p>En réalité, on exécute même <strong>deux</strong> modules, puisqu’on vient de voir qu’importer un sous-package exécutait préalablement le <code>__init__.py</code> du package parent, soit <code>xxx/__init__.py</code>.</p>
+</div>
+<div class="paragraph">
+<p>Si on résume donc les 3 cas du post, dans tous les cas, l’import exécute un module :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>dans le premier cas, on exécute un module complet <code>xxx.py</code>, mais on ne binde dans le namespace du main QUE l’élément importé <code>something</code></p>
+</li>
+<li>
+<p>dans le second cas, on exécute un module complet <code>something.py</code>, et tout son contenu est accessible dans le main, via l’objet représentant le module</p>
+</li>
+<li>
+<p>dans le troisième cas, on exécute deux modules <code>xxx/__init__.py</code> et <code>xxx/something/__init__.py</code>, et le contenu du second est accessible dans le main, via l’objet représentant le module</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_pour_aller_plus_loin">Pour aller plus loin</h3>
+<div class="sect3">
+<h4 id="_pourquoi_parle_t_on_dinitialisation">Pourquoi parle-t-on d’initialisation ?</h4>
+<div class="paragraph">
+<p>On a vu qu’importer <code>package.subpackage.greeter</code> avait pour effet d’exécuter dans l’ordre :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>package/__init__.py</code></p>
+</li>
+<li>
+<p><code>package/subpackage/__init__.py</code></p>
+</li>
+<li>
+<p><code>package/subpackage/greeter/__init__.py</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>La philosophie derrière ça, c’est qu’on va plutôt avoir tendance à importer des modules feuilles (e.g. <code>import email.parser</code>) que des packages parents (<code>import email</code>).</p>
+</div>
+<div class="paragraph">
+<p>La façon dont je vois les choses, c’est qu’on parle d’initialisation (et les fichiers sont donc appelés <code>__init__.py</code>), parce que possiblement, pour utiliser un module feuille du package quelconque (e.g. <code>email.parser</code> ou <code>email.message</code>), on a systématiquement besoin d’exécuter du code d’initialisation, qui vit ailleurs.</p>
+</div>
+<div class="paragraph">
+<p>Comme l’import d’un module d’un package exécute le <code>__init__.py</code> du package parent, ce <code>__init__.py</code> parent est l’emplacement parfait pour placer le code d’initialisation des modules feuilles, vu qu’on a la garantie qu’il sera exécuté préalablement à chaque import d’un module feuille, peu importe lequel.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_exposer_via_un_package_des_objets_définis_dans_ses_sous_modules">Exposer via un package des objets définis dans ses sous-modules</h4>
+<div class="paragraph">
+<p>Le code d’un package (dans son <code>__init__.py</code>) est arbitraire : on peut très bien choisir d’y importer des sous-modules du package. Dans ce cas particulier, importer le pacakge parent aura pour conséquence effective de pouvoir accéder à ses sous-modules (contrairement à ce qui est dit plus haut).</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, dans la lib standard, le package <code>encodings</code> contient un module <code>aliases</code> (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/encodings/aliases.py">lien</a>). Or, le fichier <code>encodings/__init__.py</code> contient la ligne suivante (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/encodings/__init__.py#L33">lien</a>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">.</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">aliases</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Par conséquent, importer le package <code>encodings</code> donne DIRECTEMENT accès à son sous-module <code>encodings.aliases</code>, vu que ce dernier a été importé à l’exécution du package <code>encodings</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">encodings</span>
+<span style="color: #f8f8f2">encodings</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">aliases</span>
+<span style="color: #75715e"># &lt;module &#39;encodings.aliases&#39; from &#39;/usr/lib/python3.8/encodings/aliases.py&#39;&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Une variante : dans le code d’un package (dans son <code>__init__.py</code>), on peut également choisir d’y importer des top-level objects d’un sous-module ; ça revient en quelque sorte à les &#34;exposer&#34; dans le package parent. Par exemple, dans la lib standard, le package <code>unittest</code> contient un module <code>result</code>, qui définit la classe <code>TestUser</code> comme top-level object du module (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/unittest/result.py#L24">lien</a>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">unittest.result</span>
+<span style="color: #f8f8f2">unittest</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">result</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">TestResult</span>
+<span style="color: #f92672">&lt;</span><span style="color: #66d9ef">class</span> <span style="color: #960050; background-color: #1e0010">&#39;</span><span style="color: #a6e22e">unittest</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">result</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">TestResult</span><span style="color: #e6db74">&#39;&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Or, cette classe est directement importée par <code>unittest/__init__.py</code> (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/unittest/__init__.py#L59">lien</a>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">from</span> <span style="color: #f8f8f2">.result</span> <span style="color: #f92672">import</span> <span style="color: #f8f8f2">TestResult</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Du coup, importer le package <code>unittest</code> suffit à utiliser la classe <code>unittest.result.TestResult</code>, tout se passe comme si le <code>__init__.py</code> du package <strong>exposait</strong> la classe <code>TestUser</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">unittest</span>
+<span style="color: #f8f8f2">unittest</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">TestResult</span>
+<span style="color: #f92672">&lt;</span><span style="color: #66d9ef">class</span> <span style="color: #960050; background-color: #1e0010">&#39;</span><span style="color: #a6e22e">unittest</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">result</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">TestResult</span><span style="color: #e6db74">&#39;&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_variable_path_et_transformation">variable path et transformation</h4>
+<div class="paragraph">
+<p>Ce paragraphe est plus un jeu avec python qu’un truc utile, mais d’après le glossaire, un pacakge python n’est rien qu’un module avec une variable <code>__path__</code> (<a href="https://docs.python.org/3/glossary.html#term-package">lien</a>) :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Technically, a package is a Python module with an <code>__path__</code> attribute.</p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Est-ce que ça veut dire qu’on peut transformer un module en package, simplement en lui définissant un attribut <code>__path__</code> ?! Essayons donc :</p>
+</div>
+<div class="paragraph">
+<p>On part d’un module <code>greeter.py</code> simpliste :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">def</span> <span style="color: #a6e22e">greet</span><span style="color: #f8f8f2">():</span>
+    <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;Hello !&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Derrière, dans un <code>main.py</code> situé au même niveau, on vérifie bien que <code>greeter</code> n’est pas un package :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #75715e"># on importe et utilise le MODULE &#39;greeter&#39; :</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">greeter</span>
+<span style="color: #f8f8f2">greeter</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">greet()</span>
+
+<span style="color: #75715e"># greeter est bien un module, et n&#39;a pas d&#39;attribut __path__ :</span>
+<span style="color: #66d9ef">assert</span> <span style="color: #f92672">not</span> <span style="color: #f8f8f2">hasattr(greeter,</span> <span style="color: #e6db74">&#34;__path__&#34;</span><span style="color: #f8f8f2">)</span>
+
+<span style="color: #75715e"># greeter n&#39;est pas un package, et ne contient pas le sous-module &#39;pouet&#39; :</span>
+<span style="color: #66d9ef">try</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #f92672">import</span> <span style="color: #f8f8f2">greeter.pouet</span>
+<span style="color: #66d9ef">except</span> <span style="color: #a6e22e">ModuleNotFoundError</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #66d9ef">pass</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Jouons à l’apprenti-sorcier : créons un module <code>/tmp/pouet.py</code>, qui sera le sous-module de notre futur package <code>greeter</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">with</span> <span style="color: #f8f8f2">open(</span><span style="color: #e6db74">&#34;/tmp/pouet.py&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;w&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #66d9ef">as</span> <span style="color: #f8f8f2">f:</span>
+    <span style="color: #f8f8f2">f</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">write(</span><span style="color: #e6db74">&#34;&#34;&#34;</span>
+<span style="color: #e6db74">def talk():</span>
+<span style="color: #e6db74">    print(&#34;What I am saying is : pouetpouet&#34;)</span>
+<span style="color: #e6db74">&#34;&#34;&#34;</span><span style="color: #f8f8f2">)</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>C’est là que la magie opère : on transforme le MODULE <code>greeter</code> en un PACKAGE, en lui définissant un  attribut <code>__path__</code>, permettant d’importer <code>greeter.pouet</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">greeter</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__path__</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span><span style="color: #e6db74">&#34;/tmp&#34;</span><span style="color: #f8f8f2">]</span>
+
+<span style="color: #75715e"># &#39;greeter&#39; est maintenant un PACKAGE, qui &#34;contient&#34; le sous-module &#39;pouet&#39; :</span>
+<span style="color: #f92672">import</span> <span style="color: #f8f8f2">greeter.pouet</span>
+<span style="color: #f8f8f2">greeter</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">pouet</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">talk()</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>\o/</p>
+</div>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/turning_a_module_into_a_package">lien vers le code d’exemple</a>)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_modules_spéciaux">modules spéciaux</h4>
+<div class="paragraph">
+<p>Il existe plusieurs situations où on peut importer un module <code>import pouet</code> sans qu’il n’existe concrètement de fichier <code>pouet.py</code> à mettre en face de l’import…​</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, pour les extensions C, le module est directement codé en C. Dans ce cas, l’attribut <code>__file__</code> du module pointe vers l’extension C, donc une lib partagée <code>.so</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">_lzma</span>
+<span style="color: #f8f8f2">_lzma</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__file__</span>
+<span style="color: #75715e"># &#39;/usr/lib/python3.8/lib-dynload/_lzma.cpython-38-x86_64-linux-gnu.so&#39;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Je triche (un peu) parce que la lib standard a <strong>également</strong> un module python <code>lzma.py</code> qui se charge d’importer le module C (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/lzma.py#L27">lien</a>), et le module <code>_lzma</code> n’a pas vocation à être importé directement, comme l’indique l’underscore en préfixe. Mais ça reste un exemple de ce que je veux illustrer : il n’existe pas de fichier <code>_lzma.py</code> à mettre en face de <code>import _lzma</code>.</p>
+</div>
+<div class="paragraph">
+<p>Un autre exemple notable, ce sont les builtin-modules, comme par exemple le module <code>time</code>. Dans ce cas, le module n’a même pas d’attribut <code>__file__</code>, puisqu’il est codé directement en C et packagé avec l’interpréteur (<a href="https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Modules/timemodule.c">lien vers le code C</a>) :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f92672">import</span> <span style="color: #f8f8f2">time</span>
+<span style="color: #f8f8f2">time</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__file__</span>
+<span style="color: #75715e"># Traceback (most recent call last):</span>
+<span style="color: #75715e">#   File &#34;&lt;stdin&gt;&#34;, line 1, in &lt;module&gt;</span>
+<span style="color: #75715e"># AttributeError: module &#39;time&#39; has no attribute &#39;__file__&#39;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_namespace_packages">Namespace packages</h4>
+<div class="paragraph">
+<p>Last but not least, l’ensemble du post ne s’intéresse qu’aux <a href="https://docs.python.org/3/reference/import.html#regular-packages">regular packages</a>, et n’a donc pas de rapport avec les <a href="https://docs.python.org/3/reference/import.html#namespace-packages">namespace packages</a>. Si ce sujet vous intéresse, vous pouvez lire <a href="https://www.python.org/dev/peps/pep-0420/doc">la PEP 420 qui les concerne</a>.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>
