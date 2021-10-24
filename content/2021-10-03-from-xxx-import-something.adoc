@@ -1,0 +1,599 @@
+---
+title: "from xxx import something"
+date: 2021-10-03T10:00:00+01:00
+draft: false
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 2
+= from xxx import something
+
+toc::[]
+
+== Une syntaxe confuse
+
+Un point m'a toujours chiffonné en python. Question simple :
+
+[source,python]
+----
+from xxx import something
+----
+
+C'est quoi exactement `something` ? Et où est le code importé ?
+
+TL;DR : on va voir que cette ligne peut importer trois types d'objets différents :
+
+- le _top-level objet_ `something` du module `xxx`
+- le module `something` du package `xxx`
+- le subpackage `something` du package `xxx`
+
+_Note préliminaire_ : dans tous les exemples, on suppose que `main.py` fait l'import suivant :
+
+[source,python]
+----
+from xxx import something
+----
+
+== Cas n°1 = importer un top-level object d'un module
+
+Le cas le plus simple — "simple" car il ne fait pas intervenir la notion de package, plus complexe qu'elle n'en a l'air — est celui-ci :
+
+----
+case1_importing_toplevel_object_from_a_module
+├── main.py
+└── xxx.py
+----
+
+Où le fichier `xxx.py` contient uniquement les deux lignes suivantes :
+
+[source,python]
+----
+def something():
+    print("something was called")
+----
+
+Dans ce cas, `xxx` est un https://docs.python.org/3/glossary.html#term-module[module] (en simplifié, un fichier python), et `something` est un objet racine (_top-level object_) de ce module, en l'occurence une fonction. `main` pourra l'utiliser directement :
+
+[source,python]
+----
+from xxx import something
+something()
+----
+
+(https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case1_importing_toplevel_object_from_a_module[lien vers le code d'exemple])
+
+== Cas n°2 = importer un module d'un package
+
+Voyons maintenant le cas suivant :
+
+----
+case2_importing_module_from_a_package
+├── xxx
+│   ├── __init__.py
+│   └── something.py
+└── main.py
+----
+
+Où le fichier `xxx/\\__init__.py` est vide, et où le fichier `xxx/something.py` contient (par exemple) uniquement les deux lignes suivantes :
+
+[source,python]
+----
+def greet():
+    print("Greetings, mortal... Are you ready to die ?")
+----
+
+Dans ce cas, `xxx` est un https://docs.python.org/3/glossary.html#term-package[package] (en simplifié, un groupe de modules python), et `something` est l'un des modules du package. `main` pourra utiliser le module, par exemple en accédant à sa fonction `greet` :
+
+[source,python]
+----
+from xxx import something
+
+something.greet()
+----
+
+(https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case2_importing_module_from_a_package[lien vers le code d'exemple])
+
+== Cas n°3 = importer un subpackage d'un package
+
+Enfin, si on a l'arborescence suivante :
+
+----
+case3_importing_subpackage_from_a_package
+├── xxx
+│   ├── something
+│   │   ├── __init__.py
+│   │   └── skywalkers.py
+│   └── __init__.py
+└── main.py
+----
+
+Où les trois fichiers `.py` sont :
+
+- `xxx/\\__init__.py` est vide
+- `xxx/something/\\__init__.py` contient par exemple :
++
+[source,python]
+----
+FORCE_SIDES = {
+    "light",
+    "dark",
+}
+----
+- `xxx/something/skywalkers.py` contient par exemple le code suivant :
++
+[source,python]
+----
+JEDIS = [
+    "luke",
+    "anakin",
+]
+----
+
+Alors `xxx` est un package, `something` est un package également, qui se trouve être un **sous-package** de `xxx`, lui-même contenant le module `skywalkers.py` (dans notre exemple, ce module ne sera ni importé ni utilisé).
+
+En important le package `something`, le main importe en réalité son `\\__init__.py`, qui définit la variable `FORCE_SIDES`. Le main peut donc l'utiliser comme ceci :
+
+[source,python]
+----
+from xxx import something
+
+print(f"Number of sides in the force = {len(something.FORCE_SIDES)}")
+----
+
+J'insiste car ce n'est pas intuitif : en important un package, on exécute son `\\__init__.py`, comme l'indique explicitement la https://docs.python.org/3.8/reference/import.html#regular-packages[doc] :
+
+> When a regular package is imported, [its] \\__init__.py file is implicitly executed, and the objects it defines are bound to names in the package’s namespace. 
+
+(https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/case3_importing_subpackage_from_a_package[lien vers le code d'exemple])
+
+== Conclusion
+
+Pas de conclusion mirobolante, juste qu'il n'est pas toujours trivial de savoir ce qui est importé par :
+
+[source,python]
+----
+from xxx import something
+----
+
+Si vous voulez creuser, il y a un twist : _dans les trois cas décrits plus haut, c'est bien un module qu'on exécute et importe_ ;-)
+
+Pour comprendre pourquoi, il faut s'intéresser à ce qu'est un package, et comment fonctionne le mécanisme d'import ; j'explique tout ceci <<annexe,en annexe>>.
+
+== Annexe = mécanisme d'import, module, et package [[annexe]]
+
+Dans cette annexe, on va expliquer pourquoi les trois situations de l'article sont plus similaires qu'il n'y paraît car elles importent toutes trois un module.
+
+On s'intéressera à ce qu'est un module et comment on le charge d'une part, et à la différence entre un package et un module d'autre part.
+
+=== Chargement d'un module
+
+Reprenons le cas le plus facile ci-dessus, le cas n°1 :
+
+----
+case1_importing_toplevel_object_from_a_module
+├── main.py
+└── xxx.py
+----
+
+Ici, on a un module `xxx.py` au même niveau que le main. Les contenus des fichiers sont simples, `main.py` ne contient qu'une ligne :
+
+[source,python]
+----
+import xxx
+----
+
+Et `xxx.py` ne contient que les quatre lignes suivantes :
+
+[source,python]
+----
+print("module code is executed")
+
+def something():
+    print("something was called")
+----
+
+Dans ce cas, que se passe-t-il à l'exécution du main `python3 ./main.py` :
+
+- un objet de type `module` est créé (c'est un objet python comme les autres)
+- l'interpréteur **exécute** le code du module `xxx.py` (on va donc voir s'afficher `module code is executed`)
+- les _top-level obejcts_ du module (toute variable, objet, classe ou fonction définis au niveau 0 d'indentation dans le module) sont créés en tant qu'attributs de l'objet module. Dans notre exemple; c'est la fonction `something` qui est définie, en tant qu'attribut de l'objet module
+- (c'est un détail qu'on va laisser de côté, mais cette exécution n'a lieu que la première fois que le module est importé : l'objet module est alors caché dans `sys.modules` et sera réutilisé directement par tout futur import)
+
+Une fois cet objet module créé, il est bindé au nom `xxx` dans le module `main` ; dit autrement, au sein du module main, `xxx` est une variable qui référence l'objet module. On peut l'utiliser comme n'importe quelle autre variable, et notamment l'inspecter et accéder à ses attributs :
+
+----
+>>> import xxx
+
+>>> repr(xxx)
+<module 'xxx' from '/path/to/xxx.py'>
+
+>>> dir(xxx)
+['__builtins__', '__cached__', '__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'something']
+
+xxx.something
+<function something at 0x7f6c9015d3a0>
+----
+
+En particulier, si l'un de ses attributs est une fonction, on peut l'invoquer :
+
+[source,python]
+----
+xxx.something()  # affichera "something was called"
+----
+
+Donc en résumé `import xxx` a deux effets, qu'il faut bien différencier :
+
+1. création d'un objet module, initialisé en **exécutant** le code du module
+2. binding la variable `xxx` du module courant à cet objet module
+
+La doc python explique tout ceci dans https://docs.python.org/3.8/tutorial/modules.html[cette page], plutôt introductive, et https://docs.python.org/3.8/reference/import.html[cette autre page], plus complète.
+
+=== Explication du cas n°1
+
+Avec le même code que juste au dessus, que se passe-t-il si le main contient plutôt :
+
+[source,python]
+----
+from xxx import something
+----
+
+Hé bien... presque la même chose : toute la première étape reste identique (on crée un objet module, on exécute **TOUT** le code du module `xxx.py`), ça n'est que la deuxième étape qui diffère : la variable `xxx` ne pointera plus vers l'objet-module entier, mais uniquement vers la fonction `something`.
+
+Très concrètement pour l'utilisateur, l'invocation de la fonction est différente : au lieu de devoir faire `xxx.something()`, il peut faire directement `something()`.
+
+Le revers de la médaille, c'est que comme on n'a bindé que le _top-level object_ `something`, les autres _top-level objects_ du module ne sont plus directement accessibles. Par exemple, si `xxx.py` en contient deux :
+
+[source,python]
+----
+def something():
+    print("something was called")
+
+ANSWER_TO_AN_IMPORTANT_QUESTION = 42
+----
+
+Alors le main n'a accès directement qu'au _top-level object_ qui a été explicitement importé, et pas aux autres :
+
+[source,python]
+----
+from xxx import something
+
+something()
+# ok, affiche 'something was called'
+
+print(ANSWER_TO_AN_IMPORTANT_QUESTION)
+# NameError: name 'ANSWER_TO_AN_IMPORTANT_QUESTION' is not defined
+----
+
+J'ai dit plus haut que même dans ce cas n°1 c'était bien un module qu'on importait, parce que le module **complet** est intégralement exécuté et chargé, c'est juste qu'on n'a accès directement qu'à certains de ses éléments = ceux explicitement importés.
+
+Mais comme les autres _top-level objects_ ont également été chargés, il reste possible d'y accéder indirectement depuis le `main`, en retrouvant l'objet module dans `sys.modules` (https://docs.python.org/fr/3/library/sys.html#sys.modules[lien]) : 
+
+[source,python]
+----
+from xxx import something
+import sys
+
+module_object = sys.modules["xxx"]
+print(module_object.ANSWER_TO_AN_IMPORTANT_QUESTION)
+# 42
+----
+
+En résumé, même dans le cas n°1 du post, c'est bien le module `xxx` dans son entièreté qui a été exécuté, et la différence, c'est qu'on s'est contenté de binder l'un de ses _top-level objects_ à une variable du `main`, plutôt que l'objet-module complet.
+
+=== Package + modules == répertoire + fichiers ?
+
+Note préliminaire : quand je parle de fichiers et répertoires, pour simplifier les choses, je considère qu'un répertoire est un "conteneur de fichiers et d'autres répertoires", même si dans la vraie vie c'est https://en.wikipedia.org/wiki/Everything_is_a_file[plus nuancé].
+
+Quand on découvre la notion de modules et packages en python, on a naturellement tendance faire le parallèle avec les *fichiers* et les *répertoires* :
+
+- un module c'est un *fichier* python
+- un package contient des modules python de la même façon qu'un *répertoire* contient des *fichiers* python
+
+Ainsi, dans ce modèle mental, importer un sous-module est un peu l'équivalent de manipuler (par exemple, déplacer) un fichier d'une arboresence de répertoire :
+
+[source,sh]
+----
+# import d'un module, dans une arborescence de packages :
+import package.subpackage.module
+
+# analogie avec fichiers/répertoires :
+mv package/subpackage/module.py  /tmp
+----
+
+Avec le même parallèle, importer un package parent a pour analogue la manipulation du répertoire parent, oui ?
+
+[source,sh]
+----
+# import python :
+import package
+
+# analogie avec la manipulation d'un répertoire :
+mv package/  /tmp/
+----
+
+Non ! Ce modèle mental, très utile au début, induit vite en erreur quand on s'intéresse aux détails. Les packages sont différents des répertoires pour deux raisons importantes.
+
+=== Première différence : un répertoire est un simple conteneur de fichiers
+
+La première différence importante, c'est que dans notre modèle mental (simplifié), un fichier est fondamentalement différent d'un répertoire, car ce dernier est un simple conteneur de fichiers et sous-répertoires, sans contenu propre :
+
+[source,sh]
+----
+cat /etc/fstab
+# OK = afficher le contenu du fichier texte
+
+cat /etc/
+# ERROR = un répertoire n'a pas de 'contenu' que cat pourrait afficher
+----
+
+À l'inverse, un package n'est pas qu'un simple conteneur de modules et sous-packages : un package est *avant tout un module*. Certes un module un peu particulier, mais un module tout de même, disposant notamment de son propre code.
+
+Et quel est le code d'un package ? Celui de son fichier `\\__init__.py`, pardi !
+
+Ainsi, pour une utilisation directe (i.e. si le main fait `import greeter`), il n'y a pas de différences concrètes entre les deux situations suivantes, à condition que les contenus des fichiers `pouet.py` et `\\__init__.py` soient identiques :
+
+----
+situation1
+├── greeter.py
+└── main.py
+
+situation2
+├── greeter
+│   └── __init__.py
+└── main.py
+----
+
+Petite précision concernant les sous-packages : importer un sous-package exécute le `\\__init__.py` non seulement du sous-package, mais également de tous ses packages parents (en commençant par eux d'ailleurs). Ainsi, dans la situation suivante :
+
+----
+situation3
+├── package
+│   ├── subpackage
+│   │   ├── greeter
+│   │   │   └── __init__.py
+│   │   └── __init__.py
+│   └── __init__.py
+└── main.py
+----
+
+Alors si le main fait `import package.subpackage.greeter`, les fichiers `\\__init__.py` suivants seront exécutés, dans cet ordre :
+
+- `package/\\__init__.py`
+- `package/subpackage/\\__init__.py`
+- `package/subpackage/greeter/\\__init__.py`
+
+=== Deuxième différence : un répertoire représente son contenu récursif
+
+La seconde différence importante, c'est que dans notre modèle mental (simplifié), en manipulant un répertoire, on le manipule avec tout son contenu, récursivement :
+
+[source,sh]
+----
+mv package/ /tmp/
+
+# /tmp/package/ contient maintenant TOUT le contenu (récursif) de package/
+----
+
+À l'inverse, importer un package ne donne PAS accès aux modules et sous-packages qu'il contient ! Il faut importer explicitement le module du package pour pouvoir l'utiliser !
+
+Ça m'a beaucoup perturbé, illustrons ce point avec la lib standard : intéressons nous au module `email.utils` du package `email` :
+
+[source,python]
+----
+# importer le package n'est PAS suffisant pour utiliser l'un de ses modules :
+import email
+
+email.utils.parsedate("23 Oct 2021 19:10:00")
+# AttributeError: module 'email' has no attribute 'utils'
+# importer `email` n'donc a PAS importé son sous-module `email.utils`
+
+
+# pour utiliser `email.utils`, il faut l'importer explicitement :
+import email.utils
+email.utils.parsedate("23 Oct 2021 19:10:00")
+# (2021, 10, 23, 19, 10, 0, 0, 1, -1)
+----
+
+Pour reprendre l'analogie avec les fichiers+répertoires, une situation proche serait celle où déplacer un répertoire vers une clé USB ne déplace que le contenu direct du répertoire, sans copier récursivement ses sous-répertoires !
+
+Si on se résume :
+
+- voir les packages comme de simples conteneurs de modules est imprécis ; du coup, l'analogie avec des répertoires de fichiers a ses limites
+- un package est un module avant tout, et https://docs.python.org/3/glossary.html#term-package[sa définition dans le glossaire] est d'ailleurs "un module un peu particulier"
+- à ce titre, comme pour tous les modules, importer un package exécute son code, c'est à dire son `\\__init__.py`
+- attention : importer un package n'importe *PAS* ses modules ou packages enfants !
+- il est donc tout à fait possible (entendre : ça n'est pas une erreur) d'enchaîner l'import d'un package et d'un de ses fils, comme ceci :
++
+[source,python]
+----
+import email
+import email.utils
+----
+- en effet, on peut très bien vouloir utiliser à la fois email et email.utils :
++
+[source,python]
+----
+a = email.message_from_string(s)
+b = email.utils.parsedate("23 Oct 2021 19:10:00")
+----
+
+De nouveau, je vous renvoie aux docs python, https://docs.python.org/3.8/tutorial/modules.html[ici] et https://docs.python.org/3.8/reference/import.html[là].
+
+=== Explication du cas n°3
+
+On peut maintenant revenir au cas n°3, et comprendre pourquoi ici aussi c'est un module qui est exécuté. Rappelons la situation :
+
+----
+case3_importing_subpackage_from_a_package
+├── xxx
+│   ├── something
+│   │   ├── __init__.py
+│   │   └── skywalkers.py
+│   └── __init__.py
+└── main.py
+----
+
+Lorsque le main fait `from xxx import something`, alors `something` est un sous-package du package-parent `xxx`.
+
+Selon ce qu'on vient de voir, c'est bien le module `xxx/something/\\__init__.py` qu'on exécute et qu'on importe dans le main.
+
+En réalité, on exécute même *deux* modules, puisqu'on vient de voir qu'importer un sous-package exécutait préalablement le `\\__init__.py` du package parent, soit `xxx/\\__init__.py`.
+
+Si on résume donc les 3 cas du post, dans tous les cas, l'import exécute un module :
+
+- dans le premier cas, on exécute un module complet `xxx.py`, mais on ne binde dans le namespace du main QUE l'élément importé `something`
+- dans le second cas, on exécute un module complet `something.py`, et tout son contenu est accessible dans le main, via l'objet représentant le module
+- dans le troisième cas, on exécute deux modules `xxx/\\__init__.py` et `xxx/something/\\__init__.py`, et le contenu du second est accessible dans le main, via l'objet représentant le module
+
+=== Pour aller plus loin
+
+==== Pourquoi parle-t-on d'initialisation ?
+
+On a vu qu'importer `package.subpackage.greeter` avait pour effet d'exécuter dans l'ordre :
+
+- `package/\\__init__.py`
+- `package/subpackage/\\__init__.py`
+- `package/subpackage/greeter/\\__init__.py`
+
+La philosophie derrière ça, c'est qu'on va plutôt avoir tendance à importer des modules feuilles (e.g. `import email.parser`) que des packages parents (`import email`).
+
+La façon dont je vois les choses, c'est qu'on parle d'initialisation (et les fichiers sont donc appelés `\\__init__.py`), parce que possiblement, pour utiliser un module feuille du package quelconque (e.g. `email.parser` ou `email.message`), on a systématiquement besoin d'exécuter du code d'initialisation, qui vit ailleurs.
+
+Comme l'import d'un module d'un package exécute le `\\__init__.py` du package parent, ce `\\__init__.py` parent est l'emplacement parfait pour placer le code d'initialisation des modules feuilles, vu qu'on a la garantie qu'il sera exécuté préalablement à chaque import d'un module feuille, peu importe lequel.
+
+==== Exposer via un package des objets définis dans ses sous-modules
+
+Le code d'un package (dans son `\\__init__.py`) est arbitraire : on peut très bien choisir d'y importer des sous-modules du package. Dans ce cas particulier, importer le pacakge parent aura pour conséquence effective de pouvoir accéder à ses sous-modules (contrairement à ce qui est dit plus haut).
+
+Par exemple, dans la lib standard, le package `encodings` contient un module `aliases` (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/encodings/aliases.py[lien]). Or, le fichier `encodings/\\__init__.py` contient la ligne suivante (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/encodings/\\__init__.py#L33[lien]) :
+
+[source,python]
+----
+from . import aliases
+----
+
+Par conséquent, importer le package `encodings` donne DIRECTEMENT accès à son sous-module `encodings.aliases`, vu que ce dernier a été importé à l'exécution du package `encodings` :
+
+[source,python]
+----
+import encodings
+encodings.aliases
+# <module 'encodings.aliases' from '/usr/lib/python3.8/encodings/aliases.py'>
+----
+
+Une variante : dans le code d'un package (dans son `\\__init__.py`), on peut également choisir d'y importer des top-level objects d'un sous-module ; ça revient en quelque sorte à les "exposer" dans le package parent. Par exemple, dans la lib standard, le package `unittest` contient un module `result`, qui définit la classe `TestUser` comme top-level object du module (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/unittest/result.py#L24[lien]) :
+
+[source,python]
+----
+import unittest.result
+unittest.result.TestResult
+<class 'unittest.result.TestResult'>
+----
+
+Or, cette classe est directement importée par `unittest/\\__init__.py` (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/unittest/\\__init__.py#L59[lien]) :
+
+[source,python]
+----
+from .result import TestResult
+----
+
+Du coup, importer le package `unittest` suffit à utiliser la classe `unittest.result.TestResult`, tout se passe comme si le `\\__init__.py` du package *exposait* la classe `TestUser` :
+
+[source,python]
+----
+import unittest
+unittest.TestResult
+<class 'unittest.result.TestResult'>
+----
+
+==== variable path et transformation
+
+Ce paragraphe est plus un jeu avec python qu'un truc utile, mais d'après le glossaire, un pacakge python n'est rien qu'un module avec une variable `\\__path__` (https://docs.python.org/3/glossary.html#term-package[lien]) : 
+
+> Technically, a package is a Python module with an `\\__path__` attribute.
+
+Est-ce que ça veut dire qu'on peut transformer un module en package, simplement en lui définissant un attribut `\\__path__` ?! Essayons donc :
+
+On part d'un module `greeter.py` simpliste :
+
+[source,python]
+----
+def greet():
+    print("Hello !")
+----
+
+Derrière, dans un `main.py` situé au même niveau, on vérifie bien que `greeter` n'est pas un package :
+
+[source,python]
+----
+# on importe et utilise le MODULE 'greeter' :
+import greeter
+greeter.greet()
+
+# greeter est bien un module, et n'a pas d'attribut __path__ :
+assert not hasattr(greeter, "__path__")
+
+# greeter n'est pas un package, et ne contient pas le sous-module 'pouet' :
+try:
+    import greeter.pouet
+except ModuleNotFoundError:
+    pass
+----
+
+Jouons à l'apprenti-sorcier : créons un module `/tmp/pouet.py`, qui sera le sous-module de notre futur package `greeter` :
+
+[source,python]
+----
+with open("/tmp/pouet.py", "w") as f:
+    f.write("""
+def talk():
+    print("What I am saying is : pouetpouet")
+""")
+----
+
+C'est là que la magie opère : on transforme le MODULE `greeter` en un PACKAGE, en lui définissant un  attribut `\\__path__`, permettant d'importer `greeter.pouet` :
+
+[source,python]
+----
+greeter.__path__ = ["/tmp"]
+
+# 'greeter' est maintenant un PACKAGE, qui "contient" le sous-module 'pouet' :
+import greeter.pouet
+greeter.pouet.talk()
+----
+
+\o/
+
+(https://github.com/phidra/blog/blob/master/content/2021-10-03-from-xxx-import-something/turning_a_module_into_a_package[lien vers le code d'exemple])
+
+==== modules spéciaux
+
+Il existe plusieurs situations où on peut importer un module `import pouet` sans qu'il n'existe concrètement de fichier `pouet.py` à mettre en face de l'import...
+
+Par exemple, pour les extensions C, le module est directement codé en C. Dans ce cas, l'attribut `\\__file__` du module pointe vers l'extension C, donc une lib partagée `.so` :
+
+[source,python]
+----
+import _lzma
+_lzma.__file__
+# '/usr/lib/python3.8/lib-dynload/_lzma.cpython-38-x86_64-linux-gnu.so'
+----
+
+Je triche (un peu) parce que la lib standard a *également* un module python `lzma.py` qui se charge d'importer le module C (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Lib/lzma.py#L27[lien]), et le module `_lzma` n'a pas vocation à être importé directement, comme l'indique l'underscore en préfixe. Mais ça reste un exemple de ce que je veux illustrer : il n'existe pas de fichier `_lzma.py` à mettre en face de `import _lzma`.
+
+Un autre exemple notable, ce sont les builtin-modules, comme par exemple le module `time`. Dans ce cas, le module n'a même pas d'attribut `\\__file__`, puisqu'il est codé directement en C et packagé avec l'interpréteur (https://github.com/python/cpython/blob/2ce38167000fef3a71f1783acdda2a2cf7a2df39/Modules/timemodule.c[lien vers le code C]) : 
+
+[source,python]
+----
+import time
+time.__file__
+# Traceback (most recent call last):
+#   File "<stdin>", line 1, in <module>
+# AttributeError: module 'time' has no attribute '__file__'
+----
+
+==== Namespace packages
+
+Last but not least, l'ensemble du post ne s'intéresse qu'aux https://docs.python.org/3/reference/import.html#regular-packages[regular packages], et n'a donc pas de rapport avec les https://docs.python.org/3/reference/import.html#namespace-packages[namespace packages]. Si ce sujet vous intéresse, vous pouvez lire https://www.python.org/dev/peps/pep-0420/doc[la PEP 420 qui les concerne].
