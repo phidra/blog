@@ -10,3 +10,5 @@ _build
 
 a.out
 core
+
+__pycache__
