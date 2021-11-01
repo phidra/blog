@@ -46,3 +46,4 @@ Référence = ressource à laquelle je peux me référer régulièrement :
 * Le https://www.scrumguides.org/scrum-guide.html[scrum guide]
 * https://optimal-codestyle.github.io/[Optimal codestyle] = justification de coding-style rigoureuse et basée sur la vision/cognition humaine
 * https://developers.google.com/tech-writing/overview[Technical writing course] = cours dispensé par Google sur la rédaction de doc technique
+* https://www.freebsd.org/cgi/man.cgi?query=sysexits[preferable exit codes for programs] = les conventions de FreeBSD pour les exit-codes, qui sont un peu l'équivalent des HTTP status codes.
