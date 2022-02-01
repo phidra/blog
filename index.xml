@@ -8,6 +8,22 @@
     <language>fr-fr</language>
     <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Console, terminal, et shell</title>
+      <link>https://phidra.github.io/blog/2021-11-14-console-terminal-shell/</link>
+      <pubDate>Sun, 14 Nov 2021 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2021-11-14-console-terminal-shell/</guid>
+      <description>Si la notion de shell m’était à peu près claire, je n’avais jamais bien compris la différence entre terminal et console.
+ Récemment, j’ai lu plusieurs articles qui m’ont éclairé sur le sujet (notamment cet excellent article) ; aujourd’hui, on va tenter de définir précisément ce que sont :
+   console
+  terminal
+  teletype
+  terminal vidéo
+  virtual console
+  terminal emulator</description>
+    </item>
+    
+    <item>
       <title>from xxx import something</title>
       <link>https://phidra.github.io/blog/2021-10-03-from-xxx-import-something/</link>
       <pubDate>Sun, 03 Oct 2021 10:00:00 +0100</pubDate>

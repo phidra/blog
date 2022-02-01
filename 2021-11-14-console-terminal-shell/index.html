@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Console, terminal, et shell // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Console, terminal, et shell</h1>
+      <div class="post-meta">
+        <div>
+          Nov 14, 2021
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          21 min read
+        </div></div>
+    <div>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#_au_commencement_était_la_console">Au commencement était la console</a></li>
+    <li><a href="#_taat_teletype_as_a_terminal">TAAT : teletype as a terminal</a></li>
+    <li><a href="#_terminaux_vidéo">Terminaux vidéo</a></li>
+    <li><a href="#_console_système_et_virtual_consoles">Console système et virtual consoles</a></li>
+    <li><a href="#_on_dit_terminaux_quand_il_y_a_plusieurs_terminal">On dit terminaux quand il y a plusieurs terminal</a></li>
+    <li><a href="#_shell">Shell</a></li>
+    <li><a href="#_si_on_se_résume">Si on se résume</a></li>
+    <li><a href="#annexe1">ANNEXE 1 : points de repères temporels</a></li>
+    <li><a href="#annexe2">ANNEXE 2 : &#34;How does a Linux terminal work&#34;</a></li>
+  </ul>
+</nav>
+    </div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+
+<div class="paragraph">
+<p>Si la notion de shell m’était à peu près claire, je n’avais jamais bien compris la différence entre terminal et console.</p>
+</div>
+<div class="paragraph">
+<p>Récemment, j’ai lu plusieurs articles qui m’ont éclairé sur le sujet (notamment <a href="https://unixsheikh.com/articles/the-terminal-the-console-and-the-shell-what-are-they.html">cet excellent article</a>) ; aujourd’hui, on va tenter de définir précisément ce que sont :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>console</p>
+</li>
+<li>
+<p>terminal</p>
+</li>
+<li>
+<p>teletype</p>
+</li>
+<li>
+<p>terminal vidéo</p>
+</li>
+<li>
+<p>virtual console</p>
+</li>
+<li>
+<p>terminal emulator</p>
+</li>
+<li>
+<p>shell</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Attention : encore plus que d’habitude, considérez que je ne suis pas expert du sujet, et gardez un regard critique sur les informations que j’avance.</p>
+</div>
+<div class="paragraph">
+<p>Très concrètement, on n’a pas franchement besoin de connaître ces subtilités, et au quotidien les phrases suivantes pourront être considérées comme équivalentes sans que ça soit bien grave :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Ouvre une <strong>console</strong> et tape :  <code>cat /etc/fstab</code></p>
+</div>
+<div class="paragraph">
+<p>Ouvre un <strong>terminal</strong> et tape :  <code>cat /etc/fstab</code></p>
+</div>
+<div class="paragraph">
+<p>Ouvre un <strong>shell</strong> et tape :  <code>cat /etc/fstab</code></p>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p><a id="back-from-annexe1"></a> Fair warning, on va remonter aux temps préhistoriques de l’informatique, jusqu’aux années 1960, voire avant ; j’ai essayé de construire une chronologie avec des points de repères temporels, que vous trouverez <a href="#annexe1">en annexe</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_au_commencement_était_la_console">Au commencement était la console</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il y a de cela bien bien longtemps, les ordinateurs étaient constitués d’énormes armoires qui occupaient des pièces entières. Je parle de grands <a href="https://fr.wikipedia.org/wiki/Ordinateur_central">mainframes</a> dans le genre de celui-ci, qui se trouve être un <a href="https://www.technikum29.de/en/computer/univac9400.php">UNIVAC 9400</a> utilisé dans les années 1960 :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/univac-9400.jpg" alt="univac 9400"/>
+</div>
+</div>
+<div class="paragraph">
+<p>Chaque armoire renfermait un bout de l’ordinateur. La page dont j’ai tiré la photo ci-dessus indique qu’on y retrouve en vrac le processeur, des lecteurs de bandes magnétiques et leur contrôleur, des disques durs et leur contrôleur, et…​ la fameuse console, tout à droite de la photo.</p>
+</div>
+<div class="paragraph">
+<p>Voici donc la console de l’UNIVAC-9400 :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/frontpanel.jpg" alt="frontpanel"/>
+</div>
+</div>
+<div class="paragraph">
+<p>Ma compréhension des choses, c’est que la <strong>console</strong> était à l’époque le pupitre de contrôle-commande de l’ordinateur (vue sa taille, peut-être que le terme tire son origine du <a href="https://fr.wikipedia.org/wiki/Console_(meuble)">meuble console</a> ?), elle permettait de contrôler l’état du système : alimentation des différentes parties, observation des registres de l’ordinateur sur des petits néons (ben oui : les LED n’avaient même pas encore été inventées…​), voire manipulation manuelle de l’état interne de l’ordinateur à l’aide d’interrupteurs. Sur la console d’un <a href="https://fr.wikipedia.org/wiki/PDP-8">PDP-8</a> ci-dessous, sorti en 1965, ces interrupteurs sont très visibles :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/pdp-8pannel.jpg" alt="pdp 8pannel"/>
+</div>
+</div>
+<div class="paragraph">
+<p>J’ai même croisé un modèle (apparement, un <a href="http://www.corestore.org/36065-1.jpg">IBM-360</a>), dont la console comportait un cadran analogique, peut-être pour afficher une quelconque tension interne, ou une température ?</p>
+</div>
+<div class="paragraph">
+<p>Pour trouver ces quelques images, j’ai fait une plongée dans le passé assez rigolote. Par exemple, j’ai appris que l’UNIVAC-9400 illustré plus haut coûtait le prix de 470 voitures (!)</p>
+</div>
+<div class="paragraph">
+<p>Les trois images ci-dessus proviennent du <a href="https://technikum29.de/en/">technikum29 computer museum</a> (et plus précisément de <a href="https://technikum29.de/en/computer/univac9400">cette page sur l’UNIVAC-9400</a>), je les utilise ici conformément à <a href="https://technikum29.de/en/contact.php#image-copyright">l’autorisation qu’ils accordent</a>, et j’en profite pour les remercier !</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_taat_teletype_as_a_terminal">TAAT : teletype as a terminal</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Les consoles mentionnées plus haut étaient primitives : elles utilisaient des voyants lumineux LED ou néons pour communiquer l’état de l’ordinateur, et étaient pilotées par des interrupteurs. Par exemple, la <a href="https://en.m.wikipedia.org/wiki/Front_panel">page wikipedia des front panels</a> (terme qui semble être interchangeable avec <em>console</em> ?) indique qu’il fallait manipuler les interrupteurs de façon précise pour booter l’ordinateur :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Typically, the operator would have a written procedure containing a short series of bootstrap instructions to be hand-entered using, e.g., dials, keyboard, toggle switches.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>First, the operator would, e.g., press the address switch and enter the address. […​]</p>
+</li>
+<li>
+<p>Next the operator would enter the value intended for that address. […​]</p>
+</li>
+<li>
+<p>After entering several of these instructions, the operator would then set the starting address of the bootstrap program and press the run switch to begin the execution of the program.</p>
+</li>
+<li>
+<p>The bootstrap program usually read a somewhat longer program from punched paper-tape […​] which in turn would load the operating system from disk.</p>
+</li>
+</ul>
+</div>
+</blockquote>
+</div>
+<div class="paragraph">
+<p>Le moins qu’on puisse dire, c’est qu’elles n’étaient pas très pratiques ; les interfaces à base d’interrupteurs ont d’ailleurs disparu vers la fin des années 1970 et le début des années 1980, lorsqu’on a commencé à stocker ces séquences d’instructions propres au boot dans des ROMs.</p>
+</div>
+<div class="paragraph">
+<p>En parallèle, il existait depuis le XIXe siècle des sortes de machines à écrire automatiques : les <a href="https://en.wikipedia.org/wiki/Teleprinter">teleprinters</a>, soit téléprinteurs ou téléscripteurs en français. Ces machines étaient notamment utilisées pour le <a href="https://fr.wikipedia.org/wiki/T%C3%A9lex">Télex</a>, réseau de communication entre téléscripteurs, mis en place à partir des années 1930 (et plus tardivement en 1946 en France). Fun fact : le Télex peut paraître anachronique, mais il n’a été arrêté définitvement par Orange qu’en 2017 !</p>
+</div>
+<div class="paragraph">
+<p>Un teleprinter, ça ressemble à ça :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/ASR-33_at_CHM.agr.jpg" alt="ASR 33 at CHM.agr"/>
+</div>
+</div>
+<div class="paragraph">
+<p>Revenons à nos moutons : dans le milieu des années 1950, les ordinateurs deviennent interactifs.</p>
+</div>
+<div class="paragraph">
+<p>Jusqu’alors, les ordinateurs fonctionnaient en mode batch, c’est à dire qu’on démarrait l’ordinateur, il exécutait son programme sans que l’opérateur ait la possibilité d’interagir, et crachait ses résultats dans des cartes perforées (qui pouvaient alors être imprimées sous forme textuelle pour être human-readable).</p>
+</div>
+<div class="paragraph">
+<p>Quelqu’un eût alors l’idée géniale d’utiliser les téléprinteurs comme terminaux pour communiquer avec les ordinateurs. Les messages envoyés par l’ordinateur s’imprimaient continuellement sur un ruban de papier, et l’opérateur pouvait entrer ses commandes via le clavier du teleprinter.</p>
+</div>
+<div class="paragraph">
+<p>Le teleprinter illustré ci-dessus, est le célèbre <a href="https://en.wikipedia.org/wiki/Teletype_Model_33">modèle 33</a> de l’entreprise <a href="https://en.wikipedia.org/wiki/Teletype_Corporation">Teletype Corporation</a>, sorti en 1963. Il a popularisé l’utilisation du terme <em>teletype</em> comme synonyme de teleprinter par <a href="https://fr.wikipedia.org/wiki/Antonomase">antonomase</a> (i.e. de la même façon qu’on parle improprement de <em>frigidaire</em> au lieu de <em>réfrigérateur</em> à cause du succès de la marque <em>frigidaire</em>), et c’est l’un des premiers teleprinters à utiliser l’<a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a>.</p>
+</div>
+<div class="paragraph">
+<p>Autre fun fact : Dennis Ritchie et Ken Thompson ont créé UNIX en 1970…​ en utilisant des teleprinters comme terminaux, je trouve ça fou ! La photo suivante est un peu plus récente (1972), on y voit nos compères devant deux teletypes 33 :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/749px-Ken_Thompson_sitting_and_Dennis_Ritchie_at_PDP-11.jpg" alt="749px Ken Thompson sitting and Dennis Ritchie at PDP 11"/>
+</div>
+</div>
+<div class="paragraph">
+<p>Vous trouverez <a href="https://www.bell-labs.com/usr/dmr/www/picture.html">ici</a> les commentaires de Dennis Ritchie sur cette photo, et notamment le matériel qu’ils utilisent.</p>
+</div>
+<div class="paragraph">
+<p>Les deux images illustrant ce paragraphe sont sous licence CC-BY-SA : <a href="https://commons.wikimedia.org/wiki/File:ASR-33_at_CHM.agr.jpg">source pour le teletype 33</a>, <a href="https://commons.wikimedia.org/wiki/File:Ken_Thompson_(sitting)_and_Dennis_Ritchie_at_PDP-11_(2876612463).jpg">source pour Ritchie et Thompson</a>.</p>
+</div>
+<div class="paragraph">
+<p>Parmi mes lectures pour préparer ce blogpost (j’avoue, je me suis laissé entraîner de bon cœur dans cette plongée historique, et j’y ai passé du temps), <a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">cette page</a> présentait des infos particulièrement intéressantes au sujet des teletypes.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_terminaux_vidéo">Terminaux vidéo</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Utiliser des teletypes comme terminaux, c’était clairement mieux que de manipuler des interrupteurs, mais c’était pas fi-fou non plus : ils faisaient beaucoup de bruit, ils étaient lents (de l’ordre de 10 caractères à la seconde), et même si le mot &#34;écologie&#34; était encore inconnu à l’époque, ils consommaient beaucoup de papier.</p>
+</div>
+<div class="paragraph">
+<p>Assez rapidement, dans les années 1960, des entreprises utilisèrent des terminaux pourvus d’un écran CRT (&#34;glass teletypes&#34;), les fameux terminaux video :</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="../2021-11-14-console-terminal-shell-img/DEC_VT100_terminal.jpg" alt="DEC VT100 terminal"/>
+</div>
+</div>
+<div class="paragraph">
+<p>L’image ci-dessus (<a href="https://commons.wikimedia.org/wiki/File:DEC_VT100_terminal.jpg">source</a>, sous <a href="https://creativecommons.org/licenses/by/2.0/deed.en">licence Creative Commons</a>) représente <a href="https://fr.wikipedia.org/wiki/VT100">le terminal vidéo DEC VT100</a>, commercialisé en 1978, qui a rencontré un grand succès et est devenu un standard de fait, notamment graĉe aux possibilités offertes par les ANSI escape sequences, permettant des affichages plus évolués que de simples textes : déplacer le point d’écriture à l’écran, modifier la taille des lignes (80 ou 132 colonnes), fixer les attributs du texte (clignotant, gras, vidéo inverse, souligné), utiliser un jeu de caractères graphiques (pour le dessin de formulaires), etc. Ces dernières fonctionnalités étaient innovantes à l’époque.</p>
+</div>
+<div class="paragraph">
+<p>Des terminaux vidéos, il y en a eu des centaines de modèles différents, tous avec le même objectif : être un <em>terminal</em>, i.e. un moyen d’interagir avec un mainframe. J’ai justement vu passer la désignation &#34;dumb terminal&#34; pour désigner ces terminaux, afin de les opposer aux mainframes avec lesquels ils discutaient, ou plus tard aux ordinateurs personnels. Mais j’ai également vu passer des mentions du fait que cette appellation était parfois abusive. De fait, le VT100 a été le premier terminal DEC à être équipé d’un microprocesseur standard du marché, le 8080 d’Intel. Sans être un micro-ordinateur pour autant, il n’était donc pas si &#34;dumb&#34; que ça.</p>
+</div>
+<div class="paragraph">
+<p>Même après le développement de terminaux vidéo, les teletypes restaient très utilisés, car ils coûtaient beaucoup beaucoup moins cher. L’une de mes sources mentionne un prix supérieur à 4000$ pour un terminal vidéo, contre environ 1000$ pour un Model 33…​ Mais vers le milieu des années 1970, les terminaux vidéo sont devenus abordables, et ont fini par remplacer les teletypes pour interagir avec des mainframes.</p>
+</div>
+<div class="paragraph">
+<p>On déborde un peu du sujet du post, mais après les mainframes sont apparus les mini-ordinateurs, comme <a href="https://technikum29.de/en/computer/early-computers.php#nova-en">le NOVA</a> à la fin des années 1960, qui a démarré sa carrière sans terminal vidéo. Ils étaient comme considérés comme <em>mini</em> car ils ne pesaient &#34;que&#34; 300 Kgs…​ C’est certes plus compact que l’<a href="https://www.technikum29.de/en/computer/univac9400.php">UNIVAC 9400</a> présenté en début de post, qui mobilisait deux camions pour son transport, mais le terme fait quand même sourire de nos jours.</p>
+</div>
+<div class="paragraph">
+<p>Puis, la montée en puissance de la micro-informatique dans les années 1980 sonne le glas du couple mainframe + terminal vidéo, qui tombe en désuétude au profit des <a href="https://fr.wikipedia.org/wiki/Ordinateur_personnel">ordinateurs personnels</a>, c’est à dire d’ordinateur à un prix raisonnable, destinés à l’usage d’une seule personne et suffisamment compacts pour tenir sur un bureau. Et pour revenir à notre époque actuelle, au début des années 2010, les ventes de tablettes et smartphones dépassent à leur tour celles d’ordinateurs personnels.</p>
+</div>
+<div class="paragraph">
+<p>Pour rédiger le paragraphe qui précède, en plus de <a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">cet article</a> déjà mentionné plus haut, <a href="https://www.pcmag.com/news/the-forgotten-world-of-dumb-terminals">celui-ci</a> était intéressant car montrant concrètement différents terminaux et leurs fonctionnalités.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_console_système_et_virtual_consoles">Console système et virtual consoles</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Le terme &#34;console&#34; a vite pris un autre sens que celui mentionné jusqu’ici : il a désigné un terminal un peu particulier, &#34;privilégié&#34;, qui permettait d’administrer l’ordinateur en consultant les messages système, en suivant l’avancée du boot, en choisissant le device à partir duquel booter, etc. :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>[A] console is the text entry and display device for system administration messages, particularly those from the BIOS or boot loader, the kernel, from the init system and from the system logger. It is a physical device consisting of a keyboard and a screen</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://en.wikipedia.org/wiki/System_console">wikipedia : System console</a>
+</div>
+</div>
+<div class="paragraph">
+<p>Ma compréhension des choses, c’est que la console système, c’est ce que je vois quand je démarre mon PC sous Linux : elle me permet de visualiser les messages du kernel, je peux interagir avec le bios (par exemple, appuyer frénétiquement sur <code>Suppr</code> ou <code>F12</code> pour entrer dans le BIOS), elle me donne accès à une invite de commande si grub échoue, etc.</p>
+</div>
+<div class="paragraph">
+<p>Cette console système est un appareil &#34;physique&#34; : à l’époque des mainframes, c’était un terminal particulier (un teletype, ou un terminal vidéo), et dans la mesure où il permettait des fonctions d’administration sensibles, comme éteindre l’ordinateur, elle était &#34;sécurisée&#34;, par exemple rangée dans une pièce fermée à clé. À notre époque, pour un PC moderne, c’est l’ensemble écran+clavier connecté à l’ordinateur qui joue ce rôle.</p>
+</div>
+<div class="paragraph">
+<p>Comme ça n’est pas super pratique que tout utilisateur de l’ordinateur dispose de tels privilèges, les systèmes unix fournissent des <strong>virtual consoles</strong> : la console sytème permet d’accéder à plusieurs consoles virtuelles, à partir desquelles il est possible de se logger en tant qu’utilisateur &#34;normal&#34;, non-privilégié :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>It is a feature of some Unix-like operating systems […​] in which the system console of the computer can be used to switch between multiple virtual consoles to access unrelated user interfaces.</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://en.wikipedia.org/wiki/Virtual_console">wikipedia : Virtual console</a>
+</div>
+</div>
+<div class="paragraph">
+<p>À la différence de ce dont on a parlé jusqu’à présent, et comme son nom l’indique, une console virtuelle n’est PAS un appareil physique, c’est bien au niveau <em>logiciel</em> que la notion de console virtuelle a du sens.</p>
+</div>
+<div class="paragraph">
+<p>Quand il existe, l’environnement graphique est hébergé par l’une de ces consoles virtuelles. Par exemple, sur Ubuntu, on le trouve sur le fameux TTY n°7, auquel on accède habituellement via <code>Ctrl+Alt+F7</code>.</p>
+</div>
+<div class="paragraph">
+<p><a id="back-from-annexe2"></a> Parmi beaucoup d’autres sources intéressantes, <a href="https://itectec.com/unixlinux/how-does-a-linux-terminal-work/">cette réponse</a> explique bien les choses (à tel point que je le la reproduis <a href="#annexe2">en annexe</a>), et notamment présente la <em>system console</em> comme un terminal particulier.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_on_dit_terminaux_quand_il_y_a_plusieurs_terminal">On dit terminaux quand il y a plusieurs terminal</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Dire &#34;lance un terminal&#34; sur nos systèmes graphiques, c’est un abus de langage : la terminologie correcte serait plutôt &#34;lance un émulateur de terminal&#34;. Quésaco ? Pour bien comprendre, il faut distinguer les interfaces graphiques et les interfaces textuelles.</p>
+</div>
+<div class="paragraph">
+<p>Dans un <strong>environnement graphique</strong>, l’écran peut se modéliser par un grand tableau 2D de pixels, par exemple un tableau de pixels avec 1440 lignes et 1920 colonnes.</p>
+</div>
+<div class="paragraph">
+<p>Une application graphique gère en entrée les frappes sur le clavier, mais également les déplacements et clics de la souris. En sortie, les applications graphiques vont piloter ce tableau de pixels, en choisissant par exemple d’allumer tels pixels en noir, tels autres en blanc, et ainsi utiliser ces pixels pour représenter…​ ce qu’elles veulent :-)</p>
+</div>
+<div class="paragraph">
+<p>Par exemple, un gestionnaire de fenêtre peut choisir de dessiner en noir les pixels appropriés pour &#34;afficher&#34; un contour rectangulaire, pourvu d’une croix en haut à droite pour la fermer, et paf, on dispose d’une fenêtre sur notre écran ! Les pixels à l’intérieur de ce contour rectangulaire peuvent être pilotés par une autre application, par exemple VLC, qui choisit de les colorier de façon à représenter les images successives d’un film…​ Et re-paf, on a une vidéo qui se lit dans une fenêtre !</p>
+</div>
+<div class="paragraph">
+<p>Les interfaces graphiques ont été inventées par Xerox en 1973 avec <a href="https://en.wikipedia.org/wiki/Xerox_Alto">le Xerox Alto</a>, mais n’ont été réellement commercialisées que dix ans plus tard, avec le <a href="https://en.wikipedia.org/wiki/Xerox_Star">Xerox Star</a> en 1981, <a href="https://en.wikipedia.org/wiki/Apple_Lisa">l’Apple Lisa</a> en 1983, et surtout <a href="https://en.wikipedia.org/wiki/Macintosh_128K">le très populaire Macintosh</a>, sorti en 1984.</p>
+</div>
+<div class="paragraph">
+<p>A contrario, dans un <strong>environnement textuel</strong>, l’écran est certes un tableau 2D, mais celui-ci est beaucoup plus petit (par exemple 24 lignes de 80 colonnes), et surtout, chaque cellule de notre tableau accueille non pas un pixel, mais un <em>caractère textuel</em>.</p>
+</div>
+<div class="paragraph">
+<p>Du coup, une application textuelle gère en entrée les frappes sur le clavier (bye-bye la souris), mais ne peut plus dessiner ce qu’elle veut en sortie : elle ne peut afficher que des lignes de texte.</p>
+</div>
+<div class="paragraph">
+<p>Un <strong>émulateur de terminal</strong>, c’est simplement une application graphique (c’est à dire une fenêtre dans un environnement graphique) qui émule un environnement textuel, et plus particulièrement qui émule le comportement d’un terminal vidéo. Dit autrement : un émulateur de terminal nous offre une fenêtre graphique qui nous permet de &#34;faire comme si&#34; on utilisait un terminal textuel. Dit encore autrement : l’émulateur utilise le tableau de pixels pour &#34;dessiner&#34; un tableau de caractères textuels !</p>
+</div>
+<div class="paragraph">
+<p>Très concrètement, <code>xterm</code> avec un serveur X, <code>gnome-terminal</code> sous Gnome, <code>konsole</code> sous KDE, <code>xfce4-terminal</code> sous XFCE, ou encore le plus récent <code>alacritty</code> sont des émulateurs de terminal. Par exemple, le <code>man</code> de <code>xterm</code> nous indique :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre>The xterm program is a terminal emulator for the X Window System.
+It provides DEC VT102/VT220 and selected features from higher-level terminals such as VT320/VT420/VT520 (VTxxx).</pre>
+</div>
+</div>
+<div class="paragraph">
+<p>On voit donc que xterm émule les terminaux physiques de la famille des DEC VTxxx, et en tant que tel, il sait réagir aux <a href="https://fr.wikipedia.org/wiki/S%C3%A9quence_d%27%C3%A9chappement_ANSI">ANSI escape sequenes</a> mentionnées plus haut, permettant de déplacer le curseur ou effacer l’écran. De façon assez intéressante, les <code>man</code> de <code>gnome-terminal</code> et <code>xfce4-terminal</code> indiquent que ces émulateurs de terminaux…​ émulent <code>xterm</code> !</p>
+</div>
+<div class="paragraph">
+<p>Attention à ne pas confondre <em>virtual console</em> (qui est une fonctionnalité de l’OS, et qui existe même au sein d’un environnement textuel) et <em>terminal emulator</em> (qui est une application graphique classique).</p>
+</div>
+<div class="paragraph">
+<p>Au final, dans son sens le plus général, le mot &#34;terminal&#34;, représente simplement &#34;ce qui est au bout de l’ordinateur, pour nous permettre de l’utiliser&#34;, et cette définition générale peut s’appliquer à beaucoup de choses : console, telewriter, terminal vidéo, écran+clavier, etc. Et encore, je n’ai pas parlé de la notion de <a href="https://fr.wikipedia.org/wiki/Pseudo_terminal">pseudo-terminal</a> qui permet aux unix-like de gérer des terminaux (vous pouvez jeter un œil à <code>man pty</code> et à <a href="https://www.poor.dev/blog/terminal-anatomy/">cet excellent article</a> si le sujet vous intéresse).</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_shell">Shell</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Et le shell dans tout ça ? Je vais me contenter de survoler ce sujet, car la notion de shell est plutôt bien expliquée sur internet. Ici aussi, le shell n’est pas un appareil physique, mais un <em>programme informatique</em>, il en existe d’ailleurs <a href="https://en.wikipedia.org/wiki/Comparison_of_command_shells">beaucoup</a>.</p>
+</div>
+<div class="paragraph">
+<p>Pour comprendre son utilité, il faut bien avoir en tête que la façon d’interagir avec le noyau d’un OS comme Linux, et donc d’utiliser l’ordinateur, c’est par le biais d’instructions processeur natives. Dit autrement, pour accéder à la mémoire ou au disque dur, pour exécuter un éditeur de texte ou encore invoquer l’interpréteur python sur un script, il nous faut un binaire compilé, qui utilise la libc et les appels système qu’elle wrappe.</p>
+</div>
+<div class="paragraph">
+<p>Mais compiler un binaire à chaque fois que je veux exécuter <code>vim</code> ou <code>python</code> n’est pas très pratique…​ Le shell vient à notre rescousse : de façon très simpliste, un shell est une boucle infinie qui attend les commandes de l’utilisateur en entrée, et qui réagit de façon appropriée. Par exemple, si on entre :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>/usr/bin/vim /tmp/myfile.txt</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alors en schématisant, le shell <strong>interprète</strong> cette chaîne de caractère comme les instructions suivantes :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>va lire sur le disque dur le binaire à l’emplacement <code>/usr/bin/vim</code></p>
+</li>
+<li>
+<p>créé un sous-process, qui exécutera ce binaire</p>
+</li>
+<li>
+<p>passe la chaîne <code>/tmp/myfile.txt</code> comme argument à ce sous-process</p>
+</li>
+<li>
+<p>transfère lui le contrôle</p>
+</li>
+<li>
+<p>une fois le sous-process terminé, récupère le contrôle, affiche l’invite <code>username$ </code> et attends de nouvelles instructions</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>L’intérêt du truc, c’est que le shell, en tant que binaire compilé, a accès à des appels systèmes comme <code>read</code> ou <code>exec</code> lui permettant d’utiliser le disque dur pour lire le fichier <code>/usr/bin/vim</code> ou de créer un process pour l’exécuter.</p>
+</div>
+<div class="paragraph">
+<p>La réalité est bien sûr plus complexe que ça ; de plus, ce résumé masque des fonctionnalités avancées des shells, par exemple l’auto-complétion, ou les possibilités de scripting, même si <a href="https://phidra.github.io/blog/2020-08-19-nested-quotes-in-bash/">je préfère utliser un langage plus évolué dès que mon besoin est non-trivial</a>.</p>
+</div>
+<div class="paragraph">
+<p>Pour conclure cette explication, pourquoi confond-on souvent shell et terminal ? Parce que la plupart du temps, quand on se connecte à un ordinateur via un terminal, c’est à un shell qu’on accède, et c’est par son entremise qu’on utilise l’ordinateur. Mais ça n’est pas une obligation, on peut d’ailleurs très bien lancer des terminaux sur d’autres programmes qu’un shell, par exemple sur <code>vim</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>gnome-terminal -e /usr/bin/vim
+<span style="color: #75715e"># (et lorsqu&#39;on quitte vim, l&#39;émulateur de terminal s&#39;arrête également)</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_si_on_se_résume">Si on se résume</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette plongée dans l’histoire de l’informatique nous a permis d’attribuer des définitions plus précises aux termes listés en début de post :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>console</strong> = panneau de contrôle-commande d’un ordinateur à l’époque où ils étaient des énormes mastodontes</p>
+</li>
+<li>
+<p><strong>terminal</strong> = &#34;bout&#34; d’un système permettant d’interagir avec un mainframe : lui passer des commandes, et en recevoir les réponses.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>teletype</strong> = c’est un type de terminal particulier, dans lequel la sortie est imprimée par une sorte de machine à écrire automatique.</p>
+</li>
+<li>
+<p><strong>terminal vidéo</strong> = c’est un autre type de terminal, dans lequel la sortie est affichée sur un écran CRT.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><strong>virtual console</strong> = fonctionnalités d’un unix-like proposant à l’utilisateur plusieurs consoles indépendantes</p>
+</li>
+<li>
+<p><strong>terminal emulator</strong> = application graphique émulant une interface textuelle</p>
+</li>
+<li>
+<p><strong>shell</strong> = programme informatique de type <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop">REPL</a> permettant à un utilisateur d’utiliser son ordinateur</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Pour conclure, même si j’ai adoré faire cette plongée dans l’histoire, tout ce savoir est loin d’être indispensable ! En effet, au quotidien, on peut allégrement assimiler toutes ces notions à &#34;une interface textuelle pour entrer des commandes&#34; ;-)</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annexe1">ANNEXE 1 : points de repères temporels</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>(<a href="#back-from-annexe1">revenir au post</a>)</p>
+</div>
+<div class="paragraph">
+<p>Le post traite d’une période assez floue à mes yeux, puisqu’elle précède ma naissance. J’ai donc essayé de retracer une chronologie avec des points de répères temporels. Rappel : je ne suis pas spécialiste des sujets mentionnés dans ce billet, prenez cette chronologie avec des pincettes, et n’hésitez-pas à la vérifier.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>19ième siècle</strong> = invention des premiers téléscripteurs, sortes de machines à écrire automatiques (<a href="https://fr.wikipedia.org/wiki/T%C3%A9l%C3%A9scripteur#Histoire">source</a>)</p>
+</li>
+<li>
+<p><strong>années 1930</strong> = en Allemagne, mise en place du Télex, réseau de communication entre téléscripteurs (<a href="https://fr.wikipedia.org/wiki/T%C3%A9lex">source</a>)</p>
+</li>
+<li>
+<p><strong>1946</strong> = mise en place du Télex en France (<a href="https://fr.wikipedia.org/wiki/T%C3%A9lex">source</a>)</p>
+</li>
+<li>
+<p><strong>milieu des années 1950</strong> = les ordinateurs deviennent interactifs (par opposition au mode batch), et on utilise des teleprinters pour les interactions (<a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">source</a>)</p>
+</li>
+<li>
+<p><strong>début des années 1960</strong> = grâce au <a href="https://web.stanford.edu/~learnest/nets/timesharing.htm">time-sharing</a>, les ordinateurs deviennent multi-utilisateurs. On a besoin de plusieurs terminaux par mainframe pour le &#34;partager&#34;, utilisation de teletypes commerciaux. (<a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">source</a>)</p>
+</li>
+<li>
+<p><strong>années 1960</strong> = premiers terminaux video (écrans CRT = <em>glass teletypes</em>). Les teletypes continuent pourtant d’être utilisés <strong>jusque dans les années 1970</strong> car beaucoup moins chers. (<a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">source</a>)</p>
+</li>
+<li>
+<p><strong>1963</strong> = sortie du <em>Teletype Model 33</em>, qui a un énorme succès (car compatible ASCII). (<a href="https://en.wikipedia.org/wiki/Teletype_Model_33">source</a>)</p>
+</li>
+<li>
+<p><strong>1965</strong> = lancement du PDP-8, l’un des premiers mini-ordinateurs (comme le PDP-11). (<a href="https://fr.wikipedia.org/wiki/Mini-ordinateur">source</a>)</p>
+</li>
+<li>
+<p><strong>milieu des années 1960</strong> = série des UNIVAC 9000, dont l’UNIVAC 9400 illustré plus haut (<a href="https://en.wikipedia.org/wiki/UNIVAC_9000_series">source</a>)</p>
+</li>
+<li>
+<p><strong>vers 1970</strong> = invention d’unix par Ritchie et Thompson (en utilisant des teletypes !) (<a href="https://fr.wikipedia.org/wiki/Unix">source</a>)</p>
+</li>
+<li>
+<p><strong>dans les années 1970</strong> = le prix des terminaux video chute, pour devenir complètement abordable <strong>en 1980</strong> ; ils remplacent donc les teletypes pour interagir avec des mainframes (<a href="https://www.howtogeek.com/727213/what-are-teletypes-and-why-were-they-used-with-computers/">source</a>)</p>
+</li>
+<li>
+<p><strong>1975</strong> = ALTAIR 8800, considéré comme l’un des premiers micro-ordinateurs pour les particuliers, vendu à quelques millieurs d’exemplaires. Les données étaient encore saisies par des interrupteurs, et l’affichage se faisait par des LED. (<a href="https://fr.wikipedia.org/wiki/Altair_8800">source</a>)</p>
+</li>
+<li>
+<p><strong>avril 1976</strong> = Apple I à 666$, donc plutôt abordable. À la différence de son concurrent l’Altair 8800, il avait un clavier et un moniteur (<a href="https://fr.wikipedia.org/wiki/Apple_I">source</a>)</p>
+</li>
+<li>
+<p><strong>1977</strong> = Apple II, avec un écran de 24 lignes x 40 colonnes, vendu jusqu&#39;<strong>en 1993</strong> (<a href="https://fr.wikipedia.org/wiki/Apple_II">source</a>)</p>
+</li>
+<li>
+<p><strong>fin des années 1970</strong> = disparition des interfaces à base d’interrupteurs (<a href="https://en.m.wikipedia.org/wiki/Front_panel">source</a>)</p>
+</li>
+<li>
+<p><strong>1973</strong> = invention de l’interface graphique avec Xerox ALTO, diffusé à ~1000 exemplaires, mais pas franchement commercialisé. (<a href="https://en.wikipedia.org/wiki/Xerox_Alto">source</a>)</p>
+</li>
+<li>
+<p><strong>1978</strong> = commercialisation du terminal vidéo DEC VT100 (<a href="https://fr.wikipedia.org/wiki/VT100">source</a>)</p>
+</li>
+<li>
+<p><strong>1981</strong> = Xerox STAR, premier ordinateur commercial avec interface graphique (<a href="https://en.wikipedia.org/wiki/Xerox_Star">source</a>)</p>
+</li>
+<li>
+<p><strong>1984</strong> = Apple Macintosh, premier ordinateur commercial avec interface graphique à avoir eu du succès (<a href="https://en.wikipedia.org/wiki/Macintosh_128K">source</a>)</p>
+</li>
+<li>
+<p><strong>milieu des années 1980</strong> = les <em>dumb terminals</em> cèdent la place aux <em>smart terminals</em> , capables de traiter une ligne localement, plutôt que d’interrompre l’ordinateur à chaque touche enfoncée (<a href="https://en.wikipedia.org/wiki/Computer_terminal">source</a>)</p>
+</li>
+<li>
+<p><strong>fin des années 1980/début des années 1990</strong> = montée en puissance de la micro-informatique et des ordinateurs personnels (<a href="https://fr.wikipedia.org/wiki/Micro-informatique">source</a>)</p>
+</li>
+<li>
+<p><strong>début des années 1990</strong> = terminaux graphiques, se connectant à un serveur graphique qui leur envoie des images raster ou vectorielles (par opposition aux terminaux textuels qui ne savaient afficher que du texte), bientôt remplacés par les PC (<a href="https://itectec.com/unixlinux/how-does-a-linux-terminal-work/">source</a>)</p>
+</li>
+<li>
+<p><strong>début des années 2010</strong> = les ventes de tablettes et smartphones dépassent les ventes de PC (<a href="https://www.synbioz.com/blog/tech/historique-les-ventes-de-smartphones-depassent-celles-des-ordinateurs">source</a>)</p>
+</li>
+<li>
+<p><strong>31 janvier 2017</strong> = clôture du service Télex par Orange, il restait 26 clients. (<a href="https://fr.wikipedia.org/wiki/T%C3%A9lex">source1</a>, <a href="https://histoire.orange.com/wp-content/uploads/sites/33/2019/01/lettredinformationfevrier2017.pdf">source2 PDF</a>)</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Attention : dans cette chronologie, les transitions ne sont pas brutales, et les périodes se chevauchent. Par exemple, vers 1976, on a sans doute pu voir coexister des ordinateurs à booter avec des interrupteurs, des teletypes utilisés comme terminaux, et des terminaux vidéo.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="annexe2">ANNEXE 2 : &#34;How does a Linux terminal work&#34;</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>(<a href="#back-from-annexe2">revenir au post</a>)</p>
+</div>
+<div class="paragraph">
+<p>La réponse donnée <a href="https://itectec.com/unixlinux/how-does-a-linux-terminal-work/">sur cette page</a> était tellement intéressante et bien résumée que je la reproduis dans la présente annexe.</p>
+</div>
+<div class="paragraph">
+<p>Je n’ai pas trouvé de licence pour ce contenu, donc j’espère en avoir le droit (le cas échéant, je supprimerai cette annexe, et je la garderai dans mes notes privées). La raison d’être du site qui la contient, <a href="https://itectec.com/" class="bare">https://itectec.com/</a> , n’est pas claire du dout : on dirait un ensemble de notes académiques en rapport avec l’encodage ? Et leur <a href="https://itectec.com/contact/">formulaire de contact</a> ne fonctionne pas.</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Originally you had just dumb terminals - at first actually teletypewriters (similar to an electric typewriter, but with a roll of paper) (hence /dev/tty - TeleTYpers), but later screen+keyboard-combos - which just sent a key-code to the computer and the computer sent back a command that wrote the letter on the terminal (i.e. the terminal was without local echo, the computer had to order the terminal to write what the user typed on the terminal) - this is one of the reason why so many important Unix-commands are so short. Most terminals were connected by serial-lines, but (at least) one was directly connected to the computer (often the same room) - this was the console. Only a select few users were trusted to work on &#34;the console&#34; (this was often the only &#34;terminal&#34; available in single-user mode).</p>
+</div>
+<div class="paragraph">
+<p>Later there also were some graphical terminals (so-called &#34;xterminals&#34;, not to be confused with the xterm-program) with screen &amp; graphical screen-card, keyboard, mouse and a simple processor; which could just run an X-server. They did not do any computations themselves, so the X-clients ran on the computer they were connected to. Some had hard disks, but they could also boot over the network. They were popular in the early 1990s, before PCs became so cheap and powerful.</p>
+</div>
+<div class="paragraph">
+<p>Later still, there were &#34;smart&#34; or &#34;intelligent&#34; terminals. Smart terminals have the ability to process user input (line-editing at the shell prompt like inserting characters, removing words with Ctrl-W, removing letters with Ctrl-H or Backspace) without help from the computer. The earlier dumb terminals, on the other hand, could not perform such onsite line-editing. On a dumb terminal, when the user presses a key, the terminal sends/delegates the resulting key-code to the computer to handle. After handling it, the computer sends the result back to the dumb terminal to display (e.g. pressing Ctrl-W would send a key-code to the computer, the computer would interpret that to mean &#34;delete the last word&#34;, so the computer would handle that text change, then simply give the dumb terminal the output it should display).</p>
+</div>
+<div class="paragraph">
+<p>A &#34;terminal emulator&#34; – the &#34;terminal-window&#34; you open with programs such as xterm or konsole – tries to mimic the functionality of such smarter terminals. Also programs such as PuTTY (Windows) emulate these smart terminal emulators.</p>
+</div>
+<div class="paragraph">
+<p>With the PC, where &#34;the console&#34; (keyboard+screen) and &#34;the computer&#34; is more of a single unit, you got &#34;virtual terminals&#34; (on Linux, keys Alt+F1 through Alt+F6) instead, but these too mimic old-style terminals. Of course, with Unix/Linux becoming more of a desktop operating system often used by a single user, you now do most of your work &#34;at the console&#34;, where users before used terminals connected by serial-lines.</p>
+</div>
+<div class="paragraph">
+<p>It’s of course the shell that starts programs. And it uses the fork system-call (C language) to make a copy of itself with a environment-settings, then the exec system-call is used to turn this copy into the command you wanted to run. The shell suspends (unless the command is run in the background) until the command completes. As the command inherits the settings for stdin, stdout and stderr from the shell, the command will write to the terminal’s screen and receive input from the terminal’s keyboard.</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://itectec.com/unixlinux/how-does-a-linux-terminal-work/">How does a Linux terminal work</a>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>
