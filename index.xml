@@ -8,6 +8,18 @@
     <language>fr-fr</language>
     <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Node.js côté frontend ?!</title>
+      <link>https://phidra.github.io/blog/2022-05-26-node-frontend/</link>
+      <pubDate>Thu, 26 May 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2022-05-26-node-frontend/</guid>
+      <description>Le web c’est simple Il y a bien longtemps, quand j’ai découvert le développement web frontend, mon modèle mental était simple :
+   HTML décrit le contenu d’une page : un titre par-ci, un paragraphe par-là, un formulaire à deux boutons, …​
+  CSS sert à styliser ledit contenu : le titre est en gras, le bouton Annuler en italique, …​
+  JS permet d’exécuter du code côté client : e.</description>
+    </item>
+    
+    <item>
       <title>Console, terminal, et shell</title>
       <link>https://phidra.github.io/blog/2021-11-14-console-terminal-shell/</link>
       <pubDate>Sun, 14 Nov 2021 10:00:00 +0100</pubDate>

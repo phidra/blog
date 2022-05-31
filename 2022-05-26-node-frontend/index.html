@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Node.js côté frontend ?! // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Node.js côté frontend ?!</h1>
+      <div class="post-meta">
+        <div>
+          May 26, 2022
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          9 min read
+        </div></div>
+    <div>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#_le_web_cest_simple">Le web c’est simple</a></li>
+    <li><a href="#_le_web_moderne_cest_simple_aussi">Le web moderne, c’est simple aussi</a></li>
+    <li><a href="#_mais_en_fait_pas_tant_que_ça">Mais en fait pas tant que ça</a></li>
+    <li><a href="#_explications">Explications</a></li>
+    <li><a href="#_exemple_concret_avec_moment_js">Exemple concret avec moment.js</a>
+      <ul>
+        <li><a href="#_côté_frontend_sans_node_jsnpm">Côté frontend, sans node.js/npm</a></li>
+        <li><a href="#_côté_backend_avec_node_jsnpm">Côté backend, avec node.js/npm</a></li>
+        <li><a href="#_côté_frontend_avec_npm">Côté frontend, avec npm</a></li>
+      </ul>
+    </li>
+    <li><a href="#_au_final_pourquoi_utiliser_node_jsnpm_côté_frontend">Au final, pourquoi utiliser node.js/npm côté frontend ?</a></li>
+  </ul>
+</nav>
+    </div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_le_web_cest_simple">Le web c’est simple</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Il y a bien longtemps, quand j’ai découvert le développement web frontend, mon modèle mental était simple :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>HTML</strong> décrit le contenu d’une page : un titre par-ci, un paragraphe par-là, un formulaire à deux boutons, …​</p>
+</li>
+<li>
+<p><strong>CSS</strong> sert à styliser ledit contenu : le titre est en <strong>gras</strong>, le bouton Annuler en <em>italique</em>, …​</p>
+</li>
+<li>
+<p><strong>JS</strong> permet d’exécuter du code côté client : e.g. remplir dynamiquement le contenu de telle div en réaction à tel parcours utilisateur, …​</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Appelons ce modèle le modèle &#34;triforce&#34; — parce que je suis en train de faire découvrir Ocarina of Time à mon fils aîné. Avec ce modèle triforce, le web c’est simple : je créé ces 3 fichiers statiques, je fais tourner un serveur qui les sert statiquement, et réagit aux requêtes POST du formulaire, et c’est good.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_le_web_moderne_cest_simple_aussi">Le web moderne, c’est simple aussi</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Évidemment, le web moderne est beaucoup plus compliqué, avec whatmille frameworks, des features et patterns javascript de plus en plus complexes, des usages toujours plus évolués…​</p>
+</div>
+<div class="paragraph">
+<p>Mais même quelque chose comme une <a href="https://en.wikipedia.org/wiki/Single-page_application">SPA</a> rentre dans ce modèle triforce : une SPA, c’est rien d’autre qu’un HTML à peu près vide que le code javascript remplit dynamiquement en réponse aux actions utilisateur.</p>
+</div>
+<div class="paragraph">
+<p>So far so good.</p>
+</div>
+<div class="paragraph">
+<p>Et un beau jour tu entends parler de node.js, &#39;paraît que c’est la huitième merveille du monde, et ça permet de faire tourner du javascript où tu veux (alors qu’auparavant le javascript ne s’exécutait que dans le navigateur). Génial, les devs frontend qui maîtrisent bien le javascript pourront aussi utiliser leur langage favori côté backend, les boîtes peuvent n’embaucher qu’un type de profil si elles le souhaitent, tout le monde est content.</p>
+</div>
+<div class="paragraph">
+<p>Ici non plus, pas de contradiction avec mon modèle mental, puisque le sujet est totalement décorrélé : le modèle triforce régit ce qui tourne sur le navigateur du client, et node.js sert à faire tourner un serveur en backend.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_mais_en_fait_pas_tant_que_ça">Mais en fait pas tant que ça</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Et puis quand tu commences à t’intéresser de plus près à node.js (et npm, qui est son package-manager), on te dit que c’est utilisé certes côté serveur, mais également côté client :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>The idea of using Node.js for frontend is a natural extension of the various features that it provides.</p>
+</div>
+<div class="paragraph">
+<p>Availability of Packages and Libraries: There are many libraries available to use in the frontend</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://www.section.io/engineering-education/nodejs-frontend-backend/" class="bare">https://www.section.io/engineering-education/nodejs-frontend-backend/</a>
+</div>
+</div>
+<div class="paragraph">
+<p>On te parle de frameworks node.js pour les devs frontend :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Comparing top Node.js frameworks for frontend developers</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://blog.logrocket.com/comparing-top-node-js-frameworks-frontend-developers/" class="bare">https://blog.logrocket.com/comparing-top-node-js-frameworks-frontend-developers/</a>
+</div>
+</div>
+<div class="paragraph">
+<p>Et là, tu es perdu…​ node.js est pourtant un moteur javascript qui tourne côté serveur, donc quel rapport avec le frontend ?</p>
+</div>
+<div class="paragraph">
+<p>Est-ce que node.js peut tourner sur serveur ET dans un browser, comme le laissent à entendre les phrases du genre &#34;on exécute node.js côté client et côté serveur&#34; ?</p>
+</div>
+<div class="paragraph">
+<p>Est-ce qu’on peut créer un site avec node.js/npm de sorte que le navigateur interprète le fichier <code>package.json</code> pour charger les dépendances dynamiquement ?</p>
+</div>
+<div class="paragraph">
+<p>Comment diable puis-je faire <code>npm install telle-dépendance</code> chez moi sur mon poste, et voir la dépendance utilisée par le navigateur de mon client ?</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_explications">Explications</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En fait, dire qu’on peut utiliser node.js ou npm côté frontend <strong>c’est un abus de langage</strong>. Je sais, je sais, c’est scandaleux, welcome to the real world Jeremy.</p>
+</div>
+<div class="paragraph">
+<p>Même en utilisant node.js ou npm pour le dev frontend, <strong>le modèle triforce reste tout à fait vrai</strong> : le navigateur se contente d’exécuter des fichiers statiques HTML/CSS/JS, que le serveur commence par lui servir statiquement.</p>
+</div>
+<div class="paragraph">
+<p>Ce qui change, c’est la façon dont sont créés ces fichiers statiques :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>avant, on codait ces fichiers à la mano, et le navigateur interprètait directement les fichiers qu’on avait codés</p>
+</li>
+<li>
+<p>maintenant, on code toujours des fichiers à la mano, mais <strong>on passe par une étape intermédiaire de transformation</strong>, et le navigateur interprète plutôt le résultat de cette étape intermédiaire</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Du coup, node.js et npm sont, certes, utilisés par des développeurs frontend, mais ils sont utilisés uniquement pour DÉVELOPPER le code frontend pas pour l’exécuter, ce sont des outils dev-side only. Dit autrement : au moment de l’exécution du javascript par le navigateur, celui-ci n’a pas connaissance de node.js ou npm !</p>
+</div>
+<div class="paragraph">
+<p>Une phrase telle que celle-ci me paraît donc inutilement trompeuse :</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Let us understand why the use of Node.js enhances the developer experience […​] : availability of Packages and Libraries: There are many libraries available to use in the frontend. For example, the ‘moment’ is a library that processes dates in the specified format.</p>
+</div>
+</blockquote>
+<div class="attribution">
+— <a href="https://www.section.io/engineering-education/nodejs-frontend-backend/" class="bare">https://www.section.io/engineering-education/nodejs-frontend-backend/</a>
+</div>
+</div>
+<div class="paragraph">
+<p>En effet, elle laisse à entendre que grâce à node.js/npm, on peut dorénavant utiliser <a href="https://momentjs.com/">moment.js</a> côté frontend. Or, c’est trompeur puisqu’on peut tout à fait utiliser moment.js côté frontend même sans l’intervention de node.js/npm.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_exemple_concret_avec_moment_js">Exemple concret avec moment.js</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Allez, soyons fous, mettons les mains dans le cambouis en codant un exemple concret utilisant moment.js, la librairie mentionnée par la citation que j’ai donnée.</p>
+</div>
+<div class="sect2">
+<h3 id="_côté_frontend_sans_node_jsnpm">Côté frontend, sans node.js/npm</h3>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2022-05-26-node-frontend-code/version1_without_nodejs/pouet.html">lien vers le code d’exemple</a>)</p>
+</div>
+<div class="paragraph">
+<p>On peut tout à fait utiliser moment.js côté frontend, sans aucune intervention de node.js/npm. D’ailleurs, il vous suffit de copier-coller ce bout de code dans un fichier <code>pouet.html</code>, puis de l’exécuter avec un browser <code>firefox pouet.html</code> pour voir apparaître une magnifique popup utilisant moment.js :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="html"><span></span><span style="color: #75715e">&lt;!DOCTYPE html&gt;</span>
+<span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">html</span> <span style="color: #a6e22e">lang</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;en&#34;</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">head</span><span style="color: #f8f8f2">&gt;</span>
+        <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">meta</span> <span style="color: #a6e22e">charset</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;utf-8&#34;</span><span style="color: #f8f8f2">&gt;</span>
+        <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">title</span><span style="color: #f8f8f2">&gt;</span>Look Mom, I&#39;m using moment.js without npm<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">title</span><span style="color: #f8f8f2">&gt;</span>
+        <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">script</span> <span style="color: #a6e22e">src</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.3/moment.min.js&#34;</span><span style="color: #f8f8f2">&gt;&lt;/</span><span style="color: #f92672">script</span><span style="color: #f8f8f2">&gt;</span>
+        <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">script</span><span style="color: #f8f8f2">&gt;</span>
+            <span style="color: #a6e22e">alert</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">`Today is ${</span><span style="color: #a6e22e">moment</span><span style="color: #f8f8f2">().</span><span style="color: #a6e22e">format</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#39;dddd&#39;</span><span style="color: #f8f8f2">)</span><span style="color: #e6db74">}, yay !`</span><span style="color: #f8f8f2">);</span>
+        <span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">script</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">head</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">body</span><span style="color: #f8f8f2">&gt;</span>
+        <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">p</span><span style="color: #f8f8f2">&gt;</span>Pouet<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">p</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">body</span><span style="color: #f8f8f2">&gt;</span>
+<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">html</span><span style="color: #f8f8f2">&gt;</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_côté_backend_avec_node_jsnpm">Côté backend, avec node.js/npm</h3>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2022-05-26-node-frontend-code/version2_with_nodejs_for_backend/">lien vers le code d’exemple</a>)</p>
+</div>
+<div class="paragraph">
+<p>Bien sûr, on peut également utiliser moment.js côté backend, grâce à node.js — c’est bien à ça que sert node.js :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span>mkdir /tmp/mysupertest <span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">cd</span> /tmp/mysupertest
+npm install moment
+
+<span style="color: #f8f8f2">echo</span> <span style="color: #e6db74">&#39;&#39;&#39;</span>
+<span style="color: #e6db74">let moment = require(&#34;moment&#34;);</span>
+<span style="color: #e6db74">console.log(`Today is ${moment().format(&#34;dddd&#34;)}, yay !`);</span>
+<span style="color: #e6db74">&#39;&#39;&#39;</span> &gt; main.js
+
+node main.js
+<span style="color: #75715e"># Today is Thursday, yay !</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_côté_frontend_avec_npm">Côté frontend, avec npm</h3>
+<div class="paragraph">
+<p>(<a href="https://github.com/phidra/blog/blob/master/content/2022-05-26-node-frontend-code/version3_with_nodejs_for_frontend/">lien vers le code d’exemple</a>)</p>
+</div>
+<div class="paragraph">
+<p>Et la partie qui nous intéresse aujourd’hui : on peut aussi utiliser npm/node.js pour BUILDER une app frontend utilisant moment.js (illustré ici avec <a href="https://vitejs.dev/">le builder vite</a> mais d’autres alternatives existent) :</p>
+</div>
+<div class="paragraph">
+<p>C’est un brin plus complexe, il faut plusieurs fichiers et quelques commandes. Commençons par le fichier HTML, <code>index.html</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="html"><span></span><span style="color: #75715e">&lt;!DOCTYPE html&gt;</span>
+<span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">html</span> <span style="color: #a6e22e">lang</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;en&#34;</span><span style="color: #f8f8f2">&gt;</span>
+  <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">head</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">meta</span> <span style="color: #a6e22e">charset</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;UTF-8&#34;</span> <span style="color: #f8f8f2">/&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">link</span> <span style="color: #a6e22e">rel</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;icon&#34;</span> <span style="color: #a6e22e">href</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;data:;base64,=&#34;</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">title</span><span style="color: #f8f8f2">&gt;</span>Look Mom, this time I&#39;m using npm to build the frontend code<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">title</span><span style="color: #f8f8f2">&gt;</span>
+  <span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">head</span><span style="color: #f8f8f2">&gt;</span>
+  <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">body</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">script</span> <span style="color: #a6e22e">type</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;module&#34;</span> <span style="color: #a6e22e">src</span><span style="color: #f92672">=</span><span style="color: #e6db74">&#34;/src/main.js&#34;</span><span style="color: #f8f8f2">&gt;&lt;/</span><span style="color: #f92672">script</span><span style="color: #f8f8f2">&gt;</span>
+    <span style="color: #f8f8f2">&lt;</span><span style="color: #f92672">p</span><span style="color: #f8f8f2">&gt;</span>Pouet<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">p</span><span style="color: #f8f8f2">&gt;</span>
+  <span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">body</span><span style="color: #f8f8f2">&gt;</span>
+<span style="color: #f8f8f2">&lt;/</span><span style="color: #f92672">html</span><span style="color: #f8f8f2">&gt;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Puis le javascript <code>src/main.js</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="js"><span></span><span style="color: #66d9ef">import</span> <span style="color: #a6e22e">moment</span> <span style="color: #a6e22e">from</span> <span style="color: #e6db74">&#39;moment&#39;</span><span style="color: #f8f8f2">;</span>
+<span style="color: #a6e22e">alert</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">`Today is ${</span><span style="color: #a6e22e">moment</span><span style="color: #f8f8f2">().</span><span style="color: #a6e22e">format</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#39;dddd&#39;</span><span style="color: #f8f8f2">)</span><span style="color: #e6db74">}, yay !`</span><span style="color: #f8f8f2">);</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et enfin <code>package.json</code> qui explicite la dépendance de notre site à moment.js, et décrit comment builder le site grâce à <code>vite</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="json"><span></span><span style="color: #f8f8f2">{</span>
+  <span style="color: #f92672">&#34;name&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;pouet&#34;</span><span style="color: #f8f8f2">,</span>
+  <span style="color: #f92672">&#34;version&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;0.0.0&#34;</span><span style="color: #f8f8f2">,</span>
+  <span style="color: #f92672">&#34;scripts&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&#34;dev&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;vite&#34;</span><span style="color: #f8f8f2">,</span>
+    <span style="color: #f92672">&#34;build&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;vite build&#34;</span>
+  <span style="color: #f8f8f2">},</span>
+  <span style="color: #f92672">&#34;dependencies&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&#34;moment&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;^2.29.3&#34;</span>
+  <span style="color: #f8f8f2">},</span>
+  <span style="color: #f92672">&#34;devDependencies&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #f8f8f2">{</span>
+    <span style="color: #f92672">&#34;vite&#34;</span><span style="color: #f8f8f2">:</span> <span style="color: #e6db74">&#34;^2.9.5&#34;</span>
+  <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">}</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec ces trois fichiers, notre répertoire de travail ressemble à ceci :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>.
+├── src
+│   └── main.js
+├── index.html
+└── package.json</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Derrière, on peut builder et charger le site avec quelques commandes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="sh"><span></span><span style="color: #75715e"># télécharger le code de moment.js dans le répertoire node_modules :</span>
+npm install
+
+<span style="color: #75715e"># lancer un serveur de dev pour tester son code :</span>
+npm run dev
+
+<span style="color: #75715e"># builder le site à servir à l&#39;utilisateur final :</span>
+npm run build
+
+<span style="color: #75715e"># servir le site buildé :</span>
+python3 -m http.server --directory dist/ <span style="color: #ae81ff">9000</span>
+
+<span style="color: #75715e"># consulter le site buildé :</span>
+firefox localhost:9000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et paf, on utilise moment.js côté frontend \o/</p>
+</div>
+<div class="sect3">
+<h4 id="_mais_au_fait_on_utilise_quoi_exactement">Mais au fait, on utilise quoi exactement ?</h4>
+<div class="paragraph">
+<p>Si tu as répondu &#34;node.js&#34;…​ tu as tout faux ! Mais je ne te jette pas la pierre, déjà car le titre du post entretient cette confusion, et surtout car c’est un sacré bazar :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>même dans notre troisième exemple, on n’utilise pas node.js directement mais plutôt <a href="https://www.npmjs.com/">npm</a>, son gestionnaire de paquets</p>
+</li>
+<li>
+<p>notamment, parmi les commandes qu’on a utilisées, <code>npm install</code> utilise npm pour installer <code>moment.js</code> dans le répertoire <code>node_modules</code></p>
+</li>
+<li>
+<p>et pour <code>npm run build</code> ? Si on regarde <a href="https://docs.npmjs.com/cli/v8/commands/npm-run-script">la doc de npm run</a> de plus près, et qu’on jette un oeil au <code>package.json</code>, on se rend compte que npm ne builde PAS lui-même le site : <code>npm run build</code> n’est qu’un wrapper autour de <code>vite</code> qui est <a href="https://vitejs.dev/">un outil pour le dev frontend</a> ; au build, <code>vite</code> analyse le projet et regroupe tout le code javascript dans un gros script concaténé. C’est ce gros script concaténé qui est interprété par le navigateur.</p>
+</li>
+<li>
+<p>de même, <code>npm run dev</code> utilise <code>vite</code> pour lancer un serveur de dev : en effet, si vous avez bien suivi, le navigateur n’a plus la possibilité d’exécuter directement le code qu’on développe, vu qu’il lui manquerait l’étape intermédiaire. Une solution serait de :</p>
+<div class="ulist">
+<ul>
+<li>
+<p>développer son code</p>
+</li>
+<li>
+<p>lancer <code>npm run build</code></p>
+</li>
+<li>
+<p>servir le site buildé</p>
+</li>
+<li>
+<p>le lancer avec un navigateur pour voir ses développements</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>…​ mais comme c’est pas pratique, <code>npm run dev</code> automatise tout ça en lançant un serveur qui fournit une version buildée du code en développement, et recharge la page quand on modifie les fichiers source. Z’ont pensé à tout !</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>À noter que j’ai illustré les exemples avec <code>vite</code> parce que c’est l’outil par défaut utilisé par <a href="https://vuejs.org/">vue.js</a> avec lequel j’ai fait mumuse récemment, mais plein, plein (j’insiste : plein) d’autres outils existent pour adresser les besoins des devs frontend : l’écosystème javascript est <span class="line-through">un bordel sans nom</span> très riche ; je laisse à d’autres le soin de présenter les outils existants et leur intérêt.</p>
+</div>
+<div class="paragraph">
+<p>Et histoire d’avoir un twist final : beaucoup de ces outils sont eux-mêmes développés…​ avec node.js, et nécessitent node.js pour s’exécuter (un peu comme un script python nécessite un interpréteur python pour s’exécuter), on utilise donc bien node.js finalement !</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_au_final_pourquoi_utiliser_node_jsnpm_côté_frontend">Au final, pourquoi utiliser node.js/npm côté frontend ?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>En résumé :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>même si les sites modernes sont loin de se résumer à de simples fichiers statiques, le modèle triforce HTML+CSS+JS rendus et exécutés par le browser reste valide : le browser n’a pas connaissance de node.js ou de npm</p>
+</li>
+<li>
+<p>node.js et npm sont en revanche utilisés pour DÉVELOPPER des applications frontend, conjointement avec une tétra-chiée d’autres outils</p>
+</li>
+<li>
+<p>lorsqu’on utilise npm/node.js, on quitte le modèle &#34;le browser exécute ce que j’ai codé&#34; ; à la place, le browser exécute un site buildé par une étape intermédiaire qui prend en entrée ce que j’ai codé, et qui crache en sortie les fichiers à envoyer au navigateur</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Reste une question : pourquoi ? Pourquoi se compliquer la vie avec un <code>package.json</code>, <code>npm install</code> ou <code>npm run build</code> pour construire notre site, là où une petite balise <code>&lt;script&gt;</code> faisait très bien le taf ?</p>
+</div>
+<div class="paragraph">
+<p>Eh bien parce qu’ajouter une étape de traitement avant exécution par le navigateur a beaucoup d’avantages, surtout quand un projet grossit :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>ça autorise l’utilisation de langages plus évolués que leurs contreparties HTML/CSS/JS (<a href="https://haml.info/">HAML</a> pour HTML, <a href="https://lesscss.org/">less</a> ou <a href="https://sass-lang.com/">sass</a> pour CSS, <a href="https://www.typescriptlang.org/">typescript</a> pour javascript, …​)</p>
+</li>
+<li>
+<p>ça permet des traitements préparatoires, comme la minification du javascript ou la compression des images</p>
+</li>
+<li>
+<p>le regroupement des différents fichiers javascript en un seul et unique script évite à l’utilisateur final d’attendre le retour de nombreuses requêtes pour rassembler toutes les dépendances du site qu’il consulte</p>
+</li>
+<li>
+<p>et surtout…​ ça permet de gérer plus facilement les dépendances (qui peuvent vite devenir bordélique quand un projet grossit) : ne pas avoir à inclure (récursivement !) les dépendances d’une librairie, ou à gérer leurs versions manuellement, c’est inestimable !</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Même si ce sujet est trivial pour les devs frontend, j’espère que ce post aidera les autres à mieux comprendre la place de node.js/npm dans le dev frontend. D’autant que c’est bien pratique d’avoir quelques compétences frontend pour faire des interfaces clean à ses projets persos : on peut faire des choses très utilisables sans être un expert.</p>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>

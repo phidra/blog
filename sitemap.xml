@@ -3,6 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://phidra.github.io/blog/2022-05-26-node-frontend/</loc>
+    <lastmod>2022-05-26T10:00:00+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://phidra.github.io/blog/2021-11-14-console-terminal-shell/</loc>
     <lastmod>2021-11-14T10:00:00+01:00</lastmod>
   </url>
