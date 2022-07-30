@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="fr-fr">
+  <head>
+    <title>Une &#34;super&#34; curiosité pythonique (ha ha) // Phidra&#39;s blog</title>
+    <meta charset="utf-8" />
+    <meta name="generator" content="Hugo 0.81.0-DEV" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    
+    <meta name="author" content="phidra" />
+    
+
+    
+    <meta name="description" content="blog tech C&#43;&#43; python dev" />
+    
+
+    <link rel="stylesheet" href="https://phidra.github.io/blog/css/main.min.7a031c63f91e76e2f20780fa544c7984e864efc78057fa7ad2792849259c0d15.css" />
+
+    
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  </head>
+  <body>
+    <header class="app-header">
+
+      
+      
+      <a href="https://phidra.github.io/blog/" id="avatar">
+          <img src="/blog/img/general/phi_medium_fond_blanc.png" alt="phidra" />
+      </a>
+      
+
+      <a href="https://phidra.github.io/blog/">
+        <h1 class="title">Phidra&#39;s blog</h1>
+      </a>
+
+      
+      <input class="burger" type="checkbox">
+      <nav>
+        <a href="https://phidra.github.io/blog/">                <i class="material-icons"> home </i>Posts       </a>
+        <a href="https://phidra.github.io/blog/menu/notes/">      <i class="material-icons"> event_note </i>Notes       </a>
+        <a href="https://phidra.github.io/blog/menu/references/"> <i class="material-icons"> menu_book </i>Références  </a>
+        <a href="https://phidra.github.io/blog/menu/in2words/"> <i class="material-icons"> school </i>En 2 mots  </a>
+        <a href="https://phidra.github.io/blog/menu/about/">      <i class="material-icons"> info </i>À propos    </a>
+      </nav>
+
+    </header>
+
+    <main class="app-container">
+      
+  <article class="post">
+    <header class="post-header">
+      <h1 class ="post-title">Une &#34;super&#34; curiosité pythonique (ha ha)</h1>
+      <div class="post-meta">
+        <div>
+          Jul 18, 2022
+          —
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-clock">
+  <title>clock</title>
+  <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+          4 min read
+        </div></div>
+    <div>
+        <nav id="TableOfContents">
+  <ul>
+    <li><a href="#_la_curiosité">La curiosité</a></li>
+    <li><a href="#_lexplication">L’explication</a></li>
+    <li><a href="#_conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+    </header>
+    <div class="post-content">
+      <div id="preamble">
+<div class="sectionbody">
+
+<div class="paragraph">
+<p>Le présent post est très fortement inspiré par un exemple de <a href="https://www.youtube.com/watch?v=X1PQ7zzltz4">cette vidéo</a> sur <code>super</code> par mcoding.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_la_curiosité">La curiosité</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous connaissez probablement <code>super</code>, qui permet de remplacer un appel explicite à une classe parente :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #75715e"># sans super :</span>
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">BaseLogger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(self,</span> <span style="color: #f8f8f2">timestamped_msg)</span>  <span style="color: #75715e"># &lt;-- appel explicite à la classe parente</span>
+
+
+<span style="color: #75715e"># avec super :</span>
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(timestamped_msg)</span>  <span style="color: #75715e"># &lt;-- pas d&#39;appel explicite à la classe parente</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec la hiérarchie de classes ci-dessus, grâce à <code>super</code>, <code>TimestampLogger.log</code> appellera la méthode de la classe parente, soit <code>BaseLogger.log</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">logger</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">TimestampLogger()</span>
+<span style="color: #f8f8f2">logger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(</span><span style="color: #e6db74">&#34;Pouet&#34;</span><span style="color: #f8f8f2">)</span>  <span style="color: #75715e"># &lt;-- grâce à super(), TimestampLogger.log appelle BaseLogger.log</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Et neuf fois sur dix, &#34;super appelle la méthode de la classe parente&#34; est un raccourci amplement suffisant. Mais saviez-vous que ça n’était pas toujours vrai ?</p>
+</div>
+<div class="paragraph">
+<p>Si je reprends — <strong>sans les modifier</strong> —  exactement les deux mêmes classe <code>BaseLogger</code> et <code>TimestampLogger</code>, et que je leur adjoins deux autres classes <code>UpperLogger</code> et surtout <code>TimestampUpperLogger</code> qui mélange les deux précédentes :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(timestamped_msg)</span>
+
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">UpperLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #f8f8f2">uppercase_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">msg</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">upper()</span>
+        <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(uppercase_msg)</span>
+
+
+<span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampUpperLogger</span><span style="color: #f8f8f2">(TimestampLogger,</span> <span style="color: #f8f8f2">UpperLogger):</span>
+    <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
+        <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(msg)</span>
+
+
+<span style="color: #f8f8f2">logger</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">TimestampUpperLogger()</span>
+<span style="color: #f8f8f2">logger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(</span><span style="color: #e6db74">&#34;Pouet&#34;</span><span style="color: #f8f8f2">)</span>  <span style="color: #75715e"># &lt;-- que fait TimestampLogger.log ?</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Avec cette nouvelle hiérarchie, on a un héritage en diamant :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code><span></span>             BaseLogger
+            /          \
+TimestampLogger      UpperLogger
+            \          /
+       TimestampUpperLogger</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Croyez-le ou non, mais dans cette situation, alors même qu’on n’a pas modifié <code>TimestampLogger</code> et <code>BaseLogger</code>, <code>TimestampLogger.log</code> n’appelle plus la méthode parente <code>BaseLogger.log</code>…​ mais la méthode sœur <code>UpperLogger.log</code> !</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_lexplication">L’explication</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Cette curiosité n’en est pas une quand on sait que le comportement de <code>super</code> n’est PAS d’appeler la méthode de la classe parente, mais plutôt d’appeler la méthode de <em>&#34;la classe suivante dans le MRO&#34;</em>.</p>
+</div>
+<div class="paragraph">
+<p>MRO quésaco ? Le <em>Method Resolution Order</em> (<a href="https://docs.python.org/3/glossary.html#term-method-resolution-order">glossaire python</a>) indique l’ordre selon lequel python va rechercher un attribut d’un objet dans une hiérarchie de classes. Par exemple, si dans notre hiérarchie en diamant, on appelle <code>logger.youpi()</code> où <code>logger</code> est une instance de <code>TimestampUpperLogger</code> :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>l’interpréteur python va commencer par regarder si la classe <code>TimestampUpperLogger</code> a un membre <code>youpi</code></p>
+</li>
+<li>
+<p>si non, il regardera si <code>TimestampLogger</code> a ce membre <code>youpi</code></p>
+</li>
+<li>
+<p>idem avec <code>UpperLogger</code></p>
+</li>
+<li>
+<p>idem avec <code>BaseLogger</code></p>
+</li>
+<li>
+<p>si <code>BaseLogger</code> n’a pas de membre <code>youpi</code>…​ ce n’est pas encore tout à fait fini ! On regarde alors si <code>object</code> a <code>youpi</code> ; en effet, en python, <a href="https://docs.python.org/fr/3/library/functions.html#object">toutes les classes sont filles de <code>object</code></a>)</p>
+</li>
+<li>
+<p>ici, même <code>object</code> n’a pas de membre <code>youpi</code>, on raise alors une <code>AttributeError</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Je ne détaille pas les règles qui gouvernent le MRO, mais si le sujet vous intéresse, <a href="https://www.youtube.com/watch?v=X1PQ7zzltz4">la vidéo qui inspire ce post</a> en fait un résumé, et l’algo complet est décrit <a href="https://www.python.org/download/releases/2.3/mro/">ici</a>, ça remonte à la version 2.3 de python !</p>
+</div>
+<div class="paragraph">
+<p>Avec notre héritage en diamant, le MRO de <code>logger</code> est quelque chose comme :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>TimestampUpperLogger</code></p>
+</li>
+<li>
+<p><code>TimestampLogger</code></p>
+</li>
+<li>
+<p><code>UpperLogger</code></p>
+</li>
+<li>
+<p><code>BaseLogger</code></p>
+</li>
+<li>
+<p><code>object</code></p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Ce qu’on peut vérifier dynamiquement :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34; &#34;</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">join(klass</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__name__</span> <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">klass</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">TimestampUpperLogger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__mro__))</span>
+<span style="color: #75715e"># TimestampUpperLogger TimestampLogger UpperLogger BaseLogger object</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Comme <code>UpperLogger</code> vient juste après <code>TimestampLogger</code> dans le MRO, et que <code>super()</code> appelle <em>&#34;la classe suivante dans le MRO&#34;</em>, c’est bien <code>UpperLogger.log</code> (soit la méthode de la classe <strong>sœur</strong>, et non parente)  qui sera utilisée.</p>
+</div>
+<div class="paragraph">
+<p>On pourrait d’ailleurs le vérifier en récupérant manuellement avec <code>super()</code> ce qui vient après <code>TimestampLogger</code> pour l’objet <code>logger</code> :</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">super(TimestampLogger,</span> <span style="color: #f8f8f2">logger)</span>
+<span style="color: #75715e"># wrapper autour d&#39;UpperLogger</span>
+
+<span style="color: #f8f8f2">super(TimestampLogger,</span> <span style="color: #f8f8f2">logger)</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(</span><span style="color: #e6db74">&#34;pouet&#34;</span><span style="color: #f8f8f2">)</span>
+<span style="color: #75715e"># POUET</span></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_conclusion">Conclusion</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Vous savez maintenant que <code>super</code> est un raccourci pour <em>&#34;la classe suivante dans le MRO&#34;</em>, et je voulais simplement partager cette curiosité où <code>super()</code> n’appelle pas la classe parente mais plutôt une classe sœur, qu’on retrouvera dans tous les héritages en diamant.</p>
+</div>
+<div class="paragraph">
+<p>Je suis très très fan des curiosités dans ce genre qui permettent de mieux comprendre le fontionnement des choses sous le capot.</p>
+</div>
+<div class="paragraph">
+<p>En pratique cependant, je n’aime pas faire des hiérarchies de classes complexes — et encore moins en python où il est facile de les éviter. Notamment, je ne recommande pas d’utiliser ici cet héritage en diamant : on peut simplement utiliser des fonctions pour modifier le message (e.g. <code>str.upper</code> ou <code>add_timestamp_prefix</code>), ou bien utiliser des décorateurs si le besoin se complexifie.</p>
+</div>
+<div class="paragraph">
+<p>Un dernier mot : pourquoi utiliser <code>super</code> ? La <a href="https://docs.python.org/3/library/functions.html#super">doc de super</a> suggère deux raisons :</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>le cas le plus courant = faire référence à la classe parente sans la nommer explicitement,</p>
+</li>
+<li>
+<p>la curiosité du jour = permettre de résoudre de façon déterministe les <em>attribute-lookups</em> lors des héritages en diamant.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+    </div>
+    <div class="post-footer">
+      
+    </div>
+  </article>
+
+    </main>
+
+    
+
+  </body>
+</html>

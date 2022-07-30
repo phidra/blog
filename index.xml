@@ -8,6 +8,17 @@
     <language>fr-fr</language>
     <lastBuildDate>Sun, 20 Dec 2020 11:00:00 +0100</lastBuildDate><atom:link href="https://phidra.github.io/blog/index.xml" rel="self" type="application/rss+xml" />
     <item>
+      <title>Une &#34;super&#34; curiosité pythonique (ha ha)</title>
+      <link>https://phidra.github.io/blog/2022-07-18-curiosite-pythonique-super/</link>
+      <pubDate>Mon, 18 Jul 2022 10:00:00 +0100</pubDate>
+      
+      <guid>https://phidra.github.io/blog/2022-07-18-curiosite-pythonique-super/</guid>
+      <description>Le présent post est très fortement inspiré par un exemple de cette vidéo sur super par mcoding.
+   La curiosité Vous connaissez probablement super, qui permet de remplacer un appel explicite à une classe parente :
+ # sans super : class BaseLogger: def log(self, msg: str): print(msg) class TimestampLogger(BaseLogger): def log(self, msg: str): timestamp = datetime.datetime.now().strftime(&amp;#34;%Y-%m-%d %H:%M:%S&amp;#34;) timestamped_msg = f&amp;#34;{timestamp} {msg}&amp;#34; BaseLogger.log(self, timestamped_msg) # &amp;lt;-- appel explicite à la classe parente # avec super : class BaseLogger: def log(self, msg: str): print(msg) class TimestampLogger(BaseLogger): def log(self, msg: str): timestamp = datetime.</description>
+    </item>
+    
+    <item>
       <title>Node.js côté frontend ?!</title>
       <link>https://phidra.github.io/blog/2022-05-26-node-frontend/</link>
       <pubDate>Thu, 26 May 2022 10:00:00 +0100</pubDate>
