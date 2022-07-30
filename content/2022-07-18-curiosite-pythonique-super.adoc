@@ -1,0 +1,161 @@
+---
+title: "Une \"super\" curiosité pythonique (ha ha)"
+date: 2022-07-18T10:00:00+01:00
+draft: false
+---
+:source-highlighter: pygments
+:pygments-css: style
+:pygments-style: monokai
+:toc: macro
+:toc-title: De quoi va-t-on causer :
+:toclevels: 2
+= Une "super" curiosité pythonique (ha ha)
+
+toc::[]
+
+Le présent post est très fortement inspiré par un exemple de https://www.youtube.com/watch?v=X1PQ7zzltz4[cette vidéo] sur `super` par mcoding.
+
+== La curiosité
+
+Vous connaissez probablement `super`, qui permet de remplacer un appel explicite à une classe parente :
+
+
+[source,python]
+----
+# sans super :
+class BaseLogger:
+    def log(self, msg: str):
+        print(msg)
+
+
+class TimestampLogger(BaseLogger):
+    def log(self, msg: str):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamped_msg = f"{timestamp} {msg}"
+        BaseLogger.log(self, timestamped_msg)  # <-- appel explicite à la classe parente
+
+
+# avec super :
+class BaseLogger:
+    def log(self, msg: str):
+        print(msg)
+
+
+class TimestampLogger(BaseLogger):
+    def log(self, msg: str):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamped_msg = f"{timestamp} {msg}"
+        super().log(timestamped_msg)  # <-- pas d'appel explicite à la classe parente
+----
+
+Avec la hiérarchie de classes ci-dessus, grâce à `super`, `TimestampLogger.log` appellera la méthode de la classe parente, soit `BaseLogger.log` :
+
+[source,python]
+----
+logger = TimestampLogger()
+logger.log("Pouet")  # <-- grâce à super(), TimestampLogger.log appelle BaseLogger.log
+----
+
+Et neuf fois sur dix, "super appelle la méthode de la classe parente" est un raccourci amplement suffisant. Mais saviez-vous que ça n'était pas toujours vrai ?
+
+Si je reprends — **sans les modifier** —  exactement les deux mêmes classe `BaseLogger` et `TimestampLogger`, et que je leur adjoins deux autres classes `UpperLogger` et surtout `TimestampUpperLogger` qui mélange les deux précédentes :
+
+[source,python]
+----
+class BaseLogger:
+    def log(self, msg: str):
+        print(msg)
+
+
+class TimestampLogger(BaseLogger):
+    def log(self, msg: str):
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        timestamped_msg = f"{timestamp} {msg}"
+        super().log(timestamped_msg)
+
+
+class UpperLogger(BaseLogger):
+    def log(self, msg: str):
+        uppercase_msg = msg.upper()
+        super().log(uppercase_msg)
+
+
+class TimestampUpperLogger(TimestampLogger, UpperLogger):
+    def log(self, msg: str):
+        super().log(msg)
+
+
+logger = TimestampUpperLogger()
+logger.log("Pouet")  # <-- que fait TimestampLogger.log ?
+----
+
+Avec cette nouvelle hiérarchie, on a un héritage en diamant :
+
+[source]
+----
+             BaseLogger
+            /          \
+TimestampLogger      UpperLogger
+            \          /
+       TimestampUpperLogger
+----
+
+Croyez-le ou non, mais dans cette situation, alors même qu'on n'a pas modifié `TimestampLogger` et `BaseLogger`, `TimestampLogger.log` n'appelle plus la méthode parente `BaseLogger.log`... mais la méthode sœur `UpperLogger.log` !
+
+== L'explication
+
+Cette curiosité n'en est pas une quand on sait que le comportement de `super` n'est PAS d'appeler la méthode de la classe parente, mais plutôt d'appeler la méthode de _"la classe suivante dans le MRO"_.
+
+MRO quésaco ? Le _Method Resolution Order_ (https://docs.python.org/3/glossary.html#term-method-resolution-order[glossaire python]) indique l'ordre selon lequel python va rechercher un attribut d'un objet dans une hiérarchie de classes. Par exemple, si dans notre hiérarchie en diamant, on appelle `logger.youpi()` où `logger` est une instance de `TimestampUpperLogger` :
+
+- l'interpréteur python va commencer par regarder si la classe `TimestampUpperLogger` a un membre `youpi`
+- si non, il regardera si `TimestampLogger` a ce membre `youpi`
+- idem avec `UpperLogger`
+- idem avec `BaseLogger`
+- si `BaseLogger` n'a pas de membre `youpi`... ce n'est pas encore tout à fait fini ! On regarde alors si `object` a `youpi` ; en effet, en python, https://docs.python.org/fr/3/library/functions.html#object[toutes les classes sont filles de `object`])
+- ici, même `object` n'a pas de membre `youpi`, on raise alors une `AttributeError`
+
+
+Je ne détaille pas les règles qui gouvernent le MRO, mais si le sujet vous intéresse, https://www.youtube.com/watch?v=X1PQ7zzltz4[la vidéo qui inspire ce post] en fait un résumé, et l'algo complet est décrit https://www.python.org/download/releases/2.3/mro/[ici], ça remonte à la version 2.3 de python !
+
+Avec notre héritage en diamant, le MRO de `logger` est quelque chose comme :
+
+* `TimestampUpperLogger`
+* `TimestampLogger`
+* `UpperLogger`
+* `BaseLogger`
+* `object`
+
+Ce qu'on peut vérifier dynamiquement :
+
+[source, python]
+----
+print(" ".join(klass.__name__ for klass in TimestampUpperLogger.__mro__))
+# TimestampUpperLogger TimestampLogger UpperLogger BaseLogger object
+----
+
+Comme `UpperLogger` vient juste après `TimestampLogger` dans le MRO, et que `super()` appelle _"la classe suivante dans le MRO"_, c'est bien `UpperLogger.log` (soit la méthode de la classe **sœur**, et non parente)  qui sera utilisée.
+
+On pourrait d'ailleurs le vérifier en récupérant manuellement avec `super()` ce qui vient après `TimestampLogger` pour l'objet `logger` :
+
+[source, python]
+----
+super(TimestampLogger, logger)
+# wrapper autour d'UpperLogger
+
+super(TimestampLogger, logger).log("pouet")
+# POUET
+----
+
+== Conclusion
+
+Vous savez maintenant que `super` est un raccourci pour _"la classe suivante dans le MRO"_, et je voulais simplement partager cette curiosité où `super()` n'appelle pas la classe parente mais plutôt une classe sœur, qu'on retrouvera dans tous les héritages en diamant.
+
+Je suis très très fan des curiosités dans ce genre qui permettent de mieux comprendre le fontionnement des choses sous le capot.
+
+En pratique cependant, je n'aime pas faire des hiérarchies de classes complexes — et encore moins en python où il est facile de les éviter. Notamment, je ne recommande pas d'utiliser ici cet héritage en diamant : on peut simplement utiliser des fonctions pour modifier le message (e.g. `str.upper` ou `add_timestamp_prefix`), ou bien utiliser des décorateurs si le besoin se complexifie.
+
+Un dernier mot : pourquoi utiliser `super` ? La https://docs.python.org/3/library/functions.html#super[doc de super] suggère deux raisons :
+
+- le cas le plus courant = faire référence à la classe parente sans la nommer explicitement,
+- la curiosité du jour = permettre de résoudre de façon déterministe les _attribute-lookups_ lors des héritages en diamant.
