@@ -96,8 +96,7 @@
     <li><a href="#_gist_latency_numbers_every_programmer_should_know">[GIST] Latency numbers every programmer should know</a></li>
     <li><a href="#_post_what_every_developer_should_know_about_tcp">[POST] What every developer should know about TCP</a></li>
     <li><a href="#_post_invariants_and_preconditions">[POST] Invariants and Preconditions</a></li>
-    <li><a href="#_video_systematic_error_handling_in_c_aussi_sur_youtube">[VIDEO] </a></li>
-    <li><a href="#ttps://channel9.msdn.com/Shows/Going+Deep/C-and-Beyond-2012-Andrei-Alexandrescu-Systematic-Error-Handling-in-C">Systematic error handling in C++, aussi sur youtube</a></li>
+    <li><a href="#_video_systematic_error_handling_in_c_aussi_sur_youtube">[VIDEO] Systematic error handling in C++, aussi sur youtube</a></li>
     <li><a href="#_video_understanding_the_python_gil_voir_aussi_le_post_qui_va_avec">[VIDEO] Understanding the Python GIL, voir aussi le post qui va avec</a></li>
     <li><a href="#_post_a_successful_deployment_model">[POST] A successful deployment model</a></li>
     <li><a href="#_post_systems_design_for_advanced_beginners">[POST] Systems design for Advanced Beginners</a></li>
@@ -113,8 +112,7 @@
     <li><a href="#_video_lapi_management_au_delà_des_promesses">[VIDEO] L’API Management : au-delà des promesses</a></li>
     <li><a href="#_post_the_day_the_standard_library_died">[POST] The Day The Standard Library Died</a></li>
     <li><a href="#_post_advantages_of_monorepos">[POST] Advantages of monorepos</a></li>
-    <li><a href="#_site_c_frequently_questioned_answers">[SITE] </a></li>
-    <li><a href="#ttps://yosefk.com/c++fqa/fqa.html">C++ Frequently Questioned Answers</a></li>
+    <li><a href="#_site_c_frequently_questioned_answers">[SITE] C++ Frequently Questioned Answers</a></li>
     <li><a href="#_post_fastest_way_to_load_data_into_postgresql_using_python">[POST] Fastest Way to Load Data Into PostgreSQL Using Python</a></li>
     <li><a href="#_post_exceptions">[POST] Exceptions</a></li>
     <li><a href="#_post_réussir_la_developer_experience_de_son_api_web">[POST] Réussir la Developer eXperience de son API web</a></li>
@@ -730,8 +728,8 @@ For many software companies, the main value might not lie in their technology, b
 <p>Ndm : compare_exchange permet le pattern suivant, permettant de remplacer p par p→next, y compris en cas d’utilisation concurrente, tout en évitant les problèmes de TOCTOU :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">p</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">head.load();</span>
-<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(p</span> <span style="color: #f92672">&amp;&amp;</span> <span style="color: #f8f8f2">head.compare_exchange_weak(p,</span> <span style="color: #f8f8f2">p</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">next))</span> <span style="color: #f8f8f2">{}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> p </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> head.load();</span>
+<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(p </span><span style="color: #f92672">&amp;&amp;</span><span style="color: #f8f8f2"> head.compare_exchange_weak(p, p</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">next)) {}</span></code></pre>
 </div>
 </div>
 </li>
@@ -1136,31 +1134,31 @@ Partager un objet qui n’est pas immuable est dangereux en situation de multipr
 <p>Le code d’exemple suivant est intéressant, notamment l’utilisation du copy-and-swap idiom pour implémenter l’opérateur d’affectation :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TiTableau</span> <span style="color: #f8f8f2">{</span>
-<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span>
-   <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">size_type</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">private</span><span style="color: #f92672">:</span>
-   <span style="color: #f8f8f2">size_type</span> <span style="color: #f8f8f2">nelems{};</span>
-   <span style="color: #66d9ef">int</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">elems;</span>
-<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span>
-   <span style="color: #f8f8f2">TiTableau(size_type</span> <span style="color: #f8f8f2">n)</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">elems{</span> <span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[n]</span> <span style="color: #f8f8f2">}</span> <span style="color: #f8f8f2">{</span>
-      <span style="color: #f8f8f2">fill(elems,</span> <span style="color: #f8f8f2">elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(),</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">);</span>
-   <span style="color: #f8f8f2">}</span>
-   <span style="color: #f8f8f2">TiTableau(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">nelems{</span> <span style="color: #f8f8f2">autre.size()</span> <span style="color: #f8f8f2">},</span> <span style="color: #f8f8f2">elems{</span> <span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[autre.size()]</span> <span style="color: #f8f8f2">}</span> <span style="color: #f8f8f2">{</span>
-      <span style="color: #f8f8f2">copy(autre.elems,</span> <span style="color: #f8f8f2">autre.elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(),</span> <span style="color: #f8f8f2">elems);</span>
-   <span style="color: #f8f8f2">}</span>
-   <span style="color: #66d9ef">void</span> <span style="color: #f8f8f2">swap(TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f8f8f2">{</span>
-      <span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">swap;</span>
-      <span style="color: #f8f8f2">swap(elems,</span> <span style="color: #f8f8f2">autre.elems);</span>
-      <span style="color: #f8f8f2">swap(nelems,</span> <span style="color: #f8f8f2">autre.nelems);</span>
-   <span style="color: #f8f8f2">}</span>
-   <span style="color: #f8f8f2">TiTableau</span><span style="color: #f92672">&amp;</span> <span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">TiTableau</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre)</span> <span style="color: #f8f8f2">{</span>
-      <span style="color: #f8f8f2">TiTableau{</span> <span style="color: #f8f8f2">autre</span> <span style="color: #f8f8f2">}.swap(</span><span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">);</span>
-      <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
-   <span style="color: #f8f8f2">}</span>
-   <span style="color: #f92672">~</span><span style="color: #f8f8f2">TiTableau()</span> <span style="color: #f8f8f2">{</span>
-      <span style="color: #66d9ef">delete</span> <span style="color: #f8f8f2">[]</span> <span style="color: #f8f8f2">elems;</span>
-   <span style="color: #f8f8f2">}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">TiTableau</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span><span style="color: #f8f8f2"></span>
+<span style="color: #f8f8f2">   </span><span style="color: #66d9ef">using</span><span style="color: #f8f8f2"> size_type </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">private</span><span style="color: #f92672">:</span><span style="color: #f8f8f2"></span>
+<span style="color: #f8f8f2">   size_type nelems{};</span>
+<span style="color: #f8f8f2">   </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2">elems;</span>
+<span style="color: #66d9ef">public</span><span style="color: #f92672">:</span><span style="color: #f8f8f2"></span>
+<span style="color: #f8f8f2">   TiTableau(size_type n) </span><span style="color: #f92672">:</span><span style="color: #f8f8f2"> elems{ </span><span style="color: #66d9ef">new</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[n] } {</span>
+<span style="color: #f8f8f2">      fill(elems, elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(), </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">   }</span>
+<span style="color: #f8f8f2">   TiTableau(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> TiTableau </span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre) </span><span style="color: #f92672">:</span><span style="color: #f8f8f2"> nelems{ autre.size() }, elems{ </span><span style="color: #66d9ef">new</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">[autre.size()] } {</span>
+<span style="color: #f8f8f2">      copy(autre.elems, autre.elems</span><span style="color: #f92672">+</span><span style="color: #f8f8f2">size(), elems);</span>
+<span style="color: #f8f8f2">   }</span>
+<span style="color: #f8f8f2">   </span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> swap(TiTableau </span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre) {</span>
+<span style="color: #f8f8f2">      </span><span style="color: #66d9ef">using</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">swap;</span>
+<span style="color: #f8f8f2">      swap(elems, autre.elems);</span>
+<span style="color: #f8f8f2">      swap(nelems, autre.nelems);</span>
+<span style="color: #f8f8f2">   }</span>
+<span style="color: #f8f8f2">   TiTableau</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> TiTableau </span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">autre) {</span>
+<span style="color: #f8f8f2">      TiTableau{ autre }.swap(</span><span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">      </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">   }</span>
+<span style="color: #f8f8f2">   </span><span style="color: #f92672">~</span><span style="color: #f8f8f2">TiTableau() {</span>
+<span style="color: #f8f8f2">      </span><span style="color: #66d9ef">delete</span><span style="color: #f8f8f2"> [] elems;</span>
+<span style="color: #f8f8f2">   }</span>
 <span style="color: #f8f8f2">};</span></code></pre>
 </div>
 </div>
@@ -1403,10 +1401,10 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>Le compilateur choisit statiquement la bonne spécialisation de cout en fonction du type de <code>s</code> ou <code>i</code>.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">print</span> <span style="color: #f8f8f2">(string</span> <span style="color: #f8f8f2">s,</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">print</span><span style="color: #f8f8f2"> (string s, </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> i)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">s;</span>
-    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">i;</span>
+<span style="color: #f8f8f2">    cout </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> s;</span>
+<span style="color: #f8f8f2">    cout </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> i;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -1434,9 +1432,9 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>en C++ : std::equal_range</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">c_bigger</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span> <span style="color: #f8f8f2">a,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span> <span style="color: #f8f8f2">b)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">c_bigger</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> a, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> b)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)b</span> <span style="color: #f92672">-</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)a;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)b </span><span style="color: #f92672">-</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)a;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -1499,7 +1497,7 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>note : cf. &#34;man bsearch&#34; la signature de bsearch attend un pointeur de fonction qui a cette signature :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">compar)(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">void</span> <span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> (</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">compar)(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2">, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
 </div>
 </div>
 </li>
@@ -1555,21 +1553,21 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>tous les objets héritent d’un même classe, toutes les classes filles implémentent un opérateur de comparaison avec un autre Object* (qui throw lorsque l’Object auquel on compare n’est pas du bon type)</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">i_bigger</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">a,</span> <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">b)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">i_bigger</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> a, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> b)</span>
 <span style="color: #f8f8f2">{</span>
-  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ia</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(a);</span>
-  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ib</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(b);</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> ia </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger </span><span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(a);</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> ib </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">dynamic_cast</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">MyInteger </span><span style="color: #66d9ef">const</span><span style="color: #f92672">*&gt;</span><span style="color: #f8f8f2">(b);</span>
 
-  <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(ia</span> <span style="color: #f92672">==</span> <span style="color: #66d9ef">nullptr</span> <span style="color: #f92672">||</span> <span style="color: #f8f8f2">ib</span> <span style="color: #f92672">==</span> <span style="color: #66d9ef">nullptr</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">throw</span> <span style="color: #f8f8f2">SomeException{};</span>
-  <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> (ia </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">nullptr</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">||</span><span style="color: #f8f8f2"> ib </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">nullptr</span><span style="color: #f8f8f2">) {</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">throw</span><span style="color: #f8f8f2"> SomeException{};</span>
+<span style="color: #f8f8f2">  }</span>
 
-  <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">ib</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt()</span> <span style="color: #f92672">-</span> <span style="color: #f8f8f2">ia</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt();</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> ib</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt() </span><span style="color: #f92672">-</span><span style="color: #f8f8f2"> ia</span><span style="color: #f92672">-&gt;</span><span style="color: #f8f8f2">getInt();</span>
 <span style="color: #f8f8f2">}</span>
 
-<span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">OO_search</span> <span style="color: #f8f8f2">(Object</span><span style="color: #f92672">**</span> <span style="color: #f8f8f2">base,</span>
-                   <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">size,</span>
-                   <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">comp)(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">,</span> <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
+<span style="color: #f8f8f2">Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> OO_search (Object</span><span style="color: #f92672">**</span><span style="color: #f8f8f2"> base,</span>
+<span style="color: #f8f8f2">                   </span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2"> size,</span>
+<span style="color: #f8f8f2">                   </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> (</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">comp)(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> Object</span><span style="color: #f92672">*</span><span style="color: #f8f8f2">)</span></code></pre>
 </div>
 </div>
 </li>
@@ -1621,7 +1619,7 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>on utilise std::function pour abstraire le type de la fonction de comparaison (qui peut être n’importe quoi, tant qu’on peut lui appliquer f(int, int)) :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">predicate;</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">,</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> predicate;</span></code></pre>
 </div>
 </div>
 </li>
@@ -1629,8 +1627,8 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>alias template :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span>
-<span style="color: #66d9ef">using</span> <span style="color: #f8f8f2">AnyBinaryPredicate</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">template</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">T</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"></span>
+<span style="color: #66d9ef">using</span><span style="color: #f8f8f2"> AnyBinaryPredicate </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f8f8f2">(T </span><span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">, T </span><span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">;</span></code></pre>
 </div>
 </div>
 </li>
@@ -1655,11 +1653,11 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>On utilise une lib &#34;any_iterator&#34;, le code est très illustratif :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">vec</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">};</span>
-<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">list</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">list</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">6</span><span style="color: #f8f8f2">};</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> vec {</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">};</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">list</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> list {</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">4</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">6</span><span style="color: #f8f8f2">};</span>
 
-<span style="color: #f8f8f2">AnyForwardIter</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">it</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">vec.begin()</span> <span style="color: #f8f8f2">};</span> <span style="color: #75715e">// initialize</span>
-<span style="color: #f8f8f2">it</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">list.begin();</span>                      <span style="color: #75715e">// rebind</span></code></pre>
+<span style="color: #f8f8f2">AnyForwardIter</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> it { vec.begin() }; </span><span style="color: #75715e">// initialize</span>
+<span style="color: #f8f8f2">it </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> list.begin();                      </span><span style="color: #75715e">// rebind</span></code></pre>
 </div>
 </div>
 </li>
@@ -1670,14 +1668,14 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p>boost::any_range, le code est très illustratif :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">vec</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">8</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">4</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">};</span>
-<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">set</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">set</span> <span style="color: #f8f8f2">{</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">3</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">5</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">7</span><span style="color: #f8f8f2">,</span> <span style="color: #ae81ff">9</span><span style="color: #f8f8f2">};</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> vec {</span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">8</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">4</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">};</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">set</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> set {</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">5</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">7</span><span style="color: #f8f8f2">, </span><span style="color: #ae81ff">9</span><span style="color: #f8f8f2">};</span>
 
-<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">rng</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">vec;</span> <span style="color: #75715e">// initialize interface</span>
-<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance</span> <span style="color: #f8f8f2">(boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng),</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span>
+<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> rng </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> vec; </span><span style="color: #75715e">// initialize interface</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance (boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng), boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span>
 
-<span style="color: #f8f8f2">rng</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">set;</span>                      <span style="color: #75715e">// rebind interface</span>
-<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance</span> <span style="color: #f8f8f2">(boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng),</span> <span style="color: #f8f8f2">boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span></code></pre>
+<span style="color: #f8f8f2">rng </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> set;                      </span><span style="color: #75715e">// rebind interface</span>
+<span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">distance (boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">begin(rng), boost</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">end(rng));</span></code></pre>
 </div>
 </div>
 </li>
@@ -1691,12 +1689,12 @@ nm -D /usr/lib32/libstdc++.so.6.0.28<span style="color: #f8f8f2">|</span>grep __
 <p><em>Thus, we have two value-semantic type-erased interfaces: AnyForwardRange&lt;T&gt; and AnyBinaryPredicate&lt;T&gt;. Using them we can define our (partially) type-erased searching function:</em></p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">template</span> <span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span>
-<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">Search</span> <span style="color: #f8f8f2">(AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">rng,</span> <span style="color: #f8f8f2">T</span> <span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">v,</span>
-                           <span style="color: #f8f8f2">AnyBinaryPredicate</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">pred)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">template</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">typename</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">T</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"></span>
+<span style="color: #f8f8f2">AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> Search (AnyForwardRange</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> rng, T </span><span style="color: #66d9ef">const</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> v,</span>
+<span style="color: #f8f8f2">                           AnyBinaryPredicate</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> pred)</span>
 <span style="color: #f8f8f2">{</span>
-  <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">ans</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">equal_range</span> <span style="color: #f8f8f2">(rng.begin(),</span> <span style="color: #f8f8f2">rng.end(),</span> <span style="color: #f8f8f2">v,</span> <span style="color: #f8f8f2">pred);</span>
-  <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">{ans.first,</span> <span style="color: #f8f8f2">ans.second};</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> ans </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">equal_range (rng.begin(), rng.end(), v, pred);</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> {ans.first, ans.second};</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -2286,11 +2284,11 @@ And of course they need to do that without leaking anything if an exception occu
 <p><em>Write the copy-assignment operator by making a temporary copy of the source object, then swap the copy with this.</em></p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&amp;</span> <span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">T</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">rhs)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">T</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">operator</span><span style="color: #f92672">=</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> T</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> rhs)</span>
 <span style="color: #f8f8f2">{</span>
-  <span style="color: #f8f8f2">T</span> <span style="color: #f8f8f2">tmp(rhs);</span>  <span style="color: #75715e">// pas d&#39;impact si exception ici</span>
-  <span style="color: #f8f8f2">swap(tmp);</span>  <span style="color: #75715e">// non-throwing</span>
-  <span style="color: #66d9ef">return</span> <span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">  T </span><span style="color: #a6e22e">tmp</span><span style="color: #f8f8f2">(rhs);  </span><span style="color: #75715e">// pas d&#39;impact si exception ici</span>
+<span style="color: #f8f8f2">  swap(tmp);  </span><span style="color: #75715e">// non-throwing</span>
+<span style="color: #f8f8f2">  </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">*</span><span style="color: #66d9ef">this</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -4225,17 +4223,17 @@ For instance, a market maker in XYZ stock may provide a quote of $10.00-$10.05, 
 <p>façon &#34;classique&#34; avec RAII :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">RAII</span> <span style="color: #f8f8f2">{</span>
-<span style="color: #f8f8f2">RAII()</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">action();</span> <span style="color: #f8f8f2">}</span>
-<span style="color: #f92672">~</span><span style="color: #f8f8f2">RAII()</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">cleanup();</span> <span style="color: #f8f8f2">}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">class</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">RAII</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">RAII() { action(); }</span>
+<span style="color: #f92672">~</span><span style="color: #f8f8f2">RAII() { cleanup(); }</span>
 <span style="color: #f8f8f2">}</span>
 
-<span style="color: #f8f8f2">RAII</span> <span style="color: #f8f8f2">raii;</span>
-<span style="color: #66d9ef">try</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">next();</span>
-<span style="color: #f8f8f2">}</span> <span style="color: #66d9ef">catch</span> <span style="color: #f8f8f2">(...)</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">rollback();</span>
-    <span style="color: #66d9ef">throw</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">RAII raii;</span>
+<span style="color: #66d9ef">try</span><span style="color: #f8f8f2"> {</span>
+<span style="color: #f8f8f2">    next();</span>
+<span style="color: #f8f8f2">} </span><span style="color: #66d9ef">catch</span><span style="color: #f8f8f2"> (...) {</span>
+<span style="color: #f8f8f2">    rollback();</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">throw</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -4248,10 +4246,10 @@ For instance, a market maker in XYZ stock may provide a quote of $10.00-$10.05, 
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">action();</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">sg1</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">ScopeGuard([](){</span> <span style="color: #f8f8f2">cleanup()</span> <span style="color: #f8f8f2">});</span>  <span style="color: #75715e">// en fin de scope, on cleanup</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">sg2</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">ScopeGuard([](){</span> <span style="color: #f8f8f2">rollback()</span> <span style="color: #f8f8f2">});</span>  <span style="color: #75715e">// en fin de scope, on rollback</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> sg1 </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> ScopeGuard([](){ cleanup() });  </span><span style="color: #75715e">// en fin de scope, on cleanup</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> sg2 </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> ScopeGuard([](){ rollback() });  </span><span style="color: #75715e">// en fin de scope, on rollback</span>
 <span style="color: #f8f8f2">next();</span>
-<span style="color: #f8f8f2">sg2.dismiss();</span>  <span style="color: #75715e">// si on arrive ici, next a réussi -&gt; on annule le rollback</span>
+<span style="color: #f8f8f2">sg2.dismiss();  </span><span style="color: #75715e">// si on arrive ici, next a réussi -&gt; on annule le rollback</span>
 <span style="color: #75715e">// fin du scope -&gt; on va cleanup</span></code></pre>
 </div>
 </div>
@@ -5524,7 +5522,7 @@ If you are loading a freshly created table, the fastest method is to create the 
 <p>Comme ces objets sont différents, ils ont un type différent, et ça m’embête si je veux par exemple coder l’application d’un <code>processor</code> à tous les éléments d’un container de callables :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">apply</span><span style="color: #f8f8f2">(Container</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">container,</span> <span style="color: #f8f8f2">WhichTypeShouldIUse</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">processor)</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">...</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">apply</span><span style="color: #f8f8f2">(Container</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> container, WhichTypeShouldIUse</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> processor) { ... }</span></code></pre>
 </div>
 </div>
 </li>
@@ -5532,7 +5530,7 @@ If you are loading a freshly created table, the fastest method is to create the 
 <p>Quel type utiliser à la place de <code>WhichTypeShouldIUse</code> ci-dessus ? <code>std::function</code> est conçu pour ça, et peut <a href="https://en.cppreference.com/w/cpp/utility/functional/function">représenter tout type de callable</a> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">apply</span><span style="color: #f8f8f2">(Container</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">container,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">processor)</span> <span style="color: #f8f8f2">{</span> <span style="color: #f8f8f2">...</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">apply</span><span style="color: #f8f8f2">(Container</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> container, std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">function</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">)</span><span style="color: #f92672">&gt;&amp;</span><span style="color: #f8f8f2"> processor) { ... }</span></code></pre>
 </div>
 </div>
 </li>
@@ -5666,18 +5664,18 @@ If you are loading a freshly created table, the fastest method is to create the 
 <p><strong>situation n°1</strong> = on représente une couleur avec un <code>int</code> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">InputFile</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">f)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> InputFile</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> f)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">value</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f.get_value();</span>
-    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(value</span> <span style="color: #f92672">!=</span> <span style="color: #ae81ff">0</span> <span style="color: #f92672">||</span> <span style="color: #f8f8f2">value</span> <span style="color: #f92672">!=</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">throw</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">runtime_error(</span><span style="color: #e6db74">&#34;boum&#34;</span><span style="color: #f8f8f2">);</span> <span style="color: #f8f8f2">}</span>
-    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">value;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> value </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> f.get_value();</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> (value </span><span style="color: #f92672">!=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">||</span><span style="color: #f8f8f2"> value </span><span style="color: #f92672">!=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">) { </span><span style="color: #66d9ef">throw</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">runtime_error(</span><span style="color: #e6db74">&#34;boum&#34;</span><span style="color: #f8f8f2">); }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> value;</span>
 <span style="color: #f8f8f2">}</span>
-<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">color</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">parse(input_file);</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> color </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> parse(input_file);</span>
 <span style="color: #75715e">// ... some stuff, maybe very long ...</span>
 
 <span style="color: #75715e">// should I check again that color is in [0,1] ?</span>
 <span style="color: #75715e">// if no, what happens if color is not in [0,1] anymore ?</span>
-<span style="color: #66d9ef">void</span> <span style="color: #a6e22e">do_something</span><span style="color: #f8f8f2">(Color)</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* something that relies on color being 0 or 1 */</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">do_something</span><span style="color: #f8f8f2">(Color) { </span><span style="color: #75715e">/* something that relies on color being 0 or 1 */</span><span style="color: #f8f8f2"> }</span>
 <span style="color: #f8f8f2">do_something(color);</span></code></pre>
 </div>
 </div>
@@ -5686,18 +5684,18 @@ If you are loading a freshly created table, the fastest method is to create the 
 <p><strong>situation n°2</strong> = on représente une couleur avec un <code>enum class Color</code> :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">Color</span> <span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">InputFile</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">f)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">Color </span><span style="color: #a6e22e">parse</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> InputFile</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> f)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">value</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f.get_value();</span>
-    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(value</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">Color</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">RED;</span> <span style="color: #f8f8f2">}</span>
-    <span style="color: #66d9ef">else</span> <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(value</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">)</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">Color</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">BLACK;</span> <span style="color: #f8f8f2">}</span>
-    <span style="color: #66d9ef">else</span> <span style="color: #f8f8f2">{</span> <span style="color: #66d9ef">throw</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">runtime_error(</span><span style="color: #e6db74">&#34;boum&#34;</span><span style="color: #f8f8f2">);</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> value </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> f.get_value();</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> (value </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">) { </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> Color</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">RED; }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> (value </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">) { </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> Color</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">BLACK; }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">else</span><span style="color: #f8f8f2"> { </span><span style="color: #66d9ef">throw</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">runtime_error(</span><span style="color: #e6db74">&#34;boum&#34;</span><span style="color: #f8f8f2">); }</span>
 <span style="color: #f8f8f2">}</span>
-<span style="color: #f8f8f2">Color</span> <span style="color: #f8f8f2">color</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">parse(input_file);</span>
+<span style="color: #f8f8f2">Color color </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> parse(input_file);</span>
 <span style="color: #75715e">// ... some stuff, maybe very long ...</span>
 
 <span style="color: #75715e">// no need to check again that color is in [0,1] : it&#39;s in the type !</span>
-<span style="color: #66d9ef">void</span> <span style="color: #a6e22e">do_something</span><span style="color: #f8f8f2">(Color)</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* something that relies on color being 0 or 1 */</span> <span style="color: #f8f8f2">}</span>
+<span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">do_something</span><span style="color: #f8f8f2">(Color) { </span><span style="color: #75715e">/* something that relies on color being 0 or 1 */</span><span style="color: #f8f8f2"> }</span>
 <span style="color: #f8f8f2">do_something(color);</span></code></pre>
 </div>
 </div>

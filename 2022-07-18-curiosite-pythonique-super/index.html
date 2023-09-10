@@ -91,26 +91,26 @@
 <pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #75715e"># sans super :</span>
 <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
-        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+        <span style="color: #f8f8f2">print(msg)</span>
 
 
 <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
         <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
-        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">f&#34;{</span><span style="color: #f8f8f2">timestamp</span><span style="color: #e6db74">} {</span><span style="color: #f8f8f2">msg</span><span style="color: #e6db74">}&#34;</span>
         <span style="color: #f8f8f2">BaseLogger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(self,</span> <span style="color: #f8f8f2">timestamped_msg)</span>  <span style="color: #75715e"># &lt;-- appel explicite à la classe parente</span>
 
 
 <span style="color: #75715e"># avec super :</span>
 <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
-        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+        <span style="color: #f8f8f2">print(msg)</span>
 
 
 <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
         <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
-        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">f&#34;{</span><span style="color: #f8f8f2">timestamp</span><span style="color: #e6db74">} {</span><span style="color: #f8f8f2">msg</span><span style="color: #e6db74">}&#34;</span>
         <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(timestamped_msg)</span>  <span style="color: #75715e"># &lt;-- pas d&#39;appel explicite à la classe parente</span></code></pre>
 </div>
 </div>
@@ -133,13 +133,13 @@
 <div class="content">
 <pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">class</span> <span style="color: #a6e22e">BaseLogger</span><span style="color: #f8f8f2">:</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
-        <span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(msg)</span>
+        <span style="color: #f8f8f2">print(msg)</span>
 
 
 <span style="color: #66d9ef">class</span> <span style="color: #a6e22e">TimestampLogger</span><span style="color: #f8f8f2">(BaseLogger):</span>
     <span style="color: #66d9ef">def</span> <span style="color: #a6e22e">log</span><span style="color: #f8f8f2">(self,</span> <span style="color: #f8f8f2">msg:</span> <span style="color: #f8f8f2">str):</span>
         <span style="color: #f8f8f2">timestamp</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">datetime</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">now()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">strftime(</span><span style="color: #e6db74">&#34;%Y-%m-%d %H:%M:%S&#34;</span><span style="color: #f8f8f2">)</span>
-        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">f</span><span style="color: #e6db74">&#34;{timestamp} {msg}&#34;</span>
+        <span style="color: #f8f8f2">timestamped_msg</span> <span style="color: #f92672">=</span> <span style="color: #e6db74">f&#34;{</span><span style="color: #f8f8f2">timestamp</span><span style="color: #e6db74">} {</span><span style="color: #f8f8f2">msg</span><span style="color: #e6db74">}&#34;</span>
         <span style="color: #f8f8f2">super()</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">log(timestamped_msg)</span>
 
 
@@ -236,7 +236,7 @@ TimestampLogger      UpperLogger
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #66d9ef">print</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34; &#34;</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">join(klass</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__name__</span> <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">klass</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">TimestampUpperLogger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__mro__))</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="python"><span></span><span style="color: #f8f8f2">print(</span><span style="color: #e6db74">&#34; &#34;</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">join(klass</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__name__</span> <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">klass</span> <span style="color: #f92672">in</span> <span style="color: #f8f8f2">TimestampUpperLogger</span><span style="color: #f92672">.</span><span style="color: #f8f8f2">__mro__))</span>
 <span style="color: #75715e"># TimestampUpperLogger TimestampLogger UpperLogger BaseLogger object</span></code></pre>
 </div>
 </div>

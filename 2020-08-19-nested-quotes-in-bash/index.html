@@ -118,7 +118,7 @@ tree
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span> /bin
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span> /bin
 <span style="color: #66d9ef">do</span>
     du -sh <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$directory</span><span style="color: #e6db74">&#34;</span>
 <span style="color: #66d9ef">done</span>
@@ -134,7 +134,7 @@ tree
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #f8f8f2">$myfile</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #f8f8f2">$myfile</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
 <span style="color: #66d9ef">do</span>
     du -sh <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$directory</span><span style="color: #e6db74">&#34;</span>
 <span style="color: #66d9ef">done</span>
@@ -149,7 +149,7 @@ tree
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
                                      <span style="color: #ae81ff">1</span>          <span style="color: #ae81ff">2</span>       <span style="color: #ae81ff">2</span> <span style="color: #ae81ff">1</span></code></pre>
 </div>
 </div>
@@ -163,7 +163,7 @@ tree
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
 <span style="color: #66d9ef">do</span>
     du -sh <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$directory</span><span style="color: #e6db74">&#34;</span>
 <span style="color: #66d9ef">done</span>
@@ -207,7 +207,7 @@ tree
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>realpath <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>readlink -e <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="bash"><span></span><span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>realpath <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>readlink -e <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$myfile</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
 <span style="color: #66d9ef">do</span>
     du -sh <span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">$directory</span><span style="color: #e6db74">&#34;</span>
 <span style="color: #66d9ef">done</span>
@@ -241,7 +241,7 @@ In nestedquotes.sh line <span style="color: #ae81ff">25</span>:
 
 
 In nestedquotes.sh line <span style="color: #ae81ff">45</span>:
-<span style="color: #66d9ef">for</span> directory in /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #f8f8f2">$myfile</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
+<span style="color: #66d9ef">for</span> directory <span style="color: #66d9ef">in</span> /usr/bin/ /usr/sbin <span style="color: #e6db74">&#34;</span><span style="color: #66d9ef">$(</span>dirname <span style="color: #f8f8f2">$myfile</span><span style="color: #66d9ef">)</span><span style="color: #e6db74">&#34;</span> /bin
                                                 ^-- SC2086: Double quote to prevent globbing and word splitting.</code></pre>
 </div>
 </div>

@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          4 min read
+          3 min read
         </div></div>
     <div>
         <nav id="TableOfContents"></nav>
@@ -74,7 +74,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age{</span><span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)};</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> age{</span><span style="color: #66d9ef">new</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -82,7 +82,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> age </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -172,7 +172,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">do_something(shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)),</span> <span style="color: #f8f8f2">dangerous_function());</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">do_something(shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">new</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">)), dangerous_function());</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -202,7 +202,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">do_something(make_shared(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">),</span> <span style="color: #f8f8f2">dangerous_function());</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">do_something(make_shared(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">), dangerous_function());</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -210,9 +210,9 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">age</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">new</span> <span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> age </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">new</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
 <span style="color: #75715e">// some code</span>
-<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">safe_age{age};</span></code></pre>
+<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> safe_age{age};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -231,13 +231,13 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age1</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> age1 </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> make_shared</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">(</span><span style="color: #ae81ff">42</span><span style="color: #f8f8f2">);</span>
 
 <span style="color: #75715e">// GOOD : tous les shared_ptr partagent le même control-block :</span>
-<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age2</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">age1;</span>
+<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> age2 </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> age1;</span>
 
 <span style="color: #75715e">// BAD : age3 a un control-block indépendant de celui de age2 et age3 :</span>
-<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">age3{age1.get()};</span></code></pre>
+<span style="color: #f8f8f2">shared_ptr</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> age3{age1.get()};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">

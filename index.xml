@@ -89,9 +89,8 @@
       <pubDate>Sun, 20 Dec 2020 11:00:00 +0100</pubDate>
       
       <guid>https://phidra.github.io/blog/menu/in2words/</guid>
-      <description>L’objectif de cette page est de &amp;#34;documenter&amp;#34; toutes les notions que je croise, liées de près ou de loin à mon métier.
- Je mets des guillemets autour de &amp;#34;documenter&amp;#34;, car il s’agit ici d’être concis : juste expliquer la notion en quelques mots, et éventuellement un ou deux pointeurs pour en apprendre plus.
- D’autres ressources sur internet ont la même vocation, et sont de BIEN meilleure qualité que cette page : elle a surtout de l’intérêt pour MOI, vu que c’est les notions que j’ai croisées MOI que je reporte ici, et que je les décris avec MES mots à moi, en y joignant les références que JE trouve pertinentes.</description>
+      <description>Le contenu de cette page a migré [ici](https://github.com/phidra/notes/blob/main/structured/en_deux_mots.md).
+ </description>
     </item>
     
     <item>
@@ -112,7 +111,7 @@
       <guid>https://phidra.github.io/blog/2020-11-20-saut-de-ligne-final/</guid>
       <description>Tout commence en parsant du CSV Récemment, j’ai eu à parser un fichier CSV en C++. C’est souvent une fausse bonne idée de parser soi-même du CSV, car c’est plus compliqué qu’il n’y paraît, mais là ça s’y prêtait bien.
  J’ai écrit quelque chose comme :
- #include &amp;lt;sstream&amp;gt; #include &amp;lt;vector&amp;gt; using namespace std; vector&amp;lt;string&amp;gt; parse(istream&amp;amp; stream) { vector&amp;lt;string&amp;gt; tokens; string line; while(getline(stream, line).good()) { tokens.push_back(line); } return tokens; } int main(void) { istringstream iss(&amp;#34;line1\nline2\n&amp;#34;); parse(iss); // {&amp;#34;line1&amp;#34;, &amp;#34;line2&amp;#34;} }   Et ce code fonctionne correctement…​ ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n’a pas de saut de ligne final (\n), la dernière ligne est ignorée :</description>
+ #include&amp;lt;sstream&amp;gt; #include&amp;lt;vector&amp;gt; usingnamespacestd; vector&amp;lt;string&amp;gt;parse(istream&amp;amp;stream) { vector&amp;lt;string&amp;gt;tokens; string line; while(getline(stream, line).good()) { tokens.push_back(line); } returntokens; } intmain(void) { istringstream iss(&amp;#34;line1\nline2\n&amp;#34;); parse(iss); // {&amp;#34;line1&amp;#34;, &amp;#34;line2&amp;#34;} }   Et ce code fonctionne correctement…​ ou presque : en testant quelques entrées différentes, on observe un comportement curieux : lorsque la chaîne (ou le contenu du fichier) n’a pas de saut de ligne final (\n), la dernière ligne est ignorée :</description>
     </item>
     
     <item>
@@ -122,7 +121,8 @@
       
       <guid>https://phidra.github.io/blog/2020-11-03-linker-options-order/</guid>
       <description>Mise en situation Allez, pour une fois, on attaque cash pistache avec du code :
- #include &amp;lt;iostream&amp;gt; #include &amp;lt;zlib.h&amp;gt; int main(void) { std::cout &amp;lt;&amp;lt; &amp;#34;zlib version = &amp;#34; &amp;lt;&amp;lt; zlibVersion() &amp;lt;&amp;lt; std::endl; return 0; }   On a un main.cpp qui utilise une librairie, en l’occurence la zlib ; la question du jour concerne la commande à utiliser pour le builder. On trouve parfois ce type de commande :</description>
+ #include&amp;lt;iostream&amp;gt; #include&amp;lt;zlib.h&amp;gt; intmain(void) { std::cout &amp;lt;&amp;lt;&amp;#34;zlib version = &amp;#34;&amp;lt;&amp;lt;zlibVersion() &amp;lt;&amp;lt;std::endl; return0; }   On a un main.cpp qui utilise une librairie, en l’occurence la zlib ; la question du jour concerne la commande à utiliser pour le builder. On trouve parfois ce type de commande :
+ g++ -lz main.cpp   Sur mon poste, cette commande ne marche pas :</description>
     </item>
     
     <item>
@@ -133,7 +133,7 @@
       <guid>https://phidra.github.io/blog/2020-08-31-std-ref/</guid>
       <description>Je repars aujourd’hui de ce post sur std::reference_wrapper, pour expliquer l’intérêt de std::ref dans les appels de fonctions template.
  Dans un précédent post, on a lancé un calcul lourd dans un thread détaché du thread principal comme ceci :
- void heavy_task(int&amp;amp; result, const int amount) { /* ... */ } int main(void) { int result_even = 0; auto th = std::thread(heavy_task, std::ref(result_even), amount); }   On s’intéresse à std::ref(result_even) : qu’apporte std::ref, et pourquoi est-il nécessaire ici ?</description>
+ voidheavy_task(int&amp;amp;result, constintamount) { /* ... */} intmain(void) { intresult_even =0; autoth =std::thread(heavy_task, std::ref(result_even), amount); }   On s’intéresse à std::ref(result_even) : qu’apporte std::ref, et pourquoi est-il nécessaire ici ?</description>
     </item>
     
     <item>
@@ -234,8 +234,8 @@
       
       <guid>https://phidra.github.io/blog/2020-02-15-make_shared/</guid>
       <description>Ça sert à quoi make_shared ? Quel est l’intérêt de make_shared ? Après tout, on peut très bien s’en passer pour créer des shared_ptr :
- shared_ptr&amp;lt;int&amp;gt; age{new int(42)};   Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :
- shared_ptr&amp;lt;int&amp;gt; age = make_shared&amp;lt;int&amp;gt;(42);   TL;DR : c’est plus un peu plus efficace, et un peu moins risqué.
+ shared_ptr&amp;lt;int&amp;gt;age{newint(42)};   Par rapport à la ligne qui précède, quelle est la valeur ajoutée de la ligne suivante :
+ shared_ptr&amp;lt;int&amp;gt;age =make_shared&amp;lt;int&amp;gt;(42);   TL;DR : c’est plus un peu plus efficace, et un peu moins risqué.
    Mais au fait, ça marche comment, shared_ptr ?</description>
     </item>
     

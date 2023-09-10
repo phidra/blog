@@ -62,7 +62,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          17 min read
+          16 min read
         </div></div>
     <div>
         <nav id="TableOfContents">
@@ -360,11 +360,11 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">_heavy_work</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">amount)</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">unused_result</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span> <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">unused_result</span> <span style="color: #f92672">+=</span> <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f92672">-</span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #f8f8f2">}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">_heavy_work</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">unsigned</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> amount) {</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">unsigned</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> unused_result </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> i </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">; i </span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2"> amount; </span><span style="color: #f92672">++</span><span style="color: #f8f8f2">i) {</span>
+<span style="color: #f8f8f2">        unused_result </span><span style="color: #f92672">+=</span><span style="color: #f8f8f2"> (i </span><span style="color: #f92672">%</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">?</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">:</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">-2</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    }</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -376,20 +376,20 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">computer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">char</span> <span style="color: #f8f8f2">letter,</span>
-                   <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">nb_of_ticks,</span>
-                   <span style="color: #f8f8f2">queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">data_to_write,</span>
-                   <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">unsigned</span> <span style="color: #66d9ef">long</span> <span style="color: #66d9ef">long</span> <span style="color: #f8f8f2">amount,</span>
-                   <span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">m,</span>
-                   <span style="color: #f8f8f2">condition_variable</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">cv)</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">x</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">nb_of_ticks;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">x)</span> <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">_heavy_work(amount);</span>
-        <span style="color: #f8f8f2">{</span>
-            <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">lock(m);</span>
-            <span style="color: #f8f8f2">data_to_write.push(letter);</span>
-        <span style="color: #f8f8f2">}</span>
-        <span style="color: #f8f8f2">cv.notify_one();</span>
-    <span style="color: #f8f8f2">}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">computer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">char</span><span style="color: #f8f8f2"> letter,</span>
+<span style="color: #f8f8f2">                   </span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2"> nb_of_ticks,</span>
+<span style="color: #f8f8f2">                   queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span><span style="color: #f8f8f2"> data_to_write,</span>
+<span style="color: #f8f8f2">                   </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">unsigned</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">long</span><span style="color: #f8f8f2"> amount,</span>
+<span style="color: #f8f8f2">                   mutex</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> m,</span>
+<span style="color: #f8f8f2">                   condition_variable</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> cv) {</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2"> x </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">; x </span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2"> nb_of_ticks; </span><span style="color: #f92672">++</span><span style="color: #f8f8f2">x) {</span>
+<span style="color: #f8f8f2">        _heavy_work(amount);</span>
+<span style="color: #f8f8f2">        {</span>
+<span style="color: #f8f8f2">            lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> lock(m);</span>
+<span style="color: #f8f8f2">            data_to_write.push(letter);</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">        cv.notify_one();</span>
+<span style="color: #f8f8f2">    }</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -398,32 +398,32 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">displayer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">string</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">initial_string,</span>
-                    <span style="color: #66d9ef">const</span> <span style="color: #f8f8f2">atomic</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">is_finished,</span>
-                    <span style="color: #f8f8f2">queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span> <span style="color: #f8f8f2">data_to_write,</span>
-                    <span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">m,</span>
-                    <span style="color: #f8f8f2">condition_variable</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">cv)</span> <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">result{initial_string};</span>
-    <span style="color: #66d9ef">size_t</span> <span style="color: #f8f8f2">next_index_to_write</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #66d9ef">while</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">is_finished.load())</span> <span style="color: #f8f8f2">{</span>
-        <span style="color: #75715e">// wait to be notified that there is something to write (or there is no more work to do) :</span>
-        <span style="color: #f8f8f2">unique_lock</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">lock(m);</span>
-        <span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">wakeup_predicate</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">[</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">is_finished]()</span> <span style="color: #f8f8f2">{</span>
-            <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">is_finished.load()</span> <span style="color: #f92672">||</span> <span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty();</span>
-        <span style="color: #f8f8f2">};</span>
-        <span style="color: #f8f8f2">cv.wait(lock,</span> <span style="color: #f8f8f2">wakeup_predicate);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">displayer_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> string</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> initial_string,</span>
+<span style="color: #f8f8f2">                    </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> atomic</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">bool</span><span style="color: #f92672">&gt;&amp;</span><span style="color: #f8f8f2"> is_finished,</span>
+<span style="color: #f8f8f2">                    queue</span><span style="color: #f92672">&lt;</span><span style="color: #66d9ef">char</span><span style="color: #f92672">&gt;&amp;</span><span style="color: #f8f8f2"> data_to_write,</span>
+<span style="color: #f8f8f2">                    mutex</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> m,</span>
+<span style="color: #f8f8f2">                    condition_variable</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> cv) {</span>
+<span style="color: #f8f8f2">    string result{initial_string};</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">size_t</span><span style="color: #f8f8f2"> next_index_to_write </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2"> (</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">is_finished.load()) {</span>
+<span style="color: #f8f8f2">        </span><span style="color: #75715e">// wait to be notified that there is something to write (or there is no more work to do) :</span>
+<span style="color: #f8f8f2">        unique_lock</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> lock(m);</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> wakeup_predicate </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> [</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">data_to_write, </span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2">is_finished]() {</span>
+<span style="color: #f8f8f2">            </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> is_finished.load() </span><span style="color: #f92672">||</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty();</span>
+<span style="color: #f8f8f2">        };</span>
+<span style="color: #f8f8f2">        cv.wait(lock, wakeup_predicate);</span>
 
-        <span style="color: #75715e">// writes all the data to the result string :</span>
-        <span style="color: #66d9ef">while</span> <span style="color: #f8f8f2">(</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty())</span> <span style="color: #f8f8f2">{</span>
-            <span style="color: #f8f8f2">result[next_index_to_write</span><span style="color: #f92672">++</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">data_to_write.back();</span>
-            <span style="color: #f8f8f2">data_to_write.pop();</span>
-        <span style="color: #f8f8f2">}</span>
-        <span style="color: #f8f8f2">lock.unlock();</span>
+<span style="color: #f8f8f2">        </span><span style="color: #75715e">// writes all the data to the result string :</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2"> (</span><span style="color: #f92672">!</span><span style="color: #f8f8f2">data_to_write.empty()) {</span>
+<span style="color: #f8f8f2">            result[next_index_to_write</span><span style="color: #f92672">++</span><span style="color: #f8f8f2">] </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> data_to_write.back();</span>
+<span style="color: #f8f8f2">            data_to_write.pop();</span>
+<span style="color: #f8f8f2">        }</span>
+<span style="color: #f8f8f2">        lock.unlock();</span>
 
-        <span style="color: #75715e">// displays the written string :</span>
-        <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;</span><span style="color: #ae81ff">\r</span><span style="color: #e6db74">&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">flush;</span>  <span style="color: #75715e">// might not work on windows/mac bc of EOL</span>
-    <span style="color: #f8f8f2">}</span>
-    <span style="color: #f8f8f2">cout</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">        </span><span style="color: #75715e">// displays the written string :</span>
+<span style="color: #f8f8f2">        cout </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">&#34;</span><span style="color: #ae81ff">\r</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> result </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> flush;  </span><span style="color: #75715e">// might not work on windows/mac bc of EOL</span>
+<span style="color: #f8f8f2">    }</span>
+<span style="color: #f8f8f2">    cout </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> endl;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -436,15 +436,15 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// displayer thread runs in background :</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">displayer</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task,</span> <span style="color: #f8f8f2">cref(initial_string),</span> <span style="color: #f8f8f2">cref(is_finished),</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> displayer </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task, cref(initial_string), cref(is_finished), ref(data_to_write), ref(m), ref(cv));</span>
 
 <span style="color: #75715e">// computer tasks run in foreground, sequentially :</span>
-<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">m,</span> <span style="color: #f8f8f2">cv);</span>
-<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">data_to_write,</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">m,</span> <span style="color: #f8f8f2">cv);</span>
+<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">, half_length, data_to_write, base_amount, m, cv);</span>
+<span style="color: #f8f8f2">computer_task(</span><span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">, half_length, data_to_write, base_amount, m, cv);</span>
 
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
-    <span style="color: #f8f8f2">is_finished.store(true);</span>
+<span style="color: #f8f8f2">    lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
+<span style="color: #f8f8f2">    is_finished.store(true);</span>
 <span style="color: #f8f8f2">}</span>
 <span style="color: #f8f8f2">cv.notify_one();</span>
 <span style="color: #f8f8f2">displayer.join();</span></code></pre>
@@ -459,17 +459,17 @@ Tâche B  |BB-BBB---BBBB--BBB--BBB---------|   (15 ticks B)
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">// displayer thread runs in background :</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">displayer</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task,</span> <span style="color: #f8f8f2">cref(initial_string),</span> <span style="color: #f8f8f2">cref(is_finished),</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> displayer </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(displayer_task, cref(initial_string), cref(is_finished), ref(data_to_write), ref(m), ref(cv));</span>
 
 <span style="color: #75715e">// computer tasks also run in background, concurrently (and maybe in parallel) :</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">taskA</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task,</span> <span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">taskB</span> <span style="color: #f92672">=</span> <span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task,</span> <span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">,</span> <span style="color: #f8f8f2">half_length,</span> <span style="color: #f8f8f2">ref(data_to_write),</span> <span style="color: #f8f8f2">base_amount,</span> <span style="color: #f8f8f2">ref(m),</span> <span style="color: #f8f8f2">ref(cv));</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> taskA </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task, </span><span style="color: #e6db74">&#39;A&#39;</span><span style="color: #f8f8f2">, half_length, ref(data_to_write), base_amount, ref(m), ref(cv));</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> taskB </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(computer_task, </span><span style="color: #e6db74">&#39;B&#39;</span><span style="color: #f8f8f2">, half_length, ref(data_to_write), base_amount, ref(m), ref(cv));</span>
 <span style="color: #f8f8f2">taskA.join();</span>
 <span style="color: #f8f8f2">taskB.join();</span>
 
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
-    <span style="color: #f8f8f2">is_finished.store(true);</span>
+<span style="color: #f8f8f2">    lock_guard</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">mutex</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{m};</span>
+<span style="color: #f8f8f2">    is_finished.store(true);</span>
 <span style="color: #f8f8f2">}</span>
 <span style="color: #f8f8f2">cv.notify_one();</span>
 <span style="color: #f8f8f2">displayer.join();</span></code></pre>
@@ -623,12 +623,12 @@ ctx switch (voluntar)   = 47</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> result, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> amount)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
-    <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">result</span> <span style="color: #f92672">-=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> i </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">; i </span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2"> amount; </span><span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        (i </span><span style="color: #f92672">%</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">?</span><span style="color: #f8f8f2"> result </span><span style="color: #f92672">+=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">:</span><span style="color: #f8f8f2"> result </span><span style="color: #f92672">-=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    }</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -642,21 +642,21 @@ ctx switch (voluntar)   = 47</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">argc,</span> <span style="color: #66d9ef">char</span><span style="color: #f92672">*</span> <span style="color: #f8f8f2">argv[])</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">main</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> argc, </span><span style="color: #66d9ef">char</span><span style="color: #f92672">*</span><span style="color: #f8f8f2"> argv[])</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">if</span> <span style="color: #f8f8f2">(argc</span> <span style="color: #f92672">&lt;</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">)</span>
-    <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cerr</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;USAGE: &#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">argv[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">]</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #e6db74">&#34;  AMOUNT&#34;</span> <span style="color: #f92672">&lt;&lt;</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">endl;</span>
-        <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">1</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #f8f8f2">}</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">if</span><span style="color: #f8f8f2"> (argc </span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">)</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">cerr </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">&#34;USAGE: &#34;</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> argv[</span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">] </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> </span><span style="color: #e6db74">&#34;  AMOUNT&#34;</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">&lt;&lt;</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">endl;</span>
+<span style="color: #f8f8f2">        </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    }</span>
 
-    <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">stoi(argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]);</span>
-    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #f8f8f2">heavy_task(result_even,</span> <span style="color: #f8f8f2">amount);</span>
-    <span style="color: #f8f8f2">heavy_task(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> amount </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">stoi(argv[</span><span style="color: #ae81ff">1</span><span style="color: #f8f8f2">]);</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_even </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_odd </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    heavy_task(result_even, amount);</span>
+<span style="color: #f8f8f2">    heavy_task(result_odd, amount);</span>
 
-    <span style="color: #66d9ef">return</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -680,10 +680,10 @@ ctx switch (voluntar)   = 47</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
-<span style="color: #f8f8f2">heavy_task(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_even </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_odd </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> th </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task, std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even), amount);</span>
+<span style="color: #f8f8f2">heavy_task(result_odd, amount);</span>
 <span style="color: #f8f8f2">th.join();</span></code></pre>
 </div>
 </div>
@@ -716,10 +716,10 @@ ctx switch (voluntar)   = 47</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #a6e22e">__attribute__</span> <span style="color: #f8f8f2">((aligned</span> <span style="color: #f8f8f2">(</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">)))</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #a6e22e">__attribute__</span> <span style="color: #f8f8f2">((aligned</span> <span style="color: #f8f8f2">(</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">)))</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
-<span style="color: #f8f8f2">heavy_task(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_even </span><span style="color: #a6e22e">__attribute__</span><span style="color: #f8f8f2"> ((aligned (</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">))) </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_odd </span><span style="color: #a6e22e">__attribute__</span><span style="color: #f8f8f2"> ((aligned (</span><span style="color: #ae81ff">64</span><span style="color: #f8f8f2">))) </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> th </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task, std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even), amount);</span>
+<span style="color: #f8f8f2">heavy_task(result_odd, amount);</span>
 <span style="color: #f8f8f2">th.join();</span></code></pre>
 </div>
 </div>
@@ -737,10 +737,10 @@ time took  = 0:01.56</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_even</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">result_odd</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-<span style="color: #66d9ef">auto</span> <span style="color: #f8f8f2">th</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task,</span> <span style="color: #f8f8f2">std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even),</span> <span style="color: #f8f8f2">amount);</span>
-<span style="color: #f8f8f2">heavy_task(result_odd,</span> <span style="color: #f8f8f2">amount);</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_even </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> result_odd </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #66d9ef">auto</span><span style="color: #f8f8f2"> th </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> std</span><span style="color: #f92672">::</span><span style="color: #66d9ef">thread</span><span style="color: #f8f8f2">(heavy_task, std</span><span style="color: #f92672">::</span><span style="color: #f8f8f2">ref(result_even), amount);</span>
+<span style="color: #f8f8f2">heavy_task(result_odd, amount);</span>
 <span style="color: #f8f8f2">th.join();</span></code></pre>
 </div>
 </div>
@@ -749,14 +749,14 @@ time took  = 0:01.56</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span> <span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">result,</span> <span style="color: #66d9ef">const</span> <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">amount)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">heavy_task</span><span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> result, </span><span style="color: #66d9ef">const</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> amount)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #66d9ef">for</span> <span style="color: #f8f8f2">(</span><span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">=</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span> <span style="color: #f8f8f2">i</span> <span style="color: #f92672">&lt;</span> <span style="color: #f8f8f2">amount;</span> <span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
-    <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">(i</span> <span style="color: #f92672">%</span> <span style="color: #ae81ff">2</span> <span style="color: #f92672">==</span> <span style="color: #ae81ff">0</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">?</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">+=</span> <span style="color: #ae81ff">3</span> <span style="color: #f92672">:</span> <span style="color: #f8f8f2">acc</span> <span style="color: #f92672">-=</span> <span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
-    <span style="color: #f8f8f2">}</span>
-    <span style="color: #f8f8f2">result</span> <span style="color: #f92672">=</span> <span style="color: #f8f8f2">acc;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> acc </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">for</span><span style="color: #f8f8f2"> (</span><span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> i </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">; i </span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2"> amount; </span><span style="color: #f92672">++</span><span style="color: #f8f8f2">i)</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        (i </span><span style="color: #f92672">%</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">0</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">?</span><span style="color: #f8f8f2"> acc </span><span style="color: #f92672">+=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">3</span><span style="color: #f8f8f2"> </span><span style="color: #f92672">:</span><span style="color: #f8f8f2"> acc </span><span style="color: #f92672">-=</span><span style="color: #f8f8f2"> </span><span style="color: #ae81ff">2</span><span style="color: #f8f8f2">;</span>
+<span style="color: #f8f8f2">    }</span>
+<span style="color: #f8f8f2">    result </span><span style="color: #f92672">=</span><span style="color: #f8f8f2"> acc;</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>

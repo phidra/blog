@@ -59,7 +59,7 @@
   <title>clock</title>
   <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
 </svg>
-          19 min read
+          18 min read
         </div></div>
     <div>
         <nav id="TableOfContents">
@@ -94,26 +94,26 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;sstream&gt;</span>
-<span style="color: #75715e">#include</span> <span style="color: #75715e">&lt;vector&gt;</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span><span style="color: #f8f8f2"> </span><span style="color: #75715e">&lt;sstream&gt;</span>
+<span style="color: #75715e">#include</span><span style="color: #f8f8f2"> </span><span style="color: #75715e">&lt;vector&gt;</span>
 
-<span style="color: #66d9ef">using</span> <span style="color: #66d9ef">namespace</span> <span style="color: #f8f8f2">std;</span>
+<span style="color: #66d9ef">using</span><span style="color: #f8f8f2"> </span><span style="color: #66d9ef">namespace</span><span style="color: #f8f8f2"> std;</span>
 
-<span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">parse(istream</span><span style="color: #f92672">&amp;</span> <span style="color: #f8f8f2">stream)</span>
+<span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> parse(istream</span><span style="color: #f92672">&amp;</span><span style="color: #f8f8f2"> stream)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
-    <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">line;</span>
-    <span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span>
-    <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">tokens.push_back(line);</span>
-    <span style="color: #f8f8f2">}</span>
-    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">tokens;</span>
+<span style="color: #f8f8f2">    vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> tokens;</span>
+<span style="color: #f8f8f2">    string line;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line).good())</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        tokens.push_back(line);</span>
+<span style="color: #f8f8f2">    }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> tokens;</span>
 <span style="color: #f8f8f2">}</span>
 
-<span style="color: #66d9ef">int</span> <span style="color: #f8f8f2">main(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> main(</span><span style="color: #66d9ef">void</span><span style="color: #f8f8f2">)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">istringstream</span> <span style="color: #f8f8f2">iss(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">);</span>
-    <span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
+<span style="color: #f8f8f2">    istringstream </span><span style="color: #a6e22e">iss</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">    parse(iss);   </span><span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
@@ -122,8 +122,8 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">istringstream</span> <span style="color: #a6e22e">iss</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line3&#34;</span><span style="color: #f8f8f2">);</span>
-<span style="color: #f8f8f2">parse(iss);</span>   <span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">istringstream </span><span style="color: #a6e22e">iss</span><span style="color: #f8f8f2">(</span><span style="color: #e6db74">&#34;line1</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line2</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">line3&#34;</span><span style="color: #f8f8f2">);</span>
+<span style="color: #f8f8f2">parse(iss);   </span><span style="color: #75715e">// {&#34;line1&#34;, &#34;line2&#34;}</span>
 <span style="color: #75715e">// je m&#39;attendais plutôt à {&#34;line1&#34;, &#34;line2&#34;, &#34;line3&#34;} !</span></code></pre>
 </div>
 </div>
@@ -188,7 +188,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line).good()) { </span><span style="color: #75715e">/* process line */</span><span style="color: #f8f8f2"> }</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -196,7 +196,7 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line)) { </span><span style="color: #75715e">/* process line */</span><span style="color: #f8f8f2"> }</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -216,31 +216,31 @@
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">parse(string</span> <span style="color: #f8f8f2">str)</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> parse(string str)</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">istringstream</span> <span style="color: #f8f8f2">stream(str);</span>
-    <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
-    <span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">line;</span>
-    <span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span>
-    <span style="color: #f8f8f2">{</span>
-        <span style="color: #f8f8f2">tokens.push_back(line);</span>
-    <span style="color: #f8f8f2">}</span>
-    <span style="color: #66d9ef">return</span> <span style="color: #f8f8f2">tokens;</span>
+<span style="color: #f8f8f2">    istringstream </span><span style="color: #a6e22e">stream</span><span style="color: #f8f8f2">(str);</span>
+<span style="color: #f8f8f2">    vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> tokens;</span>
+<span style="color: #f8f8f2">    string line;</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line))</span>
+<span style="color: #f8f8f2">    {</span>
+<span style="color: #f8f8f2">        tokens.push_back(line);</span>
+<span style="color: #f8f8f2">    }</span>
+<span style="color: #f8f8f2">    </span><span style="color: #66d9ef">return</span><span style="color: #f8f8f2"> tokens;</span>
 <span style="color: #f8f8f2">}</span>
 
 <span style="color: #75715e">// 3 tokens non-vides :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));  </span><span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// 3 tokens, dont un vide :</span>
 
 <span style="color: #75715e">// cas 1 = c&#39;est le premier token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));  </span><span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// cas 2 = c&#39;est le second token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// true</span>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n\n</span><span style="color: #e6db74">poire&#34;</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;poire&#34;</span><span style="color: #f8f8f2">}));  </span><span style="color: #75715e">// true</span>
 
 <span style="color: #75715e">// cas 3 = c&#39;est le troisième token qui est vide :</span>
-<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">)</span> <span style="color: #f92672">==</span> <span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">,</span> <span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">}));</span>  <span style="color: #75715e">// FALSE !</span></code></pre>
+<span style="color: #f8f8f2">parse(</span><span style="color: #e6db74">&#34;pomme</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">pêche</span><span style="color: #ae81ff">\n</span><span style="color: #e6db74">&#34;</span><span style="color: #f8f8f2">) </span><span style="color: #f92672">==</span><span style="color: #f8f8f2"> vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2">{</span><span style="color: #e6db74">&#34;pomme&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;pêche&#34;</span><span style="color: #f8f8f2">, </span><span style="color: #e6db74">&#34;&#34;</span><span style="color: #f8f8f2">}));  </span><span style="color: #75715e">// FALSE !</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -328,8 +328,8 @@
 <p>en particulier, les deux codes suivants ne sont pas équivalents s’ils traitent un fichier texte sans saut de ligne final :</p>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span>        <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span>
-<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* process line */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line))        { </span><span style="color: #75715e">/* process line */</span><span style="color: #f8f8f2"> }</span>
+<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line).good()) { </span><span style="color: #75715e">/* process line */</span><span style="color: #f8f8f2"> }</span></code></pre>
 </div>
 </div>
 </li>
@@ -457,7 +457,7 @@ od -c /tmp/incomplete
 <div class="listingblock">
 <div class="title">pouet.h</div>
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaire</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Pouet</span><span style="color: #f8f8f2"> {...};  </span><span style="color: #75715e">// cette ligne se termine par un commentaire</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -466,8 +466,8 @@ od -c /tmp/incomplete
 <div class="listingblock">
 <div class="title">pouet.cpp</div>
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span> <span style="color: #75715e">&#34;pouet.h&#34;</span>
-<span style="color: #66d9ef">int</span> <span style="color: #a6e22e">process</span><span style="color: #f8f8f2">(Pouet</span> <span style="color: #f8f8f2">p)</span> <span style="color: #f8f8f2">{...};</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #75715e">#include</span><span style="color: #f8f8f2"> </span><span style="color: #75715e">&#34;pouet.h&#34;</span>
+<span style="color: #66d9ef">int</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">process</span><span style="color: #f8f8f2">(Pouet p) {...};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -476,7 +476,7 @@ od -c /tmp/incomplete
 <div class="listingblock">
 <div class="title">pouet.cpp (après preprocessing)</div>
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span> <span style="color: #f8f8f2">Pouet</span> <span style="color: #f8f8f2">{...};</span>  <span style="color: #75715e">// cette ligne se termine par un commentaireint process(Pouet p) {...};</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">struct</span><span style="color: #f8f8f2"> </span><span style="color: #a6e22e">Pouet</span><span style="color: #f8f8f2"> {...};  </span><span style="color: #75715e">// cette ligne se termine par un commentaireint process(Pouet p) {...};</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -560,7 +560,7 @@ diff file1 file2
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line))</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line)) { </span><span style="color: #75715e">/* ... */</span><span style="color: #f8f8f2"> }</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -571,7 +571,7 @@ diff file1 file2
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span> <span style="color: #f8f8f2">{</span> <span style="color: #75715e">/* ... */</span> <span style="color: #f8f8f2">}</span></code></pre>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line).good()) { </span><span style="color: #75715e">/* ... */</span><span style="color: #f8f8f2"> }</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -707,11 +707,11 @@ diff file1 file2
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span> <span style="color: #f8f8f2">tokens;</span>
-<span style="color: #f8f8f2">string</span> <span style="color: #f8f8f2">line;</span>
-<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream,</span> <span style="color: #f8f8f2">line).good())</span>
+<pre class="pygments highlight" style="background: #272822; color: #f8f8f2"><code data-lang="cpp"><span></span><span style="color: #f8f8f2">vector</span><span style="color: #f92672">&lt;</span><span style="color: #f8f8f2">string</span><span style="color: #f92672">&gt;</span><span style="color: #f8f8f2"> tokens;</span>
+<span style="color: #f8f8f2">string line;</span>
+<span style="color: #66d9ef">while</span><span style="color: #f8f8f2">(getline(stream, line).good())</span>
 <span style="color: #f8f8f2">{</span>
-    <span style="color: #f8f8f2">tokens.push_back(line);</span>
+<span style="color: #f8f8f2">    tokens.push_back(line);</span>
 <span style="color: #f8f8f2">}</span></code></pre>
 </div>
 </div>
