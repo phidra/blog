@@ -5,4 +5,4 @@ draft: false
 ---
 = En deux mots
 
-Le contenu de cette page a migré [ici](https://github.com/phidra/notes/blob/main/structured/en_deux_mots.md).
+Le contenu de cette page a migré https://github.com/phidra/notes/blob/main/structured/en_deux_mots.md[ici].
